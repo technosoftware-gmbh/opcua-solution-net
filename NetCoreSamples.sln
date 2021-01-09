@@ -1,0 +1,53 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.452
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client Applications", "Client Applications", "{F77F5A46-9925-4BB4-AFBF-5A5D5E31A94E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server Applications", "Server Applications", "{EEC12B13-41D8-48A2-B428-866E0F4CE96A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Technosoftware.ModelDesignClient", "examples\Workshop\ModelDesignClient\Technosoftware.ModelDesignClient.csproj", "{6FEF298E-E94A-49F6-B7DE-879426CA394E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Technosoftware.SimpleClient", "examples\Workshop\SimpleClient\Technosoftware.SimpleClient.csproj", "{D6DCD87F-824D-4455-9543-CE50C6172EF4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Technosoftware.ModelDesignServer", "examples\Workshop\ModelDesignServer\Technosoftware.ModelDesignServer.csproj", "{1C752D55-B467-4CA5-B3AB-E9135CC4532E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Technosoftware.SimpleServer", "examples\Workshop\SimpleServer\Technosoftware.SimpleServer.csproj", "{1ACED073-189F-40D3-B7FC-56546E9C8725}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6FEF298E-E94A-49F6-B7DE-879426CA394E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FEF298E-E94A-49F6-B7DE-879426CA394E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FEF298E-E94A-49F6-B7DE-879426CA394E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FEF298E-E94A-49F6-B7DE-879426CA394E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6DCD87F-824D-4455-9543-CE50C6172EF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6DCD87F-824D-4455-9543-CE50C6172EF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6DCD87F-824D-4455-9543-CE50C6172EF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6DCD87F-824D-4455-9543-CE50C6172EF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C752D55-B467-4CA5-B3AB-E9135CC4532E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C752D55-B467-4CA5-B3AB-E9135CC4532E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C752D55-B467-4CA5-B3AB-E9135CC4532E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C752D55-B467-4CA5-B3AB-E9135CC4532E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1ACED073-189F-40D3-B7FC-56546E9C8725}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1ACED073-189F-40D3-B7FC-56546E9C8725}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1ACED073-189F-40D3-B7FC-56546E9C8725}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1ACED073-189F-40D3-B7FC-56546E9C8725}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6FEF298E-E94A-49F6-B7DE-879426CA394E} = {F77F5A46-9925-4BB4-AFBF-5A5D5E31A94E}
+		{D6DCD87F-824D-4455-9543-CE50C6172EF4} = {F77F5A46-9925-4BB4-AFBF-5A5D5E31A94E}
+		{1C752D55-B467-4CA5-B3AB-E9135CC4532E} = {EEC12B13-41D8-48A2-B428-866E0F4CE96A}
+		{1ACED073-189F-40D3-B7FC-56546E9C8725} = {EEC12B13-41D8-48A2-B428-866E0F4CE96A}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {519D77B6-EA9C-4A11-8248-ABCC01FD533C}
+	EndGlobalSection
+EndGlobal

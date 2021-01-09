@@ -1,0 +1,11 @@
+<opc:TypeDictionary
+  xmlns:opc="http://opcfoundation.org/BinarySchema/"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:ua="http://opcfoundation.org/UA/"
+  xmlns:tns="http://technosoftware.com/ModelDesignServer/Engineering"
+  DefaultByteOrder="LittleEndian"
+  TargetNamespace="http://technosoftware.com/ModelDesignServer/Engineering"
+>
+  <opc:Import Namespace="http://opcfoundation.org/UA/" Location="Opc.Ua.BinarySchema.bsd"/>
+
+</opc:TypeDictionary>

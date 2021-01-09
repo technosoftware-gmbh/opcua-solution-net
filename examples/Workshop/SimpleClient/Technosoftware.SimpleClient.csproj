@@ -1,0 +1,51 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>$(AppTargetFramework)</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <AssemblyName>Technosoftware.SimpleClient</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <PackageId>Technosoftware.SimpleClient</PackageId>
+    <Company>Technosoftware GmbH</Company>
+    <Product>OPC UA Solution .NET</Product>
+    <Description>OPC UA Solution .NET Simple Client</Description>
+    <Copyright>Copyright © 2018 - 2020 Technosoftware GmbH</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Mono.Options" Version="6.6.0.161" />
+  </ItemGroup>
+  <Choose>
+    <When Condition="Exists('..\..\..\core') and Exists('..\..\..\src') and '$(Configuration)'!='Nuget'">
+      <ItemGroup Condition=" '$(NoHttps)' != 'true' ">
+        <ProjectReference Include="..\..\..\core\stack\Opc.Ua.Bindings.Https\Opc.Ua.Bindings.Https.csproj" />
+      </ItemGroup>
+      <ItemGroup>
+        <ProjectReference Include="..\..\..\core\stack\Opc.Ua.Core\Opc.Ua.Core.csproj" />
+        <ProjectReference Include="..\..\..\src\Technosoftware\UaConfiguration\Technosoftware.UaConfiguration.csproj" />
+        <ProjectReference Include="..\..\..\src\Technosoftware\UaClient\Technosoftware.UaClient.csproj" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup Condition=" '$(NoHttps)' != 'true' ">
+        <PackageReference Include="Technosoftware.UaSolution.Opc.Ua.Bindings.Https" Version="2.1.0.*" />
+      </ItemGroup>
+      <ItemGroup>
+        <PackageReference Include="Technosoftware.UaSolution.Opc.Ua.Core" Version="2.1.0.*" />
+        <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.1.0.*" />
+        <PackageReference Include="Technosoftware.UaSolution.UaClient" Version="2.1.0.*" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+
+  <ItemGroup>
+    <None Update="Technosoftware.SimpleClient.Config.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

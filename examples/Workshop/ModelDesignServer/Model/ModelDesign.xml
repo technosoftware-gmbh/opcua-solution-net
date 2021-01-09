@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<opc:ModelDesign
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:opc="http://opcfoundation.org/UA/ModelDesign.xsd" xsi:schemaLocation="http://opcfoundation.org/UA/ModelDesign.xsd ../../../../schema/UAModelDesign.xsd"
+  xmlns:ua="http://opcfoundation.org/UA/"
+  xmlns:uax="http://opcfoundation.org/UA/2008/02/Types.xsd"
+	xmlns:qve="http://technosoftware.com/ModelDesignServer/Engineering"
+	xmlns:qvo="http://technosoftware.com/ModelDesignServer/Operations"
+	xmlns="http://technosoftware.com/ModelDesignServer/Model"
+  TargetNamespace="http://technosoftware.com/ModelDesignServer/Model"
+>
+  <!-- 
+  This element defines the mappings between the URIs used to identify namespaces and the symbols used in code.
+  User defined design files can include other user defined design files.
+  The location of included design files is specified with the FilePath attribute (absolute or relative path without the .xml suffix).
+  -->
+  <opc:Namespaces>
+    <opc:Namespace Name="OpcUa" Prefix="Opc.Ua" XmlNamespace="http://opcfoundation.org/UA/2008/02/Types.xsd">http://opcfoundation.org/UA/</opc:Namespace>
+    <opc:Namespace Name="Engineering" Prefix="Technosoftware.ModelDesignServer.Engineering" InternalPrefix="Technosoftware.ModelDesignServer.Engineering">http://technosoftware.com/ModelDesignServer/Engineering</opc:Namespace>
+    <opc:Namespace Name="Operations" Prefix="Technosoftware.ModelDesignServer.Operations" InternalPrefix="Technosoftware.ModelDesignServer.Operations">http://technosoftware.com/ModelDesignServer/Operations</opc:Namespace>
+    <opc:Namespace Name="ModelDesignServer" Prefix="Technosoftware.ModelDesignServer.Model" InternalPrefix="Technosoftware.ModelDesignServer.Model">http://technosoftware.com/ModelDesignServer/Model</opc:Namespace>
+  </opc:Namespaces>
+
+  <!-- Create Types -->
+
+  <!--ObjectTypes -->
+  <opc:ObjectType SymbolicName="MachineInfoType" BaseType="ua:BaseObjectType">
+    <opc:Children>
+      <opc:Property SymbolicName="MachineName" DataType="ua:String"></opc:Property>
+      <opc:Property SymbolicName="Manufacturer" DataType="ua:String"></opc:Property>
+      <opc:Property SymbolicName="SerialNumber" DataType="ua:String"></opc:Property>
+      <opc:Property SymbolicName="IsProducing" DataType="ua:Boolean" AccessLevel="ReadWrite"></opc:Property>
+      <opc:Property SymbolicName="MachineState" DataType="ua:UInt32" AccessLevel="ReadWrite"></opc:Property>
+    </opc:Children>
+  </opc:ObjectType>
+
+  <opc:ObjectType SymbolicName="GenericControllerType" BaseType="ua:BaseObjectType">
+    <opc:Children>
+      <opc:Variable SymbolicName="SetPoint" DataType="ua:Double" TypeDefinition="ua:AnalogItemType" AccessLevel="ReadWrite"></opc:Variable>
+      <opc:Variable SymbolicName="Measurement" DataType="ua:Double" TypeDefinition="ua:AnalogItemType"></opc:Variable>
+    </opc:Children>
+  </opc:ObjectType>
+
+  <opc:ObjectType SymbolicName="FlowControllerType" BaseType="GenericControllerType"></opc:ObjectType>
+  <opc:ObjectType SymbolicName="LevelControllerType" BaseType="GenericControllerType"></opc:ObjectType>
+  <opc:ObjectType SymbolicName="TemperatureControllerType" BaseType="GenericControllerType"></opc:ObjectType>
+
+  <opc:ObjectType SymbolicName="MachineType" BaseType="ua:BaseObjectType">
+    <opc:Children>
+      <opc:Object SymbolicName="MachineInfo" TypeDefinition="MachineInfoType"></opc:Object>
+      <opc:Object SymbolicName="Temperature" TypeDefinition="TemperatureControllerType"></opc:Object>
+      <opc:Object SymbolicName="Flow" TypeDefinition="FlowControllerType"></opc:Object>
+      <opc:Object SymbolicName="Level" TypeDefinition="LevelControllerType"></opc:Object>
+    </opc:Children>
+  </opc:ObjectType>
+
+  <!-- Create Views -->
+  <opc:View SymbolicName="Engineering">
+    <opc:References>
+      <opc:Reference IsInverse="true">
+        <opc:ReferenceType>ua:Organizes</opc:ReferenceType>
+        <opc:TargetId>ua:ViewsFolder</opc:TargetId>
+      </opc:Reference>
+    </opc:References>
+  </opc:View>
+
+  <opc:View SymbolicName="Operations">
+    <opc:References>
+      <opc:Reference IsInverse="true">
+        <opc:ReferenceType>ua:Organizes</opc:ReferenceType>
+        <opc:TargetId>ua:ViewsFolder</opc:TargetId>
+      </opc:Reference>
+    </opc:References>
+  </opc:View>
+
+</opc:ModelDesign>

@@ -1,0 +1,14 @@
+<xs:schema
+  xmlns:s1="http://technosoftware.com/ModelDesignServer/Engineering"
+  xmlns:s2="http://technosoftware.com/ModelDesignServer/Operations"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:ua="http://opcfoundation.org/UA/2008/02/Types.xsd"
+  xmlns:tns="http://technosoftware.com/ModelDesignServer/Model"
+  targetNamespace="http://technosoftware.com/ModelDesignServer/Model"
+  elementFormDefault="qualified"
+>
+  <xs:import namespace="http://opcfoundation.org/UA/2008/02/Types.xsd" />
+  <xs:import namespace="http://technosoftware.com/ModelDesignServer/Engineering" />
+  <xs:import namespace="http://technosoftware.com/ModelDesignServer/Operations" />
+
+</xs:schema>
