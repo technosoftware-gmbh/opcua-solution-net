@@ -29,10 +29,11 @@
 # OPC UA
 *.uanodes binary
 
-testclientserver.sh linguist-vendored
+testclientserversamples.sh linguist-vendored
 .azurepipelines/* linguist-vendored
 bin/* linguist-vendored
 examples/* linguist-vendored=false
 documentation/* linguist-documentation
-license/* linguist-documentation
+licenses/* linguist-documentation
+schema/* linguist-documentation
 Workshop/* linguist-documentation
