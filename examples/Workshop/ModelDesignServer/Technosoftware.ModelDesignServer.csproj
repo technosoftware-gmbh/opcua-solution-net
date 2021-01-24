@@ -44,12 +44,12 @@
     </When>
     <Otherwise>
       <ItemGroup Condition=" '$(NoHttps)' != 'true' ">
-        <PackageReference Include="Technosoftware.UaSolution.Opc.Ua.Bindings.Https" Version="2.1.0.*" />
+        <PackageReference Include="Technosoftware.UaSolution.Opc.Ua.Bindings.Https" Version="2.1.1.27" />
       </ItemGroup>
       <ItemGroup>
-        <PackageReference Include="Technosoftware.UaSolution.Opc.Ua.Core" Version="2.1.0.*" />
-        <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.1.0.*" />
-        <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.1.0.*" />
+        <PackageReference Include="Technosoftware.UaSolution.Opc.Ua.Core" Version="2.1.1.27" />
+        <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.1.1.27" />
+        <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.1.1.27" />
       </ItemGroup>
     </Otherwise>
   </Choose>
