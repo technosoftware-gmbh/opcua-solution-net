@@ -25,12 +25,18 @@ The included OPC Foundation Model Compiler can be used to create the necessary C
 
 Documentation of the Mode Compiler can be found at https://github.com/OPCFoundation/UA-ModelCompiler
 
+
+### Build Status
+
+[![Build Status](https://dev.azure.com/technosoftware-gmbh/OPC%20UA%20Solution%20.NET/_apis/build/status/technosoftware-gmbh.Samples?branchName=master)](https://dev.azure.com/technosoftware-gmbh/OPC%20UA%20Solution%20.NET/_build/latest?definitionId=13&branchName=master)
+[![Build Status](https://travis-ci.com/technosoftware-gmbh/opcua-solution-net.svg?branch=master)](https://travis-ci.com/technosoftware-gmbh/opcua-solution-net)
+
 ## Getting started
 
 You can use the following documents as a starting point:
 
-1. [OPC UA NET Installation Guide](/documentation/OPC_UA_NET_Installation_Guide.pdf)
-2. [OPC UA Solutions NET Introduction](/documentation/OPC_UA_Solution_NET_Introduction.pdf)
+1. [OPC UA Solution NET Installation Guide](/documentation/OPC_UA_Solution_NET_Installation_Guide.pdf)
+2. [OPC UA Solution NET Introduction](/documentation/OPC_UA_Solution_NET_Introduction.pdf)
 3. [OPC UA Client Development with NET](/documentation/OPC_UA_Client_Development_with_NET.pdf)
 4. [OPC UA Server Development with NET](/documentation/OPC_UA_Server_Development_with_NET.pdf)
 
