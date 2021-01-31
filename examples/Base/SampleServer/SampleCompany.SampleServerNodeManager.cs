@@ -30,18 +30,19 @@
 #region Using Directives
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 using Opc.Ua;
 
 using Technosoftware.UaServer;
 #endregion
 
-namespace EmptyCompany.EmptyServer
+namespace SampleCompany.SampleServer
 {
     /// <summary>
     /// A node manager for a server that exposes several variables.
     /// </summary>
-    public class EmptyServerNodeManager : UaBaseNodeManager
+    public class SampleServerNodeManager : UaBaseNodeManager
     {
         #region Private Fields
         private readonly IUaServer opcServer_;
@@ -51,13 +52,18 @@ namespace EmptyCompany.EmptyServer
         private bool disposed_;
         private readonly object lockDisposable_ = new object();
 
+        private Opc.Ua.Test.DataGenerator generator_;
+        private Timer simulationTimer_;
+        private UInt16 simulationInterval_ = 1000;
+        private bool simulationEnabled_ = true;
+        private List<BaseDataVariableState> dynamicNodes_;
         #endregion
 
         #region Constructors, Destructor, Initialization
         /// <summary>
         /// Initializes the node manager.
         /// </summary>
-        public EmptyServerNodeManager(IUaServer opcServer,
+        public SampleServerNodeManager(IUaServer opcServer,
             IUaServerPlugin opcServerPlugin,
             IUaServerData uaServer,
             ApplicationConfiguration configuration,
@@ -77,7 +83,7 @@ namespace EmptyCompany.EmptyServer
         /// It gives your base class the opportunity to finalize.
         /// Do not provide destructor in types derived from this class.
         /// </summary>
-        ~EmptyServerNodeManager()
+        ~SampleServerNodeManager()
         {
             // Do not re-create Dispose clean-up code here.
             // Calling Dispose(false) is optimal in terms of
@@ -143,6 +149,8 @@ namespace EmptyCompany.EmptyServer
         {
             lock (Lock)
             {
+                dynamicNodes_ = new List<BaseDataVariableState>();
+
                 if (!externalReferences.TryGetValue(ObjectIds.ObjectsFolder, out var references))
                 {
                     externalReferences[ObjectIds.ObjectsFolder] = References = new List<IReference>();
@@ -152,15 +160,128 @@ namespace EmptyCompany.EmptyServer
                     References = references;
                 }
 
-                // Create the root folder for all nodes of this server
                 var root = CreateFolderState(null, "My Data", new LocalizedText("en", "My Data"),
-                                 new LocalizedText("en", "Root folder of the Empty Server. All nodes must be placed under this root."));
+                                 new LocalizedText("en", "Root folder of the Sample Server"));
                 References.Add(new NodeStateReference(ReferenceTypes.Organizes, false, root.NodeId));
                 root.EventNotifier = EventNotifiers.SubscribeToEvents;
                 opcServer_.AddRootNotifier(root);
 
-                // Add all nodes under root to the server
+                try
+                {
+                    #region Static
+                    var staticFolder = CreateFolderState(root, "Static", "Static", "A folder with a sample static variable.");
+                    const string scalarStatic = "Static_";
+                    CreateBaseDataVariableState(staticFolder, scalarStatic + "String", "String", null, DataTypeIds.String, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+                    #endregion
+
+                    #region Simulation
+                    var simulationFolder = CreateFolderState(root, "Simulation", "Simulation", "A folder with simulated variables.");
+                    const string simulation = "Simulation_";
+
+                    var simulatedVariable = CreateDynamicVariable(simulationFolder, simulation + "Double", "Double", "A simulated variable of type Double. If Enabled is true this value changes based on the defined Interval.", DataTypeIds.Double, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+                    
+                    var intervalVariable = CreateBaseDataVariableState(simulationFolder, simulation + "Interval", "Interval", "The Interval used for changing the simulated values.", DataTypeIds.UInt16, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, simulationInterval_);
+                    intervalVariable.OnSimpleWriteValue = OnWriteInterval;
+
+                    var enabledVariable = CreateBaseDataVariableState(simulationFolder, simulation + "Enabled", "Enabled", "Specifies whether the simulation is enabled (true) or disabled (false).", DataTypeIds.Boolean, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, simulationEnabled_);
+                    enabledVariable.OnSimpleWriteValue = OnWriteEnabled;
+                    #endregion
+
+                }
+                catch (Exception e)
+                {
+                    Utils.Trace(e, "Error creating the address space.");
+                }
                 AddPredefinedNode(SystemContext, root);
+                simulationTimer_ = new Timer(DoSimulation, null, 1000, 1000);
+            }
+        }
+        #endregion
+
+        #region Event Handlers
+        private ServiceResult OnWriteInterval(ISystemContext context, NodeState node, ref object value)
+        {
+            try
+            {
+                simulationInterval_ = (ushort)value;
+
+                if (simulationEnabled_)
+                {
+                    simulationTimer_.Change(100, simulationInterval_);
+                }
+
+                return ServiceResult.Good;
+            }
+            catch (Exception e)
+            {
+                Utils.Trace(e, "Error writing Interval variable.");
+                return ServiceResult.Create(e, StatusCodes.Bad, "Error writing Interval variable.");
+            }
+        }
+
+        private ServiceResult OnWriteEnabled(ISystemContext context, NodeState node, ref object value)
+        {
+            try
+            {
+                simulationEnabled_ = (bool)value;
+
+                simulationTimer_.Change(100, simulationEnabled_ ? simulationInterval_ : 0);
+
+                return ServiceResult.Good;
+            }
+            catch (Exception e)
+            {
+                Utils.Trace(e, "Error writing Enabled variable.");
+                return ServiceResult.Create(e, StatusCodes.Bad, "Error writing Enabled variable.");
+            }
+        }
+        #endregion
+
+        #region Helper Methods
+        /// <summary>
+        /// Creates a new variable.
+        /// </summary>
+        private BaseDataVariableState CreateDynamicVariable(NodeState parent, string path, string name, string description, NodeId dataType, int valueRank, byte accessLevel, object initialValue)
+        {
+            var variable = CreateBaseDataVariableState(parent, path, name, description, dataType, valueRank, accessLevel, initialValue);
+            dynamicNodes_.Add(variable);
+            return variable;
+        }
+
+        private object GetNewValue(BaseVariableState variable)
+        {
+            if (generator_ == null)
+            {
+                generator_ = new Opc.Ua.Test.DataGenerator(null) {BoundaryValueFrequency = 0};
+            }
+
+            object value = null;
+            var retryCount = 0;
+
+            while (value == null && retryCount < 10)
+            {
+                value = generator_.GetRandom(variable.DataType, variable.ValueRank, new uint[] { 10 }, opcServer_.NodeManager.ServerData.TypeTree);
+                retryCount++;
+            }
+
+            return value;
+        }
+
+        private void DoSimulation(object state)
+        {
+            try
+            {
+                lock (Lock)
+                {
+                    foreach (var variable in dynamicNodes_)
+                    {
+                        opcServer_.WriteBaseVariable(variable, GetNewValue(variable), StatusCodes.Good, DateTime.UtcNow);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Utils.Trace(e, "Unexpected error doing simulation.");
             }
         }
         #endregion

@@ -3,13 +3,13 @@
   <PropertyGroup>
     <TargetFramework>$(AppTargetFramework)</TargetFramework>
     <LangVersion>7.3</LangVersion>
-    <AssemblyName>EmptyCompany.EmptyServer</AssemblyName>
+    <AssemblyName>SampleCompany.SampleServer</AssemblyName>
     <OutputType>Exe</OutputType>
-    <PackageId>EmptyCompany.EmptyServer</PackageId>
-    <Company>EmptyCompany</Company>
-    <Product>EmptyCompany EmptyServer</Product>
-    <Description>EmptyCompany EmptyServer</Description>
-    <Copyright>Copyright © 2021 EmptyCompany</Copyright>
+    <PackageId>SampleCompany.SampleServer</PackageId>
+    <Company>SampleCompany</Company>
+    <Product>SampleCompany SampleServer</Product>
+    <Description>SampleCompany SampleServer</Description>
+    <Copyright>Copyright © 2021 SampleCompany</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
@@ -43,7 +43,7 @@
   </Choose>
 
   <ItemGroup>
-    <None Update="EmptyCompany.EmptyServer.Config.xml">
+    <None Update="SampleCompany.SampleServer.Config.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

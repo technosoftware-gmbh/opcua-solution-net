@@ -5,14 +5,14 @@
   xmlns="http://opcfoundation.org/UA/SDK/Configuration.xsd"
 >
   <!-- A human readable but not necessarily unique name for the application instance -->
-  <ApplicationName>EmptyCompany OPC UA Empty Server</ApplicationName>
+  <ApplicationName>SampleCompany OPC UA Sample Server</ApplicationName>
 
   <!-- A globally unique identifier for the application instance.
        This is overridden with the value contained in the application certificate. -->
-  <ApplicationUri>urn:localhost:EmptyCompany:EmptyServer</ApplicationUri>
+  <ApplicationUri>urn:localhost:SampleCompany:SampleServer</ApplicationUri>
 
   <!-- A globally unique URI for the product (usually assigned by the product vendor) -->
-  <ProductUri>uri:emptycompany.com:EmptyServer</ProductUri>
+  <ProductUri>uri:samplecompany.com:SampleServer</ProductUri>
 
   <!-- Indicates the type of application (Server_0, Client_1, ClientAndServer_2 or DiscoveryServer_3). -->
   <ApplicationType>Server_0</ApplicationType>
@@ -39,7 +39,7 @@
            In this case the first certificate matching the complete distinguished name is used. localhost is replaced with the hostname.
            If no certificate is found, a new self signed application certificate is created.
            The Thumbprint should be specified if the CN or DN does not uniquely identify a certificate. -->
-      <SubjectName>CN=EmptyCompany OPC UA Empty Server, C=CH, S=Aargau, O=EmptyCompany, DC=localhost</SubjectName>
+      <SubjectName>CN=SampleCompany OPC UA Sample Server, C=CH, S=Aargau, O=SampleCompany, DC=localhost</SubjectName>
 
       <!-- The SHA1 thumbprint for the certificate.
            The thumbprint uniquely identifies a certificate.
@@ -174,10 +174,10 @@
          Note that "localhost" is replace with the hostname when the configuration is loaded.
          Additional URLs are created by appending strings to the base address.
          For example, a URL used for an endpoint which uses the Basic256 security policy would look like this:
-         https://localhost:55501/EmptyServer/Basic256 -->
+         https://localhost:55556/SampleServer/Basic256 -->
     <BaseAddresses>
-      <ua:String>opc.tcp://localhost:55500/EmptyServer</ua:String>
-      <ua:String>https://localhost:55501/EmptyServer</ua:String>
+      <ua:String>opc.tcp://localhost:55555/SampleServer</ua:String>
+      <ua:String>https://localhost:55556/SampleServer</ua:String>
     </BaseAddresses>
     <!-- 
     These list the alternate addresses (via firewalls, multiple NICs etc.) that can be
@@ -367,7 +367,7 @@
     <MaxRegistrationInterval>30000</MaxRegistrationInterval>
 
     <!-- The file used to save nodes added to the CoreNodeManager. If missing the CoreNodeManger will discard nodes when it stops. -->
-    <NodeManagerSaveFile>EmptyCompany.EmptyServer.Nodes.xml</NodeManagerSaveFile>
+    <NodeManagerSaveFile>SampleCompany.SampleServer.Nodes.xml</NodeManagerSaveFile>
 
     <!-- The minimum lifetime for a subscription. -->
     <MinSubscriptionLifetime>10000</MinSubscriptionLifetime>
@@ -471,7 +471,7 @@
   AllAbove = 0x3FF;
   -->
   <TraceConfiguration>
-    <OutputFilePath>./Logs/EmptyCompany.EmptyServer.log</OutputFilePath>
+    <OutputFilePath>./Logs/SampleCompany.SampleServer.log</OutputFilePath>
     <DeleteOnLoad>true</DeleteOnLoad>
     <!-- Show Only Errors -->
     <!-- <TraceMasks>1</TraceMasks> -->

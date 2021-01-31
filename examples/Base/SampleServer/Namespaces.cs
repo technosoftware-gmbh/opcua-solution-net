@@ -28,52 +28,21 @@
 #endregion Copyright (c) 2021 Technosoftware GmbH. All rights reserved
 
 #region Using Directives
+using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
-
-using Opc.Ua;
+using System.Text;
 #endregion
 
-namespace EmptyCompany.EmptyServer
+namespace SampleCompany.SampleServer
 {
     /// <summary>
-    /// Stores the configuration the Workshop server.
+    /// Defines constants for namespaces used by the application.
     /// </summary>
-    [DataContract(Namespace = Namespaces.EmptyServer)]
-    public class EmptyServerConfiguration
+    public static partial class Namespaces
     {
-        #region Constructors
         /// <summary>
-        /// The default constructor.
+        /// The namespace for the nodes provided by the server.
         /// </summary>
-        public EmptyServerConfiguration()
-        {
-            Initialize();
-        }
-
-        /// <summary>
-        /// Initializes the object during deserialization.
-        /// </summary>
-        [OnDeserializing()]
-        private void Initialize(StreamingContext context)
-        {
-            Initialize();
-        }
-
-        /// <summary>
-        /// Sets private members to default values.
-        /// </summary>
-        private void Initialize()
-        {
-        }
-        #endregion
-
-        #region Public Properties
-        /// <summary>
-        /// The Excel based Configuration File to be used for address space creation.
-        /// </summary>
-        [DataMember(Order = 1)]
-        public string ConfigurationFile { get; set; }
-        #endregion
+        public const string SampleServer = "http://samplecompany.com/SampleServer";
     }
 }

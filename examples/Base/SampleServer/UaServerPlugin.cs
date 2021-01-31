@@ -39,7 +39,7 @@ using Opc.Ua;
 using Technosoftware.UaServer;
 #endregion
 
-namespace EmptyCompany.EmptyServer
+namespace SampleCompany.SampleServer
 {
 
     /// <summary>
@@ -162,7 +162,7 @@ namespace EmptyCompany.EmptyServer
         {
             // set one namespace for the type model.
             var namespaceUrls = new string[1];
-            namespaceUrls[0] = Namespaces.EmptyServer;
+            namespaceUrls[0] = Namespaces.SampleServer;
             return namespaceUrls;
         }
 
@@ -218,9 +218,9 @@ namespace EmptyCompany.EmptyServer
         {
             var properties = new ServerProperties
                                 {
-                                    ManufacturerName = "EmptyCompany",
-                                    ProductName = "EmptyCompany OPC UA Empty Server",
-                                    ProductUri = "http://emptycompany.com/EmptyServer/v1.0",
+                                    ManufacturerName = "SampleCompany",
+                                    ProductName = "SampleCompany OPC UA Sample Server",
+                                    ProductUri = "http://samplecompany.com/SampleServer/v1.0",
                                     SoftwareVersion = GetAssemblySoftwareVersion(),
                                     BuildNumber = GetAssemblyBuildNumber(),
                                     BuildDate = GetAssemblyTimestamp()
@@ -267,12 +267,12 @@ namespace EmptyCompany.EmptyServer
         #region Optional Server Plugin methods
         public UaBaseServer OnGetServer()
         {
-            return new EmptyServer();
+            return new SampleServer();
         }
 
         public UaBaseNodeManager OnGetNodeManager(IUaServer opcServer, IUaServerData uaServer, ApplicationConfiguration configuration, params string[] namespaceUris)
         {
-            return new EmptyServerNodeManager(opcServer, this, uaServer, configuration, namespaceUris);
+            return new SampleServerNodeManager(opcServer, this, uaServer, configuration, namespaceUris);
         }
 
         #endregion
