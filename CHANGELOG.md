@@ -1,5 +1,30 @@
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET Standard - 2.1.0
+## OPC UA Solutions .NET - 2.1.1
+
+### Enhancement
+- Introduced new overridable method AddEncodeableTypes in the UaBaseServer to allow adding encodeable types from different assemblies.
+
+### Fixed issues
+- fix issue with JSON encoder, field names were not escaped
+- add some basic tests for ECDsa cert generation and validate yet missing ECC cert factory API extensions with test cases
+- improve how the cert validator returns suppressible errors
+- not a breaking change: the cert validator callback is now called for every suppressible error, not only once, for backward compatibility with existing applications
+- applications which implement to handle all suppressible errors in a single callback can set the 'AcceptAll' flag instead of 'Accept' to accept all suppressible errors once.
+- in the client library the domain check can also be handled in the validator callback.
+- fix warnings and cross platform line feed usage
+- Compliance fixes for certificate validation.
+- Use monotonic timer for HiResClock and fix loss of monitored items when system time is changed
+- Method calls validation for Executable and UserExecutable.
+- Private key is not stored to the Windows certificate store when using .NET 2.1
+- Fix build and LGTM warnings
+- The AcceptAll flag can be used to accept all suppressible errors in one call back
+- fix decoding of ecdsa signature
+- Set TypeId for structured types at decode.
+- Fix issue setting empty comments
+- Client: Validate server domains in Certificate validator
+
+-------------------------------------------------------------------------------------------------------------
+## OPC UA Solutions .NET - 2.1.0
 
 ### Changes
 - This edition supports .NET Standard 2.1, .NET Core 3.1 and .NET 5.0
@@ -20,34 +45,34 @@
 - .NET 4.8, .NET 4.7.2 and .NET 4.6.2 versions still use BouncyCastle for Cert creation
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET Standard - 2.0.8
+## OPC UA Solutions .NET - 2.0.8
 
 ### Changes
 - Use of Opc.Ua.Core V1.4.364.40
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET Standard - 2.0.7
+## OPC UA Solutions .NET - 2.0.7
 
 ### Fixed issues
 - Fix for OPC UA Bundle .NET Standard license handling
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET Standard - 2.0.6
+## OPC UA Solutions .NET - 2.0.6
 
 ### Changes
-- .NET 5.0 requires a new license and is available for the OPC UA Bundle .NET Standard
+- .NET 5.0 requires a new license and is available for the OPC UA Bundle .NET
 
 ### Fixed issues
 - Fix in client part for Prosys OPC UA simulation server
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET Standard - 2.0.5
+## OPC UA Solutions .NET - 2.0.5
 
 ### Changes
 - DLL's are now code signed
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET Standard - 2.0.4
+## OPC UA Solutions .NET - 2.0.4
 
 ### Changes
 - Model Compiler build with .NET 4.6.2
@@ -56,7 +81,7 @@
   a modified Opc.Ua.Core version
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET Standard - 2.0.3
+## OPC UA Solutions .NET - 2.0.3
 
 ### Changes
 - Use of Opc.Ua.Core V1.4.364.31-preview
@@ -64,19 +89,19 @@
 - Removed .NET Core 3.0 support because it is out of support and will not receive security updates in the future. 
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET Standard - 2.0.2
+## OPC UA Solutions .NET - 2.0.2
 
 ### Changes
 - Use of OPC.Ua.Core V1.4.303.107
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET Standard - 2.0.1
+## OPC UA Solutions .NET - 2.0.1
 
 ### Changes
 - Use of OPC UA ModelCompiler from 26-SEP-2020
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET Standard - 2.0.0
+## OPC UA Solutions .NET - 2.0.0
 
 ### Important Information
 Goal of this 2.0 version is the alignment with the original Opc.Ua.Core stack to get easier compliance with
@@ -100,13 +125,13 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 - ProcessCommandLine() handling
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET Standard - 1.4.13
+## OPC UA Solutions .NET - 1.4.13
 	
 ### Changes
 - Added some comments for easier transition to 2.0
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET Standard - 1.4.12
+## OPC UA Solutions .NET - 1.4.12
 	
 ### Changes
 - Updated BouncyCastle.Crypto.dll to 1.8.8
@@ -117,13 +142,13 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 - Fixed user identity handling in server session
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET Standard - 1.4.11
+## OPC UA Solutions .NET - 1.4.11
 	
 ### Changes
 - Updated stack to the official version from the OPC Foundation (1.4.363.107)
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET Standard - 1.4.10
+## OPC UA Solutions .NET - 1.4.10
 	
 ### Changes
 - Moved the stack to it's own repository
@@ -132,7 +157,7 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 - Integrated v1.4.10 of https://github.com/technosoftware-gmbh/opc-ua-core-net-standard
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET Standard - 1.4.0731
+## OPC UA Solutions .NET - 1.4.0731
 	
 ### Fixed Issues
 - Stack: Index range fixes
@@ -148,7 +173,7 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 - Client: Session validation in Client Subscription
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET Standard - 1.4.0707
+## OPC UA Solutions .NET - 1.4.0707
 	
 ###	Fixed Issues
 - Fix for self signed certs
@@ -160,14 +185,14 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
   - bool haveAppCertificate = await application.CheckApplicationInstanceCertificateAsync(false, 0);
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET Standard - 1.4.0705
+## OPC UA Solutions .NET - 1.4.0705
 	
 ###	Fixed Issues
 - Changed method CreateMethodState()
   - Parameter parent was wrongly defined as BaseObjectState and not NodeState.
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET Standard - 1.4.0627
+## OPC UA Solutions .NET - 1.4.0627
 
 ###	Enhancements
 - Support for OPC UA 1.04 reverse connection
@@ -182,7 +207,7 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 - Server Compliance tested with OPC UA Compliance Test Tool 1.04.9.396	
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET Standard - 1.4.0612
+## OPC UA Solutions .NET - 1.4.0612
 
 ###	Enhancements
 - New sample clients and servers
@@ -192,16 +217,16 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 - Travis CI and AppVeyor used to build and test the sample applications on different platforms.
 
 ###	Fixed Issues
-- Integrated OPC UA Core .NET Standard V1.4.0612
+- Integrated OPC UA Core .NET V1.4.0612
 - Support of enum array in BinaryEncoder improved.
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET Standard - 1.4.0604
+## OPC UA Solutions .NET - 1.4.0604
 
-- Integrated OPC UA Core .NET Standard from https://github.com/technosoftware-gmbh/opc-ua-core-net-standard
+- Integrated OPC UA Core .NET from https://github.com/technosoftware-gmbh/opc-ua-core-net-standard
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET Standard - 1.4.0522
+## OPC UA Solutions .NET - 1.4.0522
 
 ###	Breaking Changes
 - Updated minimal required .NET version to 4.6.2 so that also .NET framework applications can use latest version of Kestrel
@@ -216,7 +241,7 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 - Tested with UACTT 1.3.341.395
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET Standard - 1.3.0503
+## OPC UA Solutions .NET - 1.3.0503
 
 ###	Fixed Issues
 
@@ -236,7 +261,7 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
   - Fix: RolePermission is an optional attribute, it can be ignored if access is denied.
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET Standard - 1.3.0419
+## OPC UA Solutions .NET - 1.3.0419
 
 ###	Important
 
@@ -255,7 +280,7 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 - We used the version 1.03.401 for our tests
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Client .NET Standard - 1.3.0413 (Release Date 13-APR-2020)
+## OPC UA Client .NET - 1.3.0413 (Release Date 13-APR-2020)
 
 ###	Enhancements
 - .NET 4.6.1 version now supported in the Source Edition
@@ -263,7 +288,7 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 ###	Breaking Changes
 - .NET Standard 2.0 and .NET Core 2.0 now only supported in the Source Edition
 
-## OPC UA Server .NET Standard - 1.3.0413 (Release Date 13-APR-2020)
+## OPC UA Server .NET - 1.3.0413 (Release Date 13-APR-2020)
 
 ###	Enhancements
 - .NET 4.6.1 version now supported in the Source Edition
@@ -271,7 +296,7 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 ###	Breaking Changes
 - .NET Standard 2.0 and .NET Core 2.0 now only supported in the Source Edition
 
-## OPC UA Core .NET Standard - 1.3.0413 (Release Date 13-APR-2020)
+## OPC UA Core .NET - 1.3.0413 (Release Date 13-APR-2020)
 
 ###	Enhancements
 - .NET 4.6.1 version now supported in the Source Edition
@@ -281,34 +306,34 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Client .NET Standard - 1.3.0411 (Release Date 11-APR-2020)
+## OPC UA Client .NET - 1.3.0411 (Release Date 11-APR-2020)
 
 ###	Issues
 - Fix typo and grammar in Application Instance Certificate exception
 
-## OPC UA Server .NET Standard - 1.3.0411 (Release Date 11-APR-2020)
+## OPC UA Server .NET - 1.3.0411 (Release Date 11-APR-2020)
 
 ###	Issues
 - Fix for writing RolePermissions and AccessRestrictions attributes in Server.
 
-## OPC UA Core .NET Standard - 1.3.0411 (Release Date 11-APR-2020)
+## OPC UA Core .NET - 1.3.0411 (Release Date 11-APR-2020)
 
 ###	Issues
 - Allow also UInt32 type when writing AccessRestrictions attribute.
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Client .NET Standard - 1.3.0409 (Release Date 03-APR-2020)
+## OPC UA Client .NET - 1.3.0409 (Release Date 03-APR-2020)
 
 ###	Issues
 - Fixed source distribution issues
 
-## OPC UA Server .NET Standard - 1.3.0403 (Release Date 03-APR-2020)
+## OPC UA Server .NET - 1.3.0403 (Release Date 03-APR-2020)
 
 ###	Issues
 - Fixed source distribution issues
 - CTT compliance fixes for Audit events.
 
-## OPC UA Core .NET Standard - 1.3.0403 (Release Date 03-APR-2020)
+## OPC UA Core .NET - 1.3.0403 (Release Date 03-APR-2020)
 
 ###	Enhancements
 - Update generated code and UA-nodeset files for 1.04.5 Errata
@@ -321,7 +346,7 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 - Fix for CertificateUpdate
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Client .NET Standard - 1.3.0307 (Release Date 07-MAR-2020)
+## OPC UA Client .NET - 1.3.0307 (Release Date 07-MAR-2020)
 
 ###	Enhancements
 - Updated samples to .NET 4.8 and added .NET Core 3.1 to samples
@@ -329,7 +354,7 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 ###	Issues
 - Handle exception when server returns null terminated dictionary bytestring
 
-## OPC UA Server .NET Standard - 1.3.0307 (Release Date 07-MAR-2020)
+## OPC UA Server .NET - 1.3.0307 (Release Date 07-MAR-2020)
 
 ###	Enhancements
 - Updated samples to .NET 4.8 and added .NET Core 3.1 to samples
@@ -338,7 +363,7 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 ###	Issues
 - Compliance fixes for latest CTT
 
-## OPC UA Core .NET Standard - 1.3.0307 (Release Date 07-MAR-2020)
+## OPC UA Core .NET - 1.3.0307 (Release Date 07-MAR-2020)
 
 ###	Issues
 - Compliance fixes for latest CTT
@@ -346,7 +371,7 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 - Fix for non reversible encoding of Unions and structures
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Core .NET Standard - 1.3.0216 (Release Date 22-FEB-2020)
+## OPC UA Core .NET - 1.3.0216 (Release Date 22-FEB-2020)
 
 ###	Issues
 - fix for non reversible encoding of Unions and structures
@@ -355,13 +380,13 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 - stabilize binary decoder
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Client .NET Standard - 1.3.0216 (Release Date 16-FEB-2020)
+## OPC UA Client .NET - 1.3.0216 (Release Date 16-FEB-2020)
 
 ###	Issues
 - Validate for spec compliant subscription defaults
 - CreateSubscription default constructor used very tight setting for keepalive/minlifetime
 
-## OPC UA Core .NET Standard - 1.3.0216 (Release Date 16-FEB-2020)
+## OPC UA Core .NET - 1.3.0216 (Release Date 16-FEB-2020)
 
 ###	Enhancement
 - Added unit tests (included in source code version)
@@ -379,36 +404,36 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 - Fixed DataGenerator for GUID
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Client .NET Standard - 1.3.0131 (Release Date 31-JAN-2020)
+## OPC UA Client .NET - 1.3.0131 (Release Date 31-JAN-2020)
 
 ###	Enhancement
 - Updated model to OPC UA 1.0.4 Errata
 
-## OPC UA Server .NET Standard - 1.3.0131 (Release Date 31-JAN-2020)
+## OPC UA Server .NET - 1.3.0131 (Release Date 31-JAN-2020)
 
 ###	Enhancement
 - Updated model compiler to latest version
 - Updated model compiler to NET 4.8
 - Updated model to OPC UA 1.0.4 Errata
 
-## OPC UA Core .NET Standard - 1.3.0131 (Release Date 31-JAN-2020)
+## OPC UA Core .NET - 1.3.0131 (Release Date 31-JAN-2020)
 
 ###	Enhancement
 - Updated model to OPC UA 1.0.4 Errata
 
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Client .NET Standard - 1.3.0118 (Release Date 18-JAN-2020)
+## OPC UA Client .NET - 1.3.0118 (Release Date 18-JAN-2020)
 
 ###	Enhancement
 - Use nameof() where applicable
 
-## OPC UA Server .NET Standard - 1.3.0118 (Release Date 18-JAN-2020)
+## OPC UA Server .NET - 1.3.0118 (Release Date 18-JAN-2020)
 
 ###	Enhancement
 - Use nameof() where applicable
 
-## OPC UA Core .NET Standard - 1.3.0118 (Release Date 18-JAN-2020)
+## OPC UA Core .NET - 1.3.0118 (Release Date 18-JAN-2020)
 
 ###	Enhancement
 - Use nameof() where applicable
@@ -422,7 +447,7 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 - Fix for handling of AccessLevel and AccessLevelEx attributes.
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Client .NET Standard - 1.3.0106 (Release Date 06-JAN-2020)
+## OPC UA Client .NET - 1.3.0106 (Release Date 06-JAN-2020)
 
 ###	Breaking Changes
 - New license required. License for version 1.2 will not work
@@ -434,7 +459,7 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 - .NET Standard 2.1 support added
 - .NET Core 3.0 support added
 
-## OPC UA Server .NET Standard - 1.3.0106 (Release Date 06-JAN-2020)
+## OPC UA Server .NET - 1.3.0106 (Release Date 06-JAN-2020)
 
 ###	Breaking Changes
 - New license required. License for version 1.2 will not work
@@ -444,7 +469,7 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 - .NET Standard 2.1 support added
 - .NET Core 3.0 support added
 
-## OPC UA Core .NET Standard - 1.3.0106 (Release Date 06-JAN-2020)
+## OPC UA Core .NET - 1.3.0106 (Release Date 06-JAN-2020)
 
 ###	Breaking Changes
 - New license required. License for version 1.2 will not work
@@ -456,50 +481,50 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 - .NET Core 3.0 support added
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Client .NET Standard - 1.2.1130 (Release Date 30-NOV-2019)
+## OPC UA Client .NET - 1.2.1130 (Release Date 30-NOV-2019)
 
 ###	Enhancement
 - Description and RolePermissions are now initialized
 
-## OPC UA Server .NET Standard - 1.2.1130 (Release Date 30-NOV-2019)
+## OPC UA Server .NET - 1.2.1130 (Release Date 30-NOV-2019)
 
 ###	Enhancement
 - Description and RolePermissions are now initialized
 
-## OPC UA Core .NET Standard - 1.2.1130 (Release Date 30-NOV-2019)
+## OPC UA Core .NET - 1.2.1130 (Release Date 30-NOV-2019)
 
 ###	Enhancement
 - Description and RolePermissions are now initialized
 - Description for OPC UA standard nodes are now loaded also.
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Client .NET Standard - 1.2.1125 (Release Date 25-NOV-2019)
+## OPC UA Client .NET - 1.2.1125 (Release Date 25-NOV-2019)
 
 ###	Enhancement
 - Less logging for Info messages. Moved them to OperationDetail
 
-## OPC UA Server .NET Standard - 1.2.1125 (Release Date 25-NOV-2019)
+## OPC UA Server .NET - 1.2.1125 (Release Date 25-NOV-2019)
 
 ###	Enhancement
 - Less logging for Info messages. Moved them to OperationDetail
 
-## OPC UA Core .NET Standard - 1.2.1125 (Release Date 25-NOV-2019)
+## OPC UA Core .NET - 1.2.1125 (Release Date 25-NOV-2019)
 
 ###	Enhancement
 - Less logging for Info messages. Moved them to OperationDetail
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Client .NET Standard - 1.2.1124 (Release Date 24-NOV-2019)
+## OPC UA Client .NET - 1.2.1124 (Release Date 24-NOV-2019)
 
 ###	Issues
 - Add server nonce validation in Client session.
 
-## OPC UA Server .NET Standard - 1.2.1124 (Release Date 24-NOV-2019)
+## OPC UA Server .NET - 1.2.1124 (Release Date 24-NOV-2019)
 
 ###	Issues
 - Added user authentication handling for UaMonitoredItem.
 
-## OPC UA Core .NET Standard - 1.2.1124 (Release Date 24-NOV-2019)
+## OPC UA Core .NET - 1.2.1124 (Release Date 24-NOV-2019)
 
 ###	Enhancement
 - Preparation for Complex Types
@@ -515,7 +540,7 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 
 -------------------------------------------------------------------------------------------------------------
 
-## OPC UA Server .NET Standard - 1.2.1101 (Release Date 01-NOV-2019)
+## OPC UA Server .NET - 1.2.1101 (Release Date 01-NOV-2019)
 
 ###	Breaking Changes
 - Changed license handling. You will get some errors using this version now. Please see the new license certificate. The new method to use is 
@@ -524,7 +549,7 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 ###	Enhancement
 - Added CreateBaseDataVariable(NodeState parent, string path, string name, ExpandedNodeId expandedNodeId, int valueRank, byte accessLevel, object initialValue) method to IUaServer
 
-## OPC UA Client .NET Standard - 1.2.1101 (Release Date 01-NOV-2019)
+## OPC UA Client .NET - 1.2.1101 (Release Date 01-NOV-2019)
 
 ###	Breaking Changes
 - Changed license handling. You will get some errors using this version now. Please see the new license certificate. The new method to use is 
@@ -533,7 +558,7 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 ###	Issues
 - Add check for some configuration fields and return some additional errors.
 
-## OPC UA Core .NET Standard - 1.2.1101 (Release Date 01-NOV-2019)
+## OPC UA Core .NET - 1.2.1101 (Release Date 01-NOV-2019)
 
 ###	Issues
 - ExpandedNodeId.CompareTo contract violation
@@ -543,7 +568,7 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 
 -------------------------------------------------------------------------------------------------------------
 
-## OPC UA Server .NET Standard - 1.2.1013 (Release Date 13-OCT-2019)
+## OPC UA Server .NET - 1.2.1013 (Release Date 13-OCT-2019)
 
 ###	Breaking Changes
 - Several synchronous methods marked as obsolete in 1.1 are now giving an error while building with 1.2. Use the asynchronous versions mentioned in the error instead.
@@ -558,7 +583,7 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 - Added several XSD schema's to the schema folder. The Workshop server sample ModelDesign.xml files references the UAModelDesign.xsd. 
   Visual Studio can be used to change the Design files while giving context sensitive and popups. 
 
-## OPC UA Client .NET Standard - 1.2.1013 (Release Date 13-OCT-2019)
+## OPC UA Client .NET - 1.2.1013 (Release Date 13-OCT-2019)
 
 ###	Breaking Changes
 - Several synchronous methods marked as obsolete in 1.1 are now giving an error while building with 1.2. Use the asynchronous versions mentioned in the error instead.
@@ -570,7 +595,7 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 - Using IUaServerData.Status can be made thread safe by using Status.Lock
 - Client keep-alive fix - Outstanding publish requests should not stop keep alive reads.
 
-## OPC UA Core .NET Standard - 1.2.1013 (Release Date 13-OCT-2019)
+## OPC UA Core .NET - 1.2.1013 (Release Date 13-OCT-2019)
 
 ###	Enhancement
 - Synchronize with newest UA Nodeset
@@ -583,7 +608,7 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 
 -------------------------------------------------------------------------------------------------------------
 
-## OPC UA Server .NET Standard - 1.1.815 (Release Date 15-AUG-2019)
+## OPC UA Server .NET - 1.1.815 (Release Date 15-AUG-2019)
 
 ###	Changes
 Version numbering scheme changed. Version numbers are used with Major.Minor.Build, where
@@ -596,7 +621,7 @@ Version numbering scheme changed. Version numbers are used with Major.Minor.Buil
 - CertificateValidation event not fired for BadCertificateChainIncomplete. 
 - Cleaned up source and added build related property files (Source Distribution only)
 
-## OPC UA Client .NET Standard - 1.1.824 (Release Date 24-AUG-2019)
+## OPC UA Client .NET - 1.1.824 (Release Date 24-AUG-2019)
 
 ###	Updates / Fixes
 - Enhanced documentation and added example usage on Linux, macOS
@@ -605,7 +630,7 @@ Version numbering scheme changed. Version numbers are used with Major.Minor.Buil
 
 -------------------------------------------------------------------------------------------------------------
 
-## OPC UA Server .NET Standard - 1.1.0 (Release Date 22-JUN-2019)
+## OPC UA Server .NET - 1.1.0 (Release Date 22-JUN-2019)
 
 ###	Highlights
 - Enhanced documentation regarding certificate and configuration tool handling
@@ -617,7 +642,7 @@ Version numbering scheme changed. Version numbers are used with Major.Minor.Buil
 - Fix to avoid timer interval higher than Int32.MaxValue in ClientSubscription.StartKeepAliveTimer()
 - Updated Local Discovery Server to 1.03.401.438
 
-## OPC UA Client .NET Standard - 1.1.0 (Release Date 22-JUN-2019)
+## OPC UA Client .NET - 1.1.0 (Release Date 22-JUN-2019)
 
 ###	Highlights
 - Enhanced documentation regarding certificate and configuration tool handling
@@ -630,21 +655,21 @@ Version numbering scheme changed. Version numbers are used with Major.Minor.Buil
 
 -------------------------------------------------------------------------------------------------------------
 
-## OPC UA Server .NET Standard - 1.0.9 (Release Date 31-MAY-2019)
+## OPC UA Server .NET - 1.0.9 (Release Date 31-MAY-2019)
 
 ###	Updates / Fixes
 - Compliance fixes in CertificateValidator.
   Added setting in SecurityConfiguration to require revocation lists for all CAs
 - Updated documentation
 
-## OPC UA Client .NET Standard - 1.0.9 (Release Date 31-MAY-2019)
+## OPC UA Client .NET - 1.0.9 (Release Date 31-MAY-2019)
 
 ###	Updates / Fixes
 - Updated documentation
 
 -------------------------------------------------------------------------------------------------------------
 
-## OPC UA Server .NET Standard - 1.0.8 (Release Date 22-MAY-2019)
+## OPC UA Server .NET - 1.0.8 (Release Date 22-MAY-2019)
 
 ###	Highlights
 - Enhanced documentation
@@ -667,7 +692,7 @@ Version numbering scheme changed. Version numbers are used with Major.Minor.Buil
 	 - ImpersonateUser to ImpersonateUserEvent
 	 - ValidateSessionLessRequest to ValidateSessionLessRequestEvent
 
-## OPC UA Client .NET Standard - 1.0.8 (Release Date 22-MAY-2019)
+## OPC UA Client .NET - 1.0.8 (Release Date 22-MAY-2019)
 
 ###	Highlights
 - Enhanced documentation
@@ -683,10 +708,10 @@ Version numbering scheme changed. Version numbers are used with Major.Minor.Buil
 
 -------------------------------------------------------------------------------------------------------------
 
-## OPC UA Server .NET Standard - 1.0.7 (Release Date 06-MAY-2019)
+## OPC UA Server .NET - 1.0.7 (Release Date 06-MAY-2019)
 
 ###	Highlights
-- First version of OPC UA Server .NET Standard. Compatible to API of OPC UA Server SDK .NET
+- First version of OPC UA Server .NET. Compatible to API of OPC UA Server SDK .NET
 - Supports .NET Standard 2.0. New WorkshopServerConsole is now available for 
      - .NET 4.6.1, .NET 4.7.2, .NET Core 2.0 (\examples\Workshop\ServerConsole)
 	 - .NET 4.7.2 (\examples\Workshop\ServerForms)
@@ -697,7 +722,7 @@ Version numbering scheme changed. Version numbers are used with Major.Minor.Buil
 - CTT Compliance fixes
 - CertificateValidator update
 
-## OPC UA Client .NET Standard - 1.0.7 (Release Date 06-MAY-2019)
+## OPC UA Client .NET - 1.0.7 (Release Date 06-MAY-2019)
 
 ###	Highlights
 - Supports .NET Standard 2.0. New WorkshopServerConsole is now available for 
@@ -709,16 +734,16 @@ Version numbering scheme changed. Version numbers are used with Major.Minor.Buil
 
 -------------------------------------------------------------------------------------------------------------
 
-## OPC UA Server .NET Standard - 1.0.6 (Release Date 05-APR-2019)
+## OPC UA Server .NET - 1.0.6 (Release Date 05-APR-2019)
 
 ###	Highlights
-- First version of OPC UA Server .NET Standard. Compatible to API of OPC UA Server SDK .NET
+- First version of OPC UA Server .NET. Compatible to API of OPC UA Server SDK .NET
 - Supports .NET 4.6.1 and .NET 4.7.2. 
 
 ###	Known Issaues
 - .NET Standard 2.0 not yet supported
 
-## OPC UA Client .NET Standard - 1.0.6 (Release Date 05-APR-2019)
+## OPC UA Client .NET - 1.0.6 (Release Date 05-APR-2019)
 
 ###	Highlights
 - Added more compatibility to OPC UA Client SDK .NET (InstallConfig, Services and command line parameters supported)
@@ -726,14 +751,14 @@ Version numbering scheme changed. Version numbers are used with Major.Minor.Buil
 
 -------------------------------------------------------------------------------------------------------------
 
-## OPC UA Client .NET Standard - 1.0.5 (Release Date 16-FEB-2019)
+## OPC UA Client .NET - 1.0.5 (Release Date 16-FEB-2019)
 
 ###	Highlights
 - OPC UA Configuration Client is now able to handle also clients based on this SDK (.NET 4.6.1 only)
 
 -------------------------------------------------------------------------------------------------------------
 
-## OPC UA Client .NET Standard - 1.0.4 (Release Date 05-JAN-2019)
+## OPC UA Client .NET - 1.0.4 (Release Date 05-JAN-2019)
 
 ###	Highlights
 - Support for AES security policies
@@ -746,17 +771,17 @@ Version numbering scheme changed. Version numbers are used with Major.Minor.Buil
 
 -------------------------------------------------------------------------------------------------------------
 
-## OPC UA Client .NET Standard - 1.0.3 (Release Date 08-DEC-2018)
+## OPC UA Client .NET - 1.0.3 (Release Date 08-DEC-2018)
 - Added Professional license for .NET 4.6.1 usage only
 
 -------------------------------------------------------------------------------------------------------------
 
-## OPC UA Client .NET Standard - 1.0.1 (Release Date 10-NOV-2018)
+## OPC UA Client .NET - 1.0.1 (Release Date 10-NOV-2018)
 - Updated brochures
 
 -------------------------------------------------------------------------------------------------------------
 
-## OPC UA Client .NET Standard - 1.0.0 (Release Date 13-OCT-2018)
+## OPC UA Client .NET - 1.0.0 (Release Date 13-OCT-2018)
 
 ###	Highlights
 - .NET Standard 2.0 version tested on macOS 10.14
@@ -766,7 +791,7 @@ Version numbering scheme changed. Version numbers are used with Major.Minor.Buil
 
 -------------------------------------------------------------------------------------------------------------
 
-## OPC UA Client .NET Standard - 0.2.0 (Release Date 03-OCT-2018)
+## OPC UA Client .NET - 0.2.0 (Release Date 03-OCT-2018)
 
 ###	Highlights
 - Licensing mechanism added
@@ -777,7 +802,7 @@ Version numbering scheme changed. Version numbers are used with Major.Minor.Buil
 
 -------------------------------------------------------------------------------------------------------------
 
-## OPC UA Client .NET Standard - 0.1.0 (Release Date 17-SEP-2018)
+## OPC UA Client .NET - 0.1.0 (Release Date 17-SEP-2018)
 - Initial beta version
 
 ## OPC UA Stack .NET Standard - 0.1.0 (Release Date 17-SEP-2018)

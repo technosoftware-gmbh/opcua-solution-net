@@ -1,6 +1,6 @@
-﻿#region Copyright (c) 2011-2020 Technosoftware GmbH. All rights reserved
+﻿#region Copyright (c) 2021 Technosoftware GmbH. All rights reserved
 //-----------------------------------------------------------------------------
-// Copyright (c) 2011-2020 Technosoftware GmbH. All rights reserved
+// Copyright (c) 2021 Technosoftware GmbH. All rights reserved
 // Web: https://technosoftware.com 
 // 
 // License: 
@@ -25,7 +25,7 @@
 //
 // SPDX-License-Identifier: MIT
 //-----------------------------------------------------------------------------
-#endregion Copyright (c) 2011-2020 Technosoftware GmbH. All rights reserved
+#endregion Copyright (c) 2021 Technosoftware GmbH. All rights reserved
 
 #region Using Directives
 using System;
@@ -37,6 +37,7 @@ using Mono.Options;
 
 using Opc.Ua;
 
+using Technosoftware.UaServer;
 using Technosoftware.UaServer.Sessions;
 #endregion
 
@@ -188,7 +189,7 @@ namespace Technosoftware.ModelDesignServer
         }
         #endregion
 
-        #region Task handling the different OPC UA sample cases
+        #region Task handling the startup of the OPC UA Server
         private async Task ConsoleSampleServer()
         {
             // start the server.

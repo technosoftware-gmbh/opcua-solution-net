@@ -45,7 +45,7 @@ namespace Technosoftware.ModelDesignServer
     /// <summary>
     /// OPC Server Configuration and IO Handling
     ///
-    /// This C# based plugin for the OPC UA Server SDK .NET shows a base 
+    /// This C# based plugin for the OPC UA Server .NET shows a base 
     /// OPC UA server implementation. At startup items with several 
     /// data types and access rights are statically defined. 
     /// </summary>
@@ -132,7 +132,7 @@ namespace Technosoftware.ModelDesignServer
 
         #region General Methods (not related to an OPC specification)
         //---------------------------------------------------------------------
-        // OPC UA Server SDK .NET Interface 
+        // OPC UA Server .NET Interface 
         // (Called by the generic server)
         //---------------------------------------------------------------------
 
@@ -140,7 +140,7 @@ namespace Technosoftware.ModelDesignServer
         /// This method is called from the generic server to get the license information. 
         /// </summary>
         /// <param name="serialNumber">Serial Number</param>
-        /// <remarks>Returning empty strings activates the evaluation version of the OPC UA Server SDK .NET. The evaluation allows the usage of the full product for 30 days.</remarks>
+        /// <remarks>Returning empty strings activates the evaluation version of the OPC UA Server .NET. The evaluation allows the usage of the full product for 30 days.</remarks>
         public void OnGetLicenseInformation(out string serialNumber)
         {
             serialNumber = "";
@@ -232,7 +232,7 @@ namespace Technosoftware.ModelDesignServer
 
         #region Core Server Facet Methods
         //---------------------------------------------------------------------
-        // OPC UA Server SDK .NET Interface 
+        // OPC UA Server .NET Interface 
         // (Called by the generic server)
         //---------------------------------------------------------------------
 

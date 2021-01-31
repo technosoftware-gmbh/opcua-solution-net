@@ -28,15 +28,14 @@
 #endregion Copyright (c) 2011-2020 Technosoftware GmbH. All rights reserved
 
 #region Using Directives
-
 using System;
 using System.Diagnostics;
+using System.Reflection;
 
 using Opc.Ua;
 
 using Technosoftware.UaServer;
 using Technosoftware.UaServer.Sessions;
-
 #endregion
 
 namespace Technosoftware.ModelDesignServer
@@ -106,6 +105,15 @@ namespace Technosoftware.ModelDesignServer
             base.OnServerStopping();
         }
 
+        /// <summary>
+        /// Adds all encodeable types to the server.
+        /// </summary>
+        /// <param name="uaServerData">The uaServerData data implementing the IUaServerData interface.</param>
+        public override void AddEncodeableTypes(IUaServerData uaServerData)
+        {
+            // add the types defined in the information model library to the factory.
+            uaServerData.Factory.AddEncodeableTypes(GetType().GetTypeInfo().Assembly);
+        }
         #endregion
 
         #region User Validation Functions
