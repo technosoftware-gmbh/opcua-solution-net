@@ -54,6 +54,15 @@ namespace SampleCompany.SampleServer
     public class SampleServer : UaBaseServer
     {
         #region Overridden Methods
+        /// <summary>
+        /// Adds all encodeable types to the server.
+        /// </summary>
+        /// <param name="uaServerData">The uaServerData data implementing the IUaServerData interface.</param>
+        public override void AddEncodeableTypes(IUaServerData uaServerData)
+        {
+            // add the types defined in the information model library to the factory.
+            uaServerData.Factory.AddEncodeableTypes(GetType().GetTypeInfo().Assembly);
+        }
         #endregion
     }
 }

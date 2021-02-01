@@ -1,0 +1,354 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<UANodeSet xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd">
+  <NamespaceUris>
+    <Uri>http://samplecompany.com/SampleServer/Model</Uri>
+  </NamespaceUris>
+  <Models>
+    <Model ModelUri="http://samplecompany.com/SampleServer/Model">
+      <RequiredModel ModelUri="http://opcfoundation.org/UA/" Version="1.04.7" PublicationDate="2020-07-15T00:00:00Z" />
+    </Model>
+  </Models>
+  <Aliases>
+    <Alias Alias="Boolean">i=1</Alias>
+    <Alias Alias="SByte">i=2</Alias>
+    <Alias Alias="Byte">i=3</Alias>
+    <Alias Alias="Int16">i=4</Alias>
+    <Alias Alias="UInt16">i=5</Alias>
+    <Alias Alias="Int32">i=6</Alias>
+    <Alias Alias="UInt32">i=7</Alias>
+    <Alias Alias="Int64">i=8</Alias>
+    <Alias Alias="UInt64">i=9</Alias>
+    <Alias Alias="Float">i=10</Alias>
+    <Alias Alias="Double">i=11</Alias>
+    <Alias Alias="DateTime">i=13</Alias>
+    <Alias Alias="String">i=12</Alias>
+    <Alias Alias="ByteString">i=15</Alias>
+    <Alias Alias="Guid">i=14</Alias>
+    <Alias Alias="XmlElement">i=16</Alias>
+    <Alias Alias="NodeId">i=17</Alias>
+    <Alias Alias="ExpandedNodeId">i=18</Alias>
+    <Alias Alias="QualifiedName">i=20</Alias>
+    <Alias Alias="LocalizedText">i=21</Alias>
+    <Alias Alias="StatusCode">i=19</Alias>
+    <Alias Alias="Structure">i=22</Alias>
+    <Alias Alias="Number">i=26</Alias>
+    <Alias Alias="Integer">i=27</Alias>
+    <Alias Alias="UInteger">i=28</Alias>
+    <Alias Alias="HasComponent">i=47</Alias>
+    <Alias Alias="HasProperty">i=46</Alias>
+    <Alias Alias="Organizes">i=35</Alias>
+    <Alias Alias="HasEventSource">i=36</Alias>
+    <Alias Alias="HasNotifier">i=48</Alias>
+    <Alias Alias="HasSubtype">i=45</Alias>
+    <Alias Alias="HasTypeDefinition">i=40</Alias>
+    <Alias Alias="HasModellingRule">i=37</Alias>
+    <Alias Alias="HasEncoding">i=38</Alias>
+    <Alias Alias="HasDescription">i=39</Alias>
+  </Aliases>
+  <UAObjectType NodeId="ns=1;i=1" BrowseName="1:MachineInfoType">
+    <DisplayName>MachineInfoType</DisplayName>
+    <References>
+      <Reference ReferenceType="HasProperty">ns=1;i=2</Reference>
+      <Reference ReferenceType="HasProperty">ns=1;i=3</Reference>
+      <Reference ReferenceType="HasProperty">ns=1;i=4</Reference>
+      <Reference ReferenceType="HasProperty">ns=1;i=5</Reference>
+      <Reference ReferenceType="HasProperty">ns=1;i=6</Reference>
+      <Reference ReferenceType="HasSubtype" IsForward="false">i=58</Reference>
+    </References>
+  </UAObjectType>
+  <UAVariable NodeId="ns=1;i=2" BrowseName="1:MachineName" ParentNodeId="ns=1;i=1" DataType="String">
+    <DisplayName>MachineName</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=1</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;i=3" BrowseName="1:Manufacturer" ParentNodeId="ns=1;i=1" DataType="String">
+    <DisplayName>Manufacturer</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=1</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;i=4" BrowseName="1:SerialNumber" ParentNodeId="ns=1;i=1" DataType="String">
+    <DisplayName>SerialNumber</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=1</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;i=5" BrowseName="1:IsProducing" ParentNodeId="ns=1;i=1" DataType="Boolean" AccessLevel="3">
+    <DisplayName>IsProducing</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=1</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;i=6" BrowseName="1:MachineState" ParentNodeId="ns=1;i=1" DataType="UInt32" AccessLevel="3">
+    <DisplayName>MachineState</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=1</Reference>
+    </References>
+  </UAVariable>
+  <UAObjectType NodeId="ns=1;i=7" BrowseName="1:GenericControllerType">
+    <DisplayName>GenericControllerType</DisplayName>
+    <References>
+      <Reference ReferenceType="HasComponent">ns=1;i=8</Reference>
+      <Reference ReferenceType="HasComponent">ns=1;i=14</Reference>
+      <Reference ReferenceType="HasSubtype" IsForward="false">i=58</Reference>
+    </References>
+  </UAObjectType>
+  <UAVariable NodeId="ns=1;i=8" BrowseName="1:SetPoint" ParentNodeId="ns=1;i=7" DataType="Double" AccessLevel="3">
+    <DisplayName>SetPoint</DisplayName>
+    <References>
+      <Reference ReferenceType="HasProperty">ns=1;i=12</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=2368</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;i=12" BrowseName="EURange" ParentNodeId="ns=1;i=8" DataType="i=884">
+    <DisplayName>EURange</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=8</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;i=14" BrowseName="1:Measurement" ParentNodeId="ns=1;i=7" DataType="Double">
+    <DisplayName>Measurement</DisplayName>
+    <References>
+      <Reference ReferenceType="HasProperty">ns=1;i=18</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=2368</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;i=18" BrowseName="EURange" ParentNodeId="ns=1;i=14" DataType="i=884">
+    <DisplayName>EURange</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=14</Reference>
+    </References>
+  </UAVariable>
+  <UAObjectType NodeId="ns=1;i=20" BrowseName="1:FlowControllerType">
+    <DisplayName>FlowControllerType</DisplayName>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">ns=1;i=7</Reference>
+    </References>
+  </UAObjectType>
+  <UAObjectType NodeId="ns=1;i=33" BrowseName="1:LevelControllerType">
+    <DisplayName>LevelControllerType</DisplayName>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">ns=1;i=7</Reference>
+    </References>
+  </UAObjectType>
+  <UAObjectType NodeId="ns=1;i=46" BrowseName="1:TemperatureControllerType">
+    <DisplayName>TemperatureControllerType</DisplayName>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">ns=1;i=7</Reference>
+    </References>
+  </UAObjectType>
+  <UAObjectType NodeId="ns=1;i=59" BrowseName="1:MachineType">
+    <DisplayName>MachineType</DisplayName>
+    <References>
+      <Reference ReferenceType="HasComponent">ns=1;i=60</Reference>
+      <Reference ReferenceType="HasComponent">ns=1;i=66</Reference>
+      <Reference ReferenceType="HasComponent">ns=1;i=79</Reference>
+      <Reference ReferenceType="HasComponent">ns=1;i=92</Reference>
+      <Reference ReferenceType="HasSubtype" IsForward="false">i=58</Reference>
+    </References>
+  </UAObjectType>
+  <UAObject NodeId="ns=1;i=60" BrowseName="1:MachineInfo" ParentNodeId="ns=1;i=59">
+    <DisplayName>MachineInfo</DisplayName>
+    <References>
+      <Reference ReferenceType="HasProperty">ns=1;i=61</Reference>
+      <Reference ReferenceType="HasProperty">ns=1;i=62</Reference>
+      <Reference ReferenceType="HasProperty">ns=1;i=63</Reference>
+      <Reference ReferenceType="HasProperty">ns=1;i=64</Reference>
+      <Reference ReferenceType="HasProperty">ns=1;i=65</Reference>
+      <Reference ReferenceType="HasTypeDefinition">ns=1;i=1</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=59</Reference>
+    </References>
+  </UAObject>
+  <UAVariable NodeId="ns=1;i=61" BrowseName="1:MachineName" ParentNodeId="ns=1;i=60" DataType="String">
+    <DisplayName>MachineName</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=60</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;i=62" BrowseName="1:Manufacturer" ParentNodeId="ns=1;i=60" DataType="String">
+    <DisplayName>Manufacturer</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=60</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;i=63" BrowseName="1:SerialNumber" ParentNodeId="ns=1;i=60" DataType="String">
+    <DisplayName>SerialNumber</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=60</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;i=64" BrowseName="1:IsProducing" ParentNodeId="ns=1;i=60" DataType="Boolean" AccessLevel="3">
+    <DisplayName>IsProducing</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=60</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;i=65" BrowseName="1:MachineState" ParentNodeId="ns=1;i=60" DataType="UInt32" AccessLevel="3">
+    <DisplayName>MachineState</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=60</Reference>
+    </References>
+  </UAVariable>
+  <UAObject NodeId="ns=1;i=66" BrowseName="1:Temperature" ParentNodeId="ns=1;i=59">
+    <DisplayName>Temperature</DisplayName>
+    <References>
+      <Reference ReferenceType="HasComponent">ns=1;i=67</Reference>
+      <Reference ReferenceType="HasComponent">ns=1;i=73</Reference>
+      <Reference ReferenceType="HasTypeDefinition">ns=1;i=46</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=59</Reference>
+    </References>
+  </UAObject>
+  <UAVariable NodeId="ns=1;i=67" BrowseName="1:SetPoint" ParentNodeId="ns=1;i=66" DataType="Double" AccessLevel="3">
+    <DisplayName>SetPoint</DisplayName>
+    <References>
+      <Reference ReferenceType="HasProperty">ns=1;i=71</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=2368</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=66</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;i=71" BrowseName="EURange" ParentNodeId="ns=1;i=67" DataType="i=884">
+    <DisplayName>EURange</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=67</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;i=73" BrowseName="1:Measurement" ParentNodeId="ns=1;i=66" DataType="Double">
+    <DisplayName>Measurement</DisplayName>
+    <References>
+      <Reference ReferenceType="HasProperty">ns=1;i=77</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=2368</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=66</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;i=77" BrowseName="EURange" ParentNodeId="ns=1;i=73" DataType="i=884">
+    <DisplayName>EURange</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=73</Reference>
+    </References>
+  </UAVariable>
+  <UAObject NodeId="ns=1;i=79" BrowseName="1:Flow" ParentNodeId="ns=1;i=59">
+    <DisplayName>Flow</DisplayName>
+    <References>
+      <Reference ReferenceType="HasComponent">ns=1;i=80</Reference>
+      <Reference ReferenceType="HasComponent">ns=1;i=86</Reference>
+      <Reference ReferenceType="HasTypeDefinition">ns=1;i=20</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=59</Reference>
+    </References>
+  </UAObject>
+  <UAVariable NodeId="ns=1;i=80" BrowseName="1:SetPoint" ParentNodeId="ns=1;i=79" DataType="Double" AccessLevel="3">
+    <DisplayName>SetPoint</DisplayName>
+    <References>
+      <Reference ReferenceType="HasProperty">ns=1;i=84</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=2368</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=79</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;i=84" BrowseName="EURange" ParentNodeId="ns=1;i=80" DataType="i=884">
+    <DisplayName>EURange</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=80</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;i=86" BrowseName="1:Measurement" ParentNodeId="ns=1;i=79" DataType="Double">
+    <DisplayName>Measurement</DisplayName>
+    <References>
+      <Reference ReferenceType="HasProperty">ns=1;i=90</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=2368</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=79</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;i=90" BrowseName="EURange" ParentNodeId="ns=1;i=86" DataType="i=884">
+    <DisplayName>EURange</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=86</Reference>
+    </References>
+  </UAVariable>
+  <UAObject NodeId="ns=1;i=92" BrowseName="1:Level" ParentNodeId="ns=1;i=59">
+    <DisplayName>Level</DisplayName>
+    <References>
+      <Reference ReferenceType="HasComponent">ns=1;i=93</Reference>
+      <Reference ReferenceType="HasComponent">ns=1;i=99</Reference>
+      <Reference ReferenceType="HasTypeDefinition">ns=1;i=33</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=59</Reference>
+    </References>
+  </UAObject>
+  <UAVariable NodeId="ns=1;i=93" BrowseName="1:SetPoint" ParentNodeId="ns=1;i=92" DataType="Double" AccessLevel="3">
+    <DisplayName>SetPoint</DisplayName>
+    <References>
+      <Reference ReferenceType="HasProperty">ns=1;i=97</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=2368</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=92</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;i=97" BrowseName="EURange" ParentNodeId="ns=1;i=93" DataType="i=884">
+    <DisplayName>EURange</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=93</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;i=99" BrowseName="1:Measurement" ParentNodeId="ns=1;i=92" DataType="Double">
+    <DisplayName>Measurement</DisplayName>
+    <References>
+      <Reference ReferenceType="HasProperty">ns=1;i=103</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=2368</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=92</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;i=103" BrowseName="EURange" ParentNodeId="ns=1;i=99" DataType="i=884">
+    <DisplayName>EURange</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=99</Reference>
+    </References>
+  </UAVariable>
+</UANodeSet>

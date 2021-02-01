@@ -137,6 +137,39 @@ namespace SampleCompany.SampleServer
         #region INodeIdFactory Members
         #endregion
 
+        #region Overridden Methods
+        /// <summary>
+        /// Loads a node set from a file or resource and address them to the set of predefined nodes.
+        /// </summary>
+        protected override NodeStateCollection LoadPredefinedNodes(ISystemContext context)
+        {
+            // We know the model name to load but because this project is compiled for different environments we don't know
+            // the assembly it is in. Therefor we search for it:
+            var assembly = this.GetType().GetTypeInfo().Assembly;
+            var names = assembly.GetManifestResourceNames();
+            var resourcePath = String.Empty;
+
+            foreach (var module in names)
+            {
+                if (module.Contains("SampleCompany.SampleServer.Model.PredefinedNodes.uanodes"))
+                {
+                    resourcePath = module;
+                    break;
+                }
+            }
+
+            if (resourcePath == String.Empty)
+            {
+                // No assembly found containing the nodes of the model. Behaviour here can differ but in this case we just return null.
+                return null;
+            }
+
+            var predefinedNodes = new NodeStateCollection();
+            predefinedNodes.LoadFromBinaryResource(context, resourcePath, assembly, true);
+            return predefinedNodes;
+        }
+        #endregion
+
         #region IUaNodeManager Methods
         /// <summary>
         /// Does any initialization required before the address space can be used.
@@ -188,6 +221,39 @@ namespace SampleCompany.SampleServer
                     enabledVariable.OnSimpleWriteValue = OnWriteEnabled;
                     #endregion
 
+                    #region Plant
+                    var plantFolder = CreateFolderState(root, "Plant", "Plant", null);
+                    var machine1 = new Model.MachineState(null);
+                    var pnd1 = new ParsedNodeId() { NamespaceIndex = NamespaceIndex, RootId = "Machine #1" };
+
+                    machine1.Create(
+                        SystemContext,
+                        pnd1.Construct(),
+                        new QualifiedName("Machine #1", NamespaceIndex),
+                        null,
+                        true);
+
+                    machine1.AddReference(ReferenceTypeIds.Organizes, true, plantFolder.NodeId);
+                    plantFolder.AddReference(ReferenceTypeIds.Organizes, false, machine1.NodeId);
+
+                    AddPredefinedNode(SystemContext, machine1);
+
+                    var machine2 = new Model.MachineState(null);
+                    var pnd2 = new ParsedNodeId() { NamespaceIndex = NamespaceIndex, RootId = "Machine #2" };
+
+                    machine2.Create(
+                        SystemContext,
+                        pnd2.Construct(),
+                        new QualifiedName("Machine #2", NamespaceIndex),
+                        null,
+                        true);
+
+                    machine2.AddReference(ReferenceTypeIds.Organizes, true, plantFolder.NodeId);
+                    plantFolder.AddReference(ReferenceTypeIds.Organizes, false, machine2.NodeId);
+
+                    AddPredefinedNode(SystemContext, machine2);
+
+                    #endregion
                 }
                 catch (Exception e)
                 {
