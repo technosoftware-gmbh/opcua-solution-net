@@ -18,9 +18,8 @@ addons:
 script:  
   - echo "----- Restore OPC UA Solution .NET Samples ------"
   - dotnet restore "NetCoreSamples.sln"
+  - dotnet restore "TutorialSamples.sln"
   - echo "----- Build OPC UA Solution .NET Samples --------"
-#  - dotnet build -c Debug "examples/Reference/ReferenceServer/Technosoftware.ReferenceServer.csproj"
-#  - dotnet build -c Release "examples/Reference/ReferenceServer/Technosoftware.ReferenceServer.csproj"
   - dotnet build -c Debug examples/Workshop/SimpleClient/Technosoftware.SimpleClient.csproj
   - dotnet build -c Release examples/Workshop/SimpleClient/Technosoftware.SimpleClient.csproj
   - dotnet build -c Debug examples/Workshop/ModelDesignClient/Technosoftware.ModelDesignClient.csproj
@@ -29,6 +28,11 @@ script:
   - dotnet build -c Release examples/Workshop/SimpleServer/Technosoftware.SimpleServer.csproj 
   - dotnet build -c Debug examples/Workshop/ModelDesignServer/Technosoftware.ModelDesignServer.csproj
   - dotnet build -c Release examples/Workshop/ModelDesignServer/Technosoftware.ModelDesignServer.csproj 
+  - echo "----- Build OPC UA Solution .NET Tutorials ------"
+  - dotnet build -c Debug examples/Empty/EmptyServer/EmptyCompany.EmptyServer.csproj
+  - dotnet build -c Release examples/Empty/EmptyServer/EmptyCompany.EmptyServer.csproj
+  - dotnet build -c Debug examples/Base/SampleServer/SampleCompany.SampleServer.csproj
+  - dotnet build -c Release examples/Base/SampleServer/SampleCompany.SampleServer.csproj
 
   - echo "----- Run .NET Core samples ---------------------"
   - cd examples/Workshop/ModelDesignServer/bin/Debug/netcoreapp3.1

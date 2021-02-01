@@ -28,7 +28,6 @@
 #endregion Copyright (c) 2011-2020 Technosoftware GmbH. All rights reserved
 
 #region Using Directives
-
 using System;
 using System.Diagnostics;
 
@@ -36,7 +35,6 @@ using Opc.Ua;
 
 using Technosoftware.UaServer;
 using Technosoftware.UaServer.Sessions;
-
 #endregion
 
 namespace Technosoftware.SimpleServer
@@ -106,7 +104,6 @@ namespace Technosoftware.SimpleServer
 
             base.OnServerStopping();
         }
-
         #endregion
 
         #region User Validation Functions
