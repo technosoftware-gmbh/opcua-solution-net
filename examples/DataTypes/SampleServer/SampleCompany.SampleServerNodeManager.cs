@@ -235,7 +235,7 @@ namespace SampleCompany.SampleServer
 
                     machine1.AddReference(ReferenceTypeIds.Organizes, true, plantFolder.NodeId);
                     plantFolder.AddReference(ReferenceTypeIds.Organizes, false, machine1.NodeId);
-
+                    machine1.GetMachineData.OnCall = OnGetMachineDataMachine1;
                     AddPredefinedNode(SystemContext, machine1);
 
                     var machine2 = new Model.MachineState(null);
@@ -247,12 +247,13 @@ namespace SampleCompany.SampleServer
                         new QualifiedName("Machine #2", NamespaceIndex),
                         null,
                         true);
-
+                    machine2.GetMachineData.OnCall = OnGetMachineDataMachine2;
+                    
                     machine2.AddReference(ReferenceTypeIds.Organizes, true, plantFolder.NodeId);
                     plantFolder.AddReference(ReferenceTypeIds.Organizes, false, machine2.NodeId);
 
                     AddPredefinedNode(SystemContext, machine2);
-
+                    
                     #endregion
                 }
                 catch (Exception e)
@@ -301,6 +302,28 @@ namespace SampleCompany.SampleServer
                 Utils.Trace(e, "Error writing Enabled variable.");
                 return ServiceResult.Create(e, StatusCodes.Bad, "Error writing Enabled variable.");
             }
+        }
+
+        private ServiceResult OnGetMachineDataMachine1(ISystemContext context, MethodState method, NodeId objectid, ref string machinename, ref string manufacturer, ref string serialnumber, ref bool isproducing, ref uint machinestate)
+        {
+            machinename = "Machine #1";
+            manufacturer = "SampleCompany";
+            serialnumber = "SN 1079";
+            isproducing = true;
+            machinestate = 8;
+
+            return ServiceResult.Good;
+        }
+
+        private ServiceResult OnGetMachineDataMachine2(ISystemContext context, MethodState method, NodeId objectid, ref string machinename, ref string manufacturer, ref string serialnumber, ref bool isproducing, ref uint machinestate)
+        {
+            machinename = "Machine #2";
+            manufacturer = "SampleCompany";
+            serialnumber = "SN 1083";
+            isproducing = false;
+            machinestate = 1;
+
+            return ServiceResult.Good;
         }
         #endregion
 

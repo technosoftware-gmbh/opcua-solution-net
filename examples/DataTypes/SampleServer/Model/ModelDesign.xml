@@ -20,17 +20,18 @@
 
   <!-- Create Types -->
 
-  <!--ObjectTypes -->
-  <opc:ObjectType SymbolicName="MachineInfoType" BaseType="ua:BaseObjectType">
-    <opc:Children>
-      <opc:Property SymbolicName="MachineName" DataType="ua:String"></opc:Property>
-      <opc:Property SymbolicName="Manufacturer" DataType="ua:String"></opc:Property>
-      <opc:Property SymbolicName="SerialNumber" DataType="ua:String"></opc:Property>
-      <opc:Property SymbolicName="IsProducing" DataType="ua:Boolean" AccessLevel="ReadWrite"></opc:Property>
-      <opc:Property SymbolicName="MachineState" DataType="ua:UInt32" AccessLevel="ReadWrite"></opc:Property>
-    </opc:Children>
-  </opc:ObjectType>
+  <!-- MethodTypes -->
+  <opc:Method SymbolicName="GetMachineDataMethodType">
+    <opc:OutputArguments>
+      <opc:Argument Name="MachineName" DataType="ua:String"></opc:Argument>
+      <opc:Argument Name="Manufacturer" DataType="ua:String"></opc:Argument>
+      <opc:Argument Name="SerialNumber" DataType="ua:String"></opc:Argument>
+      <opc:Argument Name="IsProducing" DataType="ua:Boolean"></opc:Argument>
+      <opc:Argument Name="MachineState" DataType="ua:UInt32"></opc:Argument>
+    </opc:OutputArguments>
+  </opc:Method>
 
+  <!--ObjectTypes -->
   <opc:ObjectType SymbolicName="GenericControllerType" BaseType="ua:BaseObjectType">
     <opc:Children>
       <opc:Variable SymbolicName="SetPoint" DataType="ua:Double" TypeDefinition="ua:AnalogItemType" AccessLevel="ReadWrite"></opc:Variable>
@@ -44,10 +45,10 @@
 
   <opc:ObjectType SymbolicName="MachineType" BaseType="ua:BaseObjectType">
     <opc:Children>
-      <opc:Object SymbolicName="MachineInfo" TypeDefinition="MachineInfoType"></opc:Object>
       <opc:Object SymbolicName="Temperature" TypeDefinition="TemperatureControllerType"></opc:Object>
       <opc:Object SymbolicName="Flow" TypeDefinition="FlowControllerType"></opc:Object>
       <opc:Object SymbolicName="Level" TypeDefinition="LevelControllerType"></opc:Object>
+      <opc:Method SymbolicName="GetMachineData" TypeDefinition="GetMachineDataMethodType"></opc:Method>
     </opc:Children>
   </opc:ObjectType>
 

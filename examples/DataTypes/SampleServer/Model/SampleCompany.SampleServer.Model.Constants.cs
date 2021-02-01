@@ -37,6 +37,21 @@ using Opc.Ua;
 
 namespace SampleCompany.SampleServer.Model
 {
+    #region Method Identifiers
+    /// <summary>
+    /// A class that declares constants for all Methods in the Model Design.
+    /// </summary>
+    /// <exclude />
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
+    public static partial class Methods
+    {
+        /// <summary>
+        /// The identifier for the MachineType_GetMachineData Method.
+        /// </summary>
+        public const uint MachineType_GetMachineData = 107;
+    }
+    #endregion
+
     #region Object Identifiers
     /// <summary>
     /// A class that declares constants for all Objects in the Model Design.
@@ -45,11 +60,6 @@ namespace SampleCompany.SampleServer.Model
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
     public static partial class Objects
     {
-        /// <summary>
-        /// The identifier for the MachineType_MachineInfo Object.
-        /// </summary>
-        public const uint MachineType_MachineInfo = 60;
-
         /// <summary>
         /// The identifier for the MachineType_Temperature Object.
         /// </summary>
@@ -75,11 +85,6 @@ namespace SampleCompany.SampleServer.Model
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
     public static partial class ObjectTypes
     {
-        /// <summary>
-        /// The identifier for the MachineInfoType ObjectType.
-        /// </summary>
-        public const uint MachineInfoType = 1;
-
         /// <summary>
         /// The identifier for the GenericControllerType ObjectType.
         /// </summary>
@@ -115,31 +120,6 @@ namespace SampleCompany.SampleServer.Model
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
     public static partial class Variables
     {
-        /// <summary>
-        /// The identifier for the MachineInfoType_MachineName Variable.
-        /// </summary>
-        public const uint MachineInfoType_MachineName = 2;
-
-        /// <summary>
-        /// The identifier for the MachineInfoType_Manufacturer Variable.
-        /// </summary>
-        public const uint MachineInfoType_Manufacturer = 3;
-
-        /// <summary>
-        /// The identifier for the MachineInfoType_SerialNumber Variable.
-        /// </summary>
-        public const uint MachineInfoType_SerialNumber = 4;
-
-        /// <summary>
-        /// The identifier for the MachineInfoType_IsProducing Variable.
-        /// </summary>
-        public const uint MachineInfoType_IsProducing = 5;
-
-        /// <summary>
-        /// The identifier for the MachineInfoType_MachineState Variable.
-        /// </summary>
-        public const uint MachineInfoType_MachineState = 6;
-
         /// <summary>
         /// The identifier for the GenericControllerType_SetPoint Variable.
         /// </summary>
@@ -189,31 +169,6 @@ namespace SampleCompany.SampleServer.Model
         /// The identifier for the TemperatureControllerType_Measurement_EURange Variable.
         /// </summary>
         public const uint TemperatureControllerType_Measurement_EURange = 57;
-
-        /// <summary>
-        /// The identifier for the MachineType_MachineInfo_MachineName Variable.
-        /// </summary>
-        public const uint MachineType_MachineInfo_MachineName = 61;
-
-        /// <summary>
-        /// The identifier for the MachineType_MachineInfo_Manufacturer Variable.
-        /// </summary>
-        public const uint MachineType_MachineInfo_Manufacturer = 62;
-
-        /// <summary>
-        /// The identifier for the MachineType_MachineInfo_SerialNumber Variable.
-        /// </summary>
-        public const uint MachineType_MachineInfo_SerialNumber = 63;
-
-        /// <summary>
-        /// The identifier for the MachineType_MachineInfo_IsProducing Variable.
-        /// </summary>
-        public const uint MachineType_MachineInfo_IsProducing = 64;
-
-        /// <summary>
-        /// The identifier for the MachineType_MachineInfo_MachineState Variable.
-        /// </summary>
-        public const uint MachineType_MachineInfo_MachineState = 65;
 
         /// <summary>
         /// The identifier for the MachineType_Temperature_SetPoint Variable.
@@ -274,6 +229,26 @@ namespace SampleCompany.SampleServer.Model
         /// The identifier for the MachineType_Level_Measurement_EURange Variable.
         /// </summary>
         public const uint MachineType_Level_Measurement_EURange = 103;
+
+        /// <summary>
+        /// The identifier for the MachineType_GetMachineData_OutputArguments Variable.
+        /// </summary>
+        public const uint MachineType_GetMachineData_OutputArguments = 108;
+    }
+    #endregion
+
+    #region Method Node Identifiers
+    /// <summary>
+    /// A class that declares constants for all Methods in the Model Design.
+    /// </summary>
+    /// <exclude />
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
+    public static partial class MethodIds
+    {
+        /// <summary>
+        /// The identifier for the MachineType_GetMachineData Method.
+        /// </summary>
+        public static readonly ExpandedNodeId MachineType_GetMachineData = new ExpandedNodeId(SampleCompany.SampleServer.Model.Methods.MachineType_GetMachineData, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
     }
     #endregion
 
@@ -285,11 +260,6 @@ namespace SampleCompany.SampleServer.Model
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
     public static partial class ObjectIds
     {
-        /// <summary>
-        /// The identifier for the MachineType_MachineInfo Object.
-        /// </summary>
-        public static readonly ExpandedNodeId MachineType_MachineInfo = new ExpandedNodeId(SampleCompany.SampleServer.Model.Objects.MachineType_MachineInfo, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
-
         /// <summary>
         /// The identifier for the MachineType_Temperature Object.
         /// </summary>
@@ -315,11 +285,6 @@ namespace SampleCompany.SampleServer.Model
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
     public static partial class ObjectTypeIds
     {
-        /// <summary>
-        /// The identifier for the MachineInfoType ObjectType.
-        /// </summary>
-        public static readonly ExpandedNodeId MachineInfoType = new ExpandedNodeId(SampleCompany.SampleServer.Model.ObjectTypes.MachineInfoType, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
-
         /// <summary>
         /// The identifier for the GenericControllerType ObjectType.
         /// </summary>
@@ -355,31 +320,6 @@ namespace SampleCompany.SampleServer.Model
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
     public static partial class VariableIds
     {
-        /// <summary>
-        /// The identifier for the MachineInfoType_MachineName Variable.
-        /// </summary>
-        public static readonly ExpandedNodeId MachineInfoType_MachineName = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.MachineInfoType_MachineName, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
-
-        /// <summary>
-        /// The identifier for the MachineInfoType_Manufacturer Variable.
-        /// </summary>
-        public static readonly ExpandedNodeId MachineInfoType_Manufacturer = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.MachineInfoType_Manufacturer, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
-
-        /// <summary>
-        /// The identifier for the MachineInfoType_SerialNumber Variable.
-        /// </summary>
-        public static readonly ExpandedNodeId MachineInfoType_SerialNumber = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.MachineInfoType_SerialNumber, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
-
-        /// <summary>
-        /// The identifier for the MachineInfoType_IsProducing Variable.
-        /// </summary>
-        public static readonly ExpandedNodeId MachineInfoType_IsProducing = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.MachineInfoType_IsProducing, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
-
-        /// <summary>
-        /// The identifier for the MachineInfoType_MachineState Variable.
-        /// </summary>
-        public static readonly ExpandedNodeId MachineInfoType_MachineState = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.MachineInfoType_MachineState, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
-
         /// <summary>
         /// The identifier for the GenericControllerType_SetPoint Variable.
         /// </summary>
@@ -429,31 +369,6 @@ namespace SampleCompany.SampleServer.Model
         /// The identifier for the TemperatureControllerType_Measurement_EURange Variable.
         /// </summary>
         public static readonly ExpandedNodeId TemperatureControllerType_Measurement_EURange = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.TemperatureControllerType_Measurement_EURange, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
-
-        /// <summary>
-        /// The identifier for the MachineType_MachineInfo_MachineName Variable.
-        /// </summary>
-        public static readonly ExpandedNodeId MachineType_MachineInfo_MachineName = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.MachineType_MachineInfo_MachineName, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
-
-        /// <summary>
-        /// The identifier for the MachineType_MachineInfo_Manufacturer Variable.
-        /// </summary>
-        public static readonly ExpandedNodeId MachineType_MachineInfo_Manufacturer = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.MachineType_MachineInfo_Manufacturer, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
-
-        /// <summary>
-        /// The identifier for the MachineType_MachineInfo_SerialNumber Variable.
-        /// </summary>
-        public static readonly ExpandedNodeId MachineType_MachineInfo_SerialNumber = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.MachineType_MachineInfo_SerialNumber, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
-
-        /// <summary>
-        /// The identifier for the MachineType_MachineInfo_IsProducing Variable.
-        /// </summary>
-        public static readonly ExpandedNodeId MachineType_MachineInfo_IsProducing = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.MachineType_MachineInfo_IsProducing, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
-
-        /// <summary>
-        /// The identifier for the MachineType_MachineInfo_MachineState Variable.
-        /// </summary>
-        public static readonly ExpandedNodeId MachineType_MachineInfo_MachineState = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.MachineType_MachineInfo_MachineState, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
         /// <summary>
         /// The identifier for the MachineType_Temperature_SetPoint Variable.
@@ -514,6 +429,11 @@ namespace SampleCompany.SampleServer.Model
         /// The identifier for the MachineType_Level_Measurement_EURange Variable.
         /// </summary>
         public static readonly ExpandedNodeId MachineType_Level_Measurement_EURange = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.MachineType_Level_Measurement_EURange, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
+
+        /// <summary>
+        /// The identifier for the MachineType_GetMachineData_OutputArguments Variable.
+        /// </summary>
+        public static readonly ExpandedNodeId MachineType_GetMachineData_OutputArguments = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.MachineType_GetMachineData_OutputArguments, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
     }
     #endregion
 
@@ -540,9 +460,9 @@ namespace SampleCompany.SampleServer.Model
         public const string GenericControllerType = "GenericControllerType";
 
         /// <summary>
-        /// The BrowseName for the IsProducing component.
+        /// The BrowseName for the GetMachineData component.
         /// </summary>
-        public const string IsProducing = "IsProducing";
+        public const string GetMachineData = "GetMachineData";
 
         /// <summary>
         /// The BrowseName for the Level component.
@@ -555,44 +475,14 @@ namespace SampleCompany.SampleServer.Model
         public const string LevelControllerType = "LevelControllerType";
 
         /// <summary>
-        /// The BrowseName for the MachineInfo component.
-        /// </summary>
-        public const string MachineInfo = "MachineInfo";
-
-        /// <summary>
-        /// The BrowseName for the MachineInfoType component.
-        /// </summary>
-        public const string MachineInfoType = "MachineInfoType";
-
-        /// <summary>
-        /// The BrowseName for the MachineName component.
-        /// </summary>
-        public const string MachineName = "MachineName";
-
-        /// <summary>
-        /// The BrowseName for the MachineState component.
-        /// </summary>
-        public const string MachineState = "MachineState";
-
-        /// <summary>
         /// The BrowseName for the MachineType component.
         /// </summary>
         public const string MachineType = "MachineType";
 
         /// <summary>
-        /// The BrowseName for the Manufacturer component.
-        /// </summary>
-        public const string Manufacturer = "Manufacturer";
-
-        /// <summary>
         /// The BrowseName for the Measurement component.
         /// </summary>
         public const string Measurement = "Measurement";
-
-        /// <summary>
-        /// The BrowseName for the SerialNumber component.
-        /// </summary>
-        public const string SerialNumber = "SerialNumber";
 
         /// <summary>
         /// The BrowseName for the SetPoint component.

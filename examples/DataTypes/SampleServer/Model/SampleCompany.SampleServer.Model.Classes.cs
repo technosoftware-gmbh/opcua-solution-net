@@ -36,29 +36,31 @@ using Opc.Ua;
 
 namespace SampleCompany.SampleServer.Model
 {
-    #region MachineInfoState Class
-    #if (!OPCUA_EXCLUDE_MachineInfoState)
+    #region GetMachineDataMethodState Class
+    #if (!OPCUA_EXCLUDE_GetMachineDataMethodState)
     /// <summary>
-    /// Stores an instance of the MachineInfoType ObjectType.
+    /// Stores an instance of the GetMachineDataMethodType Method.
     /// </summary>
     /// <exclude />
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
-    public partial class MachineInfoState : BaseObjectState
+    public partial class GetMachineDataMethodState : MethodState
     {
         #region Constructors
         /// <summary>
         /// Initializes the type with its default attribute values.
         /// </summary>
-        public MachineInfoState(NodeState parent) : base(parent)
+        public GetMachineDataMethodState(NodeState parent) : base(parent)
         {
         }
 
         /// <summary>
-        /// Returns the id of the default type definition node for the instance.
+        /// Constructs an instance of a node.
         /// </summary>
-        protected override NodeId GetDefaultTypeDefinitionId(NamespaceTable namespaceUris)
+        /// <param name="parent">The parent.</param>
+        /// <returns>The new node.</returns>
+        public new static NodeState Construct(NodeState parent)
         {
-            return Opc.Ua.NodeId.Create(SampleCompany.SampleServer.Model.ObjectTypes.MachineInfoType, SampleCompany.SampleServer.Model.Namespaces.SampleServer, namespaceUris);
+            return new GetMachineDataMethodState(parent);
         }
 
         #if (!OPCUA_EXCLUDE_InitializationStrings)
@@ -72,15 +74,6 @@ namespace SampleCompany.SampleServer.Model
         }
 
         /// <summary>
-        /// Initializes the instance with a node.
-        /// </summary>
-        protected override void Initialize(ISystemContext context, NodeState source)
-        {
-            InitializeOptionalChildren(context);
-            base.Initialize(context, source);
-        }
-
-        /// <summary>
         /// Initializes the any option children defined for the instance.
         /// </summary>
         protected override void InitializeOptionalChildren(ISystemContext context)
@@ -90,293 +83,90 @@ namespace SampleCompany.SampleServer.Model
 
         #region Initialization String
         private const string InitializationString =
-           "AQAAACsAAABodHRwOi8vc2FtcGxlY29tcGFueS5jb20vU2FtcGxlU2VydmVyL01vZGVs/////wRggAIB" +
-           "AAAAAQAXAAAATWFjaGluZUluZm9UeXBlSW5zdGFuY2UBAQEAAQEBAAEAAAD/////BQAAABVgiQoCAAAA" +
-           "AQALAAAATWFjaGluZU5hbWUBAQIAAC4ARAIAAAAADP////8BAf////8AAAAAFWCJCgIAAAABAAwAAABN" +
-           "YW51ZmFjdHVyZXIBAQMAAC4ARAMAAAAADP////8BAf////8AAAAAFWCJCgIAAAABAAwAAABTZXJpYWxO" +
-           "dW1iZXIBAQQAAC4ARAQAAAAADP////8BAf////8AAAAAFWCJCgIAAAABAAsAAABJc1Byb2R1Y2luZwEB" +
-           "BQAALgBEBQAAAAAB/////wMD/////wAAAAAVYIkKAgAAAAEADAAAAE1hY2hpbmVTdGF0ZQEBBgAALgBE" +
-           "BgAAAAAH/////wMD/////wAAAAA=";
+           "AQAAACsAAABodHRwOi8vc2FtcGxlY29tcGFueS5jb20vU2FtcGxlU2VydmVyL01vZGVs/////wRhggoE" +
+           "AAAAAQAYAAAAR2V0TWFjaGluZURhdGFNZXRob2RUeXBlAQFpAAAvAQFpAGkAAAABAf////8BAAAAF2Cp" +
+           "CgIAAAAAAA8AAABPdXRwdXRBcmd1bWVudHMBAWoAAC4ARGoAAACWBQAAAAEAKgEBGgAAAAsAAABNYWNo" +
+           "aW5lTmFtZQAM/////wAAAAAAAQAqAQEbAAAADAAAAE1hbnVmYWN0dXJlcgAM/////wAAAAAAAQAqAQEb" +
+           "AAAADAAAAFNlcmlhbE51bWJlcgAM/////wAAAAAAAQAqAQEaAAAACwAAAElzUHJvZHVjaW5nAAH/////" +
+           "AAAAAAABACoBARsAAAAMAAAATWFjaGluZVN0YXRlAAf/////AAAAAAABACgBAQAAAAEAAAAAAAAAAQH/" +
+           "////AAAAAA==";
         #endregion
         #endif
         #endregion
 
+        #region Event Callbacks
+        /// <summary>
+        /// Raised when the the method is called.
+        /// </summary>
+        public GetMachineDataMethodStateMethodCallHandler OnCall;
+        #endregion
+
         #region Public Properties
-        /// <remarks />
-        public PropertyState<string> MachineName
-        {
-            get
-            {
-                return m_machineName;
-            }
-
-            set
-            {
-                if (!Object.ReferenceEquals(m_machineName, value))
-                {
-                    ChangeMasks |= NodeStateChangeMasks.Children;
-                }
-
-                m_machineName = value;
-            }
-        }
-
-        /// <remarks />
-        public PropertyState<string> Manufacturer
-        {
-            get
-            {
-                return m_manufacturer;
-            }
-
-            set
-            {
-                if (!Object.ReferenceEquals(m_manufacturer, value))
-                {
-                    ChangeMasks |= NodeStateChangeMasks.Children;
-                }
-
-                m_manufacturer = value;
-            }
-        }
-
-        /// <remarks />
-        public PropertyState<string> SerialNumber
-        {
-            get
-            {
-                return m_serialNumber;
-            }
-
-            set
-            {
-                if (!Object.ReferenceEquals(m_serialNumber, value))
-                {
-                    ChangeMasks |= NodeStateChangeMasks.Children;
-                }
-
-                m_serialNumber = value;
-            }
-        }
-
-        /// <remarks />
-        public PropertyState<bool> IsProducing
-        {
-            get
-            {
-                return m_isProducing;
-            }
-
-            set
-            {
-                if (!Object.ReferenceEquals(m_isProducing, value))
-                {
-                    ChangeMasks |= NodeStateChangeMasks.Children;
-                }
-
-                m_isProducing = value;
-            }
-        }
-
-        /// <remarks />
-        public PropertyState<uint> MachineState
-        {
-            get
-            {
-                return m_machineState;
-            }
-
-            set
-            {
-                if (!Object.ReferenceEquals(m_machineState, value))
-                {
-                    ChangeMasks |= NodeStateChangeMasks.Children;
-                }
-
-                m_machineState = value;
-            }
-        }
         #endregion
 
         #region Overridden Methods
         /// <summary>
-        /// Populates a list with the children that belong to the node.
+        /// Invokes the method, returns the result and output argument.
         /// </summary>
-        /// <param name="context">The context for the system being accessed.</param>
-        /// <param name="children">The list of children to populate.</param>
-        public override void GetChildren(
-            ISystemContext context,
-            IList<BaseInstanceState> children)
+        protected override ServiceResult Call(
+            ISystemContext _context,
+            NodeId _objectId,
+            IList<object> _inputArguments,
+            IList<object> _outputArguments)
         {
-            if (m_machineName != null)
+            if (OnCall == null)
             {
-                children.Add(m_machineName);
+                return base.Call(_context, _objectId, _inputArguments, _outputArguments);
             }
 
-            if (m_manufacturer != null)
+            ServiceResult result = null;
+
+            string machineName = (string)_outputArguments[0];
+            string manufacturer = (string)_outputArguments[1];
+            string serialNumber = (string)_outputArguments[2];
+            bool isProducing = (bool)_outputArguments[3];
+            uint machineState = (uint)_outputArguments[4];
+
+            if (OnCall != null)
             {
-                children.Add(m_manufacturer);
+                result = OnCall(
+                    _context,
+                    this,
+                    _objectId,
+                    ref machineName,
+                    ref manufacturer,
+                    ref serialNumber,
+                    ref isProducing,
+                    ref machineState);
             }
 
-            if (m_serialNumber != null)
-            {
-                children.Add(m_serialNumber);
-            }
+            _outputArguments[0] = machineName;
+            _outputArguments[1] = manufacturer;
+            _outputArguments[2] = serialNumber;
+            _outputArguments[3] = isProducing;
+            _outputArguments[4] = machineState;
 
-            if (m_isProducing != null)
-            {
-                children.Add(m_isProducing);
-            }
-
-            if (m_machineState != null)
-            {
-                children.Add(m_machineState);
-            }
-
-            base.GetChildren(context, children);
-        }
-
-        /// <summary>
-        /// Finds the child with the specified browse name.
-        /// </summary>
-        protected override BaseInstanceState FindChild(
-            ISystemContext context,
-            QualifiedName browseName,
-            bool createOrReplace,
-            BaseInstanceState replacement)
-        {
-            if (QualifiedName.IsNull(browseName))
-            {
-                return null;
-            }
-
-            BaseInstanceState instance = null;
-
-            switch (browseName.Name)
-            {
-                case SampleCompany.SampleServer.Model.BrowseNames.MachineName:
-                {
-                    if (createOrReplace)
-                    {
-                        if (MachineName == null)
-                        {
-                            if (replacement == null)
-                            {
-                                MachineName = new PropertyState<string>(this);
-                            }
-                            else
-                            {
-                                MachineName = (PropertyState<string>)replacement;
-                            }
-                        }
-                    }
-
-                    instance = MachineName;
-                    break;
-                }
-
-                case SampleCompany.SampleServer.Model.BrowseNames.Manufacturer:
-                {
-                    if (createOrReplace)
-                    {
-                        if (Manufacturer == null)
-                        {
-                            if (replacement == null)
-                            {
-                                Manufacturer = new PropertyState<string>(this);
-                            }
-                            else
-                            {
-                                Manufacturer = (PropertyState<string>)replacement;
-                            }
-                        }
-                    }
-
-                    instance = Manufacturer;
-                    break;
-                }
-
-                case SampleCompany.SampleServer.Model.BrowseNames.SerialNumber:
-                {
-                    if (createOrReplace)
-                    {
-                        if (SerialNumber == null)
-                        {
-                            if (replacement == null)
-                            {
-                                SerialNumber = new PropertyState<string>(this);
-                            }
-                            else
-                            {
-                                SerialNumber = (PropertyState<string>)replacement;
-                            }
-                        }
-                    }
-
-                    instance = SerialNumber;
-                    break;
-                }
-
-                case SampleCompany.SampleServer.Model.BrowseNames.IsProducing:
-                {
-                    if (createOrReplace)
-                    {
-                        if (IsProducing == null)
-                        {
-                            if (replacement == null)
-                            {
-                                IsProducing = new PropertyState<bool>(this);
-                            }
-                            else
-                            {
-                                IsProducing = (PropertyState<bool>)replacement;
-                            }
-                        }
-                    }
-
-                    instance = IsProducing;
-                    break;
-                }
-
-                case SampleCompany.SampleServer.Model.BrowseNames.MachineState:
-                {
-                    if (createOrReplace)
-                    {
-                        if (MachineState == null)
-                        {
-                            if (replacement == null)
-                            {
-                                MachineState = new PropertyState<uint>(this);
-                            }
-                            else
-                            {
-                                MachineState = (PropertyState<uint>)replacement;
-                            }
-                        }
-                    }
-
-                    instance = MachineState;
-                    break;
-                }
-            }
-
-            if (instance != null)
-            {
-                return instance;
-            }
-
-            return base.FindChild(context, browseName, createOrReplace, replacement);
+            return result;
         }
         #endregion
 
         #region Private Fields
-        private PropertyState<string> m_machineName;
-        private PropertyState<string> m_manufacturer;
-        private PropertyState<string> m_serialNumber;
-        private PropertyState<bool> m_isProducing;
-        private PropertyState<uint> m_machineState;
         #endregion
     }
+
+    /// <summary>
+    /// Used to receive notifications when the method is called.
+    /// </summary>
+    /// <exclude />
+    public delegate ServiceResult GetMachineDataMethodStateMethodCallHandler(
+        ISystemContext context,
+        MethodState method,
+        NodeId objectId,
+        ref string machineName,
+        ref string manufacturer,
+        ref string serialNumber,
+        ref bool isProducing,
+        ref uint machineState);
     #endif
     #endregion
 
@@ -869,48 +659,29 @@ namespace SampleCompany.SampleServer.Model
         private const string InitializationString =
            "AQAAACsAAABodHRwOi8vc2FtcGxlY29tcGFueS5jb20vU2FtcGxlU2VydmVyL01vZGVs/////wRggAIB" +
            "AAAAAQATAAAATWFjaGluZVR5cGVJbnN0YW5jZQEBOwABATsAOwAAAP////8EAAAABGCACgEAAAABAAsA" +
-           "AABNYWNoaW5lSW5mbwEBPAAALwEBAQA8AAAA/////wUAAAAVYIkKAgAAAAEACwAAAE1hY2hpbmVOYW1l" +
-           "AQE9AAAuAEQ9AAAAAAz/////AQH/////AAAAABVgiQoCAAAAAQAMAAAATWFudWZhY3R1cmVyAQE+AAAu" +
-           "AEQ+AAAAAAz/////AQH/////AAAAABVgiQoCAAAAAQAMAAAAU2VyaWFsTnVtYmVyAQE/AAAuAEQ/AAAA" +
-           "AAz/////AQH/////AAAAABVgiQoCAAAAAQALAAAASXNQcm9kdWNpbmcBAUAAAC4AREAAAAAAAf////8D" +
-           "A/////8AAAAAFWCJCgIAAAABAAwAAABNYWNoaW5lU3RhdGUBAUEAAC4AREEAAAAAB/////8DA/////8A" +
-           "AAAABGCACgEAAAABAAsAAABUZW1wZXJhdHVyZQEBQgAALwEBLgBCAAAA/////wIAAAAVYIkKAgAAAAEA" +
-           "CAAAAFNldFBvaW50AQFDAAAvAQBACUMAAAAAC/////8DA/////8BAAAAFWCJCgIAAAAAAAcAAABFVVJh" +
-           "bmdlAQFHAAAuAERHAAAAAQB0A/////8BAf////8AAAAAFWCJCgIAAAABAAsAAABNZWFzdXJlbWVudAEB" +
-           "SQAALwEAQAlJAAAAAAv/////AQH/////AQAAABVgiQoCAAAAAAAHAAAARVVSYW5nZQEBTQAALgBETQAA" +
-           "AAEAdAP/////AQH/////AAAAAARggAoBAAAAAQAEAAAARmxvdwEBTwAALwEBFABPAAAA/////wIAAAAV" +
-           "YIkKAgAAAAEACAAAAFNldFBvaW50AQFQAAAvAQBACVAAAAAAC/////8DA/////8BAAAAFWCJCgIAAAAA" +
-           "AAcAAABFVVJhbmdlAQFUAAAuAERUAAAAAQB0A/////8BAf////8AAAAAFWCJCgIAAAABAAsAAABNZWFz" +
-           "dXJlbWVudAEBVgAALwEAQAlWAAAAAAv/////AQH/////AQAAABVgiQoCAAAAAAAHAAAARVVSYW5nZQEB" +
-           "WgAALgBEWgAAAAEAdAP/////AQH/////AAAAAARggAoBAAAAAQAFAAAATGV2ZWwBAVwAAC8BASEAXAAA" +
-           "AP////8CAAAAFWCJCgIAAAABAAgAAABTZXRQb2ludAEBXQAALwEAQAldAAAAAAv/////AwP/////AQAA" +
-           "ABVgiQoCAAAAAAAHAAAARVVSYW5nZQEBYQAALgBEYQAAAAEAdAP/////AQH/////AAAAABVgiQoCAAAA" +
-           "AQALAAAATWVhc3VyZW1lbnQBAWMAAC8BAEAJYwAAAAAL/////wEB/////wEAAAAVYIkKAgAAAAAABwAA" +
-           "AEVVUmFuZ2UBAWcAAC4ARGcAAAABAHQD/////wEB/////wAAAAA=";
+           "AABUZW1wZXJhdHVyZQEBQgAALwEBLgBCAAAA/////wIAAAAVYIkKAgAAAAEACAAAAFNldFBvaW50AQFD" +
+           "AAAvAQBACUMAAAAAC/////8DA/////8BAAAAFWCJCgIAAAAAAAcAAABFVVJhbmdlAQFHAAAuAERHAAAA" +
+           "AQB0A/////8BAf////8AAAAAFWCJCgIAAAABAAsAAABNZWFzdXJlbWVudAEBSQAALwEAQAlJAAAAAAv/" +
+           "////AQH/////AQAAABVgiQoCAAAAAAAHAAAARVVSYW5nZQEBTQAALgBETQAAAAEAdAP/////AQH/////" +
+           "AAAAAARggAoBAAAAAQAEAAAARmxvdwEBTwAALwEBFABPAAAA/////wIAAAAVYIkKAgAAAAEACAAAAFNl" +
+           "dFBvaW50AQFQAAAvAQBACVAAAAAAC/////8DA/////8BAAAAFWCJCgIAAAAAAAcAAABFVVJhbmdlAQFU" +
+           "AAAuAERUAAAAAQB0A/////8BAf////8AAAAAFWCJCgIAAAABAAsAAABNZWFzdXJlbWVudAEBVgAALwEA" +
+           "QAlWAAAAAAv/////AQH/////AQAAABVgiQoCAAAAAAAHAAAARVVSYW5nZQEBWgAALgBEWgAAAAEAdAP/" +
+           "////AQH/////AAAAAARggAoBAAAAAQAFAAAATGV2ZWwBAVwAAC8BASEAXAAAAP////8CAAAAFWCJCgIA" +
+           "AAABAAgAAABTZXRQb2ludAEBXQAALwEAQAldAAAAAAv/////AwP/////AQAAABVgiQoCAAAAAAAHAAAA" +
+           "RVVSYW5nZQEBYQAALgBEYQAAAAEAdAP/////AQH/////AAAAABVgiQoCAAAAAQALAAAATWVhc3VyZW1l" +
+           "bnQBAWMAAC8BAEAJYwAAAAAL/////wEB/////wEAAAAVYIkKAgAAAAAABwAAAEVVUmFuZ2UBAWcAAC4A" +
+           "RGcAAAABAHQD/////wEB/////wAAAAAEYYIKBAAAAAEADgAAAEdldE1hY2hpbmVEYXRhAQFrAAAvAQFr" +
+           "AGsAAAABAf////8BAAAAF2CpCgIAAAAAAA8AAABPdXRwdXRBcmd1bWVudHMBAWwAAC4ARGwAAACWBQAA" +
+           "AAEAKgEBGgAAAAsAAABNYWNoaW5lTmFtZQAM/////wAAAAAAAQAqAQEbAAAADAAAAE1hbnVmYWN0dXJl" +
+           "cgAM/////wAAAAAAAQAqAQEbAAAADAAAAFNlcmlhbE51bWJlcgAM/////wAAAAAAAQAqAQEaAAAACwAA" +
+           "AElzUHJvZHVjaW5nAAH/////AAAAAAABACoBARsAAAAMAAAATWFjaGluZVN0YXRlAAf/////AAAAAAAB" +
+           "ACgBAQAAAAEAAAAAAAAAAQH/////AAAAAA==";
         #endregion
         #endif
         #endregion
 
         #region Public Properties
-        /// <remarks />
-        public MachineInfoState MachineInfo
-        {
-            get
-            {
-                return m_machineInfo;
-            }
-
-            set
-            {
-                if (!Object.ReferenceEquals(m_machineInfo, value))
-                {
-                    ChangeMasks |= NodeStateChangeMasks.Children;
-                }
-
-                m_machineInfo = value;
-            }
-        }
-
         /// <remarks />
         public TemperatureControllerState Temperature
         {
@@ -967,6 +738,25 @@ namespace SampleCompany.SampleServer.Model
                 m_level = value;
             }
         }
+
+        /// <remarks />
+        public GetMachineDataMethodState GetMachineData
+        {
+            get
+            {
+                return m_getMachineDataMethod;
+            }
+
+            set
+            {
+                if (!Object.ReferenceEquals(m_getMachineDataMethod, value))
+                {
+                    ChangeMasks |= NodeStateChangeMasks.Children;
+                }
+
+                m_getMachineDataMethod = value;
+            }
+        }
         #endregion
 
         #region Overridden Methods
@@ -979,11 +769,6 @@ namespace SampleCompany.SampleServer.Model
             ISystemContext context,
             IList<BaseInstanceState> children)
         {
-            if (m_machineInfo != null)
-            {
-                children.Add(m_machineInfo);
-            }
-
             if (m_temperature != null)
             {
                 children.Add(m_temperature);
@@ -997,6 +782,11 @@ namespace SampleCompany.SampleServer.Model
             if (m_level != null)
             {
                 children.Add(m_level);
+            }
+
+            if (m_getMachineDataMethod != null)
+            {
+                children.Add(m_getMachineDataMethod);
             }
 
             base.GetChildren(context, children);
@@ -1020,27 +810,6 @@ namespace SampleCompany.SampleServer.Model
 
             switch (browseName.Name)
             {
-                case SampleCompany.SampleServer.Model.BrowseNames.MachineInfo:
-                {
-                    if (createOrReplace)
-                    {
-                        if (MachineInfo == null)
-                        {
-                            if (replacement == null)
-                            {
-                                MachineInfo = new MachineInfoState(this);
-                            }
-                            else
-                            {
-                                MachineInfo = (MachineInfoState)replacement;
-                            }
-                        }
-                    }
-
-                    instance = MachineInfo;
-                    break;
-                }
-
                 case SampleCompany.SampleServer.Model.BrowseNames.Temperature:
                 {
                     if (createOrReplace)
@@ -1103,6 +872,27 @@ namespace SampleCompany.SampleServer.Model
                     instance = Level;
                     break;
                 }
+
+                case SampleCompany.SampleServer.Model.BrowseNames.GetMachineData:
+                {
+                    if (createOrReplace)
+                    {
+                        if (GetMachineData == null)
+                        {
+                            if (replacement == null)
+                            {
+                                GetMachineData = new GetMachineDataMethodState(this);
+                            }
+                            else
+                            {
+                                GetMachineData = (GetMachineDataMethodState)replacement;
+                            }
+                        }
+                    }
+
+                    instance = GetMachineData;
+                    break;
+                }
             }
 
             if (instance != null)
@@ -1115,10 +905,10 @@ namespace SampleCompany.SampleServer.Model
         #endregion
 
         #region Private Fields
-        private MachineInfoState m_machineInfo;
         private TemperatureControllerState m_temperature;
         private FlowControllerState m_flow;
         private LevelControllerState m_level;
+        private GetMachineDataMethodState m_getMachineDataMethod;
         #endregion
     }
     #endif

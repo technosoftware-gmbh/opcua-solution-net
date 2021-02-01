@@ -1,9 +1,3 @@
-MachineInfoType,1,ObjectType
-MachineInfoType_MachineName,2,Variable
-MachineInfoType_Manufacturer,3,Variable
-MachineInfoType_SerialNumber,4,Variable
-MachineInfoType_IsProducing,5,Variable
-MachineInfoType_MachineState,6,Variable
 GenericControllerType,7,ObjectType
 GenericControllerType_SetPoint,8,Variable
 GenericControllerType_SetPoint_Definition,9,Variable
@@ -57,12 +51,6 @@ TemperatureControllerType_Measurement_InstrumentRange,56,Variable
 TemperatureControllerType_Measurement_EURange,57,Variable
 TemperatureControllerType_Measurement_EngineeringUnits,58,Variable
 MachineType,59,ObjectType
-MachineType_MachineInfo,60,Object
-MachineType_MachineInfo_MachineName,61,Variable
-MachineType_MachineInfo_Manufacturer,62,Variable
-MachineType_MachineInfo_SerialNumber,63,Variable
-MachineType_MachineInfo_IsProducing,64,Variable
-MachineType_MachineInfo_MachineState,65,Variable
 MachineType_Temperature,66,Object
 MachineType_Temperature_SetPoint,67,Variable
 MachineType_Temperature_SetPoint_Definition,68,Variable
@@ -102,3 +90,7 @@ MachineType_Level_Measurement_ValuePrecision,101,Variable
 MachineType_Level_Measurement_InstrumentRange,102,Variable
 MachineType_Level_Measurement_EURange,103,Variable
 MachineType_Level_Measurement_EngineeringUnits,104,Variable
+GetMachineDataMethodType,105,Method
+GetMachineDataMethodType_OutputArguments,106,Variable
+MachineType_GetMachineData,107,Method
+MachineType_GetMachineData_OutputArguments,108,Variable
