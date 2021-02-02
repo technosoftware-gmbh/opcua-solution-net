@@ -153,6 +153,8 @@ namespace EmptyCompany.EmptyServer
                     References = references;
                 }
 
+                LoadPredefinedNodes(SystemContext, externalReferences);
+
                 // Create the root folder for all nodes of this server
                 var root = CreateFolderState(null, "My Data", new LocalizedText("en", "My Data"),
                                  new LocalizedText("en", "Root folder of the Empty Server. All nodes must be placed under this root."));

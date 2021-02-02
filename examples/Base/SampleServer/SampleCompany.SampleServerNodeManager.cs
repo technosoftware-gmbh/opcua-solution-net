@@ -161,6 +161,8 @@ namespace SampleCompany.SampleServer
                     References = references;
                 }
 
+                LoadPredefinedNodes(SystemContext, externalReferences);
+
                 var root = CreateFolderState(null, "My Data", new LocalizedText("en", "My Data"),
                                  new LocalizedText("en", "Root folder of the Sample Server"));
                 References.Add(new NodeStateReference(ReferenceTypes.Organizes, false, root.NodeId));

@@ -191,6 +191,8 @@ namespace Technosoftware.SimpleServer
                     References = references;
                 }
 
+                LoadPredefinedNodes(SystemContext, externalReferences);
+
                 var root = CreateFolderState(null, "My Data", new LocalizedText("en", "My Data"), new LocalizedText("en", "Root folder of Workshop Server"));
                 References.Add(new NodeStateReference(ReferenceTypes.Organizes, false, root.NodeId));
                 root.EventNotifier = EventNotifiers.SubscribeToEvents;
