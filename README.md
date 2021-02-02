@@ -1,6 +1,6 @@
-# Technosoftware GmbH OPC UA Solutions .NET
+# Technosoftware GmbH OPC UA Solution .NET
 
-The OPC UA Solutions .NET is the implementation for the
+The OPC UA Solution .NET is the implementation for the
 
  * [OPC UA Client .NET](https://technosoftware.com/opc-ua-client-net/)
  * [OPC UA Server .NET](https://technosoftware.com/opc-ua-server-net/)
@@ -25,11 +25,15 @@ The included OPC Foundation Model Compiler can be used to create the necessary C
 
 Documentation of the Mode Compiler can be found at https://github.com/OPCFoundation/UA-ModelCompiler
 
-
 ### Build Status
 
 [![Build Status](https://dev.azure.com/technosoftware-gmbh/OPC%20UA%20Solution%20.NET/_apis/build/status/technosoftware-gmbh.Samples?branchName=master)](https://dev.azure.com/technosoftware-gmbh/OPC%20UA%20Solution%20.NET/_build/latest?definitionId=13&branchName=master)
 [![Build Status](https://travis-ci.com/technosoftware-gmbh/opcua-solution-net.svg?branch=master)](https://travis-ci.com/technosoftware-gmbh/opcua-solution-net)
+[![Build status](https://ci.appveyor.com/api/projects/status/5g0t933gak2u3b7e?svg=true)](https://ci.appveyor.com/project/technosoftware/opcua-solution-net)
+
+## Online Help
+
+We provide an online help for the current version: [OPC UA Solution NET Online Help](https://technosoftware.com/help/OPCUaSolutionNet/21/)
 
 ## Getting started
 
@@ -63,13 +67,14 @@ Evaluation Editions comes with the following restrictions:
  * Some evaluations may also show a splash screen at startup
 
 ### Support for the SDK under Evaluation License
+
 Support for the SDK under the Evaluation License is available via https://github.com/technosoftware-gmbh/opcua-solution-net/issues. 
 
-## Available Solutions
+## Available Solution
 
 ### Binary Edition
 
-If you purchased a Binary Edition of one of the following solutions
+If you purchased a Binary Edition of one of the following products
 
  * [OPC UA Client .NET](https://technosoftware.com/product/opc-ua-client-net/)
  * [OPC UA Server .NET](https://technosoftware.com/product/opc-ua-server-net/)

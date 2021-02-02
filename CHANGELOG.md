@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET - 2.1.1
+## OPC UA Solution .NET - 2.1.1
 
 ### Enhancement
 - Introduced new overridable method AddEncodeableTypes in the UaBaseServer to allow adding encodeable types from different assemblies.
@@ -24,7 +24,7 @@
 - Client: Validate server domains in Certificate validator
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET - 2.1.0
+## OPC UA Solution .NET - 2.1.0
 
 ### Changes
 - This edition supports .NET Standard 2.1, .NET Core 3.1 and .NET 5.0
@@ -45,19 +45,19 @@
 - .NET 4.8, .NET 4.7.2 and .NET 4.6.2 versions still use BouncyCastle for Cert creation
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET - 2.0.8
+## OPC UA Solution .NET - 2.0.8
 
 ### Changes
 - Use of Opc.Ua.Core V1.4.364.40
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET - 2.0.7
+## OPC UA Solution .NET - 2.0.7
 
 ### Fixed issues
 - Fix for OPC UA Bundle .NET Standard license handling
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET - 2.0.6
+## OPC UA Solution .NET - 2.0.6
 
 ### Changes
 - .NET 5.0 requires a new license and is available for the OPC UA Bundle .NET
@@ -66,13 +66,13 @@
 - Fix in client part for Prosys OPC UA simulation server
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET - 2.0.5
+## OPC UA Solution .NET - 2.0.5
 
 ### Changes
 - DLL's are now code signed
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET - 2.0.4
+## OPC UA Solution .NET - 2.0.4
 
 ### Changes
 - Model Compiler build with .NET 4.6.2
@@ -81,7 +81,7 @@
   a modified Opc.Ua.Core version
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET - 2.0.3
+## OPC UA Solution .NET - 2.0.3
 
 ### Changes
 - Use of Opc.Ua.Core V1.4.364.31-preview
@@ -89,19 +89,19 @@
 - Removed .NET Core 3.0 support because it is out of support and will not receive security updates in the future. 
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET - 2.0.2
+## OPC UA Solution .NET - 2.0.2
 
 ### Changes
 - Use of OPC.Ua.Core V1.4.303.107
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET - 2.0.1
+## OPC UA Solution .NET - 2.0.1
 
 ### Changes
 - Use of OPC UA ModelCompiler from 26-SEP-2020
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET - 2.0.0
+## OPC UA Solution .NET - 2.0.0
 
 ### Important Information
 Goal of this 2.0 version is the alignment with the original Opc.Ua.Core stack to get easier compliance with
@@ -125,13 +125,13 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 - ProcessCommandLine() handling
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET - 1.4.13
+## OPC UA Solution .NET - 1.4.13
 	
 ### Changes
 - Added some comments for easier transition to 2.0
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET - 1.4.12
+## OPC UA Solution .NET - 1.4.12
 	
 ### Changes
 - Updated BouncyCastle.Crypto.dll to 1.8.8
@@ -142,13 +142,13 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 - Fixed user identity handling in server session
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET - 1.4.11
+## OPC UA Solution .NET - 1.4.11
 	
 ### Changes
 - Updated stack to the official version from the OPC Foundation (1.4.363.107)
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET - 1.4.10
+## OPC UA Solution .NET - 1.4.10
 	
 ### Changes
 - Moved the stack to it's own repository
@@ -157,7 +157,7 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 - Integrated v1.4.10 of https://github.com/technosoftware-gmbh/opc-ua-core-net-standard
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET - 1.4.0731
+## OPC UA Solution .NET - 1.4.0731
 	
 ### Fixed Issues
 - Stack: Index range fixes
@@ -173,7 +173,7 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 - Client: Session validation in Client Subscription
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET - 1.4.0707
+## OPC UA Solution .NET - 1.4.0707
 	
 ###	Fixed Issues
 - Fix for self signed certs
@@ -185,14 +185,14 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
   - bool haveAppCertificate = await application.CheckApplicationInstanceCertificateAsync(false, 0);
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET - 1.4.0705
+## OPC UA Solution .NET - 1.4.0705
 	
 ###	Fixed Issues
 - Changed method CreateMethodState()
   - Parameter parent was wrongly defined as BaseObjectState and not NodeState.
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET - 1.4.0627
+## OPC UA Solution .NET - 1.4.0627
 
 ###	Enhancements
 - Support for OPC UA 1.04 reverse connection
@@ -207,7 +207,7 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 - Server Compliance tested with OPC UA Compliance Test Tool 1.04.9.396	
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET - 1.4.0612
+## OPC UA Solution .NET - 1.4.0612
 
 ###	Enhancements
 - New sample clients and servers
@@ -221,12 +221,12 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 - Support of enum array in BinaryEncoder improved.
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET - 1.4.0604
+## OPC UA Solution .NET - 1.4.0604
 
 - Integrated OPC UA Core .NET from https://github.com/technosoftware-gmbh/opc-ua-core-net-standard
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET - 1.4.0522
+## OPC UA Solution .NET - 1.4.0522
 
 ###	Breaking Changes
 - Updated minimal required .NET version to 4.6.2 so that also .NET framework applications can use latest version of Kestrel
@@ -241,7 +241,7 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
 - Tested with UACTT 1.3.341.395
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET - 1.3.0503
+## OPC UA Solution .NET - 1.3.0503
 
 ###	Fixed Issues
 
@@ -261,7 +261,7 @@ changes must be applied. Obsolete methods no longer supported in 2.0 are tagged 
   - Fix: RolePermission is an optional attribute, it can be ignored if access is denied.
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solutions .NET - 1.3.0419
+## OPC UA Solution .NET - 1.3.0419
 
 ###	Important
 
