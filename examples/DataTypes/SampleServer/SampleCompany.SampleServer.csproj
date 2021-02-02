@@ -13,6 +13,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Model\SampleCompany.SampleServer.Model.PredefinedNodes.uanodes" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Model\SampleCompany.SampleServer.Model.PredefinedNodes.uanodes" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
 

@@ -161,9 +161,8 @@ namespace SampleCompany.SampleServer
         public string[] OnGetNamespaceUris()
         {
             // set one namespace for the type model.
-            var namespaceUrls = new string[2];
-            namespaceUrls[0] = Namespaces.SampleServer;
-            namespaceUrls[1] = Model.Namespaces.SampleServer;
+            var namespaceUrls = new string[1];
+            namespaceUrls[0] = Model.Namespaces.SampleServer;
             return namespaceUrls;
         }
 
