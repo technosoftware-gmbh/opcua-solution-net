@@ -34,8 +34,11 @@ using System.Reflection;
 using System.Threading;
 
 using Opc.Ua;
-
+using SampleCompany.SampleServer.Model;
 using Technosoftware.UaServer;
+using DataTypeIds = Opc.Ua.DataTypeIds;
+using ObjectIds = Opc.Ua.ObjectIds;
+
 #endregion
 
 namespace SampleCompany.SampleServer
@@ -58,6 +61,10 @@ namespace SampleCompany.SampleServer
         private UInt16 simulationInterval_ = 1000;
         private bool simulationEnabled_ = true;
         private List<BaseDataVariableState> dynamicNodes_;
+
+        private Model.MachineState machine1_ = new Model.MachineState(null);
+        private Model.MachineState machine2_ = new Model.MachineState(null);
+
         #endregion
 
         #region Constructors, Destructor, Initialization
@@ -225,37 +232,47 @@ namespace SampleCompany.SampleServer
 
                     #region Plant
                     var plantFolder = CreateFolderState(root, "Plant", "Plant", null);
-                    var machine1 = new Model.MachineState(null);
-                    var pnd1 = new ParsedNodeId() { NamespaceIndex = NamespaceIndex, RootId = "Machine #1" };
 
-                    machine1.Create(
+                    // Create an instance for machine 1
+                    var parsedNodeId = new ParsedNodeId() { NamespaceIndex = NamespaceIndex, RootId = "Machine #1" };
+                    machine1_.Create(
                         SystemContext,
-                        pnd1.Construct(),
+                        parsedNodeId.Construct(),
                         new QualifiedName("Machine #1", NamespaceIndex),
                         null,
                         true);
+                    machine1_.AddReference(ReferenceTypeIds.Organizes, true, plantFolder.NodeId);
+                    plantFolder.AddReference(ReferenceTypeIds.Organizes, false, machine1_.NodeId);
+                    AddPredefinedNode(SystemContext, machine1_);
 
-                    machine1.AddReference(ReferenceTypeIds.Organizes, true, plantFolder.NodeId);
-                    plantFolder.AddReference(ReferenceTypeIds.Organizes, false, machine1.NodeId);
-                    machine1.GetMachineData.OnCall = OnGetMachineDataMachine1;
-                    AddPredefinedNode(SystemContext, machine1);
-
-                    var machine2 = new Model.MachineState(null);
-                    var pnd2 = new ParsedNodeId() { NamespaceIndex = NamespaceIndex, RootId = "Machine #2" };
-
-                    machine2.Create(
+                    // Create an instance for machine 2
+                    parsedNodeId = new ParsedNodeId() { NamespaceIndex = NamespaceIndex, RootId = "Machine #2" };
+                    machine2_.Create(
                         SystemContext,
-                        pnd2.Construct(),
+                        parsedNodeId.Construct(),
                         new QualifiedName("Machine #2", NamespaceIndex),
                         null,
                         true);
-                    machine2.GetMachineData.OnCall = OnGetMachineDataMachine2;
-                    
-                    machine2.AddReference(ReferenceTypeIds.Organizes, true, plantFolder.NodeId);
-                    plantFolder.AddReference(ReferenceTypeIds.Organizes, false, machine2.NodeId);
+                    machine2_.AddReference(ReferenceTypeIds.Organizes, true, plantFolder.NodeId);
+                    plantFolder.AddReference(ReferenceTypeIds.Organizes, false, machine2_.NodeId);
+                    AddPredefinedNode(SystemContext, machine2_);
 
-                    AddPredefinedNode(SystemContext, machine2);
+                    // Create an instance of GetMachineDataMethodState
+                    parsedNodeId = new ParsedNodeId() { NamespaceIndex = NamespaceIndex, RootId = "GetMachineData" };
+                    Model.GetMachineDataMethodState getMachineDataMethod = new Model.GetMachineDataMethodState(null);
+                    getMachineDataMethod.Create(
+                        SystemContext,
+                        parsedNodeId.Construct(),
+                        new QualifiedName("GetMachineData", NamespaceIndex),
+                        null,
+                        true);
+                    getMachineDataMethod.AddReference(ReferenceTypeIds.Organizes, true, plantFolder.NodeId);
+                    plantFolder.AddReference(ReferenceTypeIds.Organizes, false, getMachineDataMethod.NodeId);
+                    plantFolder.AddChild(getMachineDataMethod);
                     
+                    // Add the event handler if the method is called
+                    getMachineDataMethod.OnCall = OnGetMachineData;
+                    AddPredefinedNode(SystemContext, getMachineDataMethod);
                     #endregion
                 }
                 catch (Exception e)
@@ -306,27 +323,25 @@ namespace SampleCompany.SampleServer
             }
         }
 
-        private ServiceResult OnGetMachineDataMachine1(ISystemContext context, MethodState method, NodeId objectid, ref string machinename, ref string manufacturer, ref string serialnumber, ref bool isproducing, ref uint machinestate)
+        private ServiceResult OnGetMachineData(ISystemContext context, MethodState method, NodeId objectid, string machineName, ref MachineDataType machinedata)
         {
-            machinename = "Machine #1";
-            manufacturer = "SampleCompany";
-            serialnumber = "SN 1079";
-            isproducing = true;
-            machinestate = 8;
+            machinedata = new MachineDataType {MachineName = machineName};
 
+            if (machineName == "Machine #1")
+            {
+                machinedata.Manufacturer = "SampleCompany";
+                machinedata.SerialNumber = "SN 1079";
+                machinedata.MachineState = MachineStateDataType.Inactive;
+            }
+            else if (machineName == "Machine #2")
+            {
+                machinedata.MachineName = machineName;
+                machinedata.Manufacturer = "Unknown";
+                machinedata.SerialNumber = "SN 1030";
+                machinedata.MachineState = MachineStateDataType.PrepareRemove;
+            }
             return ServiceResult.Good;
-        }
-
-        private ServiceResult OnGetMachineDataMachine2(ISystemContext context, MethodState method, NodeId objectid, ref string machinename, ref string manufacturer, ref string serialnumber, ref bool isproducing, ref uint machinestate)
-        {
-            machinename = "Machine #2";
-            manufacturer = "SampleCompany";
-            serialnumber = "SN 1083";
-            isproducing = false;
-            machinestate = 1;
-
-            return ServiceResult.Good;
-        }
+        }              
         #endregion
 
         #region Helper Methods

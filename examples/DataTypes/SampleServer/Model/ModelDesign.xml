@@ -19,15 +19,39 @@
   </opc:Namespaces>
 
   <!-- Create Types -->
+  <opc:DataType SymbolicName="MachineStateDataType" BaseType="ua:Enumeration">
+    <opc:Fields>
+      <opc:Field Name="Inactive" Identifier="0"></opc:Field>
+      <opc:Field Name="Cutting" Identifier="1"></opc:Field>
+      <opc:Field Name="PrepareLoad" Identifier="2"></opc:Field>
+      <opc:Field Name="ExecuteLoad" Identifier="3"></opc:Field>
+      <opc:Field Name="PrepareUnload" Identifier="4"></opc:Field>
+      <opc:Field Name="ExecuteUnload" Identifier="5"></opc:Field>
+      <opc:Field Name="PrepareRemove" Identifier="6"></opc:Field>
+      <opc:Field Name="ExecuteRemove" Identifier="7"></opc:Field>
+      <opc:Field Name="PrepareSort" Identifier="8"></opc:Field>
+      <opc:Field Name="ExecuteSort" Identifier="9"></opc:Field>
+      <opc:Field Name="Finished" Identifier="10"></opc:Field>
+      <opc:Field Name="Failed" Identifier="11"></opc:Field>
+    </opc:Fields>
+  </opc:DataType>
+
+  <opc:DataType SymbolicName="MachineDataType" BaseType="ua:Structure">
+    <opc:Fields>
+      <opc:Field Name="MachineName" DataType="ua:String"></opc:Field>
+      <opc:Field Name="Manufacturer" DataType="ua:String"></opc:Field>
+      <opc:Field Name="SerialNumber" DataType="ua:String"></opc:Field>
+      <opc:Field Name="MachineState" DataType="MachineStateDataType"/>
+    </opc:Fields>
+  </opc:DataType>
 
   <!-- MethodTypes -->
   <opc:Method SymbolicName="GetMachineDataMethodType">
-    <opc:OutputArguments>
+    <opc:InputArguments>
       <opc:Argument Name="MachineName" DataType="ua:String"></opc:Argument>
-      <opc:Argument Name="Manufacturer" DataType="ua:String"></opc:Argument>
-      <opc:Argument Name="SerialNumber" DataType="ua:String"></opc:Argument>
-      <opc:Argument Name="IsProducing" DataType="ua:Boolean"></opc:Argument>
-      <opc:Argument Name="MachineState" DataType="ua:UInt32"></opc:Argument>
+    </opc:InputArguments>
+    <opc:OutputArguments>
+      <opc:Argument Name="MachineData" DataType="MachineDataType"></opc:Argument>
     </opc:OutputArguments>
   </opc:Method>
 
@@ -48,7 +72,7 @@
       <opc:Object SymbolicName="Temperature" TypeDefinition="TemperatureControllerType"></opc:Object>
       <opc:Object SymbolicName="Flow" TypeDefinition="FlowControllerType"></opc:Object>
       <opc:Object SymbolicName="Level" TypeDefinition="LevelControllerType"></opc:Object>
-      <opc:Method SymbolicName="GetMachineData" TypeDefinition="GetMachineDataMethodType"></opc:Method>
+      <opc:Property SymbolicName="MachineData" DataType="MachineStateDataType" AccessLevel="ReadWrite"></opc:Property>
     </opc:Children>
   </opc:ObjectType>
 

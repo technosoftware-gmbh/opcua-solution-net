@@ -37,18 +37,23 @@ using Opc.Ua;
 
 namespace SampleCompany.SampleServer.Model
 {
-    #region Method Identifiers
+    #region DataType Identifiers
     /// <summary>
-    /// A class that declares constants for all Methods in the Model Design.
+    /// A class that declares constants for all DataTypes in the Model Design.
     /// </summary>
     /// <exclude />
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
-    public static partial class Methods
+    public static partial class DataTypes
     {
         /// <summary>
-        /// The identifier for the MachineType_GetMachineData Method.
+        /// The identifier for the MachineStateDataType DataType.
         /// </summary>
-        public const uint MachineType_GetMachineData = 107;
+        public const uint MachineStateDataType = 1;
+
+        /// <summary>
+        /// The identifier for the MachineDataType DataType.
+        /// </summary>
+        public const uint MachineDataType = 3;
     }
     #endregion
 
@@ -74,6 +79,21 @@ namespace SampleCompany.SampleServer.Model
         /// The identifier for the MachineType_Level Object.
         /// </summary>
         public const uint MachineType_Level = 92;
+
+        /// <summary>
+        /// The identifier for the MachineDataType_Encoding_DefaultBinary Object.
+        /// </summary>
+        public const uint MachineDataType_Encoding_DefaultBinary = 5;
+
+        /// <summary>
+        /// The identifier for the MachineDataType_Encoding_DefaultXml Object.
+        /// </summary>
+        public const uint MachineDataType_Encoding_DefaultXml = 64;
+
+        /// <summary>
+        /// The identifier for the MachineDataType_Encoding_DefaultJson Object.
+        /// </summary>
+        public const uint MachineDataType_Encoding_DefaultJson = 112;
     }
     #endregion
 
@@ -120,6 +140,11 @@ namespace SampleCompany.SampleServer.Model
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
     public static partial class Variables
     {
+        /// <summary>
+        /// The identifier for the MachineStateDataType_EnumStrings Variable.
+        /// </summary>
+        public const uint MachineStateDataType_EnumStrings = 2;
+
         /// <summary>
         /// The identifier for the GenericControllerType_SetPoint Variable.
         /// </summary>
@@ -231,24 +256,69 @@ namespace SampleCompany.SampleServer.Model
         public const uint MachineType_Level_Measurement_EURange = 103;
 
         /// <summary>
-        /// The identifier for the MachineType_GetMachineData_OutputArguments Variable.
+        /// The identifier for the MachineType_MachineData Variable.
         /// </summary>
-        public const uint MachineType_GetMachineData_OutputArguments = 108;
+        public const uint MachineType_MachineData = 4;
+
+        /// <summary>
+        /// The identifier for the SampleServer_BinarySchema Variable.
+        /// </summary>
+        public const uint SampleServer_BinarySchema = 232;
+
+        /// <summary>
+        /// The identifier for the SampleServer_BinarySchema_NamespaceUri Variable.
+        /// </summary>
+        public const uint SampleServer_BinarySchema_NamespaceUri = 234;
+
+        /// <summary>
+        /// The identifier for the SampleServer_BinarySchema_Deprecated Variable.
+        /// </summary>
+        public const uint SampleServer_BinarySchema_Deprecated = 235;
+
+        /// <summary>
+        /// The identifier for the SampleServer_BinarySchema_MachineDataType Variable.
+        /// </summary>
+        public const uint SampleServer_BinarySchema_MachineDataType = 6;
+
+        /// <summary>
+        /// The identifier for the SampleServer_XmlSchema Variable.
+        /// </summary>
+        public const uint SampleServer_XmlSchema = 248;
+
+        /// <summary>
+        /// The identifier for the SampleServer_XmlSchema_NamespaceUri Variable.
+        /// </summary>
+        public const uint SampleServer_XmlSchema_NamespaceUri = 250;
+
+        /// <summary>
+        /// The identifier for the SampleServer_XmlSchema_Deprecated Variable.
+        /// </summary>
+        public const uint SampleServer_XmlSchema_Deprecated = 251;
+
+        /// <summary>
+        /// The identifier for the SampleServer_XmlSchema_MachineDataType Variable.
+        /// </summary>
+        public const uint SampleServer_XmlSchema_MachineDataType = 65;
     }
     #endregion
 
-    #region Method Node Identifiers
+    #region DataType Node Identifiers
     /// <summary>
-    /// A class that declares constants for all Methods in the Model Design.
+    /// A class that declares constants for all DataTypes in the Model Design.
     /// </summary>
     /// <exclude />
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
-    public static partial class MethodIds
+    public static partial class DataTypeIds
     {
         /// <summary>
-        /// The identifier for the MachineType_GetMachineData Method.
+        /// The identifier for the MachineStateDataType DataType.
         /// </summary>
-        public static readonly ExpandedNodeId MachineType_GetMachineData = new ExpandedNodeId(SampleCompany.SampleServer.Model.Methods.MachineType_GetMachineData, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
+        public static readonly ExpandedNodeId MachineStateDataType = new ExpandedNodeId(SampleCompany.SampleServer.Model.DataTypes.MachineStateDataType, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
+
+        /// <summary>
+        /// The identifier for the MachineDataType DataType.
+        /// </summary>
+        public static readonly ExpandedNodeId MachineDataType = new ExpandedNodeId(SampleCompany.SampleServer.Model.DataTypes.MachineDataType, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
     }
     #endregion
 
@@ -274,6 +344,21 @@ namespace SampleCompany.SampleServer.Model
         /// The identifier for the MachineType_Level Object.
         /// </summary>
         public static readonly ExpandedNodeId MachineType_Level = new ExpandedNodeId(SampleCompany.SampleServer.Model.Objects.MachineType_Level, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
+
+        /// <summary>
+        /// The identifier for the MachineDataType_Encoding_DefaultBinary Object.
+        /// </summary>
+        public static readonly ExpandedNodeId MachineDataType_Encoding_DefaultBinary = new ExpandedNodeId(SampleCompany.SampleServer.Model.Objects.MachineDataType_Encoding_DefaultBinary, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
+
+        /// <summary>
+        /// The identifier for the MachineDataType_Encoding_DefaultXml Object.
+        /// </summary>
+        public static readonly ExpandedNodeId MachineDataType_Encoding_DefaultXml = new ExpandedNodeId(SampleCompany.SampleServer.Model.Objects.MachineDataType_Encoding_DefaultXml, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
+
+        /// <summary>
+        /// The identifier for the MachineDataType_Encoding_DefaultJson Object.
+        /// </summary>
+        public static readonly ExpandedNodeId MachineDataType_Encoding_DefaultJson = new ExpandedNodeId(SampleCompany.SampleServer.Model.Objects.MachineDataType_Encoding_DefaultJson, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
     }
     #endregion
 
@@ -320,6 +405,11 @@ namespace SampleCompany.SampleServer.Model
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
     public static partial class VariableIds
     {
+        /// <summary>
+        /// The identifier for the MachineStateDataType_EnumStrings Variable.
+        /// </summary>
+        public static readonly ExpandedNodeId MachineStateDataType_EnumStrings = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.MachineStateDataType_EnumStrings, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
+
         /// <summary>
         /// The identifier for the GenericControllerType_SetPoint Variable.
         /// </summary>
@@ -431,9 +521,49 @@ namespace SampleCompany.SampleServer.Model
         public static readonly ExpandedNodeId MachineType_Level_Measurement_EURange = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.MachineType_Level_Measurement_EURange, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
         /// <summary>
-        /// The identifier for the MachineType_GetMachineData_OutputArguments Variable.
+        /// The identifier for the MachineType_MachineData Variable.
         /// </summary>
-        public static readonly ExpandedNodeId MachineType_GetMachineData_OutputArguments = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.MachineType_GetMachineData_OutputArguments, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
+        public static readonly ExpandedNodeId MachineType_MachineData = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.MachineType_MachineData, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
+
+        /// <summary>
+        /// The identifier for the SampleServer_BinarySchema Variable.
+        /// </summary>
+        public static readonly ExpandedNodeId SampleServer_BinarySchema = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.SampleServer_BinarySchema, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
+
+        /// <summary>
+        /// The identifier for the SampleServer_BinarySchema_NamespaceUri Variable.
+        /// </summary>
+        public static readonly ExpandedNodeId SampleServer_BinarySchema_NamespaceUri = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.SampleServer_BinarySchema_NamespaceUri, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
+
+        /// <summary>
+        /// The identifier for the SampleServer_BinarySchema_Deprecated Variable.
+        /// </summary>
+        public static readonly ExpandedNodeId SampleServer_BinarySchema_Deprecated = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.SampleServer_BinarySchema_Deprecated, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
+
+        /// <summary>
+        /// The identifier for the SampleServer_BinarySchema_MachineDataType Variable.
+        /// </summary>
+        public static readonly ExpandedNodeId SampleServer_BinarySchema_MachineDataType = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.SampleServer_BinarySchema_MachineDataType, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
+
+        /// <summary>
+        /// The identifier for the SampleServer_XmlSchema Variable.
+        /// </summary>
+        public static readonly ExpandedNodeId SampleServer_XmlSchema = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.SampleServer_XmlSchema, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
+
+        /// <summary>
+        /// The identifier for the SampleServer_XmlSchema_NamespaceUri Variable.
+        /// </summary>
+        public static readonly ExpandedNodeId SampleServer_XmlSchema_NamespaceUri = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.SampleServer_XmlSchema_NamespaceUri, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
+
+        /// <summary>
+        /// The identifier for the SampleServer_XmlSchema_Deprecated Variable.
+        /// </summary>
+        public static readonly ExpandedNodeId SampleServer_XmlSchema_Deprecated = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.SampleServer_XmlSchema_Deprecated, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
+
+        /// <summary>
+        /// The identifier for the SampleServer_XmlSchema_MachineDataType Variable.
+        /// </summary>
+        public static readonly ExpandedNodeId SampleServer_XmlSchema_MachineDataType = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.SampleServer_XmlSchema_MachineDataType, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
     }
     #endregion
 
@@ -460,11 +590,6 @@ namespace SampleCompany.SampleServer.Model
         public const string GenericControllerType = "GenericControllerType";
 
         /// <summary>
-        /// The BrowseName for the GetMachineData component.
-        /// </summary>
-        public const string GetMachineData = "GetMachineData";
-
-        /// <summary>
         /// The BrowseName for the Level component.
         /// </summary>
         public const string Level = "Level";
@@ -475,6 +600,21 @@ namespace SampleCompany.SampleServer.Model
         public const string LevelControllerType = "LevelControllerType";
 
         /// <summary>
+        /// The BrowseName for the MachineData component.
+        /// </summary>
+        public const string MachineData = "MachineData";
+
+        /// <summary>
+        /// The BrowseName for the MachineDataType component.
+        /// </summary>
+        public const string MachineDataType = "MachineDataType";
+
+        /// <summary>
+        /// The BrowseName for the MachineStateDataType component.
+        /// </summary>
+        public const string MachineStateDataType = "MachineStateDataType";
+
+        /// <summary>
         /// The BrowseName for the MachineType component.
         /// </summary>
         public const string MachineType = "MachineType";
@@ -483,6 +623,16 @@ namespace SampleCompany.SampleServer.Model
         /// The BrowseName for the Measurement component.
         /// </summary>
         public const string Measurement = "Measurement";
+
+        /// <summary>
+        /// The BrowseName for the SampleServer_BinarySchema component.
+        /// </summary>
+        public const string SampleServer_BinarySchema = "SampleCompany.SampleServer.Model";
+
+        /// <summary>
+        /// The BrowseName for the SampleServer_XmlSchema component.
+        /// </summary>
+        public const string SampleServer_XmlSchema = "SampleCompany.SampleServer.Model";
 
         /// <summary>
         /// The BrowseName for the SetPoint component.

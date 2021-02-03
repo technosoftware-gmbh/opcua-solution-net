@@ -45,6 +45,87 @@
     <Alias Alias="HasEncoding">i=38</Alias>
     <Alias Alias="HasDescription">i=39</Alias>
   </Aliases>
+  <UADataType NodeId="ns=1;i=1" BrowseName="1:MachineStateDataType">
+    <DisplayName>MachineStateDataType</DisplayName>
+    <References>
+      <Reference ReferenceType="HasProperty">ns=1;i=2</Reference>
+      <Reference ReferenceType="HasSubtype" IsForward="false">i=29</Reference>
+    </References>
+    <Definition Name="1:MachineStateDataType">
+      <Field Name="Inactive" Value="0" />
+      <Field Name="Cutting" Value="1" />
+      <Field Name="PrepareLoad" Value="2" />
+      <Field Name="ExecuteLoad" Value="3" />
+      <Field Name="PrepareUnload" Value="4" />
+      <Field Name="ExecuteUnload" Value="5" />
+      <Field Name="PrepareRemove" Value="6" />
+      <Field Name="ExecuteRemove" Value="7" />
+      <Field Name="PrepareSort" Value="8" />
+      <Field Name="ExecuteSort" Value="9" />
+      <Field Name="Finished" Value="10" />
+      <Field Name="Failed" Value="11" />
+    </Definition>
+  </UADataType>
+  <UAVariable NodeId="ns=1;i=2" BrowseName="EnumStrings" ParentNodeId="ns=1;i=1" DataType="LocalizedText" ValueRank="1" ArrayDimensions="0">
+    <DisplayName>EnumStrings</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=1</Reference>
+    </References>
+    <Value>
+      <ListOfLocalizedText xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">
+        <LocalizedText>
+          <Text>Inactive</Text>
+        </LocalizedText>
+        <LocalizedText>
+          <Text>Cutting</Text>
+        </LocalizedText>
+        <LocalizedText>
+          <Text>PrepareLoad</Text>
+        </LocalizedText>
+        <LocalizedText>
+          <Text>ExecuteLoad</Text>
+        </LocalizedText>
+        <LocalizedText>
+          <Text>PrepareUnload</Text>
+        </LocalizedText>
+        <LocalizedText>
+          <Text>ExecuteUnload</Text>
+        </LocalizedText>
+        <LocalizedText>
+          <Text>PrepareRemove</Text>
+        </LocalizedText>
+        <LocalizedText>
+          <Text>ExecuteRemove</Text>
+        </LocalizedText>
+        <LocalizedText>
+          <Text>PrepareSort</Text>
+        </LocalizedText>
+        <LocalizedText>
+          <Text>ExecuteSort</Text>
+        </LocalizedText>
+        <LocalizedText>
+          <Text>Finished</Text>
+        </LocalizedText>
+        <LocalizedText>
+          <Text>Failed</Text>
+        </LocalizedText>
+      </ListOfLocalizedText>
+    </Value>
+  </UAVariable>
+  <UADataType NodeId="ns=1;i=3" BrowseName="1:MachineDataType">
+    <DisplayName>MachineDataType</DisplayName>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+    </References>
+    <Definition Name="1:MachineDataType">
+      <Field Name="MachineName" DataType="i=12" />
+      <Field Name="Manufacturer" DataType="i=12" />
+      <Field Name="SerialNumber" DataType="i=12" />
+      <Field Name="MachineState" DataType="ns=1;i=1" />
+    </Definition>
+  </UADataType>
   <UAObjectType NodeId="ns=1;i=7" BrowseName="1:GenericControllerType">
     <DisplayName>GenericControllerType</DisplayName>
     <References>
@@ -111,7 +192,7 @@
       <Reference ReferenceType="HasComponent">ns=1;i=66</Reference>
       <Reference ReferenceType="HasComponent">ns=1;i=79</Reference>
       <Reference ReferenceType="HasComponent">ns=1;i=92</Reference>
-      <Reference ReferenceType="HasComponent">ns=1;i=107</Reference>
+      <Reference ReferenceType="HasProperty">ns=1;i=4</Reference>
       <Reference ReferenceType="HasSubtype" IsForward="false">i=58</Reference>
     </References>
   </UAObjectType>
@@ -247,99 +328,194 @@
       <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=99</Reference>
     </References>
   </UAVariable>
-  <UAMethod NodeId="ns=1;i=107" BrowseName="1:GetMachineData" ParentNodeId="ns=1;i=59">
-    <DisplayName>GetMachineData</DisplayName>
-    <References>
-      <Reference ReferenceType="HasProperty">ns=1;i=108</Reference>
-      <Reference ReferenceType="HasModellingRule">i=78</Reference>
-      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=59</Reference>
-    </References>
-  </UAMethod>
-  <UAVariable NodeId="ns=1;i=108" BrowseName="OutputArguments" ParentNodeId="ns=1;i=107" DataType="i=296" ValueRank="1" ArrayDimensions="0">
-    <DisplayName>OutputArguments</DisplayName>
+  <UAVariable NodeId="ns=1;i=4" BrowseName="1:MachineData" ParentNodeId="ns=1;i=59" DataType="ns=1;i=1" AccessLevel="3">
+    <DisplayName>MachineData</DisplayName>
     <References>
       <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
       <Reference ReferenceType="HasModellingRule">i=78</Reference>
-      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=107</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=59</Reference>
+    </References>
+  </UAVariable>
+  <UAObject NodeId="ns=1;i=5" BrowseName="Default Binary" SymbolicName="DefaultBinary">
+    <DisplayName>Default Binary</DisplayName>
+    <References>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=3</Reference>
+      <Reference ReferenceType="HasDescription">ns=1;i=6</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+    </References>
+  </UAObject>
+  <UAVariable NodeId="ns=1;i=232" BrowseName="1:SampleCompany.SampleServer.Model" SymbolicName="SampleServer_BinarySchema" DataType="ByteString">
+    <DisplayName>SampleCompany.SampleServer.Model</DisplayName>
+    <References>
+      <Reference ReferenceType="HasProperty">ns=1;i=234</Reference>
+      <Reference ReferenceType="HasProperty">ns=1;i=235</Reference>
+      <Reference ReferenceType="HasComponent">ns=1;i=6</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">i=93</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=72</Reference>
     </References>
     <Value>
-      <ListOfExtensionObject xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">
-        <ExtensionObject>
-          <TypeId>
-            <Identifier>i=297</Identifier>
-          </TypeId>
-          <Body>
-            <Argument>
-              <Name>MachineName</Name>
-              <DataType>
-                <Identifier>i=12</Identifier>
-              </DataType>
-              <ValueRank>-1</ValueRank>
-              <ArrayDimensions />
-            </Argument>
-          </Body>
-        </ExtensionObject>
-        <ExtensionObject>
-          <TypeId>
-            <Identifier>i=297</Identifier>
-          </TypeId>
-          <Body>
-            <Argument>
-              <Name>Manufacturer</Name>
-              <DataType>
-                <Identifier>i=12</Identifier>
-              </DataType>
-              <ValueRank>-1</ValueRank>
-              <ArrayDimensions />
-            </Argument>
-          </Body>
-        </ExtensionObject>
-        <ExtensionObject>
-          <TypeId>
-            <Identifier>i=297</Identifier>
-          </TypeId>
-          <Body>
-            <Argument>
-              <Name>SerialNumber</Name>
-              <DataType>
-                <Identifier>i=12</Identifier>
-              </DataType>
-              <ValueRank>-1</ValueRank>
-              <ArrayDimensions />
-            </Argument>
-          </Body>
-        </ExtensionObject>
-        <ExtensionObject>
-          <TypeId>
-            <Identifier>i=297</Identifier>
-          </TypeId>
-          <Body>
-            <Argument>
-              <Name>IsProducing</Name>
-              <DataType>
-                <Identifier>i=1</Identifier>
-              </DataType>
-              <ValueRank>-1</ValueRank>
-              <ArrayDimensions />
-            </Argument>
-          </Body>
-        </ExtensionObject>
-        <ExtensionObject>
-          <TypeId>
-            <Identifier>i=297</Identifier>
-          </TypeId>
-          <Body>
-            <Argument>
-              <Name>MachineState</Name>
-              <DataType>
-                <Identifier>i=7</Identifier>
-              </DataType>
-              <ValueRank>-1</ValueRank>
-              <ArrayDimensions />
-            </Argument>
-          </Body>
-        </ExtensionObject>
-      </ListOfExtensionObject>
+      <ByteString xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">PG9wYzpUeXBlRGljdGlvbmFyeQ0KICB4bWxuczpvcGM9Imh0dHA6Ly9vcGNmb3VuZGF0aW9uLm9y
+Zy9CaW5hcnlTY2hlbWEvIg0KICB4bWxuczp4c2k9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1M
+U2NoZW1hLWluc3RhbmNlIg0KICB4bWxuczp1YT0iaHR0cDovL29wY2ZvdW5kYXRpb24ub3JnL1VB
+LyINCiAgeG1sbnM6dG5zPSJodHRwOi8vc2FtcGxlY29tcGFueS5jb20vU2FtcGxlU2VydmVyL01v
+ZGVsIg0KICBEZWZhdWx0Qnl0ZU9yZGVyPSJMaXR0bGVFbmRpYW4iDQogIFRhcmdldE5hbWVzcGFj
+ZT0iaHR0cDovL3NhbXBsZWNvbXBhbnkuY29tL1NhbXBsZVNlcnZlci9Nb2RlbCINCj4NCiAgPG9w
+YzpJbXBvcnQgTmFtZXNwYWNlPSJodHRwOi8vb3BjZm91bmRhdGlvbi5vcmcvVUEvIiBMb2NhdGlv
+bj0iT3BjLlVhLkJpbmFyeVNjaGVtYS5ic2QiLz4NCg0KICA8b3BjOkVudW1lcmF0ZWRUeXBlIE5h
+bWU9Ik1hY2hpbmVTdGF0ZURhdGFUeXBlIiBMZW5ndGhJbkJpdHM9IjMyIj4NCiAgICA8b3BjOkVu
+dW1lcmF0ZWRWYWx1ZSBOYW1lPSJJbmFjdGl2ZSIgVmFsdWU9IjAiIC8+DQogICAgPG9wYzpFbnVt
+ZXJhdGVkVmFsdWUgTmFtZT0iQ3V0dGluZyIgVmFsdWU9IjEiIC8+DQogICAgPG9wYzpFbnVtZXJh
+dGVkVmFsdWUgTmFtZT0iUHJlcGFyZUxvYWQiIFZhbHVlPSIyIiAvPg0KICAgIDxvcGM6RW51bWVy
+YXRlZFZhbHVlIE5hbWU9IkV4ZWN1dGVMb2FkIiBWYWx1ZT0iMyIgLz4NCiAgICA8b3BjOkVudW1l
+cmF0ZWRWYWx1ZSBOYW1lPSJQcmVwYXJlVW5sb2FkIiBWYWx1ZT0iNCIgLz4NCiAgICA8b3BjOkVu
+dW1lcmF0ZWRWYWx1ZSBOYW1lPSJFeGVjdXRlVW5sb2FkIiBWYWx1ZT0iNSIgLz4NCiAgICA8b3Bj
+OkVudW1lcmF0ZWRWYWx1ZSBOYW1lPSJQcmVwYXJlUmVtb3ZlIiBWYWx1ZT0iNiIgLz4NCiAgICA8
+b3BjOkVudW1lcmF0ZWRWYWx1ZSBOYW1lPSJFeGVjdXRlUmVtb3ZlIiBWYWx1ZT0iNyIgLz4NCiAg
+ICA8b3BjOkVudW1lcmF0ZWRWYWx1ZSBOYW1lPSJQcmVwYXJlU29ydCIgVmFsdWU9IjgiIC8+DQog
+ICAgPG9wYzpFbnVtZXJhdGVkVmFsdWUgTmFtZT0iRXhlY3V0ZVNvcnQiIFZhbHVlPSI5IiAvPg0K
+ICAgIDxvcGM6RW51bWVyYXRlZFZhbHVlIE5hbWU9IkZpbmlzaGVkIiBWYWx1ZT0iMTAiIC8+DQog
+ICAgPG9wYzpFbnVtZXJhdGVkVmFsdWUgTmFtZT0iRmFpbGVkIiBWYWx1ZT0iMTEiIC8+DQogIDwv
+b3BjOkVudW1lcmF0ZWRUeXBlPg0KDQogIDxvcGM6U3RydWN0dXJlZFR5cGUgTmFtZT0iTWFjaGlu
+ZURhdGFUeXBlIiBCYXNlVHlwZT0idWE6RXh0ZW5zaW9uT2JqZWN0Ij4NCiAgICA8b3BjOkZpZWxk
+IE5hbWU9Ik1hY2hpbmVOYW1lIiBUeXBlTmFtZT0ib3BjOlN0cmluZyIgLz4NCiAgICA8b3BjOkZp
+ZWxkIE5hbWU9Ik1hbnVmYWN0dXJlciIgVHlwZU5hbWU9Im9wYzpTdHJpbmciIC8+DQogICAgPG9w
+YzpGaWVsZCBOYW1lPSJTZXJpYWxOdW1iZXIiIFR5cGVOYW1lPSJvcGM6U3RyaW5nIiAvPg0KICAg
+IDxvcGM6RmllbGQgTmFtZT0iTWFjaGluZVN0YXRlIiBUeXBlTmFtZT0idG5zOk1hY2hpbmVTdGF0
+ZURhdGFUeXBlIiAvPg0KICA8L29wYzpTdHJ1Y3R1cmVkVHlwZT4NCg0KPC9vcGM6VHlwZURpY3Rp
+b25hcnk+</ByteString>
     </Value>
   </UAVariable>
+  <UAVariable NodeId="ns=1;i=234" BrowseName="NamespaceUri" ParentNodeId="ns=1;i=232" DataType="String">
+    <DisplayName>NamespaceUri</DisplayName>
+    <Description>A URI that uniquely identifies the dictionary.</Description>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=232</Reference>
+    </References>
+    <Value>
+      <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">http://samplecompany.com/SampleServer/Model</String>
+    </Value>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;i=235" BrowseName="Deprecated" ParentNodeId="ns=1;i=232" DataType="Boolean">
+    <DisplayName>Deprecated</DisplayName>
+    <Description>Indicates that all of the definitions for the dictionary are available through a DataTypeDefinition Attribute.</Description>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=232</Reference>
+    </References>
+    <Value>
+      <Boolean xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">true</Boolean>
+    </Value>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;i=6" BrowseName="1:MachineDataType" ParentNodeId="ns=1;i=232" DataType="String">
+    <DisplayName>MachineDataType</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=232</Reference>
+    </References>
+    <Value>
+      <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">MachineDataType</String>
+    </Value>
+  </UAVariable>
+  <UAObject NodeId="ns=1;i=64" BrowseName="Default XML" SymbolicName="DefaultXml">
+    <DisplayName>Default XML</DisplayName>
+    <References>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=3</Reference>
+      <Reference ReferenceType="HasDescription">ns=1;i=65</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+    </References>
+  </UAObject>
+  <UAVariable NodeId="ns=1;i=248" BrowseName="1:SampleCompany.SampleServer.Model" SymbolicName="SampleServer_XmlSchema" DataType="ByteString">
+    <DisplayName>SampleCompany.SampleServer.Model</DisplayName>
+    <References>
+      <Reference ReferenceType="HasProperty">ns=1;i=250</Reference>
+      <Reference ReferenceType="HasProperty">ns=1;i=251</Reference>
+      <Reference ReferenceType="HasComponent">ns=1;i=65</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">i=92</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=72</Reference>
+    </References>
+    <Value>
+      <ByteString xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">PHhzOnNjaGVtYQ0KICB4bWxuczp4cz0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEi
+DQogIHhtbG5zOnVhPSJodHRwOi8vb3BjZm91bmRhdGlvbi5vcmcvVUEvMjAwOC8wMi9UeXBlcy54
+c2QiDQogIHhtbG5zOnRucz0iaHR0cDovL3NhbXBsZWNvbXBhbnkuY29tL1NhbXBsZVNlcnZlci9N
+b2RlbCINCiAgdGFyZ2V0TmFtZXNwYWNlPSJodHRwOi8vc2FtcGxlY29tcGFueS5jb20vU2FtcGxl
+U2VydmVyL01vZGVsIg0KICBlbGVtZW50Rm9ybURlZmF1bHQ9InF1YWxpZmllZCINCj4NCiAgPHhz
+OmltcG9ydCBuYW1lc3BhY2U9Imh0dHA6Ly9vcGNmb3VuZGF0aW9uLm9yZy9VQS8yMDA4LzAyL1R5
+cGVzLnhzZCIgLz4NCg0KICA8eHM6c2ltcGxlVHlwZSAgbmFtZT0iTWFjaGluZVN0YXRlRGF0YVR5
+cGUiPg0KICAgIDx4czpyZXN0cmljdGlvbiBiYXNlPSJ4czpzdHJpbmciPg0KICAgICAgPHhzOmVu
+dW1lcmF0aW9uIHZhbHVlPSJJbmFjdGl2ZV8wIiAvPg0KICAgICAgPHhzOmVudW1lcmF0aW9uIHZh
+bHVlPSJDdXR0aW5nXzEiIC8+DQogICAgICA8eHM6ZW51bWVyYXRpb24gdmFsdWU9IlByZXBhcmVM
+b2FkXzIiIC8+DQogICAgICA8eHM6ZW51bWVyYXRpb24gdmFsdWU9IkV4ZWN1dGVMb2FkXzMiIC8+
+DQogICAgICA8eHM6ZW51bWVyYXRpb24gdmFsdWU9IlByZXBhcmVVbmxvYWRfNCIgLz4NCiAgICAg
+IDx4czplbnVtZXJhdGlvbiB2YWx1ZT0iRXhlY3V0ZVVubG9hZF81IiAvPg0KICAgICAgPHhzOmVu
+dW1lcmF0aW9uIHZhbHVlPSJQcmVwYXJlUmVtb3ZlXzYiIC8+DQogICAgICA8eHM6ZW51bWVyYXRp
+b24gdmFsdWU9IkV4ZWN1dGVSZW1vdmVfNyIgLz4NCiAgICAgIDx4czplbnVtZXJhdGlvbiB2YWx1
+ZT0iUHJlcGFyZVNvcnRfOCIgLz4NCiAgICAgIDx4czplbnVtZXJhdGlvbiB2YWx1ZT0iRXhlY3V0
+ZVNvcnRfOSIgLz4NCiAgICAgIDx4czplbnVtZXJhdGlvbiB2YWx1ZT0iRmluaXNoZWRfMTAiIC8+
+DQogICAgICA8eHM6ZW51bWVyYXRpb24gdmFsdWU9IkZhaWxlZF8xMSIgLz4NCiAgICA8L3hzOnJl
+c3RyaWN0aW9uPg0KICA8L3hzOnNpbXBsZVR5cGU+DQogIDx4czplbGVtZW50IG5hbWU9Ik1hY2hp
+bmVTdGF0ZURhdGFUeXBlIiB0eXBlPSJ0bnM6TWFjaGluZVN0YXRlRGF0YVR5cGUiIC8+DQoNCiAg
+PHhzOmNvbXBsZXhUeXBlIG5hbWU9Ikxpc3RPZk1hY2hpbmVTdGF0ZURhdGFUeXBlIj4NCiAgICA8
+eHM6c2VxdWVuY2U+DQogICAgICA8eHM6ZWxlbWVudCBuYW1lPSJNYWNoaW5lU3RhdGVEYXRhVHlw
+ZSIgdHlwZT0idG5zOk1hY2hpbmVTdGF0ZURhdGFUeXBlIiBtaW5PY2N1cnM9IjAiIG1heE9jY3Vy
+cz0idW5ib3VuZGVkIiAvPg0KICAgIDwveHM6c2VxdWVuY2U+DQogIDwveHM6Y29tcGxleFR5cGU+
+DQogIDx4czplbGVtZW50IG5hbWU9Ikxpc3RPZk1hY2hpbmVTdGF0ZURhdGFUeXBlIiB0eXBlPSJ0
+bnM6TGlzdE9mTWFjaGluZVN0YXRlRGF0YVR5cGUiIG5pbGxhYmxlPSJ0cnVlIj48L3hzOmVsZW1l
+bnQ+DQoNCiAgPHhzOmNvbXBsZXhUeXBlIG5hbWU9Ik1hY2hpbmVEYXRhVHlwZSI+DQogICAgPHhz
+OnNlcXVlbmNlPg0KICAgICAgPHhzOmVsZW1lbnQgbmFtZT0iTWFjaGluZU5hbWUiIHR5cGU9Inhz
+OnN0cmluZyIgbWluT2NjdXJzPSIwIiBuaWxsYWJsZT0idHJ1ZSIgLz4NCiAgICAgIDx4czplbGVt
+ZW50IG5hbWU9Ik1hbnVmYWN0dXJlciIgdHlwZT0ieHM6c3RyaW5nIiBtaW5PY2N1cnM9IjAiIG5p
+bGxhYmxlPSJ0cnVlIiAvPg0KICAgICAgPHhzOmVsZW1lbnQgbmFtZT0iU2VyaWFsTnVtYmVyIiB0
+eXBlPSJ4czpzdHJpbmciIG1pbk9jY3Vycz0iMCIgbmlsbGFibGU9InRydWUiIC8+DQogICAgICA8
+eHM6ZWxlbWVudCBuYW1lPSJNYWNoaW5lU3RhdGUiIHR5cGU9InRuczpNYWNoaW5lU3RhdGVEYXRh
+VHlwZSIgbWluT2NjdXJzPSIwIiAvPg0KICAgIDwveHM6c2VxdWVuY2U+DQogIDwveHM6Y29tcGxl
+eFR5cGU+DQogIDx4czplbGVtZW50IG5hbWU9Ik1hY2hpbmVEYXRhVHlwZSIgdHlwZT0idG5zOk1h
+Y2hpbmVEYXRhVHlwZSIgLz4NCg0KICA8eHM6Y29tcGxleFR5cGUgbmFtZT0iTGlzdE9mTWFjaGlu
+ZURhdGFUeXBlIj4NCiAgICA8eHM6c2VxdWVuY2U+DQogICAgICA8eHM6ZWxlbWVudCBuYW1lPSJN
+YWNoaW5lRGF0YVR5cGUiIHR5cGU9InRuczpNYWNoaW5lRGF0YVR5cGUiIG1pbk9jY3Vycz0iMCIg
+bWF4T2NjdXJzPSJ1bmJvdW5kZWQiIG5pbGxhYmxlPSJ0cnVlIiAvPg0KICAgIDwveHM6c2VxdWVu
+Y2U+DQogIDwveHM6Y29tcGxleFR5cGU+DQogIDx4czplbGVtZW50IG5hbWU9Ikxpc3RPZk1hY2hp
+bmVEYXRhVHlwZSIgdHlwZT0idG5zOkxpc3RPZk1hY2hpbmVEYXRhVHlwZSIgbmlsbGFibGU9InRy
+dWUiPjwveHM6ZWxlbWVudD4NCg0KPC94czpzY2hlbWE+</ByteString>
+    </Value>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;i=250" BrowseName="NamespaceUri" ParentNodeId="ns=1;i=248" DataType="String">
+    <DisplayName>NamespaceUri</DisplayName>
+    <Description>A URI that uniquely identifies the dictionary.</Description>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=248</Reference>
+    </References>
+    <Value>
+      <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">http://samplecompany.com/SampleServer/Model</String>
+    </Value>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;i=251" BrowseName="Deprecated" ParentNodeId="ns=1;i=248" DataType="Boolean">
+    <DisplayName>Deprecated</DisplayName>
+    <Description>Indicates that all of the definitions for the dictionary are available through a DataTypeDefinition Attribute.</Description>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=248</Reference>
+    </References>
+    <Value>
+      <Boolean xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">true</Boolean>
+    </Value>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;i=65" BrowseName="1:MachineDataType" ParentNodeId="ns=1;i=248" DataType="String">
+    <DisplayName>MachineDataType</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=248</Reference>
+    </References>
+    <Value>
+      <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">//xs:element[@name='MachineDataType']</String>
+    </Value>
+  </UAVariable>
+  <UAObject NodeId="ns=1;i=112" BrowseName="Default JSON" SymbolicName="DefaultJson">
+    <DisplayName>Default JSON</DisplayName>
+    <References>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=3</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+    </References>
+  </UAObject>
 </UANodeSet>

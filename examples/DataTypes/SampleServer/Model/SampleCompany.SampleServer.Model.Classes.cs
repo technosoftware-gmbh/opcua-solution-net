@@ -84,12 +84,11 @@ namespace SampleCompany.SampleServer.Model
         #region Initialization String
         private const string InitializationString =
            "AQAAACsAAABodHRwOi8vc2FtcGxlY29tcGFueS5jb20vU2FtcGxlU2VydmVyL01vZGVs/////wRhggoE" +
-           "AAAAAQAYAAAAR2V0TWFjaGluZURhdGFNZXRob2RUeXBlAQFpAAAvAQFpAGkAAAABAf////8BAAAAF2Cp" +
-           "CgIAAAAAAA8AAABPdXRwdXRBcmd1bWVudHMBAWoAAC4ARGoAAACWBQAAAAEAKgEBGgAAAAsAAABNYWNo" +
-           "aW5lTmFtZQAM/////wAAAAAAAQAqAQEbAAAADAAAAE1hbnVmYWN0dXJlcgAM/////wAAAAAAAQAqAQEb" +
-           "AAAADAAAAFNlcmlhbE51bWJlcgAM/////wAAAAAAAQAqAQEaAAAACwAAAElzUHJvZHVjaW5nAAH/////" +
-           "AAAAAAABACoBARsAAAAMAAAATWFjaGluZVN0YXRlAAf/////AAAAAAABACgBAQAAAAEAAAAAAAAAAQH/" +
-           "////AAAAAA==";
+           "AAAAAQAYAAAAR2V0TWFjaGluZURhdGFNZXRob2RUeXBlAQFpAAAvAQFpAGkAAAABAf////8CAAAAF2Cp" +
+           "CgIAAAAAAA4AAABJbnB1dEFyZ3VtZW50cwEBPgAALgBEPgAAAJYBAAAAAQAqAQEaAAAACwAAAE1hY2hp" +
+           "bmVOYW1lAAz/////AAAAAAABACgBAQAAAAEAAAAAAAAAAQH/////AAAAABdgqQoCAAAAAAAPAAAAT3V0" +
+           "cHV0QXJndW1lbnRzAQFqAAAuAERqAAAAlgEAAAABACoBARwAAAALAAAATWFjaGluZURhdGEBAQMA////" +
+           "/wAAAAAAAQAoAQEAAAABAAAAAAAAAAEB/////wAAAAA=";
         #endregion
         #endif
         #endregion
@@ -121,11 +120,9 @@ namespace SampleCompany.SampleServer.Model
 
             ServiceResult result = null;
 
-            string machineName = (string)_outputArguments[0];
-            string manufacturer = (string)_outputArguments[1];
-            string serialNumber = (string)_outputArguments[2];
-            bool isProducing = (bool)_outputArguments[3];
-            uint machineState = (uint)_outputArguments[4];
+            string machineName = (string)_inputArguments[0];
+
+            MachineDataType machineData = (MachineDataType)_outputArguments[0];
 
             if (OnCall != null)
             {
@@ -133,18 +130,11 @@ namespace SampleCompany.SampleServer.Model
                     _context,
                     this,
                     _objectId,
-                    ref machineName,
-                    ref manufacturer,
-                    ref serialNumber,
-                    ref isProducing,
-                    ref machineState);
+                    machineName,
+                    ref machineData);
             }
 
-            _outputArguments[0] = machineName;
-            _outputArguments[1] = manufacturer;
-            _outputArguments[2] = serialNumber;
-            _outputArguments[3] = isProducing;
-            _outputArguments[4] = machineState;
+            _outputArguments[0] = machineData;
 
             return result;
         }
@@ -162,11 +152,8 @@ namespace SampleCompany.SampleServer.Model
         ISystemContext context,
         MethodState method,
         NodeId objectId,
-        ref string machineName,
-        ref string manufacturer,
-        ref string serialNumber,
-        ref bool isProducing,
-        ref uint machineState);
+        string machineName,
+        ref MachineDataType machineData);
     #endif
     #endregion
 
@@ -671,12 +658,8 @@ namespace SampleCompany.SampleServer.Model
            "AAABAAgAAABTZXRQb2ludAEBXQAALwEAQAldAAAAAAv/////AwP/////AQAAABVgiQoCAAAAAAAHAAAA" +
            "RVVSYW5nZQEBYQAALgBEYQAAAAEAdAP/////AQH/////AAAAABVgiQoCAAAAAQALAAAATWVhc3VyZW1l" +
            "bnQBAWMAAC8BAEAJYwAAAAAL/////wEB/////wEAAAAVYIkKAgAAAAAABwAAAEVVUmFuZ2UBAWcAAC4A" +
-           "RGcAAAABAHQD/////wEB/////wAAAAAEYYIKBAAAAAEADgAAAEdldE1hY2hpbmVEYXRhAQFrAAAvAQFr" +
-           "AGsAAAABAf////8BAAAAF2CpCgIAAAAAAA8AAABPdXRwdXRBcmd1bWVudHMBAWwAAC4ARGwAAACWBQAA" +
-           "AAEAKgEBGgAAAAsAAABNYWNoaW5lTmFtZQAM/////wAAAAAAAQAqAQEbAAAADAAAAE1hbnVmYWN0dXJl" +
-           "cgAM/////wAAAAAAAQAqAQEbAAAADAAAAFNlcmlhbE51bWJlcgAM/////wAAAAAAAQAqAQEaAAAACwAA" +
-           "AElzUHJvZHVjaW5nAAH/////AAAAAAABACoBARsAAAAMAAAATWFjaGluZVN0YXRlAAf/////AAAAAAAB" +
-           "ACgBAQAAAAEAAAAAAAAAAQH/////AAAAAA==";
+           "RGcAAAABAHQD/////wEB/////wAAAAAVYIkKAgAAAAEACwAAAE1hY2hpbmVEYXRhAQEEAAAuAEQEAAAA" +
+           "AQEBAP////8DA/////8AAAAA";
         #endregion
         #endif
         #endregion
@@ -740,21 +723,21 @@ namespace SampleCompany.SampleServer.Model
         }
 
         /// <remarks />
-        public GetMachineDataMethodState GetMachineData
+        public PropertyState<MachineStateDataType> MachineData
         {
             get
             {
-                return m_getMachineDataMethod;
+                return m_machineData;
             }
 
             set
             {
-                if (!Object.ReferenceEquals(m_getMachineDataMethod, value))
+                if (!Object.ReferenceEquals(m_machineData, value))
                 {
                     ChangeMasks |= NodeStateChangeMasks.Children;
                 }
 
-                m_getMachineDataMethod = value;
+                m_machineData = value;
             }
         }
         #endregion
@@ -784,9 +767,9 @@ namespace SampleCompany.SampleServer.Model
                 children.Add(m_level);
             }
 
-            if (m_getMachineDataMethod != null)
+            if (m_machineData != null)
             {
-                children.Add(m_getMachineDataMethod);
+                children.Add(m_machineData);
             }
 
             base.GetChildren(context, children);
@@ -873,24 +856,24 @@ namespace SampleCompany.SampleServer.Model
                     break;
                 }
 
-                case SampleCompany.SampleServer.Model.BrowseNames.GetMachineData:
+                case SampleCompany.SampleServer.Model.BrowseNames.MachineData:
                 {
                     if (createOrReplace)
                     {
-                        if (GetMachineData == null)
+                        if (MachineData == null)
                         {
                             if (replacement == null)
                             {
-                                GetMachineData = new GetMachineDataMethodState(this);
+                                MachineData = new PropertyState<MachineStateDataType>(this);
                             }
                             else
                             {
-                                GetMachineData = (GetMachineDataMethodState)replacement;
+                                MachineData = (PropertyState<MachineStateDataType>)replacement;
                             }
                         }
                     }
 
-                    instance = GetMachineData;
+                    instance = MachineData;
                     break;
                 }
             }
@@ -908,7 +891,7 @@ namespace SampleCompany.SampleServer.Model
         private TemperatureControllerState m_temperature;
         private FlowControllerState m_flow;
         private LevelControllerState m_level;
-        private GetMachineDataMethodState m_getMachineDataMethod;
+        private PropertyState<MachineStateDataType> m_machineData;
         #endregion
     }
     #endif
