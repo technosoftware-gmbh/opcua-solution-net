@@ -241,6 +241,15 @@ namespace SampleCompany.SampleServer
                         new QualifiedName("Machine #1", NamespaceIndex),
                         null,
                         true);
+                    // Initialize the property value of MachineData
+                    machine1_.MachineData.Value = new MachineDataType
+                    {
+                        MachineName = "Machine #1",
+                        Manufacturer = "SampleCompany",
+                        SerialNumber = "SN 1079",
+                        MachineState = MachineStateDataType.Inactive
+                    };
+
                     machine1_.AddReference(ReferenceTypeIds.Organizes, true, plantFolder.NodeId);
                     plantFolder.AddReference(ReferenceTypeIds.Organizes, false, machine1_.NodeId);
                     AddPredefinedNode(SystemContext, machine1_);
@@ -253,6 +262,15 @@ namespace SampleCompany.SampleServer
                         new QualifiedName("Machine #2", NamespaceIndex),
                         null,
                         true);
+                    // Initialize the property value of MachineData
+                    machine2_.MachineData.Value = new MachineDataType
+                    {
+                        MachineName = "Machine #2",
+                        Manufacturer = "Unknown",
+                        SerialNumber = "SN 1312",
+                        MachineState = MachineStateDataType.PrepareRemove
+                    };
+
                     machine2_.AddReference(ReferenceTypeIds.Organizes, true, plantFolder.NodeId);
                     plantFolder.AddReference(ReferenceTypeIds.Organizes, false, machine2_.NodeId);
                     AddPredefinedNode(SystemContext, machine2_);
@@ -269,6 +287,7 @@ namespace SampleCompany.SampleServer
                     getMachineDataMethod.AddReference(ReferenceTypeIds.Organizes, true, plantFolder.NodeId);
                     plantFolder.AddReference(ReferenceTypeIds.Organizes, false, getMachineDataMethod.NodeId);
                     plantFolder.AddChild(getMachineDataMethod);
+
                     
                     // Add the event handler if the method is called
                     getMachineDataMethod.OnCall = OnGetMachineData;
@@ -329,16 +348,21 @@ namespace SampleCompany.SampleServer
 
             if (machineName == "Machine #1")
             {
-                machinedata.Manufacturer = "SampleCompany";
-                machinedata.SerialNumber = "SN 1079";
-                machinedata.MachineState = MachineStateDataType.Inactive;
+                machinedata.Manufacturer = machine1_.MachineData.Value.Manufacturer;
+                machinedata.SerialNumber = machine1_.MachineData.Value.SerialNumber;
+                machinedata.MachineState = machine1_.MachineData.Value.MachineState;
             }
             else if (machineName == "Machine #2")
             {
-                machinedata.MachineName = machineName;
+                machinedata.Manufacturer = machine1_.MachineData.Value.Manufacturer;
+                machinedata.SerialNumber = machine1_.MachineData.Value.SerialNumber;
+                machinedata.MachineState = machine1_.MachineData.Value.MachineState;
+            }
+            else
+            {
                 machinedata.Manufacturer = "Unknown";
-                machinedata.SerialNumber = "SN 1030";
-                machinedata.MachineState = MachineStateDataType.PrepareRemove;
+                machinedata.SerialNumber = "Unknown";
+                machinedata.MachineState = MachineStateDataType.Failed;
             }
             return ServiceResult.Good;
         }              

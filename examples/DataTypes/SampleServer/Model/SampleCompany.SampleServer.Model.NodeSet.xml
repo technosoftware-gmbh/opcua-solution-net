@@ -265,7 +265,7 @@
         </Value>
       </Value>
       <DataType>
-        <Identifier>ns=1;i=1</Identifier>
+        <Identifier>ns=1;i=3</Identifier>
       </DataType>
       <ValueRank>-1</ValueRank>
       <ArrayDimensions />

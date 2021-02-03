@@ -72,7 +72,7 @@
       <opc:Object SymbolicName="Temperature" TypeDefinition="TemperatureControllerType"></opc:Object>
       <opc:Object SymbolicName="Flow" TypeDefinition="FlowControllerType"></opc:Object>
       <opc:Object SymbolicName="Level" TypeDefinition="LevelControllerType"></opc:Object>
-      <opc:Property SymbolicName="MachineData" DataType="MachineStateDataType" AccessLevel="ReadWrite"></opc:Property>
+      <opc:Property SymbolicName="MachineData" DataType="MachineDataType" AccessLevel="ReadWrite"></opc:Property>
     </opc:Children>
   </opc:ObjectType>
 

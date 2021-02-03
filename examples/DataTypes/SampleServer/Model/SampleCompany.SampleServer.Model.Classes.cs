@@ -659,7 +659,7 @@ namespace SampleCompany.SampleServer.Model
            "RVVSYW5nZQEBYQAALgBEYQAAAAEAdAP/////AQH/////AAAAABVgiQoCAAAAAQALAAAATWVhc3VyZW1l" +
            "bnQBAWMAAC8BAEAJYwAAAAAL/////wEB/////wEAAAAVYIkKAgAAAAAABwAAAEVVUmFuZ2UBAWcAAC4A" +
            "RGcAAAABAHQD/////wEB/////wAAAAAVYIkKAgAAAAEACwAAAE1hY2hpbmVEYXRhAQEEAAAuAEQEAAAA" +
-           "AQEBAP////8DA/////8AAAAA";
+           "AQEDAP////8DA/////8AAAAA";
         #endregion
         #endif
         #endregion
@@ -723,7 +723,7 @@ namespace SampleCompany.SampleServer.Model
         }
 
         /// <remarks />
-        public PropertyState<MachineStateDataType> MachineData
+        public PropertyState<MachineDataType> MachineData
         {
             get
             {
@@ -864,11 +864,11 @@ namespace SampleCompany.SampleServer.Model
                         {
                             if (replacement == null)
                             {
-                                MachineData = new PropertyState<MachineStateDataType>(this);
+                                MachineData = new PropertyState<MachineDataType>(this);
                             }
                             else
                             {
-                                MachineData = (PropertyState<MachineStateDataType>)replacement;
+                                MachineData = (PropertyState<MachineDataType>)replacement;
                             }
                         }
                     }
@@ -891,7 +891,7 @@ namespace SampleCompany.SampleServer.Model
         private TemperatureControllerState m_temperature;
         private FlowControllerState m_flow;
         private LevelControllerState m_level;
-        private PropertyState<MachineStateDataType> m_machineData;
+        private PropertyState<MachineDataType> m_machineData;
         #endregion
     }
     #endif
