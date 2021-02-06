@@ -446,7 +446,6 @@ namespace SampleCompany.SampleServer
         }
         #endregion
 
-
         #region Helper Methods
         /// <summary>
         /// Creates a new variable.
