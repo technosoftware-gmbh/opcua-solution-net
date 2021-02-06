@@ -119,6 +119,7 @@ namespace SampleCompany.SampleServer
                     if (disposing)
                     {
                         // Dispose managed resources.
+                        simulationTimer_?.Dispose();
                     }
 
                     // Call the appropriate methods to clean up
@@ -163,8 +164,9 @@ namespace SampleCompany.SampleServer
 
                 LoadPredefinedNodes(SystemContext, externalReferences);
 
+                // Create the root folder for all nodes of this server
                 var root = CreateFolderState(null, "My Data", new LocalizedText("en", "My Data"),
-                                 new LocalizedText("en", "Root folder of the Sample Server"));
+                    new LocalizedText("en", "Root folder of the Sample Server. All nodes must be placed under this root."));
                 References.Add(new NodeStateReference(ReferenceTypes.Organizes, false, root.NodeId));
                 root.EventNotifier = EventNotifiers.SubscribeToEvents;
                 opcServer_.AddRootNotifier(root);
@@ -182,7 +184,7 @@ namespace SampleCompany.SampleServer
                     const string simulation = "Simulation_";
 
                     var simulatedVariable = CreateDynamicVariable(simulationFolder, simulation + "Double", "Double", "A simulated variable of type Double. If Enabled is true this value changes based on the defined Interval.", DataTypeIds.Double, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
-                    
+
                     var intervalVariable = CreateBaseDataVariableState(simulationFolder, simulation + "Interval", "Interval", "The Interval used for changing the simulated values.", DataTypeIds.UInt16, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, simulationInterval_);
                     intervalVariable.OnSimpleWriteValue = OnWriteInterval;
 
@@ -195,6 +197,7 @@ namespace SampleCompany.SampleServer
                 {
                     Utils.Trace(e, "Error creating the address space.");
                 }
+                // Add all nodes under root to the server
                 AddPredefinedNode(SystemContext, root);
                 simulationTimer_ = new Timer(DoSimulation, null, 1000, 1000);
             }
@@ -255,7 +258,7 @@ namespace SampleCompany.SampleServer
         {
             if (generator_ == null)
             {
-                generator_ = new Opc.Ua.Test.DataGenerator(null) {BoundaryValueFrequency = 0};
+                generator_ = new Opc.Ua.Test.DataGenerator(null) { BoundaryValueFrequency = 0 };
             }
 
             object value = null;
@@ -266,7 +269,6 @@ namespace SampleCompany.SampleServer
                 value = generator_.GetRandom(variable.DataType, variable.ValueRank, new uint[] { 10 }, opcServer_.NodeManager.ServerData.TypeTree);
                 retryCount++;
             }
-
             return value;
         }
 

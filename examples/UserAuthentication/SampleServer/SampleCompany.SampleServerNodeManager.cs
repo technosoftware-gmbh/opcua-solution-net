@@ -34,11 +34,8 @@ using System.Reflection;
 using System.Threading;
 
 using Opc.Ua;
-using SampleCompany.SampleServer.Model;
-using Technosoftware.UaServer;
-using DataTypeIds = Opc.Ua.DataTypeIds;
-using ObjectIds = Opc.Ua.ObjectIds;
 
+using Technosoftware.UaServer;
 #endregion
 
 namespace SampleCompany.SampleServer
@@ -61,10 +58,6 @@ namespace SampleCompany.SampleServer
         private UInt16 simulationInterval_ = 1000;
         private bool simulationEnabled_ = true;
         private List<BaseDataVariableState> dynamicNodes_;
-
-        private Model.MachineState machine1_ = new Model.MachineState(null);
-        private Model.MachineState machine2_ = new Model.MachineState(null);
-
         #endregion
 
         #region Constructors, Destructor, Initialization
@@ -145,39 +138,6 @@ namespace SampleCompany.SampleServer
         #region INodeIdFactory Members
         #endregion
 
-        #region Overridden Methods
-        /// <summary>
-        /// Loads a node set from a file or resource and address them to the set of predefined nodes.
-        /// </summary>
-        protected override NodeStateCollection LoadPredefinedNodes(ISystemContext context)
-        {
-            // We know the model name to load but because this project is compiled for different environments we don't know
-            // the assembly it is in. Therefor we search for it:
-            var assembly = this.GetType().GetTypeInfo().Assembly;
-            var names = assembly.GetManifestResourceNames();
-            var resourcePath = String.Empty;
-
-            foreach (var module in names)
-            {
-                if (module.Contains("SampleCompany.SampleServer.Model.PredefinedNodes.uanodes"))
-                {
-                    resourcePath = module;
-                    break;
-                }
-            }
-
-            if (resourcePath == String.Empty)
-            {
-                // No assembly found containing the nodes of the model. Behaviour here can differ but in this case we just return null.
-                return null;
-            }
-
-            var predefinedNodes = new NodeStateCollection();
-            predefinedNodes.LoadFromBinaryResource(context, resourcePath, assembly, true);
-            return predefinedNodes;
-        }
-        #endregion
-
         #region IUaNodeManager Methods
         /// <summary>
         /// Does any initialization required before the address space can be used.
@@ -232,68 +192,40 @@ namespace SampleCompany.SampleServer
                     enabledVariable.OnSimpleWriteValue = OnWriteEnabled;
                     #endregion
 
-                    #region Plant
-                    var plantFolder = CreateFolderState(root, "Plant", "Plant", null);
+                    #region Access Rights Handling
+                    var folderAccessRights = CreateFolderState(root, "AccessRights", "AccessRights", null);
+                    const string accessRights = "AccessRights_";
+                    var accessRightsInstructions = CreateBaseDataVariableState(folderAccessRights, accessRights + "Instructions", "Instructions", null, DataTypeIds.String, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+                    accessRightsInstructions.Value = "This folder will be accessible to all authenticated users who enter, but contents therein will be secured.";
 
-                    // Create an instance for machine 1
-                    var parsedNodeId = new ParsedNodeId() { NamespaceIndex = NamespaceIndex, RootId = "Machine #1" };
-                    machine1_.Create(
-                        SystemContext,
-                        parsedNodeId.Construct(),
-                        new QualifiedName("Machine #1", NamespaceIndex),
-                        null,
-                        true);
-                    // Initialize the property value of MachineData
-                    machine1_.MachineData.Value = new MachineDataType
-                    {
-                        MachineName = "Machine #1",
-                        Manufacturer = "SampleCompany",
-                        SerialNumber = "SN 1079",
-                        MachineState = MachineStateDataType.Inactive
-                    };
 
-                    machine1_.AddReference(ReferenceTypeIds.Organizes, true, plantFolder.NodeId);
-                    plantFolder.AddReference(ReferenceTypeIds.Organizes, false, machine1_.NodeId);
-                    AddPredefinedNode(SystemContext, machine1_);
+                    #region Access Rights Operator Handling
+                    // sub-folder for "AccessOperator"
+                    var folderAccessRightsAccessOperator = CreateFolderState(folderAccessRights, "AccessRights_AccessOperator", "AccessOperator", null);
+                    const string accessRightsAccessOperator = "AccessRights_AccessOperator_";
 
-                    // Create an instance for machine 2
-                    parsedNodeId = new ParsedNodeId() { NamespaceIndex = NamespaceIndex, RootId = "Machine #2" };
-                    machine2_.Create(
-                        SystemContext,
-                        parsedNodeId.Construct(),
-                        new QualifiedName("Machine #2", NamespaceIndex),
-                        null,
-                        true);
-                    // Initialize the property value of MachineData
-                    machine2_.MachineData.Value = new MachineDataType
-                    {
-                        MachineName = "Machine #2",
-                        Manufacturer = "Unknown",
-                        SerialNumber = "SN 1312",
-                        MachineState = MachineStateDataType.PrepareRemove
-                    };
+                    var arOperatorRW = CreateBaseDataVariableState(folderAccessRightsAccessOperator, accessRightsAccessOperator + "OperatorUsable", "OperatorUsable", null, BuiltInType.Int16, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+                    arOperatorRW.AccessLevel = AccessLevels.CurrentReadOrWrite;
+                    arOperatorRW.UserAccessLevel = AccessLevels.CurrentReadOrWrite;
+                    arOperatorRW.OnReadUserAccessLevel = OnReadOperatorUserAccessLevel;
+                    arOperatorRW.OnSimpleWriteValue = OnWriteOperatorValue;
+                    arOperatorRW.OnReadValue = OnReadOperatorValue;
+                    dynamicNodes_.Add(arOperatorRW);
+                    #endregion
 
-                    machine2_.AddReference(ReferenceTypeIds.Organizes, true, plantFolder.NodeId);
-                    plantFolder.AddReference(ReferenceTypeIds.Organizes, false, machine2_.NodeId);
-                    AddPredefinedNode(SystemContext, machine2_);
+                    #region Access Rights Administrator Handling
+                    // sub-folder for "AccessAdministrator"
+                    var folderAccessRightsAccessAdministrator = CreateFolderState(folderAccessRights, "AccessRights_AccessAdministrator", "AccessAdministrator", null);
+                    const string accessRightsAccessAdministrator = "AccessRights_AccessAdministrator_";
 
-                    // Create an instance of GetMachineDataMethodState
-                    parsedNodeId = new ParsedNodeId() { NamespaceIndex = NamespaceIndex, RootId = "GetMachineData" };
-                    Model.GetMachineDataMethodState getMachineDataMethod = new Model.GetMachineDataMethodState(null);
-                    getMachineDataMethod.Create(
-                        SystemContext,
-                        parsedNodeId.Construct(),
-                        new QualifiedName("GetMachineData", NamespaceIndex),
-                        null,
-                        true);
-                    getMachineDataMethod.AddReference(ReferenceTypeIds.Organizes, true, plantFolder.NodeId);
-                    plantFolder.AddReference(ReferenceTypeIds.Organizes, false, getMachineDataMethod.NodeId);
-                    plantFolder.AddChild(getMachineDataMethod);
-
-                    
-                    // Add the event handler if the method is called
-                    getMachineDataMethod.OnCall = OnGetMachineData;
-                    AddPredefinedNode(SystemContext, getMachineDataMethod);
+                    var arAdministratorRW = CreateBaseDataVariableState(folderAccessRightsAccessAdministrator, accessRightsAccessAdministrator + "AdministratorOnly", "AdministratorOnly", null, BuiltInType.Int16, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+                    arAdministratorRW.AccessLevel = AccessLevels.CurrentReadOrWrite;
+                    arAdministratorRW.UserAccessLevel = AccessLevels.CurrentReadOrWrite;
+                    arAdministratorRW.OnReadUserAccessLevel = OnReadAdministratorUserAccessLevel;
+                    arAdministratorRW.OnSimpleWriteValue = OnWriteAdministratorValue;
+                    arAdministratorRW.OnReadValue = OnReadAdministratorValue;
+                    dynamicNodes_.Add(arAdministratorRW);
+                    #endregion
                     #endregion
                 }
                 catch (Exception e)
@@ -344,32 +276,176 @@ namespace SampleCompany.SampleServer
                 return ServiceResult.Create(e, StatusCodes.Bad, "Error writing Enabled variable.");
             }
         }
+        #endregion
 
-        private ServiceResult OnGetMachineData(ISystemContext context, MethodState method, NodeId objectid, string machineName, ref MachineDataType machinedata)
+        #region Operator specific handling
+        public ServiceResult OnReadOperatorUserAccessLevel(ISystemContext context, NodeState node, ref byte value)
         {
-            machinedata = new MachineDataType {MachineName = machineName};
+            // If user identity is not set default user access level handling should apply
 
-            if (machineName == "Machine #1")
+            if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.Anonymous)
             {
-                machinedata.Manufacturer = machine1_.MachineData.Value.Manufacturer;
-                machinedata.SerialNumber = machine1_.MachineData.Value.SerialNumber;
-                machinedata.MachineState = machine1_.MachineData.Value.MachineState;
-            }
-            else if (machineName == "Machine #2")
-            {
-                machinedata.Manufacturer = machine1_.MachineData.Value.Manufacturer;
-                machinedata.SerialNumber = machine1_.MachineData.Value.SerialNumber;
-                machinedata.MachineState = machine1_.MachineData.Value.MachineState;
+                value = AccessLevels.None;
             }
             else
             {
-                machinedata.Manufacturer = "Unknown";
-                machinedata.SerialNumber = "Unknown";
-                machinedata.MachineState = MachineStateDataType.Failed;
+                if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.UserName)
+                {
+                    if (context.UserIdentity.GetIdentityToken() is UserNameIdentityToken user && 
+                        ((user.UserName == "operator") || (user.UserName == "administrator")))
+                    {
+                        value = AccessLevels.CurrentReadOrWrite;
+                    }
+                    else
+                    {
+                        value = AccessLevels.None;
+                    }
+                }
+            }
+
+            return ServiceResult.Good;
+        }
+
+        private ServiceResult OnReadOperatorValue(
+        ISystemContext context,
+        NodeState node,
+        NumericRange indexRange,
+        QualifiedName dataEncoding,
+        ref object value,
+        ref StatusCode statusCode,
+        ref DateTime timestamp)
+        {
+            // If user identity is not set default user access level handling should apply
+            if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.Anonymous)
+            {
+                return StatusCodes.BadUserAccessDenied;
+            }
+
+            return ServiceResult.Good;
+        }
+
+        public ServiceResult OnWriteOperatorValue(ISystemContext context, NodeState node, ref object value)
+        {
+            // If user identity is not set default user access level handling should apply
+            if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.Anonymous)
+            {
+                return StatusCodes.BadUserAccessDenied;
+            }
+
+            if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.UserName)
+            {
+                if (context.UserIdentity.GetIdentityToken() is UserNameIdentityToken user && 
+                    (user.UserName != "operator") && (user.UserName != "administrator"))
+                {
+                    return StatusCodes.BadUserAccessDenied;
+                }
             }
             return ServiceResult.Good;
         }
         #endregion
+
+        #region Administrator specific handling
+        public ServiceResult OnReadAdministratorUserAccessLevel(ISystemContext context, NodeState node, ref byte value)
+        {
+            // If user identity is not set default user access level handling should apply
+            if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.Anonymous)
+            {
+                value = AccessLevels.None;
+            }
+            else
+            {
+                if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.UserName)
+                {
+                    if (context.UserIdentity.GetIdentityToken() is UserNameIdentityToken user && user.UserName == "administrator")
+                    {
+                        value = AccessLevels.CurrentReadOrWrite;
+                    }
+                    else
+                    {
+                        value = AccessLevels.None;
+                    }
+                }
+            }
+            return ServiceResult.Good;
+        }
+
+        private ServiceResult OnReadAdministratorValue(
+                                ISystemContext context,
+                                NodeState node,
+                                NumericRange indexRange,
+                                QualifiedName dataEncoding,
+                                ref object value,
+                                ref StatusCode statusCode,
+                                ref DateTime timestamp)
+        {
+            // If user identity is not set default user access level handling should apply
+            if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.Anonymous)
+            {
+                return StatusCodes.BadUserAccessDenied;
+            }
+
+            if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.UserName)
+            {
+                if (context.UserIdentity.GetIdentityToken() is UserNameIdentityToken user && user.UserName != "administrator")
+                {
+                    return StatusCodes.BadUserAccessDenied;
+                }
+            }
+            return ServiceResult.Good;
+        }
+
+        public ServiceResult OnWriteAdministratorValue(ISystemContext context, NodeState node, ref object value)
+        {
+            // If user identity is not set default user access level handling should apply
+            if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.Anonymous)
+            {
+                return StatusCodes.BadUserAccessDenied;
+            }
+            if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.UserName)
+            {
+                if (context.UserIdentity.GetIdentityToken() is UserNameIdentityToken user && user.UserName != "administrator")
+                {
+                    return StatusCodes.BadUserAccessDenied;
+                }
+            }
+            return ServiceResult.Good;
+        }
+        #endregion
+
+        #region User specific Browse handling
+        /// <summary>
+        /// Checks if the user is allowed to access this node.
+        /// </summary>
+        protected override bool IsNodeAccessibleForUser(UaServerContext context, UaContinuationPoint continuationPoint, NodeState node)
+        {
+            if (context.UserIdentity == null || context.UserIdentity.TokenType == UserTokenType.Anonymous)
+            {
+                if ((node.NodeId.Identifier.ToString() == "AccessAdministrator") ||
+                    (node.NodeId.Identifier.ToString() == "AccessOperator"))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Checks if the user is allowed to access this reference.
+        /// </summary>
+        protected override bool IsReferenceAccessibleForUser(UaServerContext context, UaContinuationPoint continuationPoint, IReference reference)
+        {
+            if (context.UserIdentity == null || context.UserIdentity.TokenType == UserTokenType.Anonymous)
+            {
+                if ((reference.TargetId.Identifier.ToString() == "AccessRights_AccessAdministrator") ||
+                    (reference.TargetId.Identifier.ToString() == "AccessRights_AccessOperator"))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        #endregion
+
 
         #region Helper Methods
         /// <summary>

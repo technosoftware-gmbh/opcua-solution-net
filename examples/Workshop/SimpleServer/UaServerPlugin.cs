@@ -1,6 +1,6 @@
-#region Copyright (c) 2011-2020 Technosoftware GmbH. All rights reserved
+#region Copyright (c) 2021 Technosoftware GmbH. All rights reserved
 //-----------------------------------------------------------------------------
-// Copyright (c) 2011-2020 Technosoftware GmbH. All rights reserved
+// Copyright (c) 2021 Technosoftware GmbH. All rights reserved
 // Web: https://technosoftware.com 
 // 
 // License: 
@@ -25,7 +25,7 @@
 //
 // SPDX-License-Identifier: MIT
 //-----------------------------------------------------------------------------
-#endregion Copyright (c) 2011-2020 Technosoftware GmbH. All rights reserved
+#endregion Copyright (c) 2021 Technosoftware GmbH. All rights reserved
 
 #region Using Directives
 using System;
@@ -143,6 +143,7 @@ namespace Technosoftware.SimpleServer
         /// <remarks>Returning empty strings activates the evaluation version of the OPC UA Server .NET. The evaluation allows the usage of the full product for 30 days.</remarks>
         public void OnGetLicenseInformation(out string serialNumber)
         {
+            Utils.Trace(Utils.TraceMasks.Information, "OnGetLicenseInformation(): Request the license information.");
             serialNumber = "";
         }
 
@@ -151,6 +152,7 @@ namespace Technosoftware.SimpleServer
         /// <returns>A <see cref="StatusCode"/> code with the result of the operation. Returning an error code stops the further server execution.</returns>
         public StatusCode OnStartup(string[] args)
         {
+            Utils.Trace(Utils.TraceMasks.Information, "OnStartup(): Server is starting up.");
             return StatusCodes.Good;
         }
 
@@ -160,6 +162,7 @@ namespace Technosoftware.SimpleServer
         /// <returns>Array of namespaces that are used by the application.</returns>
         public string[] OnGetNamespaceUris()
         {
+            Utils.Trace(Utils.TraceMasks.Information, "OnGetNamespaceUris(): Request the supported namespace Uris.");
             // set one namespace for the type model.
             var namespaceUrls = new string[1];
             namespaceUrls[0] = Namespaces.SimpleServer;
@@ -171,6 +174,7 @@ namespace Technosoftware.SimpleServer
         /// <param name="configuration">The application configuration</param>
         public void OnInitialized(IUaServer opcServer, ApplicationConfiguration configuration)
         {
+            Utils.Trace(Utils.TraceMasks.Information, "OnInitialized(): Server is initialized.");
             opcServer_ = opcServer;
         }
 
@@ -194,6 +198,7 @@ namespace Technosoftware.SimpleServer
         /// <returns>A <see cref="StatusCode"/> code with the result of the operation. Returning from this method stops the further server execution.</returns>
         public StatusCode OnRunning()
         {
+            Utils.Trace(Utils.TraceMasks.Information, "OnRunning(): Server is running.");
             return StatusCodes.Good;
         }
 
@@ -207,6 +212,7 @@ namespace Technosoftware.SimpleServer
         /// <returns>A <see cref="StatusCode"/> code with the result of the operation.</returns>
         public StatusCode OnShutdown(ServerState serverState, string reason, Exception exception)
         {
+            Utils.Trace(Utils.TraceMasks.Information, "OnShutdown(): Server is shutting down because of {0}.", reason);
             return StatusCodes.Good;
         }
 
@@ -214,6 +220,7 @@ namespace Technosoftware.SimpleServer
         /// <returns>A <see cref="ServerProperties"/> object.</returns>
         public ServerProperties OnGetServerProperties()
         {
+            Utils.Trace(Utils.TraceMasks.Information, "OnGetServerProperties(): Request some standard information of the server}.");
             var properties = new ServerProperties
                                 {
                                     ManufacturerName = "Technosoftware GmbH",
@@ -265,11 +272,13 @@ namespace Technosoftware.SimpleServer
         #region Optional Server Plugin methods
         public UaBaseServer OnGetServer()
         {
+            Utils.Trace(Utils.TraceMasks.Information, "OnGetServer(): Request the instance of the server.");
             return new SimpleServer();
         }
 
         public UaBaseNodeManager OnGetNodeManager(IUaServer opcServer, IUaServerData uaServer, ApplicationConfiguration configuration, params string[] namespaceUris)
         {
+            Utils.Trace(Utils.TraceMasks.Information, "OnGetNodeManager(): Request the instance of the node manager.");
             return new SimpleServerNodeManager(opcServer, this, uaServer, configuration, namespaceUris);
         }
 

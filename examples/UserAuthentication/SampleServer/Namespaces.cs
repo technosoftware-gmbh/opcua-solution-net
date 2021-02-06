@@ -29,31 +29,20 @@
 
 #region Using Directives
 using System;
-using System.Diagnostics;
-using System.Reflection;
-
-using Opc.Ua;
-
-using Technosoftware.UaServer;
-using Technosoftware.UaServer.Sessions;
+using System.Collections.Generic;
+using System.Text;
 #endregion
 
-namespace EmptyCompany.EmptyServer
+namespace SampleCompany.SampleServer
 {
     /// <summary>
-    /// Implements a basic OPC UA Server.
+    /// Defines constants for namespaces used by the application.
     /// </summary>
-    /// <remarks>
-    /// Each server instance must have one instance of a StandardServer object which is
-    /// responsible for reading the configuration file, creating the endpoints and dispatching
-    /// incoming requests to the appropriate handler.
-    /// 
-    /// This sub-class specifies non-configurable metadata such as Product Name and initializes
-    /// the EmptyServerNodeManager which provides access to the data exposed by the Server.
-    /// </remarks>
-    public class EmptyServer : UaBaseServer
+    public static partial class Namespaces
     {
-        #region Overridden Methods
-        #endregion
+        /// <summary>
+        /// The namespace for the nodes provided by the server.
+        /// </summary>
+        public const string SampleServer = "http://samplecompany.com/SampleServer";
     }
 }

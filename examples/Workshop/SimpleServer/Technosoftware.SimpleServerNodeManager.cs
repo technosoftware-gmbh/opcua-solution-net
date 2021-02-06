@@ -329,8 +329,7 @@ namespace Technosoftware.SimpleServer
                     #region Access Rights Handling
                     var folderAccessRights = CreateFolderState(root, "AccessRights", "AccessRights", null);
                     const string accessRights = "AccessRights_";
-
-                    var accessRightsInstructions = CreateVariable(folderAccessRights, accessRights + "Instructions", "Instructions", DataTypeIds.String, ValueRanks.Scalar);
+                    var accessRightsInstructions = CreateBaseDataVariableState(folderAccessRights, accessRights + "Instructions", "Instructions", null, DataTypeIds.String, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
                     accessRightsInstructions.Value = "This folder will be accessible to all authenticated users who enter, but contents therein will be secured.";
 
 
@@ -339,7 +338,7 @@ namespace Technosoftware.SimpleServer
                     var folderAccessRightsAccessOperator = CreateFolderState(folderAccessRights, "AccessRights_AccessOperator", "AccessOperator", null);
                     const string accessRightsAccessOperator = "AccessRights_AccessOperator_";
 
-                    var arOperatorRW = CreateVariable(folderAccessRightsAccessOperator, accessRightsAccessOperator + "OperatorUsable", "OperatorUsable", BuiltInType.Int16, ValueRanks.Scalar);
+                    var arOperatorRW = CreateBaseDataVariableState(folderAccessRightsAccessOperator, accessRightsAccessOperator + "OperatorUsable", "OperatorUsable", null, BuiltInType.Int16, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
                     arOperatorRW.AccessLevel = AccessLevels.CurrentReadOrWrite;
                     arOperatorRW.UserAccessLevel = AccessLevels.CurrentReadOrWrite;
                     arOperatorRW.OnReadUserAccessLevel = OnReadOperatorUserAccessLevel;
@@ -353,7 +352,7 @@ namespace Technosoftware.SimpleServer
                     var folderAccessRightsAccessAdministrator = CreateFolderState(folderAccessRights, "AccessRights_AccessAdministrator", "AccessAdministrator", null);
                     const string accessRightsAccessAdministrator = "AccessRights_AccessAdministrator_";
 
-                    var arAdministratorRW = CreateVariable(folderAccessRightsAccessAdministrator, accessRightsAccessAdministrator + "AdministratorOnly", "AdministratorOnly", BuiltInType.Int16, ValueRanks.Scalar);
+                    var arAdministratorRW = CreateBaseDataVariableState(folderAccessRightsAccessAdministrator, accessRightsAccessAdministrator + "AdministratorOnly", "AdministratorOnly", null, BuiltInType.Int16, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
                     arAdministratorRW.AccessLevel = AccessLevels.CurrentReadOrWrite;
                     arAdministratorRW.UserAccessLevel = AccessLevels.CurrentReadOrWrite;
                     arAdministratorRW.OnReadUserAccessLevel = OnReadAdministratorUserAccessLevel;
@@ -367,44 +366,9 @@ namespace Technosoftware.SimpleServer
                 {
                     Utils.Trace(e, "Error creating the address space.");
                 }
-
                 AddPredefinedNode(SystemContext, root);
                 simulationTimer_ = new Timer(DoSimulation, null, 1000, 1000);
             }
-        }
-        #endregion
-
-        #region Browse Support Functions
-        /// <summary>
-        /// Checks if the user is allowed to access this node.
-        /// </summary>
-        protected override bool IsNodeAccessibleForUser(UaServerContext context, UaContinuationPoint continuationPoint, NodeState node)
-        {
-            if (context.UserIdentity == null || context.UserIdentity.TokenType == UserTokenType.Anonymous)
-            {
-                if ((node.NodeId.Identifier.ToString() == "AccessAdministrator"))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        /// Checks if the user is allowed to access this reference.
-        /// </summary>
-        protected override bool IsReferenceAccessibleForUser(UaServerContext context, UaContinuationPoint continuationPoint, IReference reference)
-        {
-            if (context.UserIdentity == null || context.UserIdentity.TokenType == UserTokenType.Anonymous)
-            {
-                if ((reference.TargetId.Identifier.ToString() == "AccessRights_AccessAdministrator"))
-                {
-                    return false;
-                }
-            }
-
-            return true;
         }
         #endregion
 
@@ -435,14 +399,7 @@ namespace Technosoftware.SimpleServer
             {
                 simulationEnabled_ = (bool)value;
 
-                if (simulationEnabled_)
-                {
-                    simulationTimer_.Change(100, simulationInterval_);
-                }
-                else
-                {
-                    simulationTimer_.Change(100, 0);
-                }
+                simulationTimer_.Change(100, simulationEnabled_ ? simulationInterval_ : 0);
 
                 return ServiceResult.Good;
             }
@@ -452,155 +409,6 @@ namespace Technosoftware.SimpleServer
                 return ServiceResult.Create(e, StatusCodes.Bad, "Error writing Enabled variable.");
             }
         }
-
-        #region Operator specific handling
-        public ServiceResult OnReadOperatorUserAccessLevel(ISystemContext context, NodeState node, ref byte value)
-        {
-            // If user identity is not set default user access level handling should apply
-
-            if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.Anonymous)
-            {
-                value = AccessLevels.None;
-            }
-            else
-            {
-                if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.UserName)
-                {
-                    var user = context.UserIdentity.GetIdentityToken() as UserNameIdentityToken;
-                    if ((user.UserName == "operator") ||
-                        (user.UserName == "administrator"))
-                    {
-                        value = AccessLevels.CurrentReadOrWrite;
-                    }
-                    else
-                    {
-                        value = AccessLevels.None;
-                    }
-                }
-            }
-
-            return ServiceResult.Good;
-        }
-
-        private ServiceResult OnReadOperatorValue(
-        ISystemContext context,
-        NodeState node,
-        NumericRange indexRange,
-        QualifiedName dataEncoding,
-        ref object value,
-        ref StatusCode statusCode,
-        ref DateTime timestamp)
-        {
-            // If user identity is not set default user access level handling should apply
-
-            if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.Anonymous)
-            {
-                return StatusCodes.BadUserAccessDenied;
-            }
-
-            return ServiceResult.Good;
-        }
-
-        public ServiceResult OnWriteOperatorValue(ISystemContext context, NodeState node, ref object value)
-        {
-            // If user identity is not set default user access level handling should apply
-
-            if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.Anonymous)
-            {
-                return StatusCodes.BadUserAccessDenied;
-            }
-
-            if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.UserName)
-            {
-                var user = context.UserIdentity.GetIdentityToken() as UserNameIdentityToken;
-                if ((user.UserName != "operator") &&
-                    (user.UserName != "administrator"))
-                {
-                    return StatusCodes.BadUserAccessDenied;
-                }
-            }
-
-            return ServiceResult.Good;
-        }
-        #endregion
-
-        #region Administrator specific handling
-        public ServiceResult OnReadAdministratorUserAccessLevel(ISystemContext context, NodeState node, ref byte value)
-        {
-            // If user identity is not set default user access level handling should apply
-
-            if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.Anonymous)
-            {
-                value = AccessLevels.None;
-            }
-            else
-            {
-                if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.UserName)
-                {
-                    var user = context.UserIdentity.GetIdentityToken() as UserNameIdentityToken;
-                    if (user.UserName == "administrator")
-                    {
-                        value = AccessLevels.CurrentReadOrWrite;
-                    }
-                    else
-                    {
-                        value = AccessLevels.None;
-                    }
-                }
-            }
-
-            return ServiceResult.Good;
-        }
-
-        private ServiceResult OnReadAdministratorValue(
-                                ISystemContext context,
-                                NodeState node,
-                                NumericRange indexRange,
-                                QualifiedName dataEncoding,
-                                ref object value,
-                                ref StatusCode statusCode,
-                                ref DateTime timestamp)
-        {
-            // If user identity is not set default user access level handling should apply
-
-            if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.Anonymous)
-            {
-                return StatusCodes.BadUserAccessDenied;
-            }
-
-            if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.UserName)
-            {
-                var user = context.UserIdentity.GetIdentityToken() as UserNameIdentityToken;
-                if (user.UserName != "administrator")
-                {
-                    return StatusCodes.BadUserAccessDenied;
-                }
-            }
-
-            return ServiceResult.Good;
-        }
-
-        public ServiceResult OnWriteAdministratorValue(ISystemContext context, NodeState node, ref object value)
-        {
-            // If user identity is not set default user access level handling should apply
-
-            if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.Anonymous)
-            {
-                return StatusCodes.BadUserAccessDenied;
-            }
-
-            if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.UserName)
-            {
-                var user = context.UserIdentity.GetIdentityToken() as UserNameIdentityToken;
-                if (user.UserName != "administrator")
-                {
-                    return StatusCodes.BadUserAccessDenied;
-                }
-            }
-
-            return ServiceResult.Good;
-        }
-        #endregion
 
         private ServiceResult OnHelloCall(ISystemContext context,
             MethodState method,
@@ -627,7 +435,223 @@ namespace Technosoftware.SimpleServer
                 return new ServiceResult(StatusCodes.BadInvalidArgument);
             }
         }
+        #endregion
 
+        #region Operator specific handling
+        public ServiceResult OnReadOperatorUserAccessLevel(ISystemContext context, NodeState node, ref byte value)
+        {
+            // If user identity is not set default user access level handling should apply
+
+            if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.Anonymous)
+            {
+                value = AccessLevels.None;
+            }
+            else
+            {
+                if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.UserName)
+                {
+                    if (context.UserIdentity.GetIdentityToken() is UserNameIdentityToken user && 
+                        ((user.UserName == "operator") || (user.UserName == "administrator")))
+                    {
+                        value = AccessLevels.CurrentReadOrWrite;
+                    }
+                    else
+                    {
+                        value = AccessLevels.None;
+                    }
+                }
+            }
+
+            return ServiceResult.Good;
+        }
+
+        private ServiceResult OnReadOperatorValue(
+        ISystemContext context,
+        NodeState node,
+        NumericRange indexRange,
+        QualifiedName dataEncoding,
+        ref object value,
+        ref StatusCode statusCode,
+        ref DateTime timestamp)
+        {
+            // If user identity is not set default user access level handling should apply
+            if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.Anonymous)
+            {
+                return StatusCodes.BadUserAccessDenied;
+            }
+
+            return ServiceResult.Good;
+        }
+
+        public ServiceResult OnWriteOperatorValue(ISystemContext context, NodeState node, ref object value)
+        {
+            // If user identity is not set default user access level handling should apply
+            if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.Anonymous)
+            {
+                return StatusCodes.BadUserAccessDenied;
+            }
+
+            if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.UserName)
+            {
+                if (context.UserIdentity.GetIdentityToken() is UserNameIdentityToken user && 
+                    (user.UserName != "operator") && (user.UserName != "administrator"))
+                {
+                    return StatusCodes.BadUserAccessDenied;
+                }
+            }
+            return ServiceResult.Good;
+        }
+        #endregion
+
+        #region Administrator specific handling
+        public ServiceResult OnReadAdministratorUserAccessLevel(ISystemContext context, NodeState node, ref byte value)
+        {
+            // If user identity is not set default user access level handling should apply
+            if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.Anonymous)
+            {
+                value = AccessLevels.None;
+            }
+            else
+            {
+                if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.UserName)
+                {
+                    if (context.UserIdentity.GetIdentityToken() is UserNameIdentityToken user && user.UserName == "administrator")
+                    {
+                        value = AccessLevels.CurrentReadOrWrite;
+                    }
+                    else
+                    {
+                        value = AccessLevels.None;
+                    }
+                }
+            }
+            return ServiceResult.Good;
+        }
+
+        private ServiceResult OnReadAdministratorValue(
+                                ISystemContext context,
+                                NodeState node,
+                                NumericRange indexRange,
+                                QualifiedName dataEncoding,
+                                ref object value,
+                                ref StatusCode statusCode,
+                                ref DateTime timestamp)
+        {
+            // If user identity is not set default user access level handling should apply
+            if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.Anonymous)
+            {
+                return StatusCodes.BadUserAccessDenied;
+            }
+
+            if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.UserName)
+            {
+                if (context.UserIdentity.GetIdentityToken() is UserNameIdentityToken user && user.UserName != "administrator")
+                {
+                    return StatusCodes.BadUserAccessDenied;
+                }
+            }
+            return ServiceResult.Good;
+        }
+
+        public ServiceResult OnWriteAdministratorValue(ISystemContext context, NodeState node, ref object value)
+        {
+            // If user identity is not set default user access level handling should apply
+            if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.Anonymous)
+            {
+                return StatusCodes.BadUserAccessDenied;
+            }
+            if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.UserName)
+            {
+                if (context.UserIdentity.GetIdentityToken() is UserNameIdentityToken user && user.UserName != "administrator")
+                {
+                    return StatusCodes.BadUserAccessDenied;
+                }
+            }
+            return ServiceResult.Good;
+        }
+        #endregion
+
+        #region User specific Browse handling
+        /// <summary>
+        /// Checks if the user is allowed to access this node.
+        /// </summary>
+        protected override bool IsNodeAccessibleForUser(UaServerContext context, UaContinuationPoint continuationPoint, NodeState node)
+        {
+            if (context.UserIdentity == null || context.UserIdentity.TokenType == UserTokenType.Anonymous)
+            {
+                if ((node.NodeId.Identifier.ToString() == "AccessAdministrator") ||
+                    (node.NodeId.Identifier.ToString() == "AccessOperator"))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Checks if the user is allowed to access this reference.
+        /// </summary>
+        protected override bool IsReferenceAccessibleForUser(UaServerContext context, UaContinuationPoint continuationPoint, IReference reference)
+        {
+            if (context.UserIdentity == null || context.UserIdentity.TokenType == UserTokenType.Anonymous)
+            {
+                if ((reference.TargetId.Identifier.ToString() == "AccessRights_AccessAdministrator") ||
+                    (reference.TargetId.Identifier.ToString() == "AccessRights_AccessOperator"))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        #endregion
+
+
+        #region Helper Methods
+        /// <summary>
+        /// Creates a new variable.
+        /// </summary>
+        private BaseDataVariableState CreateDynamicVariable(NodeState parent, string path, string name, string description, NodeId dataType, int valueRank, byte accessLevel, object initialValue)
+        {
+            var variable = CreateBaseDataVariableState(parent, path, name, description, dataType, valueRank, accessLevel, initialValue);
+            dynamicNodes_.Add(variable);
+            return variable;
+        }
+
+        private object GetNewValue(BaseVariableState variable)
+        {
+            if (generator_ == null)
+            {
+                generator_ = new Opc.Ua.Test.DataGenerator(null) { BoundaryValueFrequency = 0 };
+            }
+
+            object value = null;
+            var retryCount = 0;
+
+            while (value == null && retryCount < 10)
+            {
+                value = generator_.GetRandom(variable.DataType, variable.ValueRank, new uint[] { 10 }, opcServer_.NodeManager.ServerData.TypeTree);
+                retryCount++;
+            }
+            return value;
+        }
+
+        private void DoSimulation(object state)
+        {
+            try
+            {
+                lock (Lock)
+                {
+                    foreach (var variable in dynamicNodes_)
+                    {
+                        opcServer_.WriteBaseVariable(variable, GetNewValue(variable), StatusCodes.Good, DateTime.UtcNow);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Utils.Trace(e, "Unexpected error doing simulation.");
+            }
+        }
         #endregion
 
         #region Helper Methods
@@ -691,8 +715,7 @@ namespace Technosoftware.SimpleServer
         {
             if (generator_ == null)
             {
-                generator_ = new Opc.Ua.Test.DataGenerator(null);
-                generator_.BoundaryValueFrequency = 0;
+                generator_ = new Opc.Ua.Test.DataGenerator(null) { BoundaryValueFrequency = 0 };
             }
 
             object value = null;
@@ -703,7 +726,6 @@ namespace Technosoftware.SimpleServer
                 value = generator_.GetRandom(variable.DataType, variable.ValueRank, new uint[] { 10 }, opcServer_.NodeManager.ServerData.TypeTree);
                 retryCount++;
             }
-
             return value;
         }
 
