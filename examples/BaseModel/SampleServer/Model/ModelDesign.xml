@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<opc:ModelDesign
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:opc="http://opcfoundation.org/UA/ModelDesign.xsd" xsi:schemaLocation="http://opcfoundation.org/UA/ModelDesign.xsd ../../../../schema/UAModelDesign.xsd"
+  xmlns:ua="http://opcfoundation.org/UA/"
+  xmlns:uax="http://opcfoundation.org/UA/2008/02/Types.xsd"
+	xmlns="http://samplecompany.com/SampleServer/Model"
+  TargetNamespace="http://samplecompany.com/SampleServer/Model"
+>
+  <!-- 
+  This element defines the mappings between the URIs used to identify namespaces and the symbols used in code.
+  User defined design files can include other user defined design files.
+  The location of included design files is specified with the FilePath attribute (absolute or relative path without the .xml suffix).
+  -->
+  <opc:Namespaces>
+    <opc:Namespace Name="OpcUa" Prefix="Opc.Ua" XmlNamespace="http://opcfoundation.org/UA/2008/02/Types.xsd">http://opcfoundation.org/UA/</opc:Namespace>
+    <opc:Namespace Name="SampleServer" Prefix="SampleCompany.SampleServer.Model" InternalPrefix="SampleCompany.SampleServer.Model">http://samplecompany.com/SampleServer/Model</opc:Namespace>
+  </opc:Namespaces>
+
+  <!-- Create Types -->
+
+</opc:ModelDesign>

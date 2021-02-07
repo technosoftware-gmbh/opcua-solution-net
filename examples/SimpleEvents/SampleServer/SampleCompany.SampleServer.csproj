@@ -11,18 +11,21 @@
     <Description>SampleCompany SampleServer</Description>
     <Copyright>Copyright © 2021 SampleCompany</Copyright>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="Model\SampleCompany.SampleServer.Model.PredefinedNodes.uanodes" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Model\SampleCompany.SampleServer.Model.PredefinedNodes.uanodes" />
-  </ItemGroup>
-
+  
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
+
+  <Choose>
+    <When Condition="Exists('Model\SampleCompany.SampleServer.Model.PredefinedNodes.uanodes')">
+      <ItemGroup>
+        <None Remove="Model\SampleCompany.SampleServer.Model.PredefinedNodes.uanodes" />
+      </ItemGroup>
+      <ItemGroup>
+        <EmbeddedResource Include="Model\SampleCompany.SampleServer.Model.PredefinedNodes.uanodes" />
+      </ItemGroup>
+    </When>
+  </Choose>
 
   <ItemGroup>
     <PackageReference Include="Mono.Options" Version="6.6.0.161" />
