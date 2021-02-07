@@ -606,7 +606,6 @@ namespace Technosoftware.SimpleServer
         }
         #endregion
 
-
         #region Helper Methods
         private BaseDataVariableState CreateDynamicVariable(NodeState parent, string path, string name, string description, NodeId dataType, int valueRank, byte accessLevel, object initialValue)
         {
