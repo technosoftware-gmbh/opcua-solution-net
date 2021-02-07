@@ -21,6 +21,9 @@
 - fix decoding of ecdsa signature
 - Set TypeId for structured types at decode.
 - Fix issue setting empty comments
+- Fix Alarm ShelvingState: Cannot call Unshelve Method when Alarm state is TimedShelved.
+- Fix AlarmConditionState should have easier mechanism to update UnshelveTime.
+- Merge model compiler fixes with latest code.
 - Client: Validate server domains in Certificate validator
 
 -------------------------------------------------------------------------------------------------------------
