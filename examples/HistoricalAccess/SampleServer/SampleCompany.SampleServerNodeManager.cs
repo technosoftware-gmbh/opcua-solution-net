@@ -205,7 +205,7 @@ namespace SampleCompany.SampleServer
                     enabledVariable.OnSimpleWriteValue = OnWriteEnabled;
                     #endregion
 
-                    #region Simulation with Historizing
+                    #region Simulation with HistoricalAccess
                     var simulationHistoricalAccessFolder = CreateFolderState(root, "SimulationHistoricalAccess", "SimulationHistoricalAccess", "A folder with simulated variables supporting HistoricalAccess.");
                     const string simulationHistoricalAccess = "SimulationHistoricalAccess_";
 
