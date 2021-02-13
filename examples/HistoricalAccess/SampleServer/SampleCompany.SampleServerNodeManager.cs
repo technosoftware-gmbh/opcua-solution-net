@@ -160,7 +160,7 @@ namespace SampleCompany.SampleServer
                 capabilities.DeleteAtTimeCapability.Value = true;
                 capabilities.InsertAnnotationCapability.Value = true;
             }
-            
+
             lock (Lock)
             {
                 dynamicNodes_ = new List<BaseDataVariableState>();
@@ -209,11 +209,7 @@ namespace SampleCompany.SampleServer
                     var simulationHistoricalAccessFolder = CreateFolderState(root, "SimulationHistoricalAccess", "SimulationHistoricalAccess", "A folder with simulated variables supporting HistoricalAccess.");
                     const string simulationHistoricalAccess = "SimulationHistoricalAccess_";
 
-                    var simulatedHistoricalAccessVariable = CreateDynamicVariable(simulationHistoricalAccessFolder, simulationHistoricalAccess + "Double", "Double", "A simulated variable of type Double. If Enabled is true this value changes based on the defined Interval.", DataTypeIds.Double, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
-                    simulatedHistoricalAccessVariable.Historizing = true;
-                    simulatedHistoricalAccessVariable.AccessLevel = AccessLevels.HistoryReadOrWrite | AccessLevels.CurrentRead;
-                    simulatedHistoricalAccessVariable.UserAccessLevel = AccessLevels.HistoryReadOrWrite | AccessLevels.CurrentRead;
-                    simulatedHistoricalAccessVariable.MinimumSamplingInterval = MinimumSamplingIntervals.Indeterminate;
+                    var simulatedHistoricalAccessVariable = CreateHistoricalAccessVariable(simulationHistoricalAccessFolder, simulationHistoricalAccess + "Double", "Double", "A simulated variable of type Double. If Enabled is true this value changes based on the defined Interval.", DataTypeIds.Double, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
                     #endregion
 
                 }
@@ -331,6 +327,63 @@ namespace SampleCompany.SampleServer
             IDictionary<NodeId, NodeState> cache)
         {
             throw new NotImplementedException();
+        }
+        #endregion
+
+        #region HistoricalAccess Helper Methods
+        /// <summary>
+        /// Creates a new variable.
+        /// </summary>
+        private BaseDataVariableState CreateHistoricalAccessVariable(NodeState parent, string path, string name, string description, NodeId dataType, int valueRank, byte accessLevel, object initialValue)
+        {
+            var variable = CreateBaseDataVariableState(parent, path, name, description, dataType, valueRank, accessLevel, initialValue);
+            variable.Historizing = true;
+            variable.AccessLevel = AccessLevels.HistoryReadOrWrite | AccessLevels.CurrentRead;
+            variable.UserAccessLevel = AccessLevels.HistoryReadOrWrite | AccessLevels.CurrentRead;
+            variable.MinimumSamplingInterval = MinimumSamplingIntervals.Indeterminate;
+
+            // TODO Support of Annotations
+            //var annotations = new PropertyState<Annotation>(variable)
+            //{
+            //    ReferenceTypeId = ReferenceTypeIds.HasProperty,
+            //    TypeDefinitionId = VariableTypeIds.PropertyType,
+            //    SymbolicName = Opc.Ua.BrowseNames.Annotations,
+            //    BrowseName = Opc.Ua.BrowseNames.Annotations
+            //};
+            //annotations.DisplayName = new LocalizedText(annotations.BrowseName.Name);
+            //annotations.Description = null;
+            //annotations.WriteMask = 0;
+            //annotations.UserWriteMask = 0;
+            //annotations.DataType = DataTypeIds.Annotation;
+            //annotations.ValueRank = ValueRanks.Scalar;
+            //annotations.AccessLevel = AccessLevels.HistoryReadOrWrite;
+            //annotations.UserAccessLevel = AccessLevels.HistoryReadOrWrite;
+            //annotations.MinimumSamplingInterval = MinimumSamplingIntervals.Indeterminate;
+            //annotations.Historizing = false;
+            //variable.AddChild(annotations);
+
+            //annotations.NodeId = new NodeId(annotations.BrowseName.Name, NamespaceIndex);
+
+            HistoricalDataConfigurationState historicalDataConfigurationState = new HistoricalDataConfigurationState(variable);
+            historicalDataConfigurationState.MaxTimeInterval = new PropertyState<double>(historicalDataConfigurationState);
+            historicalDataConfigurationState.MinTimeInterval = new PropertyState<double>(historicalDataConfigurationState); ;
+            historicalDataConfigurationState.StartOfArchive = new PropertyState<DateTime>(historicalDataConfigurationState);
+            historicalDataConfigurationState.StartOfOnlineArchive = new PropertyState<DateTime>(historicalDataConfigurationState);
+
+            historicalDataConfigurationState.Create(
+                SystemContext,
+                null,
+                Opc.Ua.BrowseNames.HAConfiguration,
+                null,
+                true);
+
+            historicalDataConfigurationState.SymbolicName = Opc.Ua.BrowseNames.HAConfiguration;
+            historicalDataConfigurationState.ReferenceTypeId = ReferenceTypeIds.HasHistoricalConfiguration;
+
+            variable.AddChild(historicalDataConfigurationState);
+
+            dynamicNodes_.Add(variable);
+            return variable;
         }
         #endregion
 
