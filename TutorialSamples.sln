@@ -33,6 +33,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BaseModel", "BaseModel", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleCompany.SampleServer", "examples\BaseModel\SampleServer\SampleCompany.SampleServer.csproj", "{7A54A1B2-B817-48FB-BCCB-47CAA3E4D0C3}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HistoricalAccess", "HistoricalAccess", "{1B4C146E-A910-4759-9978-D3422285996D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleCompany.SampleServer", "examples\HistoricalAccess\SampleServer\SampleCompany.SampleServer.csproj", "{363EEDA3-C6D4-4E85-B860-8F1921957970}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +71,10 @@ Global
 		{7A54A1B2-B817-48FB-BCCB-47CAA3E4D0C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A54A1B2-B817-48FB-BCCB-47CAA3E4D0C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A54A1B2-B817-48FB-BCCB-47CAA3E4D0C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{363EEDA3-C6D4-4E85-B860-8F1921957970}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{363EEDA3-C6D4-4E85-B860-8F1921957970}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{363EEDA3-C6D4-4E85-B860-8F1921957970}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{363EEDA3-C6D4-4E85-B860-8F1921957970}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -82,6 +90,7 @@ Global
 		{61BCD950-706D-43C6-A722-9C449016E01E} = {05C70566-8C3A-4235-8AC8-C5C85C2D41BB}
 		{03F80652-56E0-4281-AD79-6DD319313C0A} = {C38CDDF4-9978-40AB-A6C1-49F4A0E17085}
 		{7A54A1B2-B817-48FB-BCCB-47CAA3E4D0C3} = {03F80652-56E0-4281-AD79-6DD319313C0A}
+		{363EEDA3-C6D4-4E85-B860-8F1921957970} = {1B4C146E-A910-4759-9978-D3422285996D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {519D77B6-EA9C-4A11-8248-ABCC01FD533C}
