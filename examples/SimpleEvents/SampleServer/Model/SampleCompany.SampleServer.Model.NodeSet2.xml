@@ -153,7 +153,6 @@ YzpTdHJ1Y3R1cmVkVHlwZT4NCg0KPC9vcGM6VHlwZURpY3Rpb25hcnk+</ByteString>
   </UAVariable>
   <UAVariable NodeId="ns=1;i=55" BrowseName="NamespaceUri" ParentNodeId="ns=1;i=53" DataType="String">
     <DisplayName>NamespaceUri</DisplayName>
-    <Description>A URI that uniquely identifies the dictionary.</Description>
     <References>
       <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
       <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=53</Reference>
@@ -164,7 +163,6 @@ YzpTdHJ1Y3R1cmVkVHlwZT4NCg0KPC9vcGM6VHlwZURpY3Rpb25hcnk+</ByteString>
   </UAVariable>
   <UAVariable NodeId="ns=1;i=56" BrowseName="Deprecated" ParentNodeId="ns=1;i=53" DataType="Boolean">
     <DisplayName>Deprecated</DisplayName>
-    <Description>Indicates that all of the definitions for the dictionary are available through a DataTypeDefinition Attribute.</Description>
     <References>
       <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
       <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=53</Reference>
@@ -224,7 +222,6 @@ ZWxlbWVudD4NCg0KPC94czpzY2hlbWE+</ByteString>
   </UAVariable>
   <UAVariable NodeId="ns=1;i=63" BrowseName="NamespaceUri" ParentNodeId="ns=1;i=61" DataType="String">
     <DisplayName>NamespaceUri</DisplayName>
-    <Description>A URI that uniquely identifies the dictionary.</Description>
     <References>
       <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
       <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=61</Reference>
@@ -235,7 +232,6 @@ ZWxlbWVudD4NCg0KPC94czpzY2hlbWE+</ByteString>
   </UAVariable>
   <UAVariable NodeId="ns=1;i=64" BrowseName="Deprecated" ParentNodeId="ns=1;i=61" DataType="Boolean">
     <DisplayName>Deprecated</DisplayName>
-    <Description>Indicates that all of the definitions for the dictionary are available through a DataTypeDefinition Attribute.</Description>
     <References>
       <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
       <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=61</Reference>

@@ -68,32 +68,32 @@ namespace SampleCompany.SampleServer.Model
         /// <summary>
         /// The identifier for the MachineType_Temperature Object.
         /// </summary>
-        public const uint MachineType_Temperature = 66;
+        public const uint MachineType_Temperature = 60;
 
         /// <summary>
         /// The identifier for the MachineType_Flow Object.
         /// </summary>
-        public const uint MachineType_Flow = 79;
+        public const uint MachineType_Flow = 73;
 
         /// <summary>
         /// The identifier for the MachineType_Level Object.
         /// </summary>
-        public const uint MachineType_Level = 92;
+        public const uint MachineType_Level = 86;
 
         /// <summary>
         /// The identifier for the MachineDataType_Encoding_DefaultBinary Object.
         /// </summary>
-        public const uint MachineDataType_Encoding_DefaultBinary = 5;
+        public const uint MachineDataType_Encoding_DefaultBinary = 100;
 
         /// <summary>
         /// The identifier for the MachineDataType_Encoding_DefaultXml Object.
         /// </summary>
-        public const uint MachineDataType_Encoding_DefaultXml = 64;
+        public const uint MachineDataType_Encoding_DefaultXml = 108;
 
         /// <summary>
         /// The identifier for the MachineDataType_Encoding_DefaultJson Object.
         /// </summary>
-        public const uint MachineDataType_Encoding_DefaultJson = 112;
+        public const uint MachineDataType_Encoding_DefaultJson = 116;
     }
     #endregion
 
@@ -198,107 +198,107 @@ namespace SampleCompany.SampleServer.Model
         /// <summary>
         /// The identifier for the MachineType_Temperature_SetPoint Variable.
         /// </summary>
-        public const uint MachineType_Temperature_SetPoint = 67;
+        public const uint MachineType_Temperature_SetPoint = 61;
 
         /// <summary>
         /// The identifier for the MachineType_Temperature_SetPoint_EURange Variable.
         /// </summary>
-        public const uint MachineType_Temperature_SetPoint_EURange = 71;
+        public const uint MachineType_Temperature_SetPoint_EURange = 65;
 
         /// <summary>
         /// The identifier for the MachineType_Temperature_Measurement Variable.
         /// </summary>
-        public const uint MachineType_Temperature_Measurement = 73;
+        public const uint MachineType_Temperature_Measurement = 67;
 
         /// <summary>
         /// The identifier for the MachineType_Temperature_Measurement_EURange Variable.
         /// </summary>
-        public const uint MachineType_Temperature_Measurement_EURange = 77;
+        public const uint MachineType_Temperature_Measurement_EURange = 71;
 
         /// <summary>
         /// The identifier for the MachineType_Flow_SetPoint Variable.
         /// </summary>
-        public const uint MachineType_Flow_SetPoint = 80;
+        public const uint MachineType_Flow_SetPoint = 74;
 
         /// <summary>
         /// The identifier for the MachineType_Flow_SetPoint_EURange Variable.
         /// </summary>
-        public const uint MachineType_Flow_SetPoint_EURange = 84;
+        public const uint MachineType_Flow_SetPoint_EURange = 78;
 
         /// <summary>
         /// The identifier for the MachineType_Flow_Measurement Variable.
         /// </summary>
-        public const uint MachineType_Flow_Measurement = 86;
+        public const uint MachineType_Flow_Measurement = 80;
 
         /// <summary>
         /// The identifier for the MachineType_Flow_Measurement_EURange Variable.
         /// </summary>
-        public const uint MachineType_Flow_Measurement_EURange = 90;
+        public const uint MachineType_Flow_Measurement_EURange = 84;
 
         /// <summary>
         /// The identifier for the MachineType_Level_SetPoint Variable.
         /// </summary>
-        public const uint MachineType_Level_SetPoint = 93;
+        public const uint MachineType_Level_SetPoint = 87;
 
         /// <summary>
         /// The identifier for the MachineType_Level_SetPoint_EURange Variable.
         /// </summary>
-        public const uint MachineType_Level_SetPoint_EURange = 97;
+        public const uint MachineType_Level_SetPoint_EURange = 91;
 
         /// <summary>
         /// The identifier for the MachineType_Level_Measurement Variable.
         /// </summary>
-        public const uint MachineType_Level_Measurement = 99;
+        public const uint MachineType_Level_Measurement = 93;
 
         /// <summary>
         /// The identifier for the MachineType_Level_Measurement_EURange Variable.
         /// </summary>
-        public const uint MachineType_Level_Measurement_EURange = 103;
+        public const uint MachineType_Level_Measurement_EURange = 97;
 
         /// <summary>
         /// The identifier for the MachineType_MachineData Variable.
         /// </summary>
-        public const uint MachineType_MachineData = 4;
+        public const uint MachineType_MachineData = 99;
 
         /// <summary>
         /// The identifier for the SampleServer_BinarySchema Variable.
         /// </summary>
-        public const uint SampleServer_BinarySchema = 232;
+        public const uint SampleServer_BinarySchema = 101;
 
         /// <summary>
         /// The identifier for the SampleServer_BinarySchema_NamespaceUri Variable.
         /// </summary>
-        public const uint SampleServer_BinarySchema_NamespaceUri = 234;
+        public const uint SampleServer_BinarySchema_NamespaceUri = 103;
 
         /// <summary>
         /// The identifier for the SampleServer_BinarySchema_Deprecated Variable.
         /// </summary>
-        public const uint SampleServer_BinarySchema_Deprecated = 235;
+        public const uint SampleServer_BinarySchema_Deprecated = 104;
 
         /// <summary>
         /// The identifier for the SampleServer_BinarySchema_MachineDataType Variable.
         /// </summary>
-        public const uint SampleServer_BinarySchema_MachineDataType = 6;
+        public const uint SampleServer_BinarySchema_MachineDataType = 105;
 
         /// <summary>
         /// The identifier for the SampleServer_XmlSchema Variable.
         /// </summary>
-        public const uint SampleServer_XmlSchema = 248;
+        public const uint SampleServer_XmlSchema = 109;
 
         /// <summary>
         /// The identifier for the SampleServer_XmlSchema_NamespaceUri Variable.
         /// </summary>
-        public const uint SampleServer_XmlSchema_NamespaceUri = 250;
+        public const uint SampleServer_XmlSchema_NamespaceUri = 111;
 
         /// <summary>
         /// The identifier for the SampleServer_XmlSchema_Deprecated Variable.
         /// </summary>
-        public const uint SampleServer_XmlSchema_Deprecated = 251;
+        public const uint SampleServer_XmlSchema_Deprecated = 112;
 
         /// <summary>
         /// The identifier for the SampleServer_XmlSchema_MachineDataType Variable.
         /// </summary>
-        public const uint SampleServer_XmlSchema_MachineDataType = 65;
+        public const uint SampleServer_XmlSchema_MachineDataType = 113;
     }
     #endregion
 

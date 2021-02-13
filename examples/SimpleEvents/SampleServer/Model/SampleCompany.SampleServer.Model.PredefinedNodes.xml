@@ -308,9 +308,6 @@ YzpTdHJ1Y3R1cmVkVHlwZT4NCg0KPC9vcGM6VHlwZURpY3Rpb25hcnk+</uax:ByteString>
         <uax:NamespaceIndex>0</uax:NamespaceIndex>
         <uax:Name>NamespaceUri</uax:Name>
       </uax:BrowseName>
-      <uax:Description>
-        <uax:Text>A URI that uniquely identifies the dictionary.</uax:Text>
-      </uax:Description>
       <uax:ReferenceTypeId>
         <uax:Identifier>i=46</uax:Identifier>
       </uax:ReferenceTypeId>
@@ -339,9 +336,6 @@ YzpTdHJ1Y3R1cmVkVHlwZT4NCg0KPC9vcGM6VHlwZURpY3Rpb25hcnk+</uax:ByteString>
         <uax:NamespaceIndex>0</uax:NamespaceIndex>
         <uax:Name>Deprecated</uax:Name>
       </uax:BrowseName>
-      <uax:Description>
-        <uax:Text>Indicates that all of the definitions for the dictionary are available through a DataTypeDefinition Attribute.</uax:Text>
-      </uax:Description>
       <uax:ReferenceTypeId>
         <uax:Identifier>i=46</uax:Identifier>
       </uax:ReferenceTypeId>
@@ -485,9 +479,6 @@ ZWxlbWVudD4NCg0KPC94czpzY2hlbWE+</uax:ByteString>
         <uax:NamespaceIndex>0</uax:NamespaceIndex>
         <uax:Name>NamespaceUri</uax:Name>
       </uax:BrowseName>
-      <uax:Description>
-        <uax:Text>A URI that uniquely identifies the dictionary.</uax:Text>
-      </uax:Description>
       <uax:ReferenceTypeId>
         <uax:Identifier>i=46</uax:Identifier>
       </uax:ReferenceTypeId>
@@ -516,9 +507,6 @@ ZWxlbWVudD4NCg0KPC94czpzY2hlbWE+</uax:ByteString>
         <uax:NamespaceIndex>0</uax:NamespaceIndex>
         <uax:Name>Deprecated</uax:Name>
       </uax:BrowseName>
-      <uax:Description>
-        <uax:Text>Indicates that all of the definitions for the dictionary are available through a DataTypeDefinition Attribute.</uax:Text>
-      </uax:Description>
       <uax:ReferenceTypeId>
         <uax:Identifier>i=46</uax:Identifier>
       </uax:ReferenceTypeId>

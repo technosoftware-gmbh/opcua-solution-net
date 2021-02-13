@@ -189,30 +189,47 @@
   <UAObjectType NodeId="ns=1;i=59" BrowseName="1:MachineType">
     <DisplayName>MachineType</DisplayName>
     <References>
-      <Reference ReferenceType="HasComponent">ns=1;i=66</Reference>
-      <Reference ReferenceType="HasComponent">ns=1;i=79</Reference>
-      <Reference ReferenceType="HasComponent">ns=1;i=92</Reference>
-      <Reference ReferenceType="HasProperty">ns=1;i=4</Reference>
+      <Reference ReferenceType="HasComponent">ns=1;i=60</Reference>
+      <Reference ReferenceType="HasComponent">ns=1;i=73</Reference>
+      <Reference ReferenceType="HasComponent">ns=1;i=86</Reference>
+      <Reference ReferenceType="HasProperty">ns=1;i=99</Reference>
       <Reference ReferenceType="HasSubtype" IsForward="false">i=58</Reference>
     </References>
   </UAObjectType>
-  <UAObject NodeId="ns=1;i=66" BrowseName="1:Temperature" ParentNodeId="ns=1;i=59">
+  <UAObject NodeId="ns=1;i=60" BrowseName="1:Temperature" ParentNodeId="ns=1;i=59">
     <DisplayName>Temperature</DisplayName>
     <References>
+      <Reference ReferenceType="HasComponent">ns=1;i=61</Reference>
       <Reference ReferenceType="HasComponent">ns=1;i=67</Reference>
-      <Reference ReferenceType="HasComponent">ns=1;i=73</Reference>
       <Reference ReferenceType="HasTypeDefinition">ns=1;i=46</Reference>
       <Reference ReferenceType="HasModellingRule">i=78</Reference>
       <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=59</Reference>
     </References>
   </UAObject>
-  <UAVariable NodeId="ns=1;i=67" BrowseName="1:SetPoint" ParentNodeId="ns=1;i=66" DataType="Double" AccessLevel="3">
+  <UAVariable NodeId="ns=1;i=61" BrowseName="1:SetPoint" ParentNodeId="ns=1;i=60" DataType="Double" AccessLevel="3">
     <DisplayName>SetPoint</DisplayName>
+    <References>
+      <Reference ReferenceType="HasProperty">ns=1;i=65</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=2368</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=60</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;i=65" BrowseName="EURange" ParentNodeId="ns=1;i=61" DataType="i=884">
+    <DisplayName>EURange</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=61</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;i=67" BrowseName="1:Measurement" ParentNodeId="ns=1;i=60" DataType="Double">
+    <DisplayName>Measurement</DisplayName>
     <References>
       <Reference ReferenceType="HasProperty">ns=1;i=71</Reference>
       <Reference ReferenceType="HasTypeDefinition">i=2368</Reference>
       <Reference ReferenceType="HasModellingRule">i=78</Reference>
-      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=66</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=60</Reference>
     </References>
   </UAVariable>
   <UAVariable NodeId="ns=1;i=71" BrowseName="EURange" ParentNodeId="ns=1;i=67" DataType="i=884">
@@ -223,40 +240,40 @@
       <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=67</Reference>
     </References>
   </UAVariable>
-  <UAVariable NodeId="ns=1;i=73" BrowseName="1:Measurement" ParentNodeId="ns=1;i=66" DataType="Double">
-    <DisplayName>Measurement</DisplayName>
-    <References>
-      <Reference ReferenceType="HasProperty">ns=1;i=77</Reference>
-      <Reference ReferenceType="HasTypeDefinition">i=2368</Reference>
-      <Reference ReferenceType="HasModellingRule">i=78</Reference>
-      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=66</Reference>
-    </References>
-  </UAVariable>
-  <UAVariable NodeId="ns=1;i=77" BrowseName="EURange" ParentNodeId="ns=1;i=73" DataType="i=884">
-    <DisplayName>EURange</DisplayName>
-    <References>
-      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
-      <Reference ReferenceType="HasModellingRule">i=78</Reference>
-      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=73</Reference>
-    </References>
-  </UAVariable>
-  <UAObject NodeId="ns=1;i=79" BrowseName="1:Flow" ParentNodeId="ns=1;i=59">
+  <UAObject NodeId="ns=1;i=73" BrowseName="1:Flow" ParentNodeId="ns=1;i=59">
     <DisplayName>Flow</DisplayName>
     <References>
+      <Reference ReferenceType="HasComponent">ns=1;i=74</Reference>
       <Reference ReferenceType="HasComponent">ns=1;i=80</Reference>
-      <Reference ReferenceType="HasComponent">ns=1;i=86</Reference>
       <Reference ReferenceType="HasTypeDefinition">ns=1;i=20</Reference>
       <Reference ReferenceType="HasModellingRule">i=78</Reference>
       <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=59</Reference>
     </References>
   </UAObject>
-  <UAVariable NodeId="ns=1;i=80" BrowseName="1:SetPoint" ParentNodeId="ns=1;i=79" DataType="Double" AccessLevel="3">
+  <UAVariable NodeId="ns=1;i=74" BrowseName="1:SetPoint" ParentNodeId="ns=1;i=73" DataType="Double" AccessLevel="3">
     <DisplayName>SetPoint</DisplayName>
+    <References>
+      <Reference ReferenceType="HasProperty">ns=1;i=78</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=2368</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=73</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;i=78" BrowseName="EURange" ParentNodeId="ns=1;i=74" DataType="i=884">
+    <DisplayName>EURange</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=74</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;i=80" BrowseName="1:Measurement" ParentNodeId="ns=1;i=73" DataType="Double">
+    <DisplayName>Measurement</DisplayName>
     <References>
       <Reference ReferenceType="HasProperty">ns=1;i=84</Reference>
       <Reference ReferenceType="HasTypeDefinition">i=2368</Reference>
       <Reference ReferenceType="HasModellingRule">i=78</Reference>
-      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=79</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=73</Reference>
     </References>
   </UAVariable>
   <UAVariable NodeId="ns=1;i=84" BrowseName="EURange" ParentNodeId="ns=1;i=80" DataType="i=884">
@@ -267,40 +284,40 @@
       <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=80</Reference>
     </References>
   </UAVariable>
-  <UAVariable NodeId="ns=1;i=86" BrowseName="1:Measurement" ParentNodeId="ns=1;i=79" DataType="Double">
-    <DisplayName>Measurement</DisplayName>
-    <References>
-      <Reference ReferenceType="HasProperty">ns=1;i=90</Reference>
-      <Reference ReferenceType="HasTypeDefinition">i=2368</Reference>
-      <Reference ReferenceType="HasModellingRule">i=78</Reference>
-      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=79</Reference>
-    </References>
-  </UAVariable>
-  <UAVariable NodeId="ns=1;i=90" BrowseName="EURange" ParentNodeId="ns=1;i=86" DataType="i=884">
-    <DisplayName>EURange</DisplayName>
-    <References>
-      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
-      <Reference ReferenceType="HasModellingRule">i=78</Reference>
-      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=86</Reference>
-    </References>
-  </UAVariable>
-  <UAObject NodeId="ns=1;i=92" BrowseName="1:Level" ParentNodeId="ns=1;i=59">
+  <UAObject NodeId="ns=1;i=86" BrowseName="1:Level" ParentNodeId="ns=1;i=59">
     <DisplayName>Level</DisplayName>
     <References>
+      <Reference ReferenceType="HasComponent">ns=1;i=87</Reference>
       <Reference ReferenceType="HasComponent">ns=1;i=93</Reference>
-      <Reference ReferenceType="HasComponent">ns=1;i=99</Reference>
       <Reference ReferenceType="HasTypeDefinition">ns=1;i=33</Reference>
       <Reference ReferenceType="HasModellingRule">i=78</Reference>
       <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=59</Reference>
     </References>
   </UAObject>
-  <UAVariable NodeId="ns=1;i=93" BrowseName="1:SetPoint" ParentNodeId="ns=1;i=92" DataType="Double" AccessLevel="3">
+  <UAVariable NodeId="ns=1;i=87" BrowseName="1:SetPoint" ParentNodeId="ns=1;i=86" DataType="Double" AccessLevel="3">
     <DisplayName>SetPoint</DisplayName>
+    <References>
+      <Reference ReferenceType="HasProperty">ns=1;i=91</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=2368</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=86</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;i=91" BrowseName="EURange" ParentNodeId="ns=1;i=87" DataType="i=884">
+    <DisplayName>EURange</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+      <Reference ReferenceType="HasModellingRule">i=78</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=87</Reference>
+    </References>
+  </UAVariable>
+  <UAVariable NodeId="ns=1;i=93" BrowseName="1:Measurement" ParentNodeId="ns=1;i=86" DataType="Double">
+    <DisplayName>Measurement</DisplayName>
     <References>
       <Reference ReferenceType="HasProperty">ns=1;i=97</Reference>
       <Reference ReferenceType="HasTypeDefinition">i=2368</Reference>
       <Reference ReferenceType="HasModellingRule">i=78</Reference>
-      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=92</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=86</Reference>
     </References>
   </UAVariable>
   <UAVariable NodeId="ns=1;i=97" BrowseName="EURange" ParentNodeId="ns=1;i=93" DataType="i=884">
@@ -311,24 +328,7 @@
       <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=93</Reference>
     </References>
   </UAVariable>
-  <UAVariable NodeId="ns=1;i=99" BrowseName="1:Measurement" ParentNodeId="ns=1;i=92" DataType="Double">
-    <DisplayName>Measurement</DisplayName>
-    <References>
-      <Reference ReferenceType="HasProperty">ns=1;i=103</Reference>
-      <Reference ReferenceType="HasTypeDefinition">i=2368</Reference>
-      <Reference ReferenceType="HasModellingRule">i=78</Reference>
-      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=92</Reference>
-    </References>
-  </UAVariable>
-  <UAVariable NodeId="ns=1;i=103" BrowseName="EURange" ParentNodeId="ns=1;i=99" DataType="i=884">
-    <DisplayName>EURange</DisplayName>
-    <References>
-      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
-      <Reference ReferenceType="HasModellingRule">i=78</Reference>
-      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=99</Reference>
-    </References>
-  </UAVariable>
-  <UAVariable NodeId="ns=1;i=4" BrowseName="1:MachineData" ParentNodeId="ns=1;i=59" DataType="ns=1;i=3" AccessLevel="3">
+  <UAVariable NodeId="ns=1;i=99" BrowseName="1:MachineData" ParentNodeId="ns=1;i=59" DataType="ns=1;i=3" AccessLevel="3">
     <DisplayName>MachineData</DisplayName>
     <References>
       <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
@@ -336,20 +336,20 @@
       <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=59</Reference>
     </References>
   </UAVariable>
-  <UAObject NodeId="ns=1;i=5" BrowseName="Default Binary" SymbolicName="DefaultBinary">
+  <UAObject NodeId="ns=1;i=100" BrowseName="Default Binary" SymbolicName="DefaultBinary">
     <DisplayName>Default Binary</DisplayName>
     <References>
       <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=3</Reference>
-      <Reference ReferenceType="HasDescription">ns=1;i=6</Reference>
+      <Reference ReferenceType="HasDescription">ns=1;i=105</Reference>
       <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
     </References>
   </UAObject>
-  <UAVariable NodeId="ns=1;i=232" BrowseName="1:SampleCompany.SampleServer.Model" SymbolicName="SampleServer_BinarySchema" DataType="ByteString">
+  <UAVariable NodeId="ns=1;i=101" BrowseName="1:SampleCompany.SampleServer.Model" SymbolicName="SampleServer_BinarySchema" DataType="ByteString">
     <DisplayName>SampleCompany.SampleServer.Model</DisplayName>
     <References>
-      <Reference ReferenceType="HasProperty">ns=1;i=234</Reference>
-      <Reference ReferenceType="HasProperty">ns=1;i=235</Reference>
-      <Reference ReferenceType="HasComponent">ns=1;i=6</Reference>
+      <Reference ReferenceType="HasProperty">ns=1;i=103</Reference>
+      <Reference ReferenceType="HasProperty">ns=1;i=104</Reference>
+      <Reference ReferenceType="HasComponent">ns=1;i=105</Reference>
       <Reference ReferenceType="HasComponent" IsForward="false">i=93</Reference>
       <Reference ReferenceType="HasTypeDefinition">i=72</Reference>
     </References>
@@ -385,52 +385,50 @@ ZURhdGFUeXBlIiAvPg0KICA8L29wYzpTdHJ1Y3R1cmVkVHlwZT4NCg0KPC9vcGM6VHlwZURpY3Rp
 b25hcnk+</ByteString>
     </Value>
   </UAVariable>
-  <UAVariable NodeId="ns=1;i=234" BrowseName="NamespaceUri" ParentNodeId="ns=1;i=232" DataType="String">
+  <UAVariable NodeId="ns=1;i=103" BrowseName="NamespaceUri" ParentNodeId="ns=1;i=101" DataType="String">
     <DisplayName>NamespaceUri</DisplayName>
-    <Description>A URI that uniquely identifies the dictionary.</Description>
     <References>
       <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
-      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=232</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=101</Reference>
     </References>
     <Value>
       <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">http://samplecompany.com/SampleServer/Model</String>
     </Value>
   </UAVariable>
-  <UAVariable NodeId="ns=1;i=235" BrowseName="Deprecated" ParentNodeId="ns=1;i=232" DataType="Boolean">
+  <UAVariable NodeId="ns=1;i=104" BrowseName="Deprecated" ParentNodeId="ns=1;i=101" DataType="Boolean">
     <DisplayName>Deprecated</DisplayName>
-    <Description>Indicates that all of the definitions for the dictionary are available through a DataTypeDefinition Attribute.</Description>
     <References>
       <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
-      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=232</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=101</Reference>
     </References>
     <Value>
       <Boolean xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">true</Boolean>
     </Value>
   </UAVariable>
-  <UAVariable NodeId="ns=1;i=6" BrowseName="1:MachineDataType" ParentNodeId="ns=1;i=232" DataType="String">
+  <UAVariable NodeId="ns=1;i=105" BrowseName="1:MachineDataType" ParentNodeId="ns=1;i=101" DataType="String">
     <DisplayName>MachineDataType</DisplayName>
     <References>
       <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
-      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=232</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=101</Reference>
     </References>
     <Value>
       <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">MachineDataType</String>
     </Value>
   </UAVariable>
-  <UAObject NodeId="ns=1;i=64" BrowseName="Default XML" SymbolicName="DefaultXml">
+  <UAObject NodeId="ns=1;i=108" BrowseName="Default XML" SymbolicName="DefaultXml">
     <DisplayName>Default XML</DisplayName>
     <References>
       <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=3</Reference>
-      <Reference ReferenceType="HasDescription">ns=1;i=65</Reference>
+      <Reference ReferenceType="HasDescription">ns=1;i=113</Reference>
       <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
     </References>
   </UAObject>
-  <UAVariable NodeId="ns=1;i=248" BrowseName="1:SampleCompany.SampleServer.Model" SymbolicName="SampleServer_XmlSchema" DataType="ByteString">
+  <UAVariable NodeId="ns=1;i=109" BrowseName="1:SampleCompany.SampleServer.Model" SymbolicName="SampleServer_XmlSchema" DataType="ByteString">
     <DisplayName>SampleCompany.SampleServer.Model</DisplayName>
     <References>
-      <Reference ReferenceType="HasProperty">ns=1;i=250</Reference>
-      <Reference ReferenceType="HasProperty">ns=1;i=251</Reference>
-      <Reference ReferenceType="HasComponent">ns=1;i=65</Reference>
+      <Reference ReferenceType="HasProperty">ns=1;i=111</Reference>
+      <Reference ReferenceType="HasProperty">ns=1;i=112</Reference>
+      <Reference ReferenceType="HasComponent">ns=1;i=113</Reference>
       <Reference ReferenceType="HasComponent" IsForward="false">i=92</Reference>
       <Reference ReferenceType="HasTypeDefinition">i=72</Reference>
     </References>
@@ -479,39 +477,37 @@ bmVEYXRhVHlwZSIgdHlwZT0idG5zOkxpc3RPZk1hY2hpbmVEYXRhVHlwZSIgbmlsbGFibGU9InRy
 dWUiPjwveHM6ZWxlbWVudD4NCg0KPC94czpzY2hlbWE+</ByteString>
     </Value>
   </UAVariable>
-  <UAVariable NodeId="ns=1;i=250" BrowseName="NamespaceUri" ParentNodeId="ns=1;i=248" DataType="String">
+  <UAVariable NodeId="ns=1;i=111" BrowseName="NamespaceUri" ParentNodeId="ns=1;i=109" DataType="String">
     <DisplayName>NamespaceUri</DisplayName>
-    <Description>A URI that uniquely identifies the dictionary.</Description>
     <References>
       <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
-      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=248</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=109</Reference>
     </References>
     <Value>
       <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">http://samplecompany.com/SampleServer/Model</String>
     </Value>
   </UAVariable>
-  <UAVariable NodeId="ns=1;i=251" BrowseName="Deprecated" ParentNodeId="ns=1;i=248" DataType="Boolean">
+  <UAVariable NodeId="ns=1;i=112" BrowseName="Deprecated" ParentNodeId="ns=1;i=109" DataType="Boolean">
     <DisplayName>Deprecated</DisplayName>
-    <Description>Indicates that all of the definitions for the dictionary are available through a DataTypeDefinition Attribute.</Description>
     <References>
       <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
-      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=248</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=109</Reference>
     </References>
     <Value>
       <Boolean xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">true</Boolean>
     </Value>
   </UAVariable>
-  <UAVariable NodeId="ns=1;i=65" BrowseName="1:MachineDataType" ParentNodeId="ns=1;i=248" DataType="String">
+  <UAVariable NodeId="ns=1;i=113" BrowseName="1:MachineDataType" ParentNodeId="ns=1;i=109" DataType="String">
     <DisplayName>MachineDataType</DisplayName>
     <References>
       <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
-      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=248</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=109</Reference>
     </References>
     <Value>
       <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">//xs:element[@name='MachineDataType']</String>
     </Value>
   </UAVariable>
-  <UAObject NodeId="ns=1;i=112" BrowseName="Default JSON" SymbolicName="DefaultJson">
+  <UAObject NodeId="ns=1;i=116" BrowseName="Default JSON" SymbolicName="DefaultJson">
     <DisplayName>Default JSON</DisplayName>
     <References>
       <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=3</Reference>
