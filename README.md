@@ -28,7 +28,6 @@ Documentation of the Mode Compiler can be found at https://github.com/OPCFoundat
 ### Build Status
 
 [![Build Status](https://dev.azure.com/technosoftware-gmbh/OPC%20UA%20Solution%20.NET/_apis/build/status/technosoftware-gmbh.Samples?branchName=master)](https://dev.azure.com/technosoftware-gmbh/OPC%20UA%20Solution%20.NET/_build/latest?definitionId=13&branchName=master)
-[![Build Status](https://travis-ci.com/technosoftware-gmbh/opcua-solution-net.svg?branch=master)](https://travis-ci.com/technosoftware-gmbh/opcua-solution-net)
 [![Build status](https://ci.appveyor.com/api/projects/status/5g0t933gak2u3b7e?svg=true)](https://ci.appveyor.com/project/technosoftware/opcua-solution-net)
 
 ## Online Help

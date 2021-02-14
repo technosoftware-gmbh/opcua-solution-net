@@ -4,6 +4,10 @@
 ### Enhancement
 - Introduced new overridable method AddEncodeableTypes in the UaBaseServer to allow adding encodeable types from different assemblies.
 
+### Changes
+- OPC Foundation Core is now only modified regarding .NET 5.0. 
+- As soon as .NET 5.0 is officially supported we move to the original NuGet packages of the OPC UA Core.
+
 ### Fixed issues
 - fix issue with JSON encoder, field names were not escaped
 - add some basic tests for ECDsa cert generation and validate yet missing ECC cert factory API extensions with test cases
