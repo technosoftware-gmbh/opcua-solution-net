@@ -41,8 +41,10 @@
       </ItemGroup>
     </When>
     <Otherwise>
+      <ItemGroup>
         <PackageReference Include="Technosoftware.Net4.UaConfiguration" Version="2.2.0.4" />
         <PackageReference Include="Technosoftware.Net4.UaServer" Version="2.2.0.4" />
+      </ItemGroup>
     </Otherwise>
   </Choose>
 
