@@ -21,9 +21,9 @@
   </ItemGroup>
 
   <Choose>
-    <When Condition="'$(TargetFramework)' == 'net5.0'">
+    <When Condition="'$(TargetFramework)' == 'net5.0' Or '$(TargetFramework)' == 'netcoreapp3.1'">
       <ItemGroup Condition=" '$(NoHttps)' != 'true' ">
-        <PackageReference Include="Technosoftware.UaSolution.Opc.Ua.Bindings.Https" Version="2.1.2.7" />
+        <PackageReference Include="Technosoftware.UaSolution.Opc.Ua.Bindings.Https" Version="2.2.0.4" />
       </ItemGroup>
     </When>
     <Otherwise>
@@ -33,10 +33,20 @@
   </Otherwise>
   </Choose>
 
-  <ItemGroup>
-    <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.1.2.7" />
-    <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.1.2.7" />
-  </ItemGroup>
+  <Choose>
+    <When Condition="'$(TargetFramework)' == 'net5.0' Or '$(TargetFramework)' == 'netcoreapp3.1'">
+      <ItemGroup>
+        <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.2.0.4" />
+        <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.2.0.4" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <PackageReference Include="Technosoftware.Net4.UaConfiguration" Version="2.2.0.4" />
+        <PackageReference Include="Technosoftware.Net4.UaServer" Version="2.2.0.4" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
 
   <ItemGroup>
     <None Update="EmptyCompany.EmptyServer.Config.xml">

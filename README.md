@@ -62,8 +62,7 @@ Without a Product License (see below) the contents of this repository is used as
 
 Evaluation Editions comes with the following restrictions:
 
- * Evaluation time limited to 30 days and limited to 90 minutes run-time per application start
- * Some evaluations may also show a splash screen at startup
+ * Evaluation time limited to 30 days and limited to 90 minutes run-time per application start.
 
 ### Support for the SDK under Evaluation License
 

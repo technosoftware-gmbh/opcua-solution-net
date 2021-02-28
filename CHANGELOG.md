@@ -1,8 +1,16 @@
 -------------------------------------------------------------------------------------------------------------
+## OPC UA Solution .NET - 2.2.0
+
+- .NET 4.6.2, .NET 4.7.2 and .NET 4.8 are now delivered with it's own NuGet packages:
+  - Technosoftware.Net4.UaConfiguration
+  - Technosoftware.Net4.UaClient
+  - Technosoftware.Net4.UaServer
+  
+-------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 2.1.2
 
 ### Changes
-- Use of original OPC UA Foundation Core (Only .NET 5.0 build uses a modified Core)
+- Use of original OPC UA Foundation Core (Only .NET 5.0 and .NET Standard 2.1 build uses a modified Core)
 
 -------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 2.1.1
@@ -25,7 +33,7 @@
 - Compliance fixes for certificate validation.
 - Use monotonic timer for HiResClock and fix loss of monitored items when system time is changed
 - Method calls validation for Executable and UserExecutable.
-- Private key is not stored to the Windows certificate store when using .NET 2.1
+- Private key is not stored to the Windows certificate store when using .NET Standard 2.1
 - Fix build and LGTM warnings
 - The AcceptAll flag can be used to accept all suppressible errors in one call back
 - fix decoding of ecdsa signature
