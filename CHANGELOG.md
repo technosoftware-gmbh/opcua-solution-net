@@ -5,6 +5,7 @@
   - Technosoftware.Net4.UaConfiguration
   - Technosoftware.Net4.UaClient
   - Technosoftware.Net4.UaServer
+- Updated OPC UA Core to 1.4.365.48
   
 -------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 2.1.2
