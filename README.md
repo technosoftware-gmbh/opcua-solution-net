@@ -32,7 +32,7 @@ Documentation of the Mode Compiler can be found at https://github.com/OPCFoundat
 
 ## Online Help
 
-We provide an online help for the current version: [OPC UA Solution NET Online Help](https://technosoftware.com/help/OPCUaSolutionNet/21/)
+We provide an online help for the current version: [OPC UA Solution NET Online Help](https://technosoftware.com/help/OPCUaSolutionNet/23/)
 
 ## Getting started
 

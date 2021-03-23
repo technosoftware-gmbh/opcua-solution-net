@@ -20,24 +20,15 @@
     <PackageReference Include="Mono.Options" Version="6.6.0.161" />
   </ItemGroup>
 
-  <Choose>
-    <When Condition="'$(TargetFramework)' == 'net5.0' Or '$(TargetFramework)' == 'netcoreapp3.1'">
-      <ItemGroup Condition=" '$(NoHttps)' != 'true' ">
-        <PackageReference Include="Technosoftware.UaSolution.Opc.Ua.Bindings.Https" Version="2.2.0.10" />
-      </ItemGroup>
-    </When>
-    <Otherwise>
-      <ItemGroup Condition=" '$(NoHttps)' != 'true' ">
-        <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Bindings.Https" Version="1.4.365.48" />
-      </ItemGroup>
-  </Otherwise>
-  </Choose>
+  <ItemGroup Condition=" '$(NoHttps)' != 'true' ">
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Bindings.Https" Version="1.4.365.48" />
+  </ItemGroup>
 
   <Choose>
     <When Condition="'$(TargetFramework)' == 'net5.0' Or '$(TargetFramework)' == 'netcoreapp3.1'">
       <ItemGroup>
-        <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.2.0.10" />
-        <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.2.0.10" />
+        <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.3.0.3" />
+        <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.3.0.3" />
       </ItemGroup>
     </When>
     <Otherwise>

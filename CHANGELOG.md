@@ -1,6 +1,18 @@
 -------------------------------------------------------------------------------------------------------------
+## OPC UA Solution .NET - 2.3.0
+
+### Changes
+- All version now use the official OPC UA Core Stack.
+- Source Code of OPC UA core is removed. 
+- We now use the following official version 1.4.365.48 NuGet packages:
+  - OPCFoundation.NetStandard.Opc.Ua.Core 
+  - OPCFoundation.NetStandard.Opc.Ua.Security.Certificates
+  - OPCFoundation.NetStandard.Opc.Ua.Bindings.Https
+
+-------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 2.2.0
 
+### Changes
 - .NET 4.6.2, .NET 4.7.2 and .NET 4.8 are now delivered with it's own NuGet packages:
   - Technosoftware.Net4.UaConfiguration
   - Technosoftware.Net4.UaClient
