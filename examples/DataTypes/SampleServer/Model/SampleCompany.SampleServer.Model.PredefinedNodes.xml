@@ -211,7 +211,7 @@
               <uax:ValueRank>-1</uax:ValueRank>
               <uax:ArrayDimensions />
               <uax:MaxStringLength>0</uax:MaxStringLength>
-              <uax:IsOptional>false</uax:IsOptional>
+              <uax:IsOptional>true</uax:IsOptional>
             </uax:StructureField>
             <uax:StructureField>
               <uax:Name>Manufacturer</uax:Name>
@@ -221,7 +221,7 @@
               <uax:ValueRank>-1</uax:ValueRank>
               <uax:ArrayDimensions />
               <uax:MaxStringLength>0</uax:MaxStringLength>
-              <uax:IsOptional>false</uax:IsOptional>
+              <uax:IsOptional>true</uax:IsOptional>
             </uax:StructureField>
             <uax:StructureField>
               <uax:Name>SerialNumber</uax:Name>
@@ -231,7 +231,7 @@
               <uax:ValueRank>-1</uax:ValueRank>
               <uax:ArrayDimensions />
               <uax:MaxStringLength>0</uax:MaxStringLength>
-              <uax:IsOptional>false</uax:IsOptional>
+              <uax:IsOptional>true</uax:IsOptional>
             </uax:StructureField>
             <uax:StructureField>
               <uax:Name>MachineState</uax:Name>
@@ -241,7 +241,7 @@
               <uax:ValueRank>-1</uax:ValueRank>
               <uax:ArrayDimensions />
               <uax:MaxStringLength>0</uax:MaxStringLength>
-              <uax:IsOptional>false</uax:IsOptional>
+              <uax:IsOptional>true</uax:IsOptional>
             </uax:StructureField>
           </uax:Fields>
         </uax:StructureDefinition>
