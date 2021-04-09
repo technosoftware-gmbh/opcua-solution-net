@@ -8,6 +8,8 @@
   - OPCFoundation.NetStandard.Opc.Ua.Core 
   - OPCFoundation.NetStandard.Opc.Ua.Security.Certificates
   - OPCFoundation.NetStandard.Opc.Ua.Bindings.Https
+- Updated ModelCompiler to 1.01.335.1
+  - Compliler can now generate properly typed code for Variables and DataType fields with abstract DataTypes. Prior releases produced code with an ExtensionObject or Variant as the type name. Passing the -useAllowSubtypes flag will enable this feature.
 
 -------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 2.2.0
