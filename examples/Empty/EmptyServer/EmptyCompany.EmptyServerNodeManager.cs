@@ -34,7 +34,6 @@ using System.Reflection;
 using System.Threading;
 
 using Opc.Ua;
-
 using Technosoftware.UaServer;
 #endregion
 
@@ -159,9 +158,6 @@ namespace EmptyCompany.EmptyServer
                 // Create the root folder for all nodes of this server
                 var root = CreateFolderState(null, "My Data", new LocalizedText("en", "My Data"),
                                  new LocalizedText("en", "Root folder of the Empty Server. All nodes must be placed under this root."));
-                References.Add(new NodeStateReference(ReferenceTypes.Organizes, false, root.NodeId));
-                root.EventNotifier = EventNotifiers.SubscribeToEvents;
-                opcServer_.AddRootNotifier(root);
 
                 // Add all nodes under root to the server
                 AddPredefinedNode(SystemContext, root);
