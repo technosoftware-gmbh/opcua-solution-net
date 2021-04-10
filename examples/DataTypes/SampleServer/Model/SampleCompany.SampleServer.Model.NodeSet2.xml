@@ -5,7 +5,7 @@
   </NamespaceUris>
   <Models>
     <Model ModelUri="http://samplecompany.com/SampleServer/Model">
-      <RequiredModel ModelUri="http://opcfoundation.org/UA/" Version="1.04.7" PublicationDate="2020-07-15T00:00:00Z" />
+      <RequiredModel ModelUri="http://opcfoundation.org/UA/" Version="1.04.9" PublicationDate="2021-01-21T00:00:00Z" />
     </Model>
   </Models>
   <Aliases>
@@ -120,10 +120,10 @@
       <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
     </References>
     <Definition Name="1:MachineDataType">
-      <Field Name="MachineName" DataType="i=12" />
-      <Field Name="Manufacturer" DataType="i=12" />
-      <Field Name="SerialNumber" DataType="i=12" />
-      <Field Name="MachineState" DataType="ns=1;i=1" />
+      <Field Name="MachineName" DataType="i=12" IsOptional="true" />
+      <Field Name="Manufacturer" DataType="i=12" IsOptional="true" />
+      <Field Name="SerialNumber" DataType="i=12" IsOptional="true" />
+      <Field Name="MachineState" DataType="ns=1;i=1" IsOptional="true" />
     </Definition>
   </UADataType>
   <UAObjectType NodeId="ns=1;i=7" BrowseName="1:GenericControllerType">

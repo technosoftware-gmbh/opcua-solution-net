@@ -1,5 +1,5 @@
 /* ========================================================================
- * Copyright (c) 2005-2019 The OPC Foundation, Inc. All rights reserved.
+ * Copyright (c) 2005-2021 The OPC Foundation, Inc. All rights reserved.
  *
  * OPC Foundation MIT License 1.00
  *
@@ -69,6 +69,7 @@ namespace SampleCompany.SampleServer.Model
         /// </summary>
         protected override void Initialize(ISystemContext context)
         {
+            base.Initialize(context);
             Initialize(context, InitializationString);
             InitializeOptionalChildren(context);
         }
@@ -149,9 +150,9 @@ namespace SampleCompany.SampleServer.Model
     /// </summary>
     /// <exclude />
     public delegate ServiceResult GetMachineDataMethodStateMethodCallHandler(
-        ISystemContext context,
-        MethodState method,
-        NodeId objectId,
+        ISystemContext _context,
+        MethodState _method,
+        NodeId _objectId,
         string machineName,
         ref MachineDataType machineData);
     #endif
@@ -188,6 +189,7 @@ namespace SampleCompany.SampleServer.Model
         /// </summary>
         protected override void Initialize(ISystemContext context)
         {
+            base.Initialize(context);
             Initialize(context, InitializationString);
             InitializeOptionalChildren(context);
         }
@@ -393,6 +395,7 @@ namespace SampleCompany.SampleServer.Model
         /// </summary>
         protected override void Initialize(ISystemContext context)
         {
+            base.Initialize(context);
             Initialize(context, InitializationString);
             InitializeOptionalChildren(context);
         }
@@ -469,6 +472,7 @@ namespace SampleCompany.SampleServer.Model
         /// </summary>
         protected override void Initialize(ISystemContext context)
         {
+            base.Initialize(context);
             Initialize(context, InitializationString);
             InitializeOptionalChildren(context);
         }
@@ -545,6 +549,7 @@ namespace SampleCompany.SampleServer.Model
         /// </summary>
         protected override void Initialize(ISystemContext context)
         {
+            base.Initialize(context);
             Initialize(context, InitializationString);
             InitializeOptionalChildren(context);
         }
@@ -621,6 +626,7 @@ namespace SampleCompany.SampleServer.Model
         /// </summary>
         protected override void Initialize(ISystemContext context)
         {
+            base.Initialize(context);
             Initialize(context, InitializationString);
             InitializeOptionalChildren(context);
         }

@@ -5,7 +5,7 @@
   </NamespaceUris>
   <Models>
     <Model ModelUri="http://samplecompany.com/SampleServer/Model">
-      <RequiredModel ModelUri="http://opcfoundation.org/UA/" Version="1.04.7" PublicationDate="2020-07-15T00:00:00Z" />
+      <RequiredModel ModelUri="http://opcfoundation.org/UA/" Version="1.04.9" PublicationDate="2021-01-21T00:00:00Z" />
     </Model>
   </Models>
   <Aliases>
@@ -51,8 +51,8 @@
       <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
     </References>
     <Definition Name="1:CycleStepDataType">
-      <Field Name="Name" DataType="i=12" />
-      <Field Name="Duration" DataType="i=11" />
+      <Field Name="Name" DataType="i=12" IsOptional="true" />
+      <Field Name="Duration" DataType="i=11" IsOptional="true" />
     </Definition>
   </UADataType>
   <UAObjectType NodeId="ns=1;i=2" BrowseName="1:SystemCycleStatusEventType">
