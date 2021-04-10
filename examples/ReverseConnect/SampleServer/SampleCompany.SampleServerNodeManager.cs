@@ -34,7 +34,6 @@ using System.Reflection;
 using System.Threading;
 
 using Opc.Ua;
-
 using Technosoftware.UaServer;
 #endregion
 
@@ -167,9 +166,6 @@ namespace SampleCompany.SampleServer
                 // Create the root folder for all nodes of this server
                 var root = CreateFolderState(null, "My Data", new LocalizedText("en", "My Data"),
                     new LocalizedText("en", "Root folder of the Sample Server. All nodes must be placed under this root."));
-                References.Add(new NodeStateReference(ReferenceTypes.Organizes, false, root.NodeId));
-                root.EventNotifier = EventNotifiers.SubscribeToEvents;
-                opcServer_.AddRootNotifier(root);
 
                 try
                 {
@@ -191,7 +187,6 @@ namespace SampleCompany.SampleServer
                     var enabledVariable = CreateBaseDataVariableState(simulationFolder, simulation + "Enabled", "Enabled", "Specifies whether the simulation is enabled (true) or disabled (false).", DataTypeIds.Boolean, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, simulationEnabled_);
                     enabledVariable.OnSimpleWriteValue = OnWriteEnabled;
                     #endregion
-
                 }
                 catch (Exception e)
                 {

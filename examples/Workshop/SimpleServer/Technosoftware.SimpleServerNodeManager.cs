@@ -1,6 +1,6 @@
-﻿#region Copyright (c) 2011-2021 Technosoftware GmbH. All rights reserved
+﻿#region Copyright (c) 2021 Technosoftware GmbH. All rights reserved
 //-----------------------------------------------------------------------------
-// Copyright (c) 2011-2021 Technosoftware GmbH. All rights reserved
+// Copyright (c) 2021 Technosoftware GmbH. All rights reserved
 // Web: https://technosoftware.com 
 // 
 // License: 
@@ -25,7 +25,7 @@
 //
 // SPDX-License-Identifier: MIT
 //-----------------------------------------------------------------------------
-#endregion Copyright (c) 2011-2021 Technosoftware GmbH. All rights reserved
+#endregion Copyright (c) 2021 Technosoftware GmbH. All rights reserved
 
 #region Using Directives
 using System;
@@ -34,7 +34,6 @@ using System.Numerics;
 using System.Threading;
 
 using Opc.Ua;
-
 using Technosoftware.UaServer;
 #endregion
 
@@ -59,11 +58,9 @@ namespace Technosoftware.SimpleServer
         // Track whether Dispose has been called.
         private bool disposed_;
         private readonly object lockDisposable_ = new object();
-
         #endregion
 
         #region Constructors, Destructor, Initialization
-
         /// <summary>
         /// Initializes the node manager.
         /// </summary>
@@ -88,7 +85,6 @@ namespace Technosoftware.SimpleServer
             Console.WriteLine("Specified configuration file: {0}", configurationFile);
 
             SystemContext.NodeIdFactory = this;
-
         }
 
         /// <summary>
@@ -194,9 +190,6 @@ namespace Technosoftware.SimpleServer
                 LoadPredefinedNodes(SystemContext, externalReferences);
 
                 var root = CreateFolderState(null, "My Data", new LocalizedText("en", "My Data"), new LocalizedText("en", "Root folder of Workshop Server"));
-                References.Add(new NodeStateReference(ReferenceTypes.Organizes, false, root.NodeId));
-                root.EventNotifier = EventNotifiers.SubscribeToEvents;
-                opcServer_.AddRootNotifier(root);
 
                 try
                 {
