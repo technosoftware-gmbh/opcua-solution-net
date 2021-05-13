@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup Condition=" '$(NoHttps)' != 'true' ">
-    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Bindings.Https" Version="1.4.365.48" />
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Bindings.Https" Version="1.4.366.38" />
   </ItemGroup>
 
   <Choose>
