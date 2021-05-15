@@ -3,13 +3,13 @@
   <PropertyGroup>
     <TargetFramework>$(AppTargetFramework)</TargetFramework>
     <LangVersion>7.3</LangVersion>
-    <AssemblyName>Technosoftware.SimpleClient</AssemblyName>
+    <AssemblyName>Technosoftware.ReferenceServer</AssemblyName>
     <OutputType>Exe</OutputType>
-    <PackageId>Technosoftware.SimpleClient</PackageId>
+    <PackageId>Technosoftware.ReferenceServer</PackageId>
     <Company>Technosoftware GmbH</Company>
     <Product>OPC UA Solution .NET</Product>
-    <Description>OPC UA Solution .NET Simple Client</Description>
-    <Copyright>Copyright © 2018 - 2020 Technosoftware GmbH</Copyright>
+    <Description>OPC UA Solution .NET Reference Server</Description>
+    <Copyright>Copyright © 2018 - 2021 Technosoftware GmbH</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,11 +25,11 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.3.1" />
-    <PackageReference Include="Technosoftware.UaSolution.UaClient" Version="2.3.1" />
+    <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.3.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Technosoftware.SimpleClient.Config.xml">
+    <None Update="Technosoftware.ReferenceServer.Config.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

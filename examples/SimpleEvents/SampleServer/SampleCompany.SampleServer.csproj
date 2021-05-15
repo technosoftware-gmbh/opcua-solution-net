@@ -32,23 +32,12 @@
   </ItemGroup>
 
   <ItemGroup Condition=" '$(NoHttps)' != 'true' ">
-    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Bindings.Https" Version="1.4.365.48" />
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Bindings.Https" Version="1.4.366.38" />
   </ItemGroup>
-
-  <Choose>
-    <When Condition="'$(TargetFramework)' == 'net5.0' Or '$(TargetFramework)' == 'netcoreapp3.1'">
-      <ItemGroup>
-        <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.3.0.3" />
-        <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.3.0.3" />
-      </ItemGroup>
-    </When>
-    <Otherwise>
-      <ItemGroup>
-        <PackageReference Include="Technosoftware.Net4.UaConfiguration" Version="2.2.0.9" />
-        <PackageReference Include="Technosoftware.Net4.UaServer" Version="2.2.0.9" />
-      </ItemGroup>
-    </Otherwise>
-  </Choose>
+  <ItemGroup>
+    <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.3.1" />
+    <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.3.1" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Update="SampleCompany.SampleServer.Config.xml">

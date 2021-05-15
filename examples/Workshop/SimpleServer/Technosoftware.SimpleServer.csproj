@@ -9,7 +9,7 @@
     <Company>Technosoftware GmbH</Company>
     <Product>OPC UA Solution .NET</Product>
     <Description>OPC UA Solution .NET Simple Server</Description>
-    <Copyright>Copyright © 2018 - 2020 Technosoftware GmbH</Copyright>
+    <Copyright>Copyright © 2018 - 2021 Technosoftware GmbH</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,23 +21,12 @@
   </ItemGroup>
 
   <ItemGroup Condition=" '$(NoHttps)' != 'true' ">
-    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Bindings.Https" Version="1.4.365.48" />
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Bindings.Https" Version="1.4.366.38" />
   </ItemGroup>
-
-  <Choose>
-    <When Condition="'$(TargetFramework)' == 'net5.0' Or '$(TargetFramework)' == 'netcoreapp3.1'">
-      <ItemGroup>
-        <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.3.0.3" />
-        <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.3.0.3" />
-      </ItemGroup>
-    </When>
-    <Otherwise>
-      <ItemGroup>
-        <PackageReference Include="Technosoftware.Net4.UaConfiguration" Version="2.2.0.9" />
-        <PackageReference Include="Technosoftware.Net4.UaServer" Version="2.2.0.9" />
-      </ItemGroup>
-    </Otherwise>
-  </Choose>
+  <ItemGroup>
+    <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.3.1" />
+    <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.3.1" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Update="Technosoftware.SimpleServer.Config.xml">

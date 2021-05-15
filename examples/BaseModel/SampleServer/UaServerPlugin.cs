@@ -36,6 +36,7 @@ using System.IO;
 
 using Opc.Ua;
 
+using Technosoftware.UaConfiguration;
 using Technosoftware.UaServer;
 #endregion
 
@@ -136,6 +137,26 @@ namespace SampleCompany.SampleServer
         // (Called by the generic server)
         //---------------------------------------------------------------------
 
+        /// <summary>This method is the first method called from the generic server at the startup.</summary>
+        /// <param name="args">String array with the command line parameters as they were specified when the server was being started.</param>
+        /// <returns>A <see cref="StatusCode"/> code with the result of the operation. Returning an error code stops the further server execution.</returns>
+        public StatusCode OnStartup(string[] args)
+        {
+            return StatusCodes.Good;
+        }
+
+        /// <summary>This method is the called after the application configuration was loaded.</summary>
+        /// <param name="application">The application instance.</param>
+        /// <param name="configuration">The application configuration.</param>
+        /// <returns>
+        ///     A <see cref="StatusCode" /> code with the result of the operation. Returning an error code stops the further
+        ///     server execution.
+        /// </returns>
+        public StatusCode OnApplicationConfigurationLoaded(ApplicationInstance application, ApplicationConfiguration configuration)
+        {
+            return StatusCodes.Good;
+        }
+
         /// <summary>
         /// This method is called from the generic server to get the license information. 
         /// </summary>
@@ -143,17 +164,7 @@ namespace SampleCompany.SampleServer
         /// <remarks>Returning empty strings activates the evaluation version of the OPC UA Server .NET. The evaluation allows the usage of the full product for 30 days.</remarks>
         public void OnGetLicenseInformation(out string serialNumber)
         {
-            Utils.Trace(Utils.TraceMasks.Information, "OnGetLicenseInformation(): Request the license information.");
             serialNumber = "";
-        }
-
-        /// <summary>This method is the first method called from the generic server at the startup.</summary>
-        /// <param name="args">String array with the command line parameters as they were specified when the server was being started.</param>
-        /// <returns>A <see cref="StatusCode"/> code with the result of the operation. Returning an error code stops the further server execution.</returns>
-        public StatusCode OnStartup(string[] args)
-        {
-            Utils.Trace(Utils.TraceMasks.Information, "OnStartup(): Server is starting up.");
-            return StatusCodes.Good;
         }
 
         /// <summary>
@@ -223,14 +234,14 @@ namespace SampleCompany.SampleServer
         {
             Utils.Trace(Utils.TraceMasks.Information, "OnGetServerProperties(): Request some standard information of the server}.");
             var properties = new ServerProperties
-                                {
-                                    ManufacturerName = "SampleCompany",
-                                    ProductName = "SampleCompany OPC UA Sample Server",
-                                    ProductUri = "http://samplecompany.com/SampleServer/v1.0",
-                                    SoftwareVersion = GetAssemblySoftwareVersion(),
-                                    BuildNumber = GetAssemblyBuildNumber(),
-                                    BuildDate = GetAssemblyTimestamp()
-                                };
+            {
+                ManufacturerName = "SampleCompany",
+                ProductName = "SampleCompany OPC UA Sample Server",
+                ProductUri = "http://samplecompany.com/SampleServer/v1.0",
+                SoftwareVersion = GetAssemblySoftwareVersion(),
+                BuildNumber = GetAssemblyBuildNumber(),
+                BuildDate = GetAssemblyTimestamp()
+            };
 
             return properties;
         }

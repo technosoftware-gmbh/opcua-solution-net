@@ -1,15 +1,25 @@
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solution .NET - 2.3.0
+## OPC UA Solution .NET - 2.3.1
 
 ### Changes
-- All version now use the official OPC UA Core Stack.
-- Source Code of OPC UA core is removed. 
-- We now use the following official version 1.4.365.48 NuGet packages:
+- All versions now use the official OPC UA Core Stack.
+- We now use the following official version 1.4.366.38 NuGet packages:
   - OPCFoundation.NetStandard.Opc.Ua.Core 
   - OPCFoundation.NetStandard.Opc.Ua.Security.Certificates
   - OPCFoundation.NetStandard.Opc.Ua.Bindings.Https
 - Updated ModelCompiler to 1.01.335.1
   - Compliler can now generate properly typed code for Variables and DataType fields with abstract DataTypes. Prior releases produced code with an ExtensionObject or Variant as the type name. Passing the -useAllowSubtypes flag will enable this feature.
+- Source Code of OPC UA core is removed from the source code version. 
+- Enhanced performance 
+- Modelcompiler updates, errata 1.04.9 nodeset
+- Add certificate password provider interface to support password protected pfx files.
+- Tested with OPC UA Local Discovery Server V1.04.402.461
+- Tested with OPC UA Compliance Test Tool V1.4.9.398
+
+### Breaking Changes
+- Added OnApplicationConfigurationLoaded(ApplicationInstance application, ApplicationConfiguration configuration) to IUaServerPlugin. 
+  It is called after OnStartup(). You have to add it to the UaServerPlugin.cs
+- Removed UaApplicationInstance. You can use ApplicationInstance instead.
 
 -------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 2.2.0

@@ -1,6 +1,6 @@
-#region Copyright (c) 2021 Technosoftware GmbH. All rights reserved
+#region Copyright (c) 2011-2021 Technosoftware GmbH. All rights reserved
 //-----------------------------------------------------------------------------
-// Copyright (c) 2021 Technosoftware GmbH. All rights reserved
+// Copyright (c) 2011-2021 Technosoftware GmbH. All rights reserved
 // Web: https://technosoftware.com 
 // 
 // License: 
@@ -25,7 +25,7 @@
 //
 // SPDX-License-Identifier: MIT
 //-----------------------------------------------------------------------------
-#endregion Copyright (c) 2021 Technosoftware GmbH. All rights reserved
+#endregion Copyright (c) 2011-2021 Technosoftware GmbH. All rights reserved
 
 #region Using Directives
 using System;
@@ -40,7 +40,7 @@ using Technosoftware.UaConfiguration;
 using Technosoftware.UaServer;
 #endregion
 
-namespace Technosoftware.ModelDesignServer
+namespace Technosoftware.ReferenceServer
 {
 
     /// <summary>
@@ -50,7 +50,7 @@ namespace Technosoftware.ModelDesignServer
     /// OPC UA server implementation. At startup items with several 
     /// data types and access rights are statically defined. 
     /// </summary>
-    public class UaServerPlugin : IUaServerPlugin, IUaOptionalServerPlugin, IDisposable
+    public class UaServerPlugin : IUaServerPlugin, IUaOptionalServerPlugin, IUaReverseConnectServerPlugin, IDisposable
     {
         #region Private Fields
         private IUaServer opcServer_;
@@ -173,12 +173,9 @@ namespace Technosoftware.ModelDesignServer
         /// <returns>Array of namespaces that are used by the application.</returns>
         public string[] OnGetNamespaceUris()
         {
-            Utils.Trace(Utils.TraceMasks.Information, "OnGetNamespaceUris(): Request the supported namespace Uris.");
             // set one namespace for the type model.
-            var namespaceUrls = new string[3];
-            namespaceUrls[0] = Model.Namespaces.ModelDesignServer;
-            namespaceUrls[1] = Model.Namespaces.Engineering;
-            namespaceUrls[2] = Model.Namespaces.Operations;
+            var namespaceUrls = new string[1];
+            namespaceUrls[0] = Namespaces.Reference;
             return namespaceUrls;
         }
 
@@ -187,20 +184,17 @@ namespace Technosoftware.ModelDesignServer
         /// <param name="configuration">The application configuration</param>
         public void OnInitialized(IUaServer opcServer, ApplicationConfiguration configuration)
         {
-            Utils.Trace(Utils.TraceMasks.Information, "OnInitialized(): Server is initialized.");
             opcServer_ = opcServer;
         }
 
         /// <summary>
-        /// 	<para>
-        ///         This method is called from the generic server at the startup; when the first client connects or the service is started. All items supported by the server need to be defined by calling the methods provided by the <see cref="IUaServer">IUaServer</see> interface for each item.
-        ///     </para>
+        /// This method is called from the generic server at the startup; when the first client connects or the service is started. All items supported by the server need to be defined by calling the methods provided by the <see cref="IUaServer">IUaServer</see> interface for each item.
         /// </summary>
         /// <param name="externalReferences">The externalReferences allows the generic server to link to the general nodes.</param>
         /// <returns>The root folder.</returns>
         public NodeState OnCreateAddressSpace(IDictionary<NodeId, IList<IReference>> externalReferences)
         {
-            // Not called because the method CreateAddressSpace() is overwritten in the ModelDesignServerNodeManager class
+            // Not called because the method CreateAddressSpace() is overwritten in the ReferenceServerNodeManager class
             return null;
         }
 
@@ -211,7 +205,6 @@ namespace Technosoftware.ModelDesignServer
         /// <returns>A <see cref="StatusCode"/> code with the result of the operation. Returning from this method stops the further server execution.</returns>
         public StatusCode OnRunning()
         {
-            Utils.Trace(Utils.TraceMasks.Information, "OnRunning(): Server is running.");
             return StatusCodes.Good;
         }
 
@@ -225,7 +218,6 @@ namespace Technosoftware.ModelDesignServer
         /// <returns>A <see cref="StatusCode"/> code with the result of the operation.</returns>
         public StatusCode OnShutdown(ServerState serverState, string reason, Exception exception)
         {
-            Utils.Trace(Utils.TraceMasks.Information, "OnShutdown(): Server is shutting down because of {0}.", reason);
             return StatusCodes.Good;
         }
 
@@ -233,16 +225,15 @@ namespace Technosoftware.ModelDesignServer
         /// <returns>A <see cref="ServerProperties"/> object.</returns>
         public ServerProperties OnGetServerProperties()
         {
-            Utils.Trace(Utils.TraceMasks.Information, "OnGetServerProperties(): Request some standard information of the server}.");
             var properties = new ServerProperties
-                                {
-                                    ManufacturerName = "Technosoftware GmbH",
-                                    ProductName = "Technosoftware OPC UA ModelDesign Server",
-                                    ProductUri = "http://technosoftware.com/ModelDesignServer/v1.0",
-                                    SoftwareVersion = GetAssemblySoftwareVersion(),
-                                    BuildNumber = GetAssemblyBuildNumber(),
-                                    BuildDate = GetAssemblyTimestamp()
-                                };
+            {
+                ManufacturerName = "Technosoftware GmbH",
+                ProductName = "Technosoftware OPC UA Reference Server",
+                ProductUri = "http://technosoftware.com/ReferenceServer/v1.0",
+                SoftwareVersion = GetAssemblySoftwareVersion(),
+                BuildNumber = GetAssemblyBuildNumber(),
+                BuildDate = GetAssemblyTimestamp()
+            };
 
             return properties;
         }
@@ -285,14 +276,20 @@ namespace Technosoftware.ModelDesignServer
         #region Optional Server Plugin methods
         public UaBaseServer OnGetServer()
         {
-            Utils.Trace(Utils.TraceMasks.Information, "OnGetServer(): Request the instance of the server.");
-            return new ModelDesignServer();
+            return new ReferenceServer();
         }
 
         public UaBaseNodeManager OnGetNodeManager(IUaServer opcServer, IUaServerData uaServer, ApplicationConfiguration configuration, params string[] namespaceUris)
         {
-            Utils.Trace(Utils.TraceMasks.Information, "OnGetNodeManager(): Request the instance of the node manager.");
-            return new ModelDesignServerNodeManager(opcServer, this, uaServer, configuration, namespaceUris);
+            return new ReferenceServerNodeManager(opcServer, this, uaServer, configuration, namespaceUris);
+        }
+
+        #endregion
+
+        #region Reverse Connect Server Plugin methods
+        public bool OnUseReverseConnect()
+        {
+            return false;
         }
         #endregion
 
