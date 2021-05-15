@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solution .NET - 2.3.1
+## OPC UA Solution .NET - 2.3.2
 
 ### Changes
 - All versions now use the official OPC UA Core Stack.
