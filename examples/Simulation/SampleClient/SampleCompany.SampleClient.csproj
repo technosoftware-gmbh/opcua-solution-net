@@ -3,13 +3,13 @@
   <PropertyGroup>
     <TargetFramework>$(AppTargetFramework)</TargetFramework>
     <LangVersion>7.3</LangVersion>
-    <AssemblyName>Technosoftware.SimpleClient</AssemblyName>
+    <AssemblyName>SampleCompany.SampleClient</AssemblyName>
     <OutputType>Exe</OutputType>
-    <PackageId>Technosoftware.SimpleClient</PackageId>
-    <Company>Technosoftware GmbH</Company>
-    <Product>OPC UA Solution .NET</Product>
-    <Description>OPC UA Solution .NET Simple Client</Description>
-    <Copyright>Copyright © 2018 - 2020 Technosoftware GmbH</Copyright>
+    <PackageId>SampleCompany.SampleClient</PackageId>
+    <Company>SampleCompany</Company>
+    <Product>SampleCompany SampleClient</Product>
+    <Description>SampleCompany SampleClient</Description>
+    <Copyright>Copyright © 2021 SampleCompany</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Technosoftware.SimpleClient.Config.xml">
+    <None Update="SampleCompany.SampleClient.Config.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

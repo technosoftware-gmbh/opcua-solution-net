@@ -29,6 +29,7 @@
 
 #region Using Directives
 using System;
+using System.Text;
 using System.Threading.Tasks;
 
 using Opc.Ua;
@@ -102,6 +103,26 @@ namespace SampleCompany.SampleClient
         /// <value>if set to <c>true</c> select an endpoint that uses security, false if not.</value>
         public bool UseSecurity { get; set; } = true;
 
+        /// <summary>Gets or sets the user name.</summary>
+        ///
+        /// <value>The user name.</value>
+        public String Username { get; set; }
+
+        /// <summary>Gets or sets the password.</summary>
+        ///
+        /// <value>The password.</value>
+        public String Password { get; set; }
+
+        /// <summary>Gets or sets the reconnect period in seconds.</summary>
+        ///
+        /// <value>The reconnect period in seconds.</value>
+        public int ReconnectPeriod { get; set; } = 10;
+
+        /// <summary>Gets or sets URI of the reverse connect.</summary>
+        ///
+        /// <value>The reverse connect URI.</value>
+        public Uri ReverseConnectUri { get; set; }
+
         /// <summary>Gets or sets the application configuration.</summary>
         ///
         /// <value>The configuration.</value>
@@ -122,6 +143,11 @@ namespace SampleCompany.SampleClient
         {
             applicationConfigurationFile_ = applicationConfigurationFile;
         }
+
+        ~MyUaClient()
+        {
+            reverseConnectManager_?.Dispose();
+        }
         #endregion
 
         #region Public Methods
@@ -139,6 +165,15 @@ namespace SampleCompany.SampleClient
 
                 // check the application certificate.
                 var haveAppCertificate = await application.CheckApplicationInstanceCertificateAsync(false, CertificateFactory.DefaultKeySize, CertificateFactory.DefaultLifeTime).ConfigureAwait(false);
+
+                reverseConnectManager_ = null;
+                if (ReverseConnectUri != null)
+                {
+                    // start the reverse connection manager
+                    reverseConnectManager_ = new ReverseConnectManager();
+                    reverseConnectManager_.AddEndpoint(ReverseConnectUri);
+                    reverseConnectManager_.StartService(Configuration);
+                }
 
                 if (haveAppCertificate)
                 {
@@ -280,6 +315,42 @@ namespace SampleCompany.SampleClient
                 ErrorCode = ExitCode.ErrorReadServerStatus;
             }
         }
+
+        /// <summary>Read some values from the server status.</summary>
+        public void SimulateReconnect()
+        {
+            Console.WriteLine("--- SIMULATE RECONNECT --- ");
+            reconnectHandler_ = new SessionReconnectHandler();
+            if (reverseConnectManager_ != null)
+            {
+                reconnectHandler_.BeginReconnect(Session, reverseConnectManager_, 1000, OnServerReconnectComplete);
+            }
+            else
+            {
+                reconnectHandler_.BeginReconnect(Session, 1000, OnServerReconnectComplete);
+            }
+        }
+
+        /// <summary>Browses the address space of the UA server.</summary>
+        public void Browse()
+        {
+            Console.WriteLine("Browse address space.");
+
+            // Create the browser
+            var browser = new Browser(Session)
+            {
+                BrowseDirection = BrowseDirection.Forward,
+                ReferenceTypeId = ReferenceTypeIds.HierarchicalReferences,
+                IncludeSubtypes = true,
+                NodeClassMask = 0,
+                ContinueUntilDone = false
+            };
+
+            // Browse from the RootFolder
+            var references = browser.Browse(Objects.ObjectsFolder);
+
+            GetElements(Session, browser, 0, references, Verbose);
+        }
         #endregion
 
         #region Asynchronous related handlers
@@ -304,9 +375,103 @@ namespace SampleCompany.SampleClient
         }
         #endregion
 
+        #region KeepAlive and ReConnect handling
+        /// <summary>Raises the session keep alive event.</summary>
+        ///
+        /// <param name="sender">Source of the event. </param>
+        /// <param name="e">     Event information to send to registered event handlers. </param>
+        private void OnSessionKeepAliveEvent(object sender, SessionKeepAliveEventArgs e)
+        {
+            if (sender is Session session && e.Status != null && ServiceResult.IsNotGood(e.Status))
+            {
+                Console.WriteLine("{0} {1}/{2}", e.Status, session.OutstandingRequestCount, session.DefunctRequestCount);
+
+                if (reconnectHandler_ == null)
+                {
+                    Console.WriteLine("--- RECONNECTING ---");
+                    reconnectHandler_ = new SessionReconnectHandler();
+                    reconnectHandler_.BeginReconnect(session, ReconnectPeriod * 1000, OnServerReconnectComplete);
+                }
+            }
+        }
+
+        /// <summary>Raises the server reconnect complete event.</summary>
+        ///
+        /// <param name="sender">Source of the event. </param>
+        /// <param name="e">     Event information to send to registered event handlers. </param>
+        private void OnServerReconnectComplete(object sender, EventArgs e)
+        {
+            // ignore callbacks from discarded objects.
+            if (!ReferenceEquals(sender, reconnectHandler_))
+            {
+                return;
+            }
+
+            if (reconnectHandler_ != null)
+            {
+                Session = reconnectHandler_.Session;
+                reconnectHandler_.Dispose();
+                reconnectHandler_ = null;
+                Console.WriteLine("--- RECONNECTED ---");
+            }
+        }
+        #endregion
+
+        #region Private Methods (Browse related)
+        /// <summary>
+        /// Gets all elements for the specified references
+        /// </summary>
+        /// <param name="session">The session to use</param>
+        /// <param name="browser">The browser to use</param>
+        /// <param name="level">The level</param>
+        /// <param name="references">The references to browse</param>
+        /// <param name="verbose">If true the address space will be printed out to the console; otherwise not</param>
+        private static void GetElements(Session session, Browser browser, uint level, ReferenceDescriptionCollection references, bool verbose)
+        {
+            var spaces = new StringBuilder();
+            for (var i = 0; i <= level; i++)
+            {
+                spaces.Append(i);
+                spaces.Append("   ");
+            }
+
+            // Iterate through the references and print the variables
+            foreach (var reference in references)
+            {
+                // make sure the type definition is in the cache.
+                session.NodeCache.Find(reference.ReferenceTypeId);
+
+                switch (reference.NodeClass)
+                {
+                    case NodeClass.Object:
+                        if (verbose)
+                        {
+                            Console.WriteLine(spaces + "+ " + reference.DisplayName);
+                        }
+                        break;
+
+                    default:
+                        if (verbose)
+                        {
+                            Console.WriteLine(spaces + "- " + reference.DisplayName);
+                        }
+                        break;
+                }
+                var subReferences = browser.Browse((NodeId)reference.NodeId);
+                level += 1;
+                GetElements(session, browser, level, subReferences, verbose);
+                level -= 1;
+            }
+        }
+        #endregion
+
         #region Fields
         /// <summary>(Immutable) the application configuration file.</summary>
         private readonly string applicationConfigurationFile_;
+        /// <summary>Manager for reverse connect.</summary>
+        private ReverseConnectManager reverseConnectManager_;
+        /// <summary>The reconnect handler.</summary>
+        private SessionReconnectHandler reconnectHandler_;
         #endregion      
     }
 }

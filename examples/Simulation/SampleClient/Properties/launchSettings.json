@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SampleCompany.SampleClient": {
+      "commandName": "Project",
+      "commandLineArgs": "-t=10 -v"
+    }
+  }
+}

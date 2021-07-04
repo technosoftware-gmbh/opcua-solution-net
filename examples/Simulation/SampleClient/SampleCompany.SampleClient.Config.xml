@@ -5,18 +5,17 @@
   xmlns="http://opcfoundation.org/UA/SDK/Configuration.xsd"
 >
   <!-- A human readable but not necessarily unique name for the application instance -->
-  <ApplicationName>Technosoftware OPC UA ModelDesign Client</ApplicationName>
+  <ApplicationName>SampleCompany OPC UA Sample Client</ApplicationName>
 
   <!-- A globally unique identifier for the application instance.
        This is overridden with the value contained in the application certificate. -->
-  <ApplicationUri>urn:localhost:Technosoftware:ModelDesignClient</ApplicationUri>
+  <ApplicationUri>urn:localhost:SampleCompany:SampleClient</ApplicationUri>
 
   <!-- A globally unique URI for the product (usually assigned by the product vendor) -->
-  <ProductUri>uri:technosoftware.com:ModelDesignClient</ProductUri>
+  <ProductUri>uri:SampleCompany.com:SampleClient</ProductUri>
 
   <!-- Indicates the type of application (Server_0, Client_1, ClientAndServer_2 or DiscoveryServer_3). -->
   <ApplicationType>Client_1</ApplicationType>
-
   <!-- Specifies security related configuration information -->
   <SecurityConfiguration>
 
@@ -36,11 +35,11 @@
       <!-- The subject for the certificate 
            Note that subject names are complex structures. Only text that appears here is treated as the CommonName component.
            The first certificate found is used if multiple certificates with the same CommonName and a matching hostname exist.
-           Also a complete distinguished name can be specified here: 'CN=UA Sample Client, DC=localhost'.
+           Also a complete distinguished name can be specified here: 'CN=SampleCompany OPC UA Sample Client, DC=localhost'.
            In this case the first certificate matching the complete distinguished name is used. localhost is replaced with the hostname.
            If no certificate is found, a new self signed application certificate is created.
            The Thumbprint should be specified if the CN or DN does not uniquely identify a certificate. -->
-      <SubjectName>CN=Technosoftware OPC UA ModelDesign Client, C=CH, S=Aargau, O=Technosoftware GmbH, DC=localhost</SubjectName>
+      <SubjectName>CN=SampleCompany OPC UA Sample Client, C=CH, S=Aargau, O=SampleCompany, DC=localhost</SubjectName>
 
       <!-- The SHA1 thumbprint for the certificate.
            The thumbprint uniquely identifies a certificate.
@@ -89,21 +88,22 @@
       <StorePath>%LocalApplicationData%/OPC Foundation/pki/rejected</StorePath>
     </RejectedCertificateStore>
 
-
     <!-- WARNING: The following setting (to automatically accept untrusted certificates) should be used
     for easy debugging purposes ONLY and turned off for production deployments! -->
     <AutoAcceptUntrustedCertificates>true</AutoAcceptUntrustedCertificates>
-
 
     <!-- WARNING: SHA1 signed certificates are by default rejected and should be phased out. 
     The setting below to allow them is only required for UACTT (1.02.336.244) which uses SHA-1 signed certs. -->
     <RejectSHA1SignedCertificates>false</RejectSHA1SignedCertificates>
 
+    <!-- Value indicating whether certificates with unavailable revocation lists are not accepted -->
     <RejectUnknownRevocationStatus>false</RejectUnknownRevocationStatus>
 
+    <!-- Value indicating which minimum certificate key strength is accepted -->
     <MinimumCertificateKeySize>2048</MinimumCertificateKeySize>
-    <AddAppCertToTrustedStore>true</AddAppCertToTrustedStore>
 
+    <!-- Value indicating whether the application cert should be copied to the trusted store -->
+    <AddAppCertToTrustedStore>true</AddAppCertToTrustedStore>
 
     <!-- Specifies whether the complete certificate chain should be sent for CA signed certificates. -->
     <SendCertificateChain>true</SendCertificateChain>
@@ -114,14 +114,13 @@
       <StorePath>%LocalApplicationData%/OPC Foundation/pki/issuerUser</StorePath>
     </UserIssuerCertificates>
 
-
     <!-- Where the User trust list is stored-->
     <TrustedUserCertificates>
       <StoreType>Directory</StoreType>
       <StorePath>%LocalApplicationData%/OPC Foundation/pki/trustedUser</StorePath>
     </TrustedUserCertificates>
   </SecurityConfiguration>
-
+  
   <!-- Maps different transports onto a .NET implementation of a WCF Binding
        WCF bindings are very complex and have many parameters that can be tweaked. To ensure
        interoperability the SDK has defined 3 standard bindings which can be selected with this
@@ -142,7 +141,7 @@
     <MaxStringLength>1048576</MaxStringLength>
 
     <!-- The maximum length for a byte string value in any message -->
-    <MaxByteStringLength>4194304</MaxByteStringLength>
+    <MaxByteStringLength>1048576</MaxByteStringLength>
 
     <!-- The maximum length for any array in a message. 
          Note that some protocols do not distinguish between bytes and arrays. 
@@ -186,11 +185,9 @@
     <DiscoveryServers></DiscoveryServers>
 
     <!-- The file used to save the EndpointDescriptions for servers known to the Client -->
-    <EndpointCacheFilePath>Technosoftware.ModelDesignClient.Endpoints.xml</EndpointCacheFilePath>
+    <EndpointCacheFilePath>SampleCompany.SampleClient.Nodes.xml</EndpointCacheFilePath>
 
-    <!-- The minimum subscription lifetime.
-         This ensures subscriptions are not set to expire too quickly. The requested lifetime count
-         and keep alive count are calculated using this value and the request publishing interval -->
+    <!-- The minimum lifetime for a subscription. -->
     <MinSubscriptionLifetime>10000</MinSubscriptionLifetime>
 
     <ReverseConnect>
@@ -205,13 +202,7 @@
 
   </ClientConfiguration>
 
-  <Extensions>
-    <ua:XmlElement>
-      <ModelDesignClientConfiguration xmlns="http://technosoftware.com/ModelDesignClient">
-        <ConfigurationFile>.\ModelDesignServerConfiguration.xlsx</ConfigurationFile>
-      </ModelDesignClientConfiguration>
-    </ua:XmlElement>
-  </Extensions>
+  <Extensions></Extensions>
 
   <!--
   Masks supported by the trace feature. 
@@ -249,28 +240,27 @@
 
   Output messages related to security
   Security = 0x200;
+  
+  All above
+  AllAbove = 0x3FF;
   -->
   <TraceConfiguration>
-    <OutputFilePath>./Logs/Technosoftware.ModelDesignClient.log</OutputFilePath>
+    <OutputFilePath>./Logs/SampleCompany.SampleClient.log</OutputFilePath>
     <DeleteOnLoad>true</DeleteOnLoad>
     <!-- Show Only Errors -->
     <!-- <TraceMasks>1</TraceMasks> -->
     <!-- Show Only Security and Errors -->
-    <TraceMasks>513</TraceMasks>
+    <!-- <TraceMasks>513</TraceMasks> -->
     <!-- Show Only Security, Errors and Trace -->
     <!-- <TraceMasks>515</TraceMasks> -->
     <!-- Show Only Security, COM Calls, Errors and Trace -->
     <!-- <TraceMasks>771</TraceMasks> -->
-    <!-- Show Only Security, Service Calls, COM Calls, Errors and Trace -->
-    <!-- <TraceMasks>779</TraceMasks> -->
     <!-- Show Only Security, Service Calls, Errors and Trace -->
     <!-- <TraceMasks>523</TraceMasks> -->
     <!-- Show Only Security, ServiceResultExceptions, Errors and Trace -->
     <!-- <TraceMasks>519</TraceMasks> -->
+    <!-- Show Error, Information, StackTrace, Service, ServiceDetail, Operation, OperationDetail, StartStop, ExternalSystem and Security. -->
+    <TraceMasks>1023</TraceMasks>
   </TraceConfiguration>
-
-  <!-- Enables the hi-res clock for the process to allows for shorter (<100ms) publishing and sampling intervals. -->
-  <!-- QueryPerformanceCounter does not work on all multi-core machines so enabling the hi-res clock by default is not recommended. -->
-  <DisableHiResClock>true</DisableHiResClock>
 
 </ApplicationConfiguration>

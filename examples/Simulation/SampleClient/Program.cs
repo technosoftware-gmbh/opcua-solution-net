@@ -58,15 +58,24 @@ namespace SampleCompany.SampleClient
             var showHelp = false;
             var stopTimeout = Timeout.Infinite;
             var autoAccept = false;
+            var noBrowse = false;
             var verbose = false;
             var securityNone = false;
+            string username = null;
+            string password = null;
+            string reverseConnectUrlString = null;
+            Uri reverseConnectUrl = null;
 
             var options = new OptionSet {
                 { "h|help", "show this message and exit", h => showHelp = h != null },
                 { "a|autoaccept", "auto accept certificates (for testing only)", a => autoAccept = a != null },
                 { "t|timeout=", "the number of seconds until the client stops.", (int t) => stopTimeout = t },
+                { "b|nobrowse", "Do not browse the address space of the server.", n => noBrowse = n != null},
                 { "s|securitynone", "Do not use security for connection.", s => securityNone = s != null},
+                { "u|username=", "Username to access server.", n => username = n},
+                { "p|password=", "Password to access server.", n => password = n},
                 { "v|verbose", "Verbose output.", v => verbose = v != null},
+                { "rc|reverseconnect=", "Connect using the reverse connection.", url => reverseConnectUrlString = url},
             };
 
             IList<string> extraArgs = null;
@@ -80,6 +89,10 @@ namespace SampleCompany.SampleClient
                         Console.WriteLine("Error: Unknown option: {0}", extraArg);
                         showHelp = true;
                     }
+                }
+                if (reverseConnectUrlString != null)
+                {
+                    reverseConnectUrl = new Uri(reverseConnectUrlString);
                 }
             }
             catch (OptionException e)
@@ -112,13 +125,17 @@ namespace SampleCompany.SampleClient
             }
 
             stopTimeout = stopTimeout <= 0 ? Timeout.Infinite : stopTimeout * 1000;
+            browseAddressSpace_ = !noBrowse;
 
             myUaClient_ = new MyUaClient("SampleCompany.SampleClient.Config.xml")
             {
                 EndpointServerUrl = endpointUrl,
                 AutoAccept = autoAccept,
                 Verbose = verbose,
+                Username = username,
+                Password = password,
                 UseSecurity = !securityNone,
+                ReverseConnectUri = reverseConnectUrl
             };
 
             return (int)await StartUaClient(stopTimeout);
@@ -163,6 +180,13 @@ namespace SampleCompany.SampleClient
                     Console.WriteLine("Exception: {0}", exception.Message);
                 }
 
+                // Test the session reconnect handler
+                var eventResult = quitEvent_.WaitOne(5000);
+                if (!eventResult)
+                {
+                    myUaClient_.SimulateReconnect();
+                }
+
                 // wait for timeout or Ctrl-C
                 quitEvent_.WaitOne(stopTime);
 
@@ -188,6 +212,10 @@ namespace SampleCompany.SampleClient
                 var connected = await myUaClient_.ConnectSessionAsync();
                 if (connected)
                 {
+                    if (browseAddressSpace_)
+                    {
+                        myUaClient_.Browse();
+                    }
                     myUaClient_.ReadServerStatus();
                 }
                 else
@@ -201,7 +229,8 @@ namespace SampleCompany.SampleClient
         #region Fields
         private static MyUaClient myUaClient_;
         private static ManualResetEvent quitEvent_;
-        #endregion      
+        private static bool browseAddressSpace_;
+        #endregion
 
     }
 }
