@@ -16,7 +16,6 @@ addons:
     packages:
 script:  
   - echo "----- Restore OPC UA Solution .NET Samples ------"
-  - dotnet restore "NetCoreSamples.sln"
   - dotnet restore "TutorialSamples.sln"
   - echo "----- Build OPC UA Solution .NET Samples --------"
   - dotnet build -c Debug examples/Simulation/SampleClient/SampleCompany.SampleClient.csproj
