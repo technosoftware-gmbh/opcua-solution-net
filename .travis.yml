@@ -19,10 +19,10 @@ script:
   - dotnet restore "NetCoreSamples.sln"
   - dotnet restore "TutorialSamples.sln"
   - echo "----- Build OPC UA Solution .NET Samples --------"
-  - dotnet build -c Debug examples/Simulation/SampleClient/Technosoftware.SimpleClient.csproj
-  - dotnet build -c Release examples/Simulation/SampleClient/Technosoftware.SimpleClient.csproj
-  - dotnet build -c Debug examples/Simulation/SampleServer/Technosoftware.SimpleServer.csproj
-  - dotnet build -c Release examples/Simulation/SampleServer/Technosoftware.SimpleServer.csproj 
+  - dotnet build -c Debug examples/Simulation/SampleClient/SampleCompany.SampleClient.csproj
+  - dotnet build -c Release examples/Simulation/SampleClient/SampleCompany.SampleClient.csproj
+  - dotnet build -c Debug examples/Simulation/SampleServer/SampleCompany.SampleServer.csproj
+  - dotnet build -c Release examples/Simulation/SampleServer/SampleCompany.SampleServer.csproj 
   - echo "----- Build OPC UA Solution .NET Tutorials ------"
   - dotnet build -c Debug examples/Empty/EmptyServer/EmptyCompany.EmptyServer.csproj
   - dotnet build -c Release examples/Empty/EmptyServer/EmptyCompany.EmptyServer.csproj
