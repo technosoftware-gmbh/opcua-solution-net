@@ -18,7 +18,8 @@ cd "$workdir"
 cd examples/Simulation/SampleServer
 echo start SampleServer with reverse connection enabled
 touch ./SampleServer.log
-dotnet run --no-restore --no-build --project SampleCompany.SampleServer.csproj -- -t 120 -a -rc=opc.tcp://localhost:55555 >./SimpleServer.log &
+#dotnet run --no-restore --no-build --project SampleCompany.SampleServer.csproj -- -t 120 -a -rc=opc.tcp://localhost:55555 >./SampleServer.log &
+dotnet run --no-restore --no-build --project SampleCompany.SampleServer.csproj -- -t 120 -a >./SampleServer.log &
 sampleserverpid="$!"
 echo wait for SampleServer to be started
 grep -m 1 "start" <(tail -f ./SampleServer.log --pid=$sampleserverpid)
