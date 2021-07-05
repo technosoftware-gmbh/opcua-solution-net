@@ -33,9 +33,6 @@ clone_depth: 5                      # clone entire repository history if not def
 
 environment:
   matrix:
-  - solution_name: "NetCoreSamples.sln"
-    test_name: "void"
-    param: ""
   - solution_name: "TutorialSamples.sln"
     test_name: "void"
     param: ""
