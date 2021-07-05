@@ -190,15 +190,13 @@ namespace SampleCompany.SampleServer
         }
 
         /// <summary>
-        /// 	<para>
-        ///         This method is called from the generic server at the startup; when the first client connects or the service is started. All items supported by the server need to be defined by calling the methods provided by the <see cref="IUaServer">IUaServer</see> interface for each item.
-        ///     </para>
+        /// This method is called from the generic server at the startup; when the first client connects or the service is started. All items supported by the server need to be defined by calling the methods provided by the <see cref="IUaServer">IUaServer</see> interface for each item.
         /// </summary>
         /// <param name="externalReferences">The externalReferences allows the generic server to link to the general nodes.</param>
         /// <returns>The root folder.</returns>
         public NodeState OnCreateAddressSpace(IDictionary<NodeId, IList<IReference>> externalReferences)
         {
-            // Not called because the method CreateAddressSpace() is overwritten in the SimpleServerNodeManager class
+            // Not called because the method CreateAddressSpace() is overwritten in the SampleServerNodeManager class
             return null;
         }
 

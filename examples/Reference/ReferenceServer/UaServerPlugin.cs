@@ -173,6 +173,7 @@ namespace Technosoftware.ReferenceServer
         /// <returns>Array of namespaces that are used by the application.</returns>
         public string[] OnGetNamespaceUris()
         {
+            Utils.Trace(Utils.TraceMasks.Information, "OnGetNamespaceUris(): Request the supported namespace Uris.");
             // set one namespace for the type model.
             var namespaceUrls = new string[1];
             namespaceUrls[0] = Namespaces.Reference;
@@ -184,6 +185,7 @@ namespace Technosoftware.ReferenceServer
         /// <param name="configuration">The application configuration</param>
         public void OnInitialized(IUaServer opcServer, ApplicationConfiguration configuration)
         {
+            Utils.Trace(Utils.TraceMasks.Information, "OnInitialized(): Server is initialized.");
             opcServer_ = opcServer;
         }
 
@@ -205,6 +207,7 @@ namespace Technosoftware.ReferenceServer
         /// <returns>A <see cref="StatusCode"/> code with the result of the operation. Returning from this method stops the further server execution.</returns>
         public StatusCode OnRunning()
         {
+            Utils.Trace(Utils.TraceMasks.Information, "OnRunning(): Server is running.");
             return StatusCodes.Good;
         }
 
@@ -218,6 +221,7 @@ namespace Technosoftware.ReferenceServer
         /// <returns>A <see cref="StatusCode"/> code with the result of the operation.</returns>
         public StatusCode OnShutdown(ServerState serverState, string reason, Exception exception)
         {
+            Utils.Trace(Utils.TraceMasks.Information, "OnShutdown(): Server is shutting down because of {0}.", reason);
             return StatusCodes.Good;
         }
 
@@ -225,6 +229,7 @@ namespace Technosoftware.ReferenceServer
         /// <returns>A <see cref="ServerProperties"/> object.</returns>
         public ServerProperties OnGetServerProperties()
         {
+            Utils.Trace(Utils.TraceMasks.Information, "OnGetServerProperties(): Request some standard information of the server}.");
             var properties = new ServerProperties
             {
                 ManufacturerName = "Technosoftware GmbH",
@@ -276,11 +281,13 @@ namespace Technosoftware.ReferenceServer
         #region Optional Server Plugin methods
         public UaBaseServer OnGetServer()
         {
+            Utils.Trace(Utils.TraceMasks.Information, "OnGetServer(): Request the instance of the server.");
             return new ReferenceServer();
         }
 
         public UaBaseNodeManager OnGetNodeManager(IUaServer opcServer, IUaServerData uaServer, ApplicationConfiguration configuration, params string[] namespaceUris)
         {
+            Utils.Trace(Utils.TraceMasks.Information, "OnGetNodeManager(): Request the instance of the node manager.");
             return new ReferenceServerNodeManager(opcServer, this, uaServer, configuration, namespaceUris);
         }
 

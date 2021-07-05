@@ -58,12 +58,13 @@ namespace SampleCompany.SampleServer
 
         private Opc.Ua.Test.DataGenerator generator_;
         private Timer simulationTimer_;
-        private UInt16 simulationInterval_ = 1000;
+        private ushort simulationInterval_ = 1000;
         private bool simulationEnabled_ = true;
         private List<BaseDataVariableState> dynamicNodes_;
 
-        private Model.MachineState machine1_ = new Model.MachineState(null);
-        private Model.MachineState machine2_ = new Model.MachineState(null);
+        private MachineState machine1_;
+        private MachineState machine2_;
+        private FolderState root_;
         #endregion
 
         #region Constructors, Destructor, Initialization
@@ -204,19 +205,19 @@ namespace SampleCompany.SampleServer
                 LoadPredefinedNodes(SystemContext, externalReferences);
 
                 // Create the root folder for all nodes of this server
-                var root = CreateFolderState(null, "My Data", new LocalizedText("en", "My Data"),
+                root_ = CreateFolderState(null, "My Data", new LocalizedText("en", "My Data"),
                     new LocalizedText("en", "Root folder of the Sample Server. All nodes must be placed under this root."));
 
                 try
                 {
                     #region Static
-                    var staticFolder = CreateFolderState(root, "Static", "Static", "A folder with a sample static variable.");
+                    var staticFolder = CreateFolderState(root_, "Static", "Static", "A folder with a sample static variable.");
                     const string scalarStatic = "Static_";
                     CreateBaseDataVariableState(staticFolder, scalarStatic + "String", "String", null, DataTypeIds.String, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
                     #endregion
 
                     #region Simulation
-                    var simulationFolder = CreateFolderState(root, "Simulation", "Simulation", "A folder with simulated variables.");
+                    var simulationFolder = CreateFolderState(root_, "Simulation", "Simulation", "A folder with simulated variables.");
                     const string simulation = "Simulation_";
 
                     var simulatedVariable = CreateDynamicVariable(simulationFolder, simulation + "Double", "Double", "A simulated variable of type Double. If Enabled is true this value changes based on the defined Interval.", DataTypeIds.Double, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
@@ -228,21 +229,34 @@ namespace SampleCompany.SampleServer
                     enabledVariable.OnSimpleWriteValue = OnWriteEnabled;
                     #endregion
 
+                    #region Devices
+                    var devices = CreateFolderState(root_, "Devices", "Devices", null);
+                    string symbolicName = $"Controler #1";
+                    string displayName = symbolicName;
+                    GenericControllerState controller = new GenericControllerState(devices);
+
+                    var nodeId = new NodeId(symbolicName, devices.NodeId.NamespaceIndex);
+                    controller.Create(SystemContext, nodeId, symbolicName, displayName, true);
+
+                    controller.AddReference(ReferenceTypeIds.Organizes, true, devices.NodeId);
+                    devices.AddReference(ReferenceTypeIds.Organizes, false, controller.NodeId);
+                    AddPredefinedNode(SystemContext, controller);
+                    #endregion
+
                     #region Plant
-                    var plantFolder = CreateFolderState(root, "Plant", "Plant", null);
+                    var plantFolder = CreateFolderState(root_, "Plant", "Plant", null);
 
                     // Create an instance for machine 1
-                    var parsedNodeId = new ParsedNodeId() { NamespaceIndex = NamespaceIndex, RootId = "Machine #1" };
-                    machine1_.Create(
-                        SystemContext,
-                        parsedNodeId.Construct(),
-                        new QualifiedName("Machine #1", NamespaceIndex),
-                        null,
-                        true);
+                    symbolicName = $"Machine #1";
+                    displayName = symbolicName;
+                    machine1_ = new Model.MachineState(plantFolder);
+
+                    nodeId = new NodeId(symbolicName, plantFolder.NodeId.NamespaceIndex);
+                    machine1_.Create(SystemContext, nodeId, symbolicName, displayName, true);
                     // Initialize the property value of MachineData
                     machine1_.MachineData.Value = new MachineDataType
                     {
-                        MachineName = "Machine #1",
+                        MachineName = displayName,
                         Manufacturer = "SampleCompany",
                         SerialNumber = "SN 1079",
                         MachineState = MachineStateDataType.Inactive
@@ -253,17 +267,21 @@ namespace SampleCompany.SampleServer
                     AddPredefinedNode(SystemContext, machine1_);
 
                     // Create an instance for machine 2
-                    parsedNodeId = new ParsedNodeId() { NamespaceIndex = NamespaceIndex, RootId = "Machine #2" };
+                    symbolicName = $"Machine #2";
+                    displayName = symbolicName;
+                    machine2_ = new Model.MachineState(plantFolder);
+
+                    nodeId = new NodeId(symbolicName, plantFolder.NodeId.NamespaceIndex);
                     machine2_.Create(
                         SystemContext,
-                        parsedNodeId.Construct(),
-                        new QualifiedName("Machine #2", NamespaceIndex),
+                        nodeId,
+                        displayName,
                         null,
                         true);
                     // Initialize the property value of MachineData
                     machine2_.MachineData.Value = new MachineDataType
                     {
-                        MachineName = "Machine #2",
+                        MachineName = displayName,
                         Manufacturer = "Unknown",
                         SerialNumber = "SN 1312",
                         MachineState = MachineStateDataType.PrepareRemove
@@ -274,19 +292,17 @@ namespace SampleCompany.SampleServer
                     AddPredefinedNode(SystemContext, machine2_);
 
                     // Create an instance of GetMachineDataMethodState
-                    parsedNodeId = new ParsedNodeId() { NamespaceIndex = NamespaceIndex, RootId = "GetMachineData" };
-                    Model.GetMachineDataMethodState getMachineDataMethod = new Model.GetMachineDataMethodState(null);
-                    getMachineDataMethod.Create(
-                        SystemContext,
-                        parsedNodeId.Construct(),
-                        new QualifiedName("GetMachineData", NamespaceIndex),
-                        null,
-                        true);
+                    symbolicName = $"GetMachineData";
+                    displayName = symbolicName;
+                    GetMachineDataMethodState getMachineDataMethod = new GetMachineDataMethodState(plantFolder);
+
+                    nodeId = new NodeId(symbolicName, plantFolder.NodeId.NamespaceIndex);
+                    getMachineDataMethod.Create(SystemContext, nodeId, symbolicName, displayName, true);
                     getMachineDataMethod.AddReference(ReferenceTypeIds.Organizes, true, plantFolder.NodeId);
                     plantFolder.AddReference(ReferenceTypeIds.Organizes, false, getMachineDataMethod.NodeId);
                     plantFolder.AddChild(getMachineDataMethod);
 
-                    
+
                     // Add the event handler if the method is called
                     getMachineDataMethod.OnCall = OnGetMachineData;
                     AddPredefinedNode(SystemContext, getMachineDataMethod);
@@ -297,7 +313,7 @@ namespace SampleCompany.SampleServer
                     Utils.Trace(e, "Error creating the address space.");
                 }
                 // Add all nodes under root to the server
-                AddPredefinedNode(SystemContext, root);
+                AddPredefinedNode(SystemContext, root_);
                 simulationTimer_ = new Timer(DoSimulation, null, 1000, 1000);
             }
         }
@@ -343,7 +359,7 @@ namespace SampleCompany.SampleServer
 
         private ServiceResult OnGetMachineData(ISystemContext context, MethodState method, NodeId objectid, string machineName, ref MachineDataType machinedata)
         {
-            machinedata = new MachineDataType {MachineName = machineName};
+            machinedata = new MachineDataType { MachineName = machineName };
 
             if (machineName == "Machine #1")
             {
@@ -402,6 +418,8 @@ namespace SampleCompany.SampleServer
             {
                 lock (Lock)
                 {
+                    //NodeId nodeId = new NodeId($"Devices_Controler #1", root_.NodeId.NamespaceIndex);
+                    //NodeState node = Find(nodeId);
                     foreach (var variable in dynamicNodes_)
                     {
                         opcServer_.WriteBaseVariable(variable, GetNewValue(variable), StatusCodes.Good, DateTime.UtcNow);

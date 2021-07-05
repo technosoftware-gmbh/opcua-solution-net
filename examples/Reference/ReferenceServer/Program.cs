@@ -31,8 +31,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Mono.Options;
@@ -44,15 +42,16 @@ using Technosoftware.UaServer.Sessions;
 
 namespace Technosoftware.ReferenceServer
 {
+    #region The certificate application message
     /// <summary>
     /// A dialog which asks for user input.
     /// </summary>
     public class ApplicationMessageDlg : IApplicationMessageDlg
     {
         private string message_ = string.Empty;
-        private bool ask_ = false;
+        private bool ask_;
 
-        public override void Message(string text, bool ask)
+        public override void Message(string text, bool ask = false)
         {
             message_ = text;
             ask_ = ask;
@@ -90,11 +89,13 @@ namespace Technosoftware.ReferenceServer
             return await Task.FromResult(true).ConfigureAwait(false);
         }
     }
+    #endregion
 
+    #region Enumerations
     /// <summary>
     /// The error code why the server exited.
     /// </summary>
-    public enum ExitCode : int
+    public enum ExitCode
     {
         Ok = 0,
         ErrorServerNotStarted = 0x80,
@@ -102,6 +103,7 @@ namespace Technosoftware.ReferenceServer
         ErrorServerException = 0x82,
         ErrorInvalidCommandLine = 0x100
     };
+    #endregion
 
     /// <summary>
     /// The program.
@@ -117,13 +119,15 @@ namespace Technosoftware.ReferenceServer
 
             // command line options
             var showHelp = false;
+            var stopTimeout = -1;
             var autoAccept = false;
             string password = null;
 
             var options = new Mono.Options.OptionSet {
                 { "h|help", "show this message and exit", h => showHelp = h != null },
                 { "a|autoaccept", "auto accept certificates (for testing only)", a => autoAccept = a != null },
-                { "p|password=", "optional password for private key", (string p) => password = p }
+                { "t|timeout=", "the number of seconds until the server stops.", (int t) => stopTimeout = t },
+                { "p|password=", "optional password for private key", p => password = p }
             };
 
             try
@@ -153,6 +157,7 @@ namespace Technosoftware.ReferenceServer
 
             var server = new MyReferenceServer() {
                 AutoAccept = autoAccept,
+                TimeOut = stopTimeout,
                 Password = password
             };
             await server.Run().ConfigureAwait(false);
@@ -163,17 +168,19 @@ namespace Technosoftware.ReferenceServer
 
     public class MyReferenceServer
     {
-        #region Fields
+        #region Properties
         private static UaServer.UaServer uaServer_ = new UaServer.UaServer();
         private static readonly UaServerPlugin uaServerPlugin_ = new UaServerPlugin();
 
-        private Task status_;
-        private DateTime lastEventTime_;
-        public bool LogConsole { get; set; } = false;
-        public bool AutoAccept { get; set; } = false;
-        public string Password { get; set; } = null;
+        private Task Status { get; set; }
+        private DateTime LastEventTime { get; set; }
+        public bool AutoAccept { get; set; }
+        public int TimeOut { get; set; }
+        public string Password { get; set; }
         public ExitCode ExitCode { get; private set; }
         #endregion
+
+        #region Public Methods
         public async Task Run()
         {
             try
@@ -185,7 +192,7 @@ namespace Technosoftware.ReferenceServer
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Exception: {0}", ex.Message);
+                Utils.Trace("ServiceResultException:" + ex.Message);
                 ExitCode = ExitCode.ErrorServerException;
                 return;
             }
@@ -199,13 +206,13 @@ namespace Technosoftware.ReferenceServer
                     eArgs.Cancel = true;
                 };
             }
-            catch
+            catch (Exception exception)
             {
-                // ignored
+                Utils.Trace("Exception:" + exception.Message);
             }
 
             // wait for timeout or Ctrl-C
-            quitEvent.WaitOne();
+            quitEvent.WaitOne(TimeOut);
 
             if (uaServer_ != null)
             {
@@ -215,7 +222,7 @@ namespace Technosoftware.ReferenceServer
                 {
                     // Stop status thread
                     uaServer_ = null;
-                    status_.Wait();
+                    Status.Wait();
                     // Stop server and dispose
                     server.Stop();
                 }
@@ -223,29 +230,23 @@ namespace Technosoftware.ReferenceServer
 
             ExitCode = ExitCode.Ok;
         }
-
+        #endregion
+        
         private void OnCertificateValidation(CertificateValidator validator, CertificateValidationEventArgs e)
         {
             if (e.Error.StatusCode == StatusCodes.BadCertificateUntrusted)
             {
                 if (AutoAccept)
                 {
-                    if (!LogConsole)
-                    {
-                        Console.WriteLine("Accepted Certificate: {0}", e.Certificate.Subject);
-                    }
                     Utils.Trace(Utils.TraceMasks.Security, "Accepted Certificate: {0}", e.Certificate.Subject);
                     e.Accept = true;
                     return;
                 }
             }
-            if (!LogConsole)
-            {
-                Console.WriteLine("Rejected Certificate: {0} {1}", e.Error, e.Certificate.Subject);
-            }
             Utils.Trace(Utils.TraceMasks.Security, "Rejected Certificate: {0} {1}", e.Error, e.Certificate.Subject);
         }
 
+        #region Task handling the startup of the OPC UA Server
         private async Task ReferenceConsoleServerAsync()
         {
             ApplicationInstance.MessageDlg = new ApplicationMessageDlg();
@@ -255,6 +256,7 @@ namespace Technosoftware.ReferenceServer
             await uaServer_.StartAsync(uaServerPlugin_, "Technosoftware.ReferenceServer", passwordProvider, OnCertificateValidation, null).ConfigureAwait(false);
 
             // print endpoint info
+            Console.WriteLine("Server Endpoints:");
             var endpoints = uaServer_.BaseServer.GetEndpoints().Select(e => e.EndpointUrl).Distinct();
             foreach (var endpoint in endpoints)
             {
@@ -262,17 +264,19 @@ namespace Technosoftware.ReferenceServer
             }
 
             // start the status thread
-            status_ = Task.Run(new Action(StatusThreadAsync));
+            Status = Task.Run(StatusThreadAsync);
 
             // print notification on session events
             uaServer_.BaseServer.CurrentInstance.SessionManager.SessionActivatedEvent += EventStatus;
             uaServer_.BaseServer.CurrentInstance.SessionManager.SessionClosingEvent += EventStatus;
             uaServer_.BaseServer.CurrentInstance.SessionManager.SessionCreatedEvent += EventStatus;
         }
+        #endregion
 
+        #region Private Methods
         private void EventStatus(object sender, SessionEventArgs eventArgs)
         {
-            lastEventTime_ = DateTime.UtcNow;
+            LastEventTime = DateTime.UtcNow;
             var session = sender as Session;
             PrintSessionStatus(session, eventArgs.Reason.ToString());
         }
@@ -302,17 +306,18 @@ namespace Technosoftware.ReferenceServer
         {
             while (uaServer_ != null)
             {
-                if (DateTime.UtcNow - lastEventTime_ > TimeSpan.FromMilliseconds(6000))
+                if (DateTime.UtcNow - LastEventTime > TimeSpan.FromMilliseconds(6000))
                 {
                     var sessions = uaServer_.BaseServer.CurrentInstance.SessionManager.GetSessions();
                     foreach (var session in sessions)
                     {
                         PrintSessionStatus(session, "-Status-", true);
                     }
-                    lastEventTime_ = DateTime.UtcNow;
+                    LastEventTime = DateTime.UtcNow;
                 }
                 await Task.Delay(1000).ConfigureAwait(false);
             }
         }
+        #endregion
     }
 }

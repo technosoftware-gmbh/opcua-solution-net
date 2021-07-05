@@ -36,14 +36,66 @@ using System.Threading.Tasks;
 using Mono.Options;
 
 using Opc.Ua;
-
+using Technosoftware.UaConfiguration;
 using Technosoftware.UaServer;
 using Technosoftware.UaServer.Sessions;
 #endregion
 
 namespace SampleCompany.SampleServer
 {
+    #region The certificate application message
+    /// <summary>
+    /// A dialog which asks for user input.
+    /// </summary>
+    public class ApplicationMessageDlg : IApplicationMessageDlg
+    {
+        private string message_ = string.Empty;
+        private bool ask_;
+
+        public override void Message(string text, bool ask = false)
+        {
+            message_ = text;
+            ask_ = ask;
+        }
+
+        public override bool Show()
+        {
+            return ShowAsync().GetAwaiter().GetResult();
+        }
+
+        public override async Task<bool> ShowAsync()
+        {
+            if (ask_)
+            {
+                message_ += " (y/n, default y): ";
+                Console.Write(message_);
+            }
+            else
+            {
+                Console.WriteLine(message_);
+            }
+            if (ask_)
+            {
+                try
+                {
+                    ConsoleKeyInfo result = Console.ReadKey();
+                    Console.WriteLine();
+                    return await Task.FromResult((result.KeyChar == 'y') || (result.KeyChar == 'Y') || (result.KeyChar == '\r')).ConfigureAwait(false);
+                }
+                catch
+                {
+                    // intentionally fall through
+                }
+            }
+            return await Task.FromResult(true).ConfigureAwait(false);
+        }
+    }
+    #endregion
+
     #region Enumerations
+    /// <summary>
+    /// The error code why the server exited.
+    /// </summary>
     public enum ExitCode
     {
         Ok = 0,
@@ -54,24 +106,29 @@ namespace SampleCompany.SampleServer
     };
     #endregion
 
-    public class Program
+    /// <summary>
+    /// The program.
+    /// </summary>
+    public static class Program
     {
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        public static int Main(string[] args)
+        public static async Task<int> Main(string[] args)
         {
             Console.WriteLine("SampleCompany {0} OPC UA Sample Server", Utils.IsRunningOnMono() ? "Mono" : ".NET Core");
 
             // command line options
             var showHelp = false;
-            var stopTimeout = 0;
+            var stopTimeout = -1;
             var autoAccept = false;
+            string password = null;
 
             var options = new Mono.Options.OptionSet {
                 { "h|help", "show this message and exit", h => showHelp = h != null },
                 { "a|autoaccept", "auto accept certificates (for testing only)", a => autoAccept = a != null },
                 { "t|timeout=", "the number of seconds until the server stops.", (int t) => stopTimeout = t },
+                { "p|password=", "optional password for private key", p => password = p }
             };
 
             try
@@ -99,63 +156,54 @@ namespace SampleCompany.SampleServer
                 return (int)ExitCode.ErrorInvalidCommandLine;
             }
 
-            var server = new MySampleServer(autoAccept, stopTimeout);
-            server.Run();
+            var server = new MySampleServer() {
+                AutoAccept = autoAccept,
+                TimeOut = stopTimeout,
+                Password = password
+            };
+            await server.Run().ConfigureAwait(false);
 
-            return (int)MySampleServer.ExitCode;
+            return (int)server.ExitCode;
         }
     }
 
     public class MySampleServer
     {
         #region Properties
-        public Task Status { get; private set; }
-        public DateTime LastEventTime { get; private set; }
-        public int ServerRunTime { get; private set; }
-        public static bool AutoAccept { get; private set; }
-        public static ExitCode ExitCode { get; private set; }
-
         private static UaServer uaServer_ = new UaServer();
-        private static UaServerPlugin uaServerPlugin_ = new UaServerPlugin();
-        #endregion
+        private static readonly UaServerPlugin uaServerPlugin_ = new UaServerPlugin();
 
-        #region Constructors, Destructor, Initialization
-        public MySampleServer(bool autoAccept, int stopTimeout)
-        {
-            AutoAccept = autoAccept;
-            ServerRunTime = stopTimeout == 0 ? Timeout.Infinite : stopTimeout * 1000;
-        }
-
-        ~MySampleServer()
-        {
-            quitEvent_?.Dispose();
-        }
+        private Task Status { get; set; }
+        private DateTime LastEventTime { get; set; }
+        public bool AutoAccept { get; set; }
+        public int TimeOut { get; set; }
+        public string Password { get; set; }
+        public ExitCode ExitCode { get; private set; }
         #endregion
 
         #region Public Methods
-        public void Run()
+        public async Task Run()
         {
-
             try
             {
                 ExitCode = ExitCode.ErrorServerNotStarted;
-                SampleServer().Wait();
+                await SampleServerAsync().ConfigureAwait(false);
                 Console.WriteLine("Server started. Press Ctrl-C to exit...");
                 ExitCode = ExitCode.ErrorServerRunning;
             }
             catch (Exception ex)
             {
                 Utils.Trace("ServiceResultException:" + ex.Message);
-                Console.WriteLine("Exception: {0}", ex.Message);
                 ExitCode = ExitCode.ErrorServerException;
                 return;
             }
 
-            quitEvent_ = new ManualResetEvent(false);
+            var quitEvent = new ManualResetEvent(false);
             try
             {
-                Console.CancelKeyPress += (sender, eArgs) => {
-                    quitEvent_.Set();
+                Console.CancelKeyPress += (sender, eArgs) =>
+                {
+                    quitEvent.Set();
                     eArgs.Cancel = true;
                 };
             }
@@ -165,7 +213,7 @@ namespace SampleCompany.SampleServer
             }
 
             // wait for timeout or Ctrl-C
-            quitEvent_.WaitOne(ServerRunTime);
+            quitEvent.WaitOne(TimeOut);
 
             if (uaServer_ != null)
             {
@@ -173,10 +221,6 @@ namespace SampleCompany.SampleServer
 
                 using (var server = uaServer_)
                 {
-                    uaServer_.BaseServer.CurrentInstance.SessionManager.SessionActivatedEvent += EventStatus;
-                    uaServer_.BaseServer.CurrentInstance.SessionManager.SessionClosingEvent += EventStatus;
-                    uaServer_.BaseServer.CurrentInstance.SessionManager.SessionCreatedEvent += EventStatus;
-
                     // Stop status thread
                     uaServer_ = null;
                     Status.Wait();
@@ -188,12 +232,29 @@ namespace SampleCompany.SampleServer
             ExitCode = ExitCode.Ok;
         }
         #endregion
+        
+        private void OnCertificateValidation(CertificateValidator validator, CertificateValidationEventArgs e)
+        {
+            if (e.Error.StatusCode == StatusCodes.BadCertificateUntrusted)
+            {
+                if (AutoAccept)
+                {
+                    Utils.Trace(Utils.TraceMasks.Security, "Accepted Certificate: {0}", e.Certificate.Subject);
+                    e.Accept = true;
+                    return;
+                }
+            }
+            Utils.Trace(Utils.TraceMasks.Security, "Rejected Certificate: {0} {1}", e.Error, e.Certificate.Subject);
+        }
 
         #region Task handling the startup of the OPC UA Server
-        private async Task SampleServer()
+        private async Task SampleServerAsync()
         {
+            ApplicationInstance.MessageDlg = new ApplicationMessageDlg();
+            CertificatePasswordProvider passwordProvider = new CertificatePasswordProvider(Password);
+
             // start the server.
-            await uaServer_.StartAsync(uaServerPlugin_, "SampleCompany.SampleServer", null);
+            await uaServer_.StartAsync(uaServerPlugin_, "SampleCompany.SampleServer", passwordProvider, OnCertificateValidation, null).ConfigureAwait(false);
 
             // print endpoint info
             Console.WriteLine("Server Endpoints:");
@@ -204,13 +265,12 @@ namespace SampleCompany.SampleServer
             }
 
             // start the status thread
-            Status = Task.Run(StatusThread);
+            Status = Task.Run(StatusThreadAsync);
 
             // print notification on session events
             uaServer_.BaseServer.CurrentInstance.SessionManager.SessionActivatedEvent += EventStatus;
             uaServer_.BaseServer.CurrentInstance.SessionManager.SessionClosingEvent += EventStatus;
             uaServer_.BaseServer.CurrentInstance.SessionManager.SessionCreatedEvent += EventStatus;
-
         }
         #endregion
 
@@ -222,7 +282,7 @@ namespace SampleCompany.SampleServer
             PrintSessionStatus(session, eventArgs.Reason.ToString());
         }
 
-        void PrintSessionStatus(Session session, string reason, bool lastContact = false)
+        private void PrintSessionStatus(Session session, string reason, bool lastContact = false)
         {
             lock (session.DiagnosticsLock)
             {
@@ -243,7 +303,7 @@ namespace SampleCompany.SampleServer
             }
         }
 
-        private async void StatusThread()
+        private async void StatusThreadAsync()
         {
             while (uaServer_ != null)
             {
@@ -256,13 +316,9 @@ namespace SampleCompany.SampleServer
                     }
                     LastEventTime = DateTime.UtcNow;
                 }
-                await Task.Delay(1000);
+                await Task.Delay(1000).ConfigureAwait(false);
             }
         }
-        #endregion
-
-        #region Fields
-        private ManualResetEvent quitEvent_;
         #endregion
     }
 }

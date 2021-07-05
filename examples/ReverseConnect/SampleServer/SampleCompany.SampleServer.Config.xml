@@ -35,7 +35,7 @@
       <!-- The subject for the certificate 
            Note that subject names are complex structures. Only text that appears here is treated as the CommonName component.
            The first certificate found is used if multiple certificates with the same CommonName and a matching hostname exist.
-           Also a complete distinguished name can be specified here: 'CN=EmptyCompany OPC UA Empty Server, DC=localhost'.
+           Also a complete distinguished name can be specified here: 'CN=SampleCompany OPC UA Sample Server, DC=localhost'.
            In this case the first certificate matching the complete distinguished name is used. localhost is replaced with the hostname.
            If no certificate is found, a new self signed application certificate is created.
            The Thumbprint should be specified if the CN or DN does not uniquely identify a certificate. -->
@@ -192,9 +192,9 @@
     -->
     <!--
     <AlternateBaseAddresses>
-      <ua:String>http://AlternateHostName/EmptyServer</ua:String>
-      <ua:String>http://10.10.103.150/EmptyServer</ua:String>
-      <ua:String>http://[2a01::626d]/EmptyServer</ua:String>
+      <ua:String>http://AlternateHostName/SampleServer</ua:String>
+      <ua:String>http://10.10.103.150/SampleServer</ua:String>
+      <ua:String>http://[2a01::626d]/SampleServer</ua:String>
     </AlternateBaseAddresses>
     -->
     <SecurityPolicies>
@@ -415,20 +415,7 @@
       <ConnectTimeout>30000</ConnectTimeout>
       <RejectTimeout>60000</RejectTimeout>
     </ReverseConnect>
-    -->
-
-    <!--  Extensions sample -->
-
-    <!--
-    <Extensions>
-      <ua:XmlElement>
-        <EmptyServerConfiguration xmlns="http://emptycompany.com/EmptyServer">
-          <ConfigurationFile>.\EmptyServerConfiguration.xlsx</ConfigurationFile>
-        </EmptyServerConfiguration>
-      </ua:XmlElement>
-    </Extensions>
-    -->
-  </ServerConfiguration>
+    --></ServerConfiguration>
 
   <!--
   Masks supported by the trace feature. 

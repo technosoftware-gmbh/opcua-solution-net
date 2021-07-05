@@ -122,12 +122,15 @@ namespace SampleCompany.SampleServer
             var showHelp = false;
             var stopTimeout = -1;
             var autoAccept = false;
+            string reverseConnectUrlString = null;
+            Uri reverseConnectUrl = null;
             string password = null;
 
             var options = new Mono.Options.OptionSet {
                 { "h|help", "show this message and exit", h => showHelp = h != null },
                 { "a|autoaccept", "auto accept certificates (for testing only)", a => autoAccept = a != null },
                 { "t|timeout=", "the number of seconds until the server stops.", (int t) => stopTimeout = t },
+                { "rc|reverseconnect=", "Connect using the reverse connection.", url => reverseConnectUrlString = url},
                 { "p|password=", "optional password for private key", p => password = p }
             };
 
@@ -138,6 +141,10 @@ namespace SampleCompany.SampleServer
                 {
                     Console.WriteLine("Error: Unknown option: {0}", extraArg);
                     showHelp = true;
+                }
+                if (reverseConnectUrlString != null)
+                {
+                    reverseConnectUrl = new Uri(reverseConnectUrlString);
                 }
             }
             catch (OptionException e)
@@ -156,6 +163,7 @@ namespace SampleCompany.SampleServer
                 return (int)ExitCode.ErrorInvalidCommandLine;
             }
 
+            stopTimeout = stopTimeout == 0 ? Timeout.Infinite : stopTimeout * 1000;
             var server = new MySampleServer() {
                 AutoAccept = autoAccept,
                 TimeOut = stopTimeout,
@@ -179,6 +187,7 @@ namespace SampleCompany.SampleServer
         public int TimeOut { get; set; }
         public string Password { get; set; }
         public ExitCode ExitCode { get; private set; }
+        public Uri ReverseConnectUrl { get; private set; }
         #endregion
 
         #region Public Methods
@@ -255,6 +264,22 @@ namespace SampleCompany.SampleServer
 
             // start the server.
             await uaServer_.StartAsync(uaServerPlugin_, "SampleCompany.SampleServer", passwordProvider, OnCertificateValidation, null).ConfigureAwait(false);
+
+            if (ReverseConnectUrl != null)
+            {
+                uaServer_.BaseServer.AddReverseConnection(ReverseConnectUrl);
+            }
+
+            var reverseConnections = uaServer_.BaseServer.GetReverseConnections();
+            if (reverseConnections?.Count > 0)
+            {
+                // print reverse connect info
+                Console.WriteLine("Reverse Connect Clients:");
+                foreach (var connection in reverseConnections)
+                {
+                    Console.WriteLine(connection.Key);
+                }
+            }
 
             // print endpoint info
             Console.WriteLine("Server Endpoints:");

@@ -58,7 +58,7 @@ namespace SampleCompany.SampleServer
 
         private Opc.Ua.Test.DataGenerator generator_;
         private Timer simulationTimer_;
-        private UInt16 simulationInterval_ = 1000;
+        private ushort simulationInterval_ = 1000;
         private bool simulationEnabled_ = true;
         private List<BaseDataVariableState> dynamicNodes_;
         private int cycleId_;

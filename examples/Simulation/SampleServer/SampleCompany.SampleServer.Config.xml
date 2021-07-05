@@ -399,6 +399,9 @@
     </SupportedPrivateKeyFormats>
     <MaxTrustListSize>0</MaxTrustListSize>
     <MultiCastDnsEnabled>false</MultiCastDnsEnabled>
+
+
+    
 <!--  Reverse connection parameters sample -->
     <!--
     <ReverseConnect>
@@ -413,7 +416,8 @@
       <ConnectTimeout>30000</ConnectTimeout>
       <RejectTimeout>60000</RejectTimeout>
     </ReverseConnect>
-    -->  </ServerConfiguration>
+    -->
+</ServerConfiguration>
 
   <!--
   Masks supported by the trace feature. 
