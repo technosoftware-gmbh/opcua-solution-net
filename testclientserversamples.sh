@@ -1,10 +1,10 @@
 #!/bin/bash
 echo Test the .NET Core Server and .NET Core Client
 workdir=$(pwd)
-simpleclientresult=0
-simpleclientreverseresult=0
-simpleclienthttpsresult=0
-simpleserverresult=0
+sampleclientresult=0
+sampleclientreverseresult=0
+sampleclienthttpsresult=0
+sampleserverresult=0
 cd examples/Simulation/SampleServer
 echo build SampleServer
 rm -r obj
@@ -20,16 +20,16 @@ echo start SampleServer with reverse connection enabled
 touch ./SampleServer.log
 dotnet run --no-restore --no-build --project SampleCompany.SampleServer.csproj -- -t 120 -a -rc=opc.tcp://localhost:55555 >./SimpleServer.log &
 sampleserverpid="$!"
-echo wait for SimpleServer to be started
+echo wait for SampleServer to be started
 grep -m 1 "start" <(tail -f ./SampleServer.log --pid=$sampleserverpid)
 tail -f ./SampleServer.log --pid=$sampleserverpid &
 cd "$workdir"
 
-cd examples/Simulation/SampleClient
-echo start SampleClient for tcp connection with reverse connection
-dotnet run --no-restore --no-build --project SampleCompany.SampleClient.csproj -- -t 40 -a -rc=opc.tcp://localhost:55555 &
-sampleclientreversepid="$!"
-cd "$workdir"
+#cd examples/Simulation/SampleClient
+#echo start SampleClient for tcp connection with reverse connection
+#dotnet run --no-restore --no-build --project SampleCompany.SampleClient.csproj -- -t 40 -a -rc=opc.tcp://localhost:55555 &
+#sampleclientreversepid="$!"
+#cd "$workdir"
 
 cd examples/Simulation/SampleClient
 echo start SampleClient for tcp connection
@@ -48,24 +48,24 @@ wait $sampleclientpid
 if [ $? -eq 0 ]; then
 	echo "SUCCESS - SampleClient test passed"
 else
-	simpleclientresult=$?
-	echo "FAILED - SampleClient test failed with a status of $simpleclientresult"
+	sampleclientresult=$?
+	echo "FAILED - SampleClient test failed with a status of $sampleclientresult"
 fi
 
 cd examples/Simulation/SampleClient
 cd "$workdir"
 
-echo wait for SampleClient with reverse connection
-wait $sampleclientreversepid
-if [ $? -eq 0 ]; then
-	echo "SUCCESS - SampleClient with reverse connection test passed"
-else
-	sampleclientreverseresult=$?
-	echo "FAILED - SimpleClient with reverse connection test failed with a status of $sampleclientreverseresult"
-fi
+#echo wait for SampleClient with reverse connection
+#wait $sampleclientreversepid
+#if [ $? -eq 0 ]; then
+#	echo "SUCCESS - SampleClient with reverse connection test passed"
+#else
+#	sampleclientreverseresult=$?
+#	echo "FAILED - SimpleClient with reverse connection test failed with a status of $sampleclientreverseresult"
+#fi
 
-cd examples/Simulation/SampleClient
-cd "$workdir"
+#cd examples/Simulation/SampleClient
+#cd "$workdir"
 
 echo wait for SampleClient with https connection
 wait $httpsclientpid
@@ -86,16 +86,16 @@ kill -s SIGINT $sampleserverpid
 
 echo wait for SampleServer
 wait $sampleserverpid
-simpleserverresult=$?
+sampleserverresult=$?
 
 if [ $? -eq 0 ]; then
 	echo "SUCCESS - SampleServer test passed"
 else
-	simpleserverresult=$?
-	echo "FAILED - SampleServer test failed with a status of $simpleserverresult"
+	sampleserverresult=$?
+	echo "FAILED - SampleServer test failed with a status of $sampleserverresult"
 fi
 
-echo "Test results: SampleClient:$simpleclientresult SampleClientReverse:$sampleclientreverseresult SampleClienthttps:$sampleclienthttpsresult SampleServer:$simpleserverresult"
+echo "Test results: SampleClient:$sampleclientresult SampleClientReverse:$sampleclientreverseresult SampleClienthttps:$sampleclienthttpsresult SampleServer:$sampleserverresult"
 exit $((sampleclientresult + sampleclientreverseresult + sampleclienthttpsresult + sampleserverresult))
 
 
