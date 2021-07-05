@@ -215,7 +215,7 @@ namespace SampleCompany.SampleClient
 
                     // Get the endpoint by connecting to server's discovery endpoint.
                     // Try to find the first endopint without security.
-                    EndpointDescription selectedEndpoint = Discover.SelectEndpoint(EndpointServerUrl, UseSecurity);
+                    EndpointDescription selectedEndpoint = Discover.SelectEndpoint(EndpointServerUrl, UseSecurity, 15000);
                     if (selectedEndpoint == null)
                     {
                         Console.WriteLine($"Selecting an Endpoint failed.");
