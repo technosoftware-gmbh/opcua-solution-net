@@ -37,11 +37,11 @@ dotnet run --no-restore --no-build --project SampleCompany.SampleClient.csproj -
 sampleclientpid="$!"
 cd "$workdir"
 
-cd examples/Simulation/SampleClient
-echo start SampleClient for https connection
-dotnet run --no-restore --no-build --project SampleCompany.SampleClient.csproj -- -t 20 -a https://localhost:55551 &
-httpsclientpid="$!"
-cd "$workdir"
+#cd examples/Simulation/SampleClient
+#echo start SampleClient for https connection
+#dotnet run --no-restore --no-build --project SampleCompany.SampleClient.csproj -- -t 20 -a https://localhost:55551 &
+#httpsclientpid="$!"
+#cd "$workdir"
 
 echo wait for SampleClient
 wait $sampleclientpid
@@ -67,19 +67,19 @@ cd "$workdir"
 #cd examples/Simulation/SampleClient
 #cd "$workdir"
 
-echo wait for SampleClient with https connection
-wait $httpsclientpid
-if [ $? -eq 0 ]; then
-	echo "SUCCESS - SampleClient with https connection test passed"
-else
-	sampleclienthttpsresult=$?
-	echo "FAILED - Client test failed with a status of $sampleclienthttpsresult"
-	echo "FAILED - Client may require to use trusted TLS server cert to pass this test"
-	if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
-		sampleclienthttpsresult=0 
-		echo "IGNORED - test requires trusted TLS cert on OSX"
-	fi
-fi
+#echo wait for SampleClient with https connection
+#wait $httpsclientpid
+#if [ $? -eq 0 ]; then
+#	echo "SUCCESS - SampleClient with https connection test passed"
+#else
+#	sampleclienthttpsresult=$?
+#	echo "FAILED - Client test failed with a status of $sampleclienthttpsresult"
+#	echo "FAILED - Client may require to use trusted TLS server cert to pass this test"
+#	if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
+#		sampleclienthttpsresult=0 
+#		echo "IGNORED - test requires trusted TLS cert on OSX"
+#	fi
+#fi
 
 echo send Ctrl-C to SampleServer
 kill -s SIGINT $sampleserverpid
