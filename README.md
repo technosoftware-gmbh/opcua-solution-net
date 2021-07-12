@@ -90,10 +90,3 @@ The delivered license can be used to turn the contents of this repository into a
 ### Get Support for the Solution:
 
 Support for the Solution is available [here](https://github.com/technosoftware-gmbh/opcua-solution-net/issues).
-
-### Get Support with a Support Subscription:
-
-The Support Subscription is ideal for a corporation and a user of Technosoftware GmbH’s solutions on productive systems for which you want to get support for.
-
-There are different levels availabe for purchase available [here](https://technosoftware.com/product/opc-support/).
-
