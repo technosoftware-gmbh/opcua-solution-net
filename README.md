@@ -64,9 +64,9 @@ Evaluation Editions comes with the following restrictions:
 
  * Evaluation time limited to 30 days and limited to 90 minutes run-time per application start.
 
-### Support for the SDK under Evaluation License
+### Support for the SDK
 
-Support for the SDK under the Evaluation License is available via https://github.com/technosoftware-gmbh/opcua-solution-net/issues. 
+Support for the SDK is available via https://github.com/technosoftware-gmbh/opcua-solution-net/issues. 
 
 ## Available Solution
 
