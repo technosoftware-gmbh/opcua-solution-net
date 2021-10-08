@@ -1,4 +1,10 @@
 -------------------------------------------------------------------------------------------------------------
+## OPC UA Solution .NET - 2.3.3
+
+### Changes
+- Updated to OPC UA Core 1.4.367.41
+
+-------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 2.3.2
 
 ### Changes
@@ -20,6 +26,9 @@
 - Added OnApplicationConfigurationLoaded(ApplicationInstance application, ApplicationConfiguration configuration) to IUaServerPlugin. 
   It is called after OnStartup(). You have to add it to the UaServerPlugin.cs
 - Removed UaApplicationInstance. You can use ApplicationInstance instead.
+
+### Fixed issues
+- Fixed parameter type of method "PropertyState CreatePropertyState(NodeState parent, ...)". It is now NodeState and was before BaseObjectState.
 
 -------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 2.2.0
