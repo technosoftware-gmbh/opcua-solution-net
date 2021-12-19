@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<UANodeSet xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd">
+<UANodeSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd">
   <NamespaceUris>
     <Uri>http://samplecompany.com/SampleServer/Model</Uri>
   </NamespaceUris>
   <Models>
     <Model ModelUri="http://samplecompany.com/SampleServer/Model">
-      <RequiredModel ModelUri="http://opcfoundation.org/UA/" Version="1.04.9" PublicationDate="2021-01-21T00:00:00Z" />
+      <RequiredModel ModelUri="http://opcfoundation.org/UA/" XmlSchemaUri="http://opcfoundation.org/UA/2008/02/Types.xsd" Version="1.04.10" PublicationDate="2021-09-15T00:00:00Z" />
     </Model>
   </Models>
   <Aliases>
@@ -44,6 +44,17 @@
     <Alias Alias="HasModellingRule">i=37</Alias>
     <Alias Alias="HasEncoding">i=38</Alias>
     <Alias Alias="HasDescription">i=39</Alias>
+    <Alias Alias="HasCause">i=53</Alias>
+    <Alias Alias="ToState">i=52</Alias>
+    <Alias Alias="FromState">i=51</Alias>
+    <Alias Alias="HasEffect">i=54</Alias>
+    <Alias Alias="HasTrueSubState">i=9004</Alias>
+    <Alias Alias="HasFalseSubState">i=9005</Alias>
+    <Alias Alias="HasDictionaryEntry">i=17597</Alias>
+    <Alias Alias="HasCondition">i=9006</Alias>
+    <Alias Alias="HasGuard">i=15112</Alias>
+    <Alias Alias="HasAddIn">i=17604</Alias>
+    <Alias Alias="HasInterface">i=17603</Alias>
   </Aliases>
   <UADataType NodeId="ns=1;i=1" BrowseName="1:MachineStateDataType">
     <DisplayName>MachineStateDataType</DisplayName>
@@ -70,7 +81,6 @@
     <DisplayName>EnumStrings</DisplayName>
     <References>
       <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
-      <Reference ReferenceType="HasModellingRule">i=78</Reference>
       <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=1</Reference>
     </References>
     <Value>
@@ -120,10 +130,10 @@
       <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
     </References>
     <Definition Name="1:MachineDataType">
-      <Field Name="MachineName" DataType="i=12" IsOptional="true" />
-      <Field Name="Manufacturer" DataType="i=12" IsOptional="true" />
-      <Field Name="SerialNumber" DataType="i=12" IsOptional="true" />
-      <Field Name="MachineState" DataType="ns=1;i=1" IsOptional="true" />
+      <Field Name="MachineName" DataType="i=12" />
+      <Field Name="Manufacturer" DataType="i=12" />
+      <Field Name="SerialNumber" DataType="i=12" />
+      <Field Name="MachineState" DataType="ns=1;i=1" />
     </Definition>
   </UADataType>
   <UAObjectType NodeId="ns=1;i=7" BrowseName="1:GenericControllerType">
@@ -344,7 +354,7 @@
       <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
     </References>
   </UAObject>
-  <UAVariable NodeId="ns=1;i=101" BrowseName="1:SampleCompany.SampleServer.Model" SymbolicName="SampleServer_BinarySchema" DataType="ByteString">
+  <UAVariable NodeId="ns=1;i=101" BrowseName="1:SampleCompany.SampleServer.Model" SymbolicName="SampleServer_BinarySchema" ReleaseStatus="Deprecated" DataType="ByteString">
     <DisplayName>SampleCompany.SampleServer.Model</DisplayName>
     <References>
       <Reference ReferenceType="HasProperty">ns=1;i=103</Reference>
@@ -385,7 +395,7 @@ ZURhdGFUeXBlIiAvPg0KICA8L29wYzpTdHJ1Y3R1cmVkVHlwZT4NCg0KPC9vcGM6VHlwZURpY3Rp
 b25hcnk+</ByteString>
     </Value>
   </UAVariable>
-  <UAVariable NodeId="ns=1;i=103" BrowseName="NamespaceUri" ParentNodeId="ns=1;i=101" DataType="String">
+  <UAVariable NodeId="ns=1;i=103" BrowseName="NamespaceUri" ReleaseStatus="Deprecated" ParentNodeId="ns=1;i=101" DataType="String">
     <DisplayName>NamespaceUri</DisplayName>
     <References>
       <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
@@ -395,7 +405,7 @@ b25hcnk+</ByteString>
       <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">http://samplecompany.com/SampleServer/Model</String>
     </Value>
   </UAVariable>
-  <UAVariable NodeId="ns=1;i=104" BrowseName="Deprecated" ParentNodeId="ns=1;i=101" DataType="Boolean">
+  <UAVariable NodeId="ns=1;i=104" BrowseName="Deprecated" ReleaseStatus="Deprecated" ParentNodeId="ns=1;i=101" DataType="Boolean">
     <DisplayName>Deprecated</DisplayName>
     <References>
       <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
@@ -405,7 +415,7 @@ b25hcnk+</ByteString>
       <Boolean xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">true</Boolean>
     </Value>
   </UAVariable>
-  <UAVariable NodeId="ns=1;i=105" BrowseName="1:MachineDataType" ParentNodeId="ns=1;i=101" DataType="String">
+  <UAVariable NodeId="ns=1;i=105" BrowseName="1:MachineDataType" ReleaseStatus="Deprecated" ParentNodeId="ns=1;i=101" DataType="String">
     <DisplayName>MachineDataType</DisplayName>
     <References>
       <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
@@ -423,7 +433,7 @@ b25hcnk+</ByteString>
       <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
     </References>
   </UAObject>
-  <UAVariable NodeId="ns=1;i=109" BrowseName="1:SampleCompany.SampleServer.Model" SymbolicName="SampleServer_XmlSchema" DataType="ByteString">
+  <UAVariable NodeId="ns=1;i=109" BrowseName="1:SampleCompany.SampleServer.Model" SymbolicName="SampleServer_XmlSchema" ReleaseStatus="Deprecated" DataType="ByteString">
     <DisplayName>SampleCompany.SampleServer.Model</DisplayName>
     <References>
       <Reference ReferenceType="HasProperty">ns=1;i=111</Reference>
@@ -477,7 +487,7 @@ bmVEYXRhVHlwZSIgdHlwZT0idG5zOkxpc3RPZk1hY2hpbmVEYXRhVHlwZSIgbmlsbGFibGU9InRy
 dWUiPjwveHM6ZWxlbWVudD4NCg0KPC94czpzY2hlbWE+</ByteString>
     </Value>
   </UAVariable>
-  <UAVariable NodeId="ns=1;i=111" BrowseName="NamespaceUri" ParentNodeId="ns=1;i=109" DataType="String">
+  <UAVariable NodeId="ns=1;i=111" BrowseName="NamespaceUri" ReleaseStatus="Deprecated" ParentNodeId="ns=1;i=109" DataType="String">
     <DisplayName>NamespaceUri</DisplayName>
     <References>
       <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
@@ -487,7 +497,7 @@ dWUiPjwveHM6ZWxlbWVudD4NCg0KPC94czpzY2hlbWE+</ByteString>
       <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">http://samplecompany.com/SampleServer/Model</String>
     </Value>
   </UAVariable>
-  <UAVariable NodeId="ns=1;i=112" BrowseName="Deprecated" ParentNodeId="ns=1;i=109" DataType="Boolean">
+  <UAVariable NodeId="ns=1;i=112" BrowseName="Deprecated" ReleaseStatus="Deprecated" ParentNodeId="ns=1;i=109" DataType="Boolean">
     <DisplayName>Deprecated</DisplayName>
     <References>
       <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
@@ -497,7 +507,7 @@ dWUiPjwveHM6ZWxlbWVudD4NCg0KPC94czpzY2hlbWE+</ByteString>
       <Boolean xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">true</Boolean>
     </Value>
   </UAVariable>
-  <UAVariable NodeId="ns=1;i=113" BrowseName="1:MachineDataType" ParentNodeId="ns=1;i=109" DataType="String">
+  <UAVariable NodeId="ns=1;i=113" BrowseName="1:MachineDataType" ReleaseStatus="Deprecated" ParentNodeId="ns=1;i=109" DataType="String">
     <DisplayName>MachineDataType</DisplayName>
     <References>
       <Reference ReferenceType="HasTypeDefinition">i=69</Reference>

@@ -50,7 +50,8 @@ namespace EmptyCompany.EmptyClient
         /// </summary>
         /// <param name="args">The arguments given on commandline.</param>
         /// <returns></returns>
-        public static async Task<int> Main(string[] args)
+        public static int Main(string[] args)
+        //public static async Task<int> Main(string[] args)
         {
             Console.WriteLine("EmptyCompany {0} OPC UA Empty Client", Utils.IsRunningOnMono() ? "Mono" : ".NET Core");
 

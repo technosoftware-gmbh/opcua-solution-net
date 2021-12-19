@@ -29,6 +29,7 @@
 
 #region Using Directives
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -266,7 +267,7 @@ namespace SampleCompany.SampleClient
             }
         }
 
-        /// <summary>Read some values from the server status.</summary>
+        /// <summary>Read some values from the server status node.</summary>
         public void ReadServerStatus()
         {
             if (Session == null || Session.Connected == false)
@@ -316,6 +317,58 @@ namespace SampleCompany.SampleClient
             }
         }
 
+        /// <summary>Read value from given node.</summary>
+        ///
+        /// <param name="nodeId">Identifier for the node.</param>
+        public void ReadSingleValue(string nodeId)
+        {
+            NodeId simulatedDataNodeId = new NodeId(nodeId);
+            Console.WriteLine($"Read a single value from node {nodeId}.");
+            var simulatedDataValue = Session.ReadValue(simulatedDataNodeId);
+            Console.WriteLine($"   Node {nodeId} Value = {simulatedDataValue.Value} StatusCode = {simulatedDataValue.StatusCode}.");
+        }
+
+        public void ReadMultipleValues(List<string> nodeIds)
+        {
+            var variableIds = new List<NodeId>();
+            var expectedTypes = new List<Type>();
+            Console.WriteLine($"Read multiple values from different nodes.");
+            foreach (var nodeNames in nodeIds)
+            {
+                NodeId nodeId = new NodeId(nodeNames);
+                variableIds.Add(nodeId);
+                // Add an expected type to the list (null means we get the original type from the server)
+                expectedTypes.Add(null);
+            }
+
+            Session.ReadValues(variableIds, expectedTypes, out var values, out var errors);
+            // write the result to the console.
+            for (var i = 0; i < values.Count; i++)
+            {
+                Console.WriteLine($"   Node {variableIds[i]} Value = {values[i]} StatusCode = {errors[i]}.");
+            }
+        }
+
+        public void ReadMultipleValuesAsynchronous(List<string> nodeIds)
+        {
+            var variableIds = new List<NodeId>();
+
+            Console.WriteLine("Read multiple values asynchronous."); 
+            foreach (var nodeNames in nodeIds)
+            {
+                NodeId nodeId = new NodeId(nodeNames);
+                variableIds.Add(nodeId);
+            }
+
+            // start reading the value (setting a 10 second timeout).
+            Session.BeginReadValues(
+                variableIds,
+                0,
+                TimestampsToReturn.Both,
+                OnReadComplete,
+                new UserData { Session = Session, NodeIds = variableIds });
+        }
+
         /// <summary>Read some values from the server status.</summary>
         public void SimulateReconnect()
         {
@@ -353,7 +406,7 @@ namespace SampleCompany.SampleClient
         }
         #endregion
 
-        #region Asynchronous related handlers
+        #region Asynchronous related classes and Handlers
         /// <summary>Raises the certificate validation event.</summary>
         ///
         /// <param name="sender">Source of the event. </param>
@@ -370,6 +423,107 @@ namespace SampleCompany.SampleClient
                 else
                 {
                     Console.WriteLine("Rejected Certificate: {0}", e.Certificate.Subject);
+                }
+            }
+        }
+
+        /// <summary>
+        /// A object used to pass state with an asynchronous write call.
+        /// </summary>
+        private class UserData
+        {
+            public Session Session { get; set; }
+            public List<NodeId> NodeIds { get; set; }
+        }
+
+        /// <summary>
+        /// Finishes an asynchronous read request.
+        /// </summary>
+        private void OnReadComplete(IAsyncResult result)
+        {
+            // get the session used to send the request which was passed as the userData in the BeginWriteValues call.
+            var userData = (UserData)result.AsyncState;
+
+            if (userData == null)
+            {
+                Console.WriteLine("No user data provided in OnReadComplete().");
+                return;
+            }
+
+            try
+            {
+                // get the results.
+                var results = userData.Session.EndReadValues(result);
+
+                // write the result to the console.
+                for (var i = 0; i < results.Count; i++)
+                {
+                    Console.WriteLine("Status of Read of Node {0} is: {1}", userData.NodeIds[i].ToString(), results[i].Value);
+                }
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine("Error in OnReadComplete(): {0}", exception.Message);
+            }
+        }
+
+        /// <summary>
+        /// Finishes an asynchronous read request.
+        /// </summary>
+        private void OnWriteComplete(IAsyncResult result)
+        {
+            // get the session used to send the request which was passed as the userData in the BeginWriteValues call.
+            var userData = (UserData)result.AsyncState;
+
+            if (userData == null)
+            {
+                Console.WriteLine("No user data provided in OnWriteComplete().");
+                return;
+            }
+
+            try
+            {
+                // get the results.
+                var results = userData.Session.EndWriteValues(result);
+
+                // write the result to the console.
+                for (var i = 0; i < results.Count; i++)
+                {
+                    Console.WriteLine("Status of Write to Node {0} is: {1}", userData.NodeIds[i].ToString(), results[i].ToString());
+                }
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine("Error in OnWriteComplete(): {0}", exception.Message);
+            }
+        }
+
+        private void OnNotification(object sender, MonitoredItemNotificationEventArgs e)
+        {
+            var item = sender as MonitoredItem;
+            if (item == null)
+            {
+                return;
+            }
+            foreach (var value in item.DequeueValues())
+            {
+                Console.WriteLine("{0}: {1}, {2}, {3}", item.DisplayName, value.Value, value.SourceTimestamp, value.StatusCode);
+            }
+        }
+
+        private void OnMonitoredItemNotificationEvent(object sender, MonitoredItemNotificationEventArgs e)
+        {
+            var item = sender as MonitoredItem;
+            if (item == null)
+            {
+                return;
+            }
+            foreach (var value in item.DequeueValues())
+            {
+                Console.WriteLine("{0}: {1}, {2}", item.DisplayName, value.SourceTimestamp, value.StatusCode);
+                if (Verbose)
+                {
+                    Console.WriteLine(value);
                 }
             }
         }

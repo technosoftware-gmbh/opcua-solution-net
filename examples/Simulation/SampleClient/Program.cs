@@ -43,6 +43,7 @@ using OptionSet = Mono.Options.OptionSet;
 
 namespace SampleCompany.SampleClient
 {
+    /// <summary>The main program.</summary>
     public static class Program
     {
         /// <summary>
@@ -217,6 +218,14 @@ namespace SampleCompany.SampleClient
                         myUaClient_.Browse();
                     }
                     myUaClient_.ReadServerStatus();
+                    myUaClient_.ReadSingleValue("ns=2;s=Scalar_Simulation_Number");
+
+                    List<string> nodeNames = new List<string>();
+                    nodeNames.Add("ns=2;s=Scalar_Simulation_Number");
+                    nodeNames.Add("ns=2;s=Scalar_Static_Integer");
+                    nodeNames.Add("ns=2;s=Scalar_Static_Double");
+                    myUaClient_.ReadMultipleValues(nodeNames);
+                    myUaClient_.ReadMultipleValuesAsynchronous(nodeNames);
                 }
                 else
                 {
@@ -231,6 +240,5 @@ namespace SampleCompany.SampleClient
         private static ManualResetEvent quitEvent_;
         private static bool browseAddressSpace_;
         #endregion
-
     }
 }

@@ -163,7 +163,7 @@ namespace SampleCompany.SampleServer
                 return (int)ExitCode.ErrorInvalidCommandLine;
             }
 
-            stopTimeout = stopTimeout == 0 ? Timeout.Infinite : stopTimeout * 1000;
+            stopTimeout = stopTimeout <= 0 ? Timeout.Infinite : stopTimeout * 1000;
             var server = new MySampleServer() {
                 AutoAccept = autoAccept,
                 TimeOut = stopTimeout,

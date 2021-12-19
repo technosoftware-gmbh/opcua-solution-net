@@ -1,5 +1,13 @@
 <Project>
   <Choose>
+    <!-- Visual Studio 2022 -->
+    <When  Condition="'$(VisualStudioVersion)' == '17.0'">
+      <PropertyGroup>
+        <AppTargetFrameworks>netcoreapp3.1;net5.0</AppTargetFrameworks>
+        <AppTargetFramework>netcoreapp3.1</AppTargetFramework>
+      </PropertyGroup>
+    </When>
+    <!-- Visual Studio 2019 -->
     <When Condition="'$(VisualStudioVersion)' == '16.0'">
       <PropertyGroup>
         <AppTargetFrameworks>netcoreapp3.1;net5.0</AppTargetFrameworks>
