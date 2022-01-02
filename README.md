@@ -1,4 +1,4 @@
-# Technosoftware GmbH OPC UA Solution .NET
+# OPC UA Solution .NET
 
 The OPC UA Solution .NET is the implementation for the
 
@@ -23,7 +23,7 @@ The developer can concentrate on his application and servers can be developed fa
 
 The included OPC Foundation Model Compiler can be used to create the necessary C# classes of Information Model’s specified in XML and CSV based files. At the moment the XML files must be edited by a text editor. 
 
-Documentation of the Mode Compiler can be found at https://github.com/OPCFoundation/UA-ModelCompiler
+Documentation of the Mode Compiler can be found [here](https://github.com/OPCFoundation/UA-ModelCompiler).
 
 ### Build Status
 
@@ -38,25 +38,25 @@ We provide an online help for the current version: [OPC UA Solution NET Online H
 
 You can use the following documents as a starting point:
 
-1. [OPC UA Solution NET Installation Guide](/documentation/OPC_UA_Solution_NET_Installation_Guide.pdf)
-2. [OPC UA Solution NET Introduction](/documentation/OPC_UA_Solution_NET_Introduction.pdf)
-3. [OPC UA Client Development with NET](/documentation/OPC_UA_Client_Development_with_NET.pdf)
-4. [OPC UA Server Development with NET](/documentation/OPC_UA_Server_Development_with_NET.pdf)
+1. [OPC UA Solution NET Installation Guide](./documentation/OPC_UA_Solution_NET_Installation_Guide.pdf)
+2. [OPC UA Solution NET Introduction](./documentation/OPC_UA_Solution_NET_Introduction.pdf)
+3. [OPC UA Client Development with NET](./documentation/OPC_UA_Client_Development_with_NET.pdf)
+4. [OPC UA Server Development with NET](./documentation/OPC_UA_Server_Development_with_NET.pdf)
 
 ## Workshop
 
-You can also use the PDFs provided from our Workshop available [here](/Workshop).
+You can also use the PDFs provided from our Workshop available [here](./Workshop).
 
-##	Redistributables
+##	Redistributable
 
-- Redistributables of the OPC UA Local Discovery Server are available via https://opcfoundation.org/developer-tools/samples-and-tools-unified-architecture/local-discovery-server-lds/
+- The Redistributable of the OPC UA Local Discovery Server are available [here](https://opcfoundation.org/developer-tools/samples-and-tools-unified-architecture/local-discovery-server-lds/).
 - We used the version 1.04.402 for our tests
 
 ## Evaluation Usage
 
 Evaluation versions are NOT intended to be used for product development! They may differ in features from the product versions and might need some time to get integrated. They are intended for evaluation purposes only.
 
-Product development should always be done on product versions of the SDKs! 
+Product development should always be done on product versions of the Solution! 
 
 Without a Product License (see below) the contents of this repository is used as an evaluation version.
 
@@ -64,9 +64,6 @@ Evaluation Editions comes with the following restrictions:
 
  * Evaluation time limited to 30 days and limited to 90 minutes run-time per application start.
 
-### Support for the SDK
-
-Support for the SDK is available via https://github.com/technosoftware-gmbh/opcua-solution-net/issues. 
 
 ## Available Solution
 
@@ -89,4 +86,4 @@ The delivered license can be used to turn the contents of this repository into a
 
 ### Get Support for the Solution:
 
-Support for the Solution is available [here](https://github.com/technosoftware-gmbh/opcua-solution-net/issues).
+Support for the Solution is available [here](https://github.com/technosoftware-gmbh/opcua-solution-net-samples/issues).
