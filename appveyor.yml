@@ -4,7 +4,7 @@
 #---------------------------------#
 
 # version format
-version: 2.3.5.{build}-{branch}
+version: 2.3.6.{build}-{branch}
 
 
 # branches to build
@@ -18,8 +18,7 @@ branches:
 #---------------------------------#
 
 # Build worker image (VM template)
-image: 
-  - Visual Studio 2019
+image: Visual Studio 2019
 
 # scripts that are called at very beginning, before repo cloning
 init:
@@ -28,15 +27,12 @@ init:
 # clone directory
 clone_folder: c:\projects\opcua-solution-net
 
-# set clone depth
-clone_depth: 5                      # clone entire repository history if not defined
-
 environment:
   matrix:
   - solution_name: "TutorialSamples.sln"
     test_name: "void"
     param: ""
-
+    
 # this is how to allow failing jobs in the matrix
 matrix:
   fast_finish: false     # set this flag to immediately finish build once one of the jobs fails.
