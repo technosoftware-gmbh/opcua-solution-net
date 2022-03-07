@@ -1,4 +1,4 @@
-# OPC UA Solution .NET
+# Technosoftware GmbH OPC UA Solution .NET
 
 The OPC UA Solution .NET is the implementation for the
 
@@ -7,7 +7,7 @@ The OPC UA Solution .NET is the implementation for the
 
 ## OPC UA Client .NET
 
-The OPC UA Client .NET offers a fast and easy access to the OPC UA Client technology. Develop OPC UA 1.00, 1.01, 1.02, 1.03 and 1.04 compliant UA Clients with C#/VB.NET targeting the .NET 5.0 or .NET Core 3.1.
+The OPC UA Client .NET offers a fast and easy access to the OPC UA Client technology. Develop OPC UA 1.00, 1.01, 1.02, 1.03 and 1.04 compliant UA Clients with C#/VB.NET targeting the .NET 6.0, .NET 5.0 or .NET Core 3.1.
 
 .NET 5.0 and .NET Core 3.1 allows you develop applications that run on all common platforms available today, including Linux, macOS and Windows 8.1/10 (including embedded/IoT editions) without requiring platform-specific modifications.
 
