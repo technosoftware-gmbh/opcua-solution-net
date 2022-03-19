@@ -1,4 +1,13 @@
 -------------------------------------------------------------------------------------------------------------
+## OPC UA Solution .NET - 2.3.8
+
+### Changes
+- Updated to OPC UA Core 1.4.367.100
+
+### Fixed issues
+- Server: Fixed missing TimeFlowsBackward checks and invalid status code on HistoryRead
+
+-------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 2.3.7
 
 ### Changes
