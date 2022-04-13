@@ -1,4 +1,11 @@
 -------------------------------------------------------------------------------------------------------------
+## OPC UA Solution .NET - 2.3.9
+
+### Changes
+- Updated to OPC UA Core 1.4.368.33. 
+- Added UaStandardServer class as new way of implementing OPC UA Servers. Documentation will be done for next release.
+
+-------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 2.3.8
 
 ### Changes
