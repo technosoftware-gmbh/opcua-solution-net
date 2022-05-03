@@ -1,4 +1,10 @@
 -------------------------------------------------------------------------------------------------------------
+## OPC UA Solution .NET - 2.3.10
+
+### Changes
+- Added new StartAsync methods to UaServer using an ApplicationConfiguration object instead of the section name
+
+-------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 2.3.9
 
 ### Changes
