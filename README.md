@@ -64,7 +64,6 @@ Evaluation Editions comes with the following restrictions:
 
  * Evaluation time limited to 30 days and limited to 90 minutes run-time per application start.
 
-
 ## Available Solution
 
 ### Binary Edition
