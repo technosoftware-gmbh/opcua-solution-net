@@ -9,15 +9,15 @@ The OPC UA Solution .NET is the implementation for the
 
 The OPC UA Client .NET offers a fast and easy access to the OPC UA Client technology. Develop OPC UA 1.00, 1.01, 1.02, 1.03 and 1.04 compliant UA Clients with C#/VB.NET targeting the .NET 6.0, .NET 5.0 or .NET Core 3.1.
 
-.NET 5.0 and .NET Core 3.1 allows you develop applications that run on all common platforms available today, including Linux, macOS and Windows 8.1/10 (including embedded/IoT editions) without requiring platform-specific modifications.
+.NET 6.0, .NET 5.0 and .NET Core 3.1 allows you develop applications that run on all common platforms available today, including Linux, macOS and Windows 8.1/10 (including embedded/IoT editions) without requiring platform-specific modifications.
 
 The OPC UA Client SDK .NET API defines classes which can be used to implement an OPC client capable to access OPC servers supporting different profiles with the same API. These classes manage client side state information; provide higher level abstractions for OPC tasks such as managing sessions and subscriptions or saving and restoring connection information for later use.
 
 ## OPC UA Server .NET
 
-The OPC UA Server .NET offers a fast and easy access to the OPC Unified Architecture (UA) technology. Develop OPC UA 1.00, 1.01, 1.02, 1.03  and 1.04 compliant Servers with C#/VB.NET targeting targeting the .NET 5.0 or .NET Core 3.1.
+The OPC UA Server .NET offers a fast and easy access to the OPC Unified Architecture (UA) technology. Develop OPC UA 1.00, 1.01, 1.02, 1.03  and 1.04 compliant Servers with C#/VB.NET targeting targeting the .NET 6.0, .NET 5.0 or .NET Core 3.1.
 
-.NET 5.0 and .NET Core 3.1 allows you develop applications that run on all common platforms available today, including Linux, macOS and Windows 8.1/10 (including embedded/IoT editions) without requiring platform-specific modifications.
+.NET 6.0, .NET 5.0 and .NET Core 3.1 allows you develop applications that run on all common platforms available today, including Linux, macOS and Windows 8.1/10 (including embedded/IoT editions) without requiring platform-specific modifications.
 
 The developer can concentrate on his application and servers can be developed fast and easily without the need to spend a lot of time learning how to implement the OPC Unified Architecture specification. The server API is easy to use and many OPC specific functions are handled by the framework.
 
