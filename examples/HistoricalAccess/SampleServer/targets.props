@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
-    <!-- Possible values: net462, net472, net48, netcoreapp3.1 or net5.0 -->
-    <AppTargetFrameworks>net462;net472;net48;netcoreapp3.1;net5.0</AppTargetFrameworks>
-    <AppTargetFramework>netcoreapp3.1</AppTargetFramework>
+    <!-- Possible values: net462, net472, net48, netcoreapp3.1, net5.0 or net6.0 -->
+    <AppTargetFrameworks>net462;net472;net48;netcoreapp3.1;net5.0;net6.0</AppTargetFrameworks>
+    <AppTargetFramework>net6.0</AppTargetFramework>
   </PropertyGroup>
 </Project>

@@ -21,11 +21,42 @@
   </ItemGroup>
 
   <ItemGroup Condition=" '$(NoHttps)' != 'true' ">
-    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Bindings.Https" Version="1.4.368.53" />
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Bindings.Https" Version="1.4.368.58" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.3.10" />
-    <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.3.10" />
+    <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.3.11" />
+    <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.3.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Data\Dynamic\Int32.txt" />
+    <EmbeddedResource Include="Data\Dynamic\Double.txt" />
+    <EmbeddedResource Include="Data\Dynamic\Boolean.txt" />
+    <EmbeddedResource Include="Data\Dynamic\Byte.txt" />
+    <EmbeddedResource Include="Data\Dynamic\DateTime.txt" />
+    <EmbeddedResource Include="Data\Dynamic\Float.txt" />
+    <EmbeddedResource Include="Data\Dynamic\Int16.txt" />
+    <EmbeddedResource Include="Data\Dynamic\Int64.txt" />
+    <EmbeddedResource Include="Data\Dynamic\SByte.txt" />
+    <EmbeddedResource Include="Data\Dynamic\String.txt" />
+    <EmbeddedResource Include="Data\Dynamic\UInt16.txt" />
+    <EmbeddedResource Include="Data\Dynamic\UInt32.txt" />
+    <EmbeddedResource Include="Data\Dynamic\UInt64.txt" />
+    <EmbeddedResource Include="Data\Sample\Boolean.txt" />
+    <EmbeddedResource Include="Data\Sample\Byte.txt" />
+    <EmbeddedResource Include="Data\Sample\ByteString.txt" />
+    <EmbeddedResource Include="Data\Sample\DateTime.txt" />
+    <EmbeddedResource Include="Data\Sample\Double.txt" />
+    <EmbeddedResource Include="Data\Sample\Float.txt" />
+    <EmbeddedResource Include="Data\Sample\Int16.txt" />
+    <EmbeddedResource Include="Data\Sample\Int32.txt" />
+    <EmbeddedResource Include="Data\Sample\Int64.txt" />
+    <EmbeddedResource Include="Data\Sample\SByte.txt" />
+    <EmbeddedResource Include="Data\Sample\String.txt" />
+    <EmbeddedResource Include="Data\Sample\UInt16.txt" />
+    <EmbeddedResource Include="Data\Sample\UInt32.txt" />
+    <EmbeddedResource Include="Data\Sample\UInt64.txt" />
+    <Content Include="Data.txt" />
   </ItemGroup>
 
   <ItemGroup>

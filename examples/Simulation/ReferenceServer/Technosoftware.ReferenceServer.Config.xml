@@ -95,7 +95,9 @@
 
     <!-- WARNING: SHA1 signed certificates are by default rejected and should be phased out. 
     The setting below to allow them is only required for UACTT (1.02.336.244) which uses SHA-1 signed certs. -->
-    <RejectSHA1SignedCertificates>false</RejectSHA1SignedCertificates>
+    <RejectSHA1SignedCertificates>
+true
+</RejectSHA1SignedCertificates>
 
     <!-- Value indicating whether certificates with unavailable revocation lists are not accepted -->
     <RejectUnknownRevocationStatus>true</RejectUnknownRevocationStatus>
@@ -136,7 +138,9 @@
   <TransportQuotas>
 
     <!-- The default timeout in milliseconds for operations (used by clients) -->
-    <OperationTimeout>600000</OperationTimeout>
+    <OperationTimeout>
+120000
+</OperationTimeout>
 
     <!-- The maximum length for a string value in any message -->
     <MaxStringLength>1048576</MaxStringLength>
@@ -256,29 +260,35 @@
       <!-- Allows anonymous users -->
       <ua:UserTokenPolicy>
         <ua:TokenType>Anonymous_0</ua:TokenType>
-        <ua:SecurityPolicyUri>http://opcfoundation.org/UA/SecurityPolicy#None</ua:SecurityPolicyUri>
+        
+<!-- <ua:SecurityPolicyUri>http://opcfoundation.org/UA/SecurityPolicy#None</ua:SecurityPolicyUri> -->
       </ua:UserTokenPolicy>
 
       <!-- Allows username/password -->
       <ua:UserTokenPolicy>
         <ua:TokenType>UserName_1</ua:TokenType>
         <!-- passwords must be encrypted - this specifies what algorithm to use -->
-        <ua:SecurityPolicyUri>http://opcfoundation.org/UA/SecurityPolicy#Basic256Sha256</ua:SecurityPolicyUri>
+        
+<!-- if no algorithm is specified, the active security policy is used -->
+        <!-- <ua:SecurityPolicyUri>http://opcfoundation.org/UA/SecurityPolicy#Basic256Sha256</ua:SecurityPolicyUri> -->
       </ua:UserTokenPolicy>
 
       <!-- Allows user certificates -->
       <ua:UserTokenPolicy>
         <ua:TokenType>Certificate_2</ua:TokenType>
         <!-- certificate possession must be proven with a digital signature - this specifies what algorithm to use -->
-        <ua:SecurityPolicyUri>http://opcfoundation.org/UA/SecurityPolicy#Basic256Sha256</ua:SecurityPolicyUri>
+        
+<!-- if no algorithm is specified, the active security policy is used -->
+        <!-- <ua:SecurityPolicyUri>http://opcfoundation.org/UA/SecurityPolicy#Basic256Sha256</ua:SecurityPolicyUri> -->
       </ua:UserTokenPolicy>
     </UserTokenPolicies>
 
     <!-- Whether the server updates its diagnostic information -->
     <DiagnosticsEnabled>true</DiagnosticsEnabled>
-
     <!-- The maximum number of simultaneous sessions -->
-    <MaxSessionCount>100</MaxSessionCount>
+    <MaxSessionCount>
+75
+</MaxSessionCount>
 
     <!-- The minimum session lifetime permitted by the server -->
     <MinSessionTimeout>10000</MinSessionTimeout>
@@ -299,7 +309,9 @@
     <MaxRequestAge>600000</MaxRequestAge>
 
     <!-- The minimum allowed publishing interval (in milliseconds) -->
-    <MinPublishingInterval>100</MinPublishingInterval>
+    <MinPublishingInterval>
+50
+</MinPublishingInterval>
 
     <!-- The maximum allowed publishing interval (in milliseconds) -->
     <MaxPublishingInterval>3600000</MaxPublishingInterval>
@@ -386,7 +398,10 @@
       <ua:String>http://opcfoundation.org/UA-Profile/Server/DataAccess</ua:String>
       <ua:String>http://opcfoundation.org/UA-Profile/Server/Methods</ua:String>
       <ua:String>http://opcfoundation.org/UA-Profile/Server/ReverseConnect</ua:String>
-    </ServerProfileArray>
+    
+<ua:String>http://opcfoundation.org/UA-Profile/Server/ClientRedundancy</ua:String>
+    
+</ServerProfileArray>
     <ShutdownDelay>5</ShutdownDelay>
     <ServerCapabilities>
       <ua:String>DA</ua:String>
@@ -412,6 +427,22 @@
       <RejectTimeout>60000</RejectTimeout>
     </ReverseConnect>
     -->
+
+    <OperationLimits>
+      <MaxNodesPerRead>2500</MaxNodesPerRead>
+      <MaxNodesPerHistoryReadData>1000</MaxNodesPerHistoryReadData>
+      <MaxNodesPerHistoryReadEvents>1000</MaxNodesPerHistoryReadEvents>
+      <MaxNodesPerWrite>2500</MaxNodesPerWrite>
+      <MaxNodesPerHistoryUpdateData>1000</MaxNodesPerHistoryUpdateData>
+      <MaxNodesPerHistoryUpdateEvents>1000</MaxNodesPerHistoryUpdateEvents>
+      <MaxNodesPerMethodCall>2500</MaxNodesPerMethodCall>
+      <MaxNodesPerBrowse>2500</MaxNodesPerBrowse>
+      <MaxNodesPerRegisterNodes>2500</MaxNodesPerRegisterNodes>
+      <MaxNodesPerTranslateBrowsePathsToNodeIds>2500</MaxNodesPerTranslateBrowsePathsToNodeIds>
+      <MaxNodesPerNodeManagement>2500</MaxNodesPerNodeManagement>
+      <MaxMonitoredItemsPerCall>2500</MaxMonitoredItemsPerCall>
+    </OperationLimits>
+
   </ServerConfiguration>
 
   <!--
@@ -467,7 +498,8 @@
     <!-- Show Only Security, ServiceResultExceptions, Errors and Trace -->
     <!-- <TraceMasks>519</TraceMasks> -->
     <!-- Show Error, Information, StackTrace, Service, ServiceDetail, Operation, OperationDetail, StartStop, ExternalSystem and Security. -->
-    <!-- <TraceMasks>1023</TraceMasks>-->
+    
+<!-- <TraceMasks>1023</TraceMasks> -->
   </TraceConfiguration>
 
 </ApplicationConfiguration>

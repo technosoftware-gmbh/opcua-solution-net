@@ -170,7 +170,7 @@ namespace Technosoftware.ReferenceServer
                 args.Identity.GrantedRoleIds.Add(ObjectIds.WellKnownRole_Anonymous);
 
                 return;
-            }
+        }
 
             // unsuported identity token type.
             throw ServiceResultException.Create(StatusCodes.BadIdentityTokenInvalid,
