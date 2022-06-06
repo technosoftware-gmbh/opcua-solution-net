@@ -1,4 +1,16 @@
 -------------------------------------------------------------------------------------------------------------
+## OPC UA Solution .NET - 2.3.11
+
+### Changes
+- Updated to OPC UA Core 1.4.368.58
+- Enhanced HistoricalAccess example
+
+### Fixed issues
+- Client: Improved reconnect handler and subscription transfer
+- Server: Check operation limits on Variant arrays and TranslateBrowsePathsToNodeIds
+- Server: Strict rules to compare X500 distinguished names
+
+-------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 2.3.10
 
 ### Changes

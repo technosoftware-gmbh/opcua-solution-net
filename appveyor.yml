@@ -4,7 +4,7 @@
 #---------------------------------#
 
 # version format
-version: 2.3.10.{build}-{branch}
+version: 2.3.11.{build}-{branch}
 
 
 # branches to build

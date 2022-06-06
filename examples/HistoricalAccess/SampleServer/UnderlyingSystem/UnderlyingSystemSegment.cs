@@ -1,7 +1,7 @@
 #region Copyright (c) 2011-2022 Technosoftware GmbH. All rights reserved
 //-----------------------------------------------------------------------------
-// Copyright (c) 2011-2022 Technosoftware GmbH. All rights reserved
-// Web: https://technosoftware.com  
+// Copyright (c) 2021 Technosoftware GmbH. All rights reserved
+// Web: https://technosoftware.com 
 // 
 // License: 
 // 
@@ -24,61 +24,56 @@
 // SOFTWARE.
 //
 // SPDX-License-Identifier: MIT
+//
+// The Software is based on the OPC Foundation MIT License. 
+// The complete license agreement for that can be found here:
+// http://opcfoundation.org/License/MIT/1.00/
 //-----------------------------------------------------------------------------
 #endregion Copyright (c) 2011-2022 Technosoftware GmbH. All rights reserved
 
 #region Using Directives
-using System.Runtime.Serialization;
 #endregion
 
-namespace Technosoftware.ReferenceServer
+namespace SampleCompany.SampleServer.UnderlyingSystem
 {
     /// <summary>
-    /// Stores the configuration the Reference server.
+    /// Stores information about a segment in the system.
     /// </summary>
-    [DataContract(Namespace = Namespaces.Reference)]
-    public class ReferenceServerConfiguration
+    public class UnderlyingSystemSegment
     {
-        #region Constructors
+        #region Constructors, Destructor, Initialization
         /// <summary>
-        /// The default constructor.
+        /// Initializes a new instance of the <see cref="UnderlyingSystemSegment"/> class.
         /// </summary>
-        public ReferenceServerConfiguration()
-        {
-            Initialize();
-        }
-
-        /// <summary>
-        /// Initializes the object during deserialization.
-        /// </summary>
-        [OnDeserializing()]
-        private void Initialize(StreamingContext context)
-        {
-            Initialize();
-        }
-
-        /// <summary>
-        /// Sets private members to default values.
-        /// </summary>
-        private void Initialize()
+        public UnderlyingSystemSegment()
         {
         }
         #endregion
 
         #region Public Properties
         /// <summary>
-        /// Whether the user dialog for accepting invalid certificates should be displayed.
+        /// Gets or sets the unique id for the segment.
         /// </summary>
-        [DataMember(Order = 1)]
-        public bool ShowCertificateValidationDialog
-        {
-            get { return m_showCertificateValidationDialog; }
-            set { m_showCertificateValidationDialog = value; }
-        }
+        /// <value>The unique id for the segment</value>
+        public string Id { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the segment.
+        /// </summary>
+        /// <value>The name of the segment.</value>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the type of the segment.
+        /// </summary>
+        /// <value>The type of the segment.</value>
+        public string SegmentType { get; set; }
         #endregion
 
-        #region Private Members
-        private bool m_showCertificateValidationDialog;
+        #region Private Methods
+        #endregion
+
+        #region Private Fields
         #endregion
     }
 }
