@@ -27,7 +27,7 @@ Documentation of the Mode Compiler can be found [here](https://github.com/OPCFou
 
 ### Build Status
 
-[![Build Status](https://travis-ci.com/technosoftware-gmbh/opcua-solution-net.svg?branch=master)](https://travis-ci.com/technosoftware-gmbh/opcua-solution-net-samples)
+[![Build Status](https://app.travis-ci.com/technosoftware-gmbh/opcua-solution-net-samples.svg?branch=master)](https://app.travis-ci.com/technosoftware-gmbh/opcua-solution-net-samples)
 [![Build status](https://ci.appveyor.com/api/projects/status/j5joansdme5525lu?svg=true)](https://ci.appveyor.com/project/technosoftware/opcua-solution-net-samples)
 
 ## Online Help
