@@ -1,4 +1,19 @@
 -------------------------------------------------------------------------------------------------------------
+## OPC UA Solution .NET - 2.3.12
+
+### Breaking Changes
+- Changed ReverseConnectState to UaReverseConnectState.
+- Changed ReverseConnectProperty to UaReverseConnectProperty.
+
+### Changes
+- Server: Added ResendData functionality
+
+### Fixed issues
+- Client: Fixed monitored item role permissions.
+- Server: Defer MethodId permissions validation to the point where the actual MethodState that will be executed is identified
+- Server: Avoid deadlock on processing events.
+
+-------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 2.3.11
 
 ### Changes
