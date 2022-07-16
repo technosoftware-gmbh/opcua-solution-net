@@ -1,4 +1,13 @@
 -------------------------------------------------------------------------------------------------------------
+## OPC UA Solution .NET - 2.3.13
+
+### Breaking Changes
+- removed support of .NET 5.0 because of end of life (see [here](https://dotnet.microsoft.com/en-us/platform/support/policy/dotnet-core))
+
+### Changes
+- Updated to OPC UA Core 1.4.369.30
+
+-------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 2.3.12
 
 ### Breaking Changes
