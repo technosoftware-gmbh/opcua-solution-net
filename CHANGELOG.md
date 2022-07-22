@@ -1,4 +1,14 @@
 -------------------------------------------------------------------------------------------------------------
+## OPC UA Solution .NET - 2.3.14
+
+### Changes
+- Updated to OPC UA Core 1.4.370.1
+
+### Fixed issues
+- Server: Improved ResendData functionality
+- Server: Fixed Server JWT Token Support
+
+-------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 2.3.13
 
 ### Breaking Changes

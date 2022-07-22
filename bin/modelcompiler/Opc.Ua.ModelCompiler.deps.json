@@ -1,16 +1,16 @@
 {
   "runtimeTarget": {
-    "name": ".NETCoreApp,Version=v5.0",
+    "name": ".NETCoreApp,Version=v6.0",
     "signature": ""
   },
   "compilationOptions": {},
   "targets": {
-    ".NETCoreApp,Version=v5.0": {
-      "Opc.Ua.ModelCompiler/2.0.2204.1049": {
+    ".NETCoreApp,Version=v6.0": {
+      "Opc.Ua.ModelCompiler/2.0.2207.0414": {
         "dependencies": {
           "CsvHelper": "27.2.1",
           "Microsoft.Extensions.CommandLineUtils": "1.1.1",
-          "OPCFoundation.NetStandard.Opc.Ua.Core": "1.4.368.33"
+          "OPCFoundation.NetStandard.Opc.Ua.Core": "1.4.368.58"
         },
         "runtime": {
           "Opc.Ua.ModelCompiler.dll": {}
@@ -18,7 +18,7 @@
       },
       "CsvHelper/27.2.1": {
         "runtime": {
-          "lib/net5.0/CsvHelper.dll": {
+          "lib/net6.0/CsvHelper.dll": {
             "assemblyVersion": "27.0.0.0",
             "fileVersion": "27.2.1.0"
           }
@@ -35,15 +35,11 @@
           }
         }
       },
-      "Microsoft.Extensions.Logging.Abstractions/6.0.0": {
-        "dependencies": {
-          "System.Buffers": "4.5.1",
-          "System.Memory": "4.5.4"
-        },
+      "Microsoft.Extensions.Logging.Abstractions/6.0.1": {
         "runtime": {
-          "lib/netstandard2.0/Microsoft.Extensions.Logging.Abstractions.dll": {
+          "lib/net6.0/Microsoft.Extensions.Logging.Abstractions.dll": {
             "assemblyVersion": "6.0.0.0",
-            "fileVersion": "6.0.21.52210"
+            "fileVersion": "6.0.322.12309"
           }
         }
       },
@@ -112,27 +108,27 @@
           }
         }
       },
-      "OPCFoundation.NetStandard.Opc.Ua.Core/1.4.368.33": {
+      "OPCFoundation.NetStandard.Opc.Ua.Core/1.4.368.58": {
         "dependencies": {
-          "Microsoft.Extensions.Logging.Abstractions": "6.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "6.0.1",
           "Newtonsoft.Json": "13.0.1",
-          "OPCFoundation.NetStandard.Opc.Ua.Security.Certificates": "1.4.368.33"
+          "OPCFoundation.NetStandard.Opc.Ua.Security.Certificates": "1.4.368.58"
         },
         "runtime": {
-          "lib/netstandard2.1/Opc.Ua.Core.dll": {
+          "lib/net6.0/Opc.Ua.Core.dll": {
             "assemblyVersion": "1.4.368.0",
-            "fileVersion": "1.4.368.33"
+            "fileVersion": "1.4.368.58"
           }
         }
       },
-      "OPCFoundation.NetStandard.Opc.Ua.Security.Certificates/1.4.368.33": {
+      "OPCFoundation.NetStandard.Opc.Ua.Security.Certificates/1.4.368.58": {
         "dependencies": {
           "System.Formats.Asn1": "6.0.0"
         },
         "runtime": {
-          "lib/netstandard2.1/Opc.Ua.Security.Certificates.dll": {
+          "lib/net6.0/Opc.Ua.Security.Certificates.dll": {
             "assemblyVersion": "1.4.368.0",
-            "fileVersion": "1.4.368.33"
+            "fileVersion": "1.4.368.58"
           }
         }
       },
@@ -189,7 +185,15 @@
           "System.Runtime": "4.3.0"
         }
       },
-      "System.Buffers/4.5.1": {},
+      "System.Buffers/4.3.0": {
+        "dependencies": {
+          "System.Diagnostics.Debug": "4.3.0",
+          "System.Diagnostics.Tracing": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Threading": "4.3.0"
+        }
+      },
       "System.Collections/4.3.0": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "1.1.0",
@@ -250,18 +254,7 @@
           "System.Runtime": "4.3.0"
         }
       },
-      "System.Formats.Asn1/6.0.0": {
-        "dependencies": {
-          "System.Buffers": "4.5.1",
-          "System.Memory": "4.5.4"
-        },
-        "runtime": {
-          "lib/netstandard2.0/System.Formats.Asn1.dll": {
-            "assemblyVersion": "6.0.0.0",
-            "fileVersion": "6.0.21.52210"
-          }
-        }
-      },
+      "System.Formats.Asn1/6.0.0": {},
       "System.Globalization/4.3.0": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "1.1.0",
@@ -299,7 +292,7 @@
       "System.IO.Compression/4.3.0": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "1.1.0",
-          "System.Buffers": "4.5.1",
+          "System.Buffers": "4.3.0",
           "System.Collections": "4.3.0",
           "System.Diagnostics.Debug": "4.3.0",
           "System.IO": "4.3.0",
@@ -317,7 +310,7 @@
       },
       "System.IO.Compression.ZipFile/4.3.0": {
         "dependencies": {
-          "System.Buffers": "4.5.1",
+          "System.Buffers": "4.3.0",
           "System.IO": "4.3.0",
           "System.IO.Compression": "4.3.0",
           "System.IO.FileSystem": "4.3.0",
@@ -375,7 +368,6 @@
           "System.Threading": "4.3.0"
         }
       },
-      "System.Memory/4.5.4": {},
       "System.Net.Http/4.3.0": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "1.1.0",
@@ -753,7 +745,7 @@
     }
   },
   "libraries": {
-    "Opc.Ua.ModelCompiler/2.0.2204.1049": {
+    "Opc.Ua.ModelCompiler/2.0.2207.0414": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
@@ -772,12 +764,12 @@
       "path": "microsoft.extensions.commandlineutils/1.1.1",
       "hashPath": "microsoft.extensions.commandlineutils.1.1.1.nupkg.sha512"
     },
-    "Microsoft.Extensions.Logging.Abstractions/6.0.0": {
+    "Microsoft.Extensions.Logging.Abstractions/6.0.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-/HggWBbTwy8TgebGSX5DBZ24ndhzi93sHUBDvP1IxbZD7FDokYzdAr6+vbWGjw2XAfR2EJ1sfKUotpjHnFWPxA==",
-      "path": "microsoft.extensions.logging.abstractions/6.0.0",
-      "hashPath": "microsoft.extensions.logging.abstractions.6.0.0.nupkg.sha512"
+      "sha512": "sha512-dzB2Cgg+JmrouhjkcQGzSFjjvpwlq353i8oBQO2GWNjCXSzhbtBRUf28HSauWe7eib3wYOdb3tItdjRwAdwCSg==",
+      "path": "microsoft.extensions.logging.abstractions/6.0.1",
+      "hashPath": "microsoft.extensions.logging.abstractions.6.0.1.nupkg.sha512"
     },
     "Microsoft.NETCore.Platforms/1.1.0": {
       "type": "package",
@@ -814,19 +806,19 @@
       "path": "newtonsoft.json/13.0.1",
       "hashPath": "newtonsoft.json.13.0.1.nupkg.sha512"
     },
-    "OPCFoundation.NetStandard.Opc.Ua.Core/1.4.368.33": {
+    "OPCFoundation.NetStandard.Opc.Ua.Core/1.4.368.58": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-emAVGcmPLWIVBqA5KRSPQd1V+N/iVei/UGHiRrmr3jBeMH4AppBx46RyOvh/3MqJ5u8q+QZCNiscE0ainiV6Fg==",
-      "path": "opcfoundation.netstandard.opc.ua.core/1.4.368.33",
-      "hashPath": "opcfoundation.netstandard.opc.ua.core.1.4.368.33.nupkg.sha512"
+      "sha512": "sha512-3aJEcEczM9iMt94qaxmD/7fxQ13udChf4drvo62+h8DkvGJSs76AmlSPmKlhNCwLOQur44NSgIz40kcHc46fpA==",
+      "path": "opcfoundation.netstandard.opc.ua.core/1.4.368.58",
+      "hashPath": "opcfoundation.netstandard.opc.ua.core.1.4.368.58.nupkg.sha512"
     },
-    "OPCFoundation.NetStandard.Opc.Ua.Security.Certificates/1.4.368.33": {
+    "OPCFoundation.NetStandard.Opc.Ua.Security.Certificates/1.4.368.58": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-0V6vmHLgiq9+bSBosWh/AylXoYAH6vWWoC/ZzUf+UYFKBA++Q/YvOESO2KfDY9PxG7fgmz0dHqJ4IRDNVJAE2g==",
-      "path": "opcfoundation.netstandard.opc.ua.security.certificates/1.4.368.33",
-      "hashPath": "opcfoundation.netstandard.opc.ua.security.certificates.1.4.368.33.nupkg.sha512"
+      "sha512": "sha512-nYeKpf/a1TMaUOCopk5MDYk2+YS50bdD48IdMTv26quwPxKnF/nzNlxlK/JnrA6v3aYz0D/1q0XOObWr2Qjc4w==",
+      "path": "opcfoundation.netstandard.opc.ua.security.certificates/1.4.368.58",
+      "hashPath": "opcfoundation.netstandard.opc.ua.security.certificates.1.4.368.58.nupkg.sha512"
     },
     "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {
       "type": "package",
@@ -947,12 +939,12 @@
       "path": "system.appcontext/4.3.0",
       "hashPath": "system.appcontext.4.3.0.nupkg.sha512"
     },
-    "System.Buffers/4.5.1": {
+    "System.Buffers/4.3.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-Rw7ijyl1qqRS0YQD/WycNst8hUUMgrMH4FCn1nNm27M4VxchZ1js3fVjQaANHO5f3sN4isvP4a+Met9Y4YomAg==",
-      "path": "system.buffers/4.5.1",
-      "hashPath": "system.buffers.4.5.1.nupkg.sha512"
+      "sha512": "sha512-ratu44uTIHgeBeI0dE8DWvmXVBSo4u7ozRZZHOMmK/JPpYyo0dAfgSiHlpiObMQ5lEtEyIXA40sKRYg5J6A8uQ==",
+      "path": "system.buffers/4.3.0",
+      "hashPath": "system.buffers.4.3.0.nupkg.sha512"
     },
     "System.Collections/4.3.0": {
       "type": "package",
@@ -1079,13 +1071,6 @@
       "sha512": "sha512-PGKkrd2khG4CnlyJwxwwaWWiSiWFNBGlgXvJpeO0xCXrZ89ODrQ6tjEWS/kOqZ8GwEOUATtKtzp1eRgmYNfclg==",
       "path": "system.linq.expressions/4.3.0",
       "hashPath": "system.linq.expressions.4.3.0.nupkg.sha512"
-    },
-    "System.Memory/4.5.4": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-1MbJTHS1lZ4bS4FmsJjnuGJOu88ZzTT2rLvrhW7Ygic+pC0NWA+3hgAen0HRdsocuQXCkUTdFn9yHJJhsijDXw==",
-      "path": "system.memory/4.5.4",
-      "hashPath": "system.memory.4.5.4.nupkg.sha512"
     },
     "System.Net.Http/4.3.0": {
       "type": "package",
