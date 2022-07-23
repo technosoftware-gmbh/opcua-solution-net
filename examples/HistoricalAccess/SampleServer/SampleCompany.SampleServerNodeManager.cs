@@ -769,7 +769,6 @@ namespace SampleCompany.SampleServer
         
         private UnderlyingSystem.UnderlyingSystem system_;
         private HistoricalAccessServerConfiguration configuration_;
-        private Dictionary<string, ArchiveItemState> monitoredItems_;
         #endregion
 
     }
