@@ -1,11 +1,12 @@
 language: csharp
 mono: latest
-dotnet: 3.1.409
+dotnet: 6.0.400
 os:
   - linux
+  - osx
 sudo: true
 dist: xenial
-osx_image: xcode12
+osx_image: xcode13
 
 before_install:
 #  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get install dotnet-sdk-3.1 ; fi
@@ -29,7 +30,7 @@ script:
   - dotnet build -c Release examples/Base/SampleServer/SampleCompany.SampleServer.csproj
 
   - echo "----- Run .NET Core samples ---------------------"
-  - cd examples/Simulation/SampleServer/bin/Debug/netcoreapp3.1
+  - cd examples/Simulation/SampleServer/bin/Debug/net6.0
   - dotnet SampleCompany.SampleServer.dll -t 10 -a
   - cd $TRAVIS_BUILD_DIR
   - ./testclientserversamples.sh
