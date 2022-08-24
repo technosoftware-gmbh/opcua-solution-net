@@ -3,9 +3,10 @@ mono: latest
 dotnet: 3.1.409
 os:
   - linux
+  - osx
 sudo: true
 dist: xenial
-osx_image: xcode12
+osx_image: xcode13.4
 
 before_install:
 #  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get install dotnet-sdk-3.1 ; fi
