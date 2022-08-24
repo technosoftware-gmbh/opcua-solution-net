@@ -30,7 +30,7 @@ script:
   - dotnet build -c Release examples/Base/SampleServer/SampleCompany.SampleServer.csproj
 
   - echo "----- Run .NET Core samples ---------------------"
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then cd examples/Simulation/SampleServer/bin/Debug/net6.0 ; else cd examples/Simulation/SampleServer/bin/Debug/netcoreapp3.1 ; fi
+  - cd examples/Simulation/SampleServer/bin/Debug/net6.0
   - dotnet SampleCompany.SampleServer.dll -t 10 -a
   - cd $TRAVIS_BUILD_DIR
   - ./testclientserversamples.sh
