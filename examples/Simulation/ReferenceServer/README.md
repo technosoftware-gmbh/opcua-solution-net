@@ -1,4 +1,4 @@
-# OPC UA Server SDK .NET Standard Reference Server
+# OPC UA Server NET Reference Server
 
 ## Introduction
 This OPC UA Server is designed to be easily usable with the the [OPC UA Compliance Test Tool](https://opcfoundation.org/developer-tools/certification-test-tools/opc-ua-compliance-test-tool-uactt/) and it uses an address-space that matches the design of the UACTT and the requirements for OPC UA compliance testing.. 

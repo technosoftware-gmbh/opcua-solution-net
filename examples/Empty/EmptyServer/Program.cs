@@ -47,7 +47,7 @@ namespace EmptyCompany.EmptyServer
     /// <summary>
     /// A dialog which asks for user input.
     /// </summary>
-    public class ApplicationMessageDlg : IApplicationMessageDlg
+    public class ApplicationMessageDlg : IUaApplicationMessageDlg
     {
         private string message_ = string.Empty;
         private bool ask_;

@@ -1,4 +1,34 @@
 -------------------------------------------------------------------------------------------------------------
+## OPC UA Solution .NET - 2.4.0
+
+### Changes
+- Client:
+  - Performance updates for NodeCache
+
+### Breaking Changes
+- License
+  - A new license ist needed. Old licenses from 2.3 or earlier will no longer work with 2.4 and above.
+  - Product puchases from 2021 and 2022 can get a new license free of charge. Either through their online account or by sending us an Email.
+  - All others can order an OPC UA Support subscription incl. Update [here](https://technosoftware.com/product/opc-support-subscription-update/). Be aware that you need the original invoice as proof of your license.
+- Integrated own version of the OPC Foundation OPC UA Core Stack:
+  - Technosoftware.UaCore replaces Opc.Ua.Core
+  - Technosoftware.UaBindings.Https replaces Opc.Ua.Bindings.Https
+- Configuration: All interfaces which can be used by servers or clients starts now with "IUa".
+- Client:
+  - Renamed INodeCache to IUaNodeCache
+- Server:
+  - Splitted IUaNodeManager into IUaBaseNodeManager and IUaNodeManager
+  - Renamed MonitoredNode to UaMonitoredNode
+  
+### Fixed issues
+- Refactor the ReceiveEvents permission type validation to be taken into account also when ConditionRefresh method is called
+- Handle processing matrixes with array dimensions that overflow
+- Added methods for reporting Add/Delete nodes audit events and added fixes
+- Allow diagnostic nodes to be accessed only by determined users  
+- Fixed ReportAuditCreateSessionEvent and added ReportAuditUpdateMethodEvent
+- Fixes on AuditEvents
+
+-------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 2.3.14
 
 ### Changes
