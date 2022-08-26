@@ -28,6 +28,9 @@
 - Fixed ReportAuditCreateSessionEvent and added ReportAuditUpdateMethodEvent
 - Fixes on AuditEvents
 
+### Known issues
+- HTTPS support is not working yet
+
 -------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 2.3.14
 

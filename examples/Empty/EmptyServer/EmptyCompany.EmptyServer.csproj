@@ -20,12 +20,9 @@
     <PackageReference Include="Mono.Options" Version="6.12.0.148" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(NoHttps)' != 'true' ">
-    <PackageReference Include="Technosoftware.UaSolution.UaBindings.Https" Version="2.4.0" />
-  </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.4.0" />
-    <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.4.0" />
+    <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.4.2" />
+    <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.4.2" />
   </ItemGroup>
 
   <ItemGroup>
