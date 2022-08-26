@@ -36,8 +36,6 @@ using System.Threading.Tasks;
 
 using Mono.Options;
 
-using Serilog;
-
 using Opc.Ua;
 
 using Technosoftware.UaConfiguration;
@@ -265,21 +263,9 @@ namespace SampleCompany.SampleServer
         {
             ApplicationInstance.MessageDlg = new ApplicationMessageDlg();
             CertificatePasswordProvider passwordProvider = new CertificatePasswordProvider(Password);
-            ApplicationInstance application = new ApplicationInstance();
-            application.ApplicationType = ApplicationType.Server;
-            application.ConfigSectionName = "SampleCompany.SampleServer";
-
-            // load the application configuration.
-            ApplicationConfiguration config = application.LoadApplicationConfigurationAsync(false).Result;
-
-            LoggerConfiguration loggerConfiguration = new LoggerConfiguration();
-#if DEBUG
-            loggerConfiguration.WriteTo.Debug(restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Warning);
-#endif
-            SerilogTraceLogger.Create(loggerConfiguration, config);
 
             // start the server.
-            await uaServer_.StartAsync(uaServerPlugin_, config, passwordProvider, OnCertificateValidation, null).ConfigureAwait(false);
+            await uaServer_.StartAsync(uaServerPlugin_, "SampleCompany.SampleServer", passwordProvider, OnCertificateValidation, null).ConfigureAwait(false);
 
             if (ReverseConnectUrl != null)
             {
