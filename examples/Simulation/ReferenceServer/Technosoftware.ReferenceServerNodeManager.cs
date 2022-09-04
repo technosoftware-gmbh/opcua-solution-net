@@ -139,7 +139,7 @@ namespace Technosoftware.ReferenceServer
         /// <summary>
         /// Creates the NodeId for the specified node.
         /// </summary>
-        public override NodeId New(ISystemContext context, NodeState node)
+        public override NodeId Create(ISystemContext context, NodeState node)
         {
             if (node is BaseInstanceState instance && instance.Parent != null)
             {
