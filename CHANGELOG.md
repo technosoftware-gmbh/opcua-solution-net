@@ -1,4 +1,13 @@
 -------------------------------------------------------------------------------------------------------------
+## OPC UA Solution .NET - 2.4.4
+
+### Breaking Changes
+- Server: Renamed INodeIdFactory.New to INodeIdFactory.Create to fix CA1716: Identifiers should not match keywords.
+
+### Fixed issues
+- Improved application certificate handling
+
+-------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 2.4.3
 
 ### Fixed issues

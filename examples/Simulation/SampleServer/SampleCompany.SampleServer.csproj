@@ -32,11 +32,11 @@
   </ItemGroup>
 
   <ItemGroup Condition=" '$(NoHttps)' != 'true' ">
-    <PackageReference Include="Technosoftware.UaSolution.UaBindings.Https" Version="2.4.3" />
+    <PackageReference Include="Technosoftware.UaSolution.UaBindings.Https" Version="2.4.4" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.4.3" />
-    <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.4.3" />
+    <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.4.4" />
+    <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.4.4" />
   </ItemGroup>
 
   <ItemGroup>
