@@ -25,11 +25,6 @@ The included OPC Foundation Model Compiler can be used to create the necessary C
 
 Documentation of the Mode Compiler can be found [here](https://github.com/OPCFoundation/UA-ModelCompiler).
 
-### Build Status
-
-[![Build Status](https://app.travis-ci.com/technosoftware-gmbh/opcua-solution-net-samples.svg?branch=master)](https://app.travis-ci.com/technosoftware-gmbh/opcua-solution-net-samples)
-[![Build status](https://ci.appveyor.com/api/projects/status/j5joansdme5525lu?svg=true)](https://ci.appveyor.com/project/technosoftware/opcua-solution-net-samples)
-
 ## Online Help
 
 We provide an online help for the current version: [OPC UA Solution NET Online Help](https://technosoftware.com/help/OPCUaSolutionNet/24/)
@@ -42,6 +37,15 @@ You can use the following documents as a starting point:
 2. [OPC UA Solution NET Introduction](./documentation/OPC_UA_Solution_NET_Introduction.pdf)
 3. [OPC UA Client Development with NET](./documentation/OPC_UA_Client_Development_with_NET.pdf)
 4. [OPC UA Server Development with NET](./documentation/OPC_UA_Server_Development_with_NET.pdf)
+
+### Build Status
+
+[![Build Status](https://app.travis-ci.com/technosoftware-gmbh/opcua-solution-net-samples.svg?branch=master)](https://app.travis-ci.com/technosoftware-gmbh/opcua-solution-net-samples)
+[![Build status](https://ci.appveyor.com/api/projects/status/j5joansdme5525lu?svg=true)](https://ci.appveyor.com/project/technosoftware/opcua-solution-net-samples)
+[![Github Actions](https://github.com/technosoftware-gmbh/opcua-solution-net-v2/actions/workflows/buildandtest.yml/badge.svg)](https://github.com/technosoftware-gmbh/opcua-solution-net-v2/actions/workflows/buildandtest.yml)
+
+### Code Quality
+[![codecov](https://codecov.io/gh/technosoftware-gmbh/opcua-solution-net-v2/branch/main/graph/badge.svg?token=Jn297yqWya)](https://codecov.io/gh/technosoftware-gmbh/opcua-solution-net-v2)
 
 ## Workshop
 
