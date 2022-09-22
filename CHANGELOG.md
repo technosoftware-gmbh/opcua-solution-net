@@ -1,4 +1,10 @@
 -------------------------------------------------------------------------------------------------------------
+## OPC UA Solution .NET - 2.4.5
+
+### Fixed issues
+- Server: Fixed an issue with duplicate child nodes (Using the same Node ID)
+
+-------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 2.4.4
 
 ### Breaking Changes
