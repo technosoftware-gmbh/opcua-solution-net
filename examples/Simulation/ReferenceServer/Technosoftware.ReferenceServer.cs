@@ -35,6 +35,7 @@ using Opc.Ua;
 
 using Technosoftware.UaServer;
 using Technosoftware.UaServer.Configuration;
+using Technosoftware.ServerBase;
 #endregion
 
 namespace Technosoftware.ReferenceServer

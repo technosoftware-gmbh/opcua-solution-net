@@ -40,6 +40,7 @@ using SampleCompany.SampleServer.UnderlyingSystem;
 
 using Technosoftware.UaServer;
 using Technosoftware.UaServer.Sessions;
+using Technosoftware.ServerBase;
 #endregion
 
 namespace SampleCompany.SampleServer

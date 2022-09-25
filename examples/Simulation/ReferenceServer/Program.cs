@@ -40,6 +40,7 @@ using Opc.Ua;
 
 using Technosoftware.UaConfiguration;
 using Technosoftware.UaServer.Sessions;
+using Technosoftware.ServerBase;
 #endregion
 
 namespace Technosoftware.ReferenceServer
@@ -171,7 +172,7 @@ namespace Technosoftware.ReferenceServer
     public class MyReferenceServer
     {
         #region Properties
-        private static UaServer.UaServer uaServer_ = new UaServer.UaServer();
+        private static ServerBase.UaServer uaServer_ = new ServerBase.UaServer();
         private static readonly UaServerPlugin uaServerPlugin_ = new UaServerPlugin();
 
         private Task Status { get; set; }

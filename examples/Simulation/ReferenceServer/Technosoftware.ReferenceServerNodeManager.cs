@@ -38,6 +38,7 @@ using System.Threading;
 using Opc.Ua;
 
 using Technosoftware.UaServer;
+using Technosoftware.ServerBase;
 
 using BrowseNames = Opc.Ua.BrowseNames;
 using ObjectIds = Opc.Ua.ObjectIds;

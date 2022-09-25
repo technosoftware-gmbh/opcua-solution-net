@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>$(AppTargetFramework)</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <AssemblyName>Technosoftware.ServerBase</AssemblyName>
+    <PackageId>Technosoftware.UaSolution.ServerBase</PackageId>
+    <RootNamespace>Technosoftware.ServerBase</RootNamespace>
+    <Description>OPC UA Solution .NET Base Server Library</Description>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <IsPackable>true</IsPackable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Technosoftware.UaSolution.UaCore" Version="2.4.6" />
+    <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.4.6" />
+    <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.4.6" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <Reference Include="System.IdentityModel" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
+    <Reference Include="System.IdentityModel" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
+    <Reference Include="System.IdentityModel" />
+  </ItemGroup>
+
+  <Target Name="GetPackagingOutputs" />
+
+</Project>

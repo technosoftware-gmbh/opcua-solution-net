@@ -32,8 +32,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.4.5" />
-    <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.4.5" />
+    <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.4.6" />
+    <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.4.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\ServerBase\Technosoftware.ServerBase.csproj" />
   </ItemGroup>
 
   <ItemGroup>
