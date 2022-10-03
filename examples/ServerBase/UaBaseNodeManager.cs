@@ -30,16 +30,12 @@
 #region Using Directives
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 
 using Opc.Ua;
 using Opc.Ua.Test;
 using Range = Opc.Ua.Range;
 
 using Technosoftware.UaServer;
-using Technosoftware.UaServer.Aggregates;
-using Technosoftware.UaServer.Diagnostics;
-using Technosoftware.UaServer.NodeManager;
 #endregion
 
 namespace Technosoftware.ServerBase
@@ -51,7 +47,7 @@ namespace Technosoftware.ServerBase
     /// This node manager is a base class used in multiple samples. It implements the IUaNodeManager
     /// interface and allows sub-classes to override only the methods that they need.
     /// </remarks>
-    public class UaBaseNodeManager : GenericNodeManager
+    public class UaBaseNodeManager : UaGenericNodeManager
     {
         #region Constructors, Destructor, Initialization
         /// <summary>
