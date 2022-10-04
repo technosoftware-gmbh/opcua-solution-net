@@ -59,7 +59,7 @@ namespace Technosoftware.ServerBase
     ///     This sub-class specifies non-configurable metadata such as Product Name and initializes
     /// the NodeManager which provides access to the data exposed by the Server.
     /// </remarks>
-    public class UaBaseServer : GenericServer, IUaServer
+    public class UaBaseServer : UaGenericServer, IUaServer
     {
         #region Default Values
         /// <summary>

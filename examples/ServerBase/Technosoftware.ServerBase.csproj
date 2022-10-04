@@ -19,7 +19,7 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <PackageId>$(PackageId).Debug</PackageId>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="Technosoftware.UaSolution.UaCore" Version="2.5.0" />
     <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.5.0" />
