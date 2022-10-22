@@ -2,7 +2,7 @@
 ## OPC UA Solution .NET - 2.5.0
 
 ### Breaking Changes
-- Server: Moved several classes to Technosoftware.ServerBase.csproj available at examples\ServerBase. You have to add that project and NameSpace.
+- Server: Moved several classes to Technosoftware.UaBaseServer.csproj available at src\Technosoftware\UaBaseServer. You have to add that project and NameSpace.
 
 -------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 2.4.5
