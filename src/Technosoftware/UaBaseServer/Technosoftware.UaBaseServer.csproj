@@ -2,10 +2,10 @@
 
   <PropertyGroup>
     <DefineConstants>$(DefineConstants);NET_STANDARD</DefineConstants>
-    <AssemblyName>Technosoftware.ServerBase</AssemblyName>
+    <AssemblyName>Technosoftware.UaBaseServer</AssemblyName>
     <TargetFramework>$(AppTargetFramework)</TargetFramework>
-    <PackageId>Technosoftware.ServerBase</PackageId>
-    <RootNamespace>Technosoftware.ServerBase</RootNamespace>
+    <PackageId>Technosoftware.UaBaseServer</PackageId>
+    <RootNamespace>Technosoftware.UaBaseServer</RootNamespace>
     <Company>Technosoftware GmbH</Company>
     <Product>OPC UA Solution .NET</Product>
     <Description>OPC UA Solution .NET Base Server Library</Description>
