@@ -38,7 +38,7 @@ using Technosoftware.UaServer;
 
 #endregion
 
-namespace Technosoftware.ServerBase
+namespace Technosoftware.UaBaseServer
 {
     /// <summary>
     ///     <para>OPC Server Plugin Interface</para>

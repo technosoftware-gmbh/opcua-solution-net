@@ -57,7 +57,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ServerBase\Technosoftware.ServerBase.csproj" />
+    <ProjectReference Include="..\..\..\src\Technosoftware\UaBaseServer\Technosoftware.UaBaseServer.csproj" />
   </ItemGroup>
 
   <ItemGroup>

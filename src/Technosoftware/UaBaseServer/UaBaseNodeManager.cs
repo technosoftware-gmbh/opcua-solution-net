@@ -38,7 +38,7 @@ using Range = Opc.Ua.Range;
 using Technosoftware.UaServer;
 #endregion
 
-namespace Technosoftware.ServerBase
+namespace Technosoftware.UaBaseServer
 {
     /// <summary>
     /// A base implementation of the IUaNodeManager interface.

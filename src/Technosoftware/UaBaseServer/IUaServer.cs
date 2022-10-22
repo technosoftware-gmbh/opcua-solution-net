@@ -38,7 +38,7 @@ using Technosoftware.UaServer.Sessions;
 using Technosoftware.UaServer.Subscriptions;
 #endregion
 
-namespace Technosoftware.ServerBase
+namespace Technosoftware.UaBaseServer
 {
     /// <summary>
     ///     <para>OPC UA Server Interface</para>

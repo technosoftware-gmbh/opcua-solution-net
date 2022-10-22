@@ -35,7 +35,7 @@ using System.Threading;
 
 using Opc.Ua;
 using Technosoftware.UaServer;
-using Technosoftware.ServerBase;
+using Technosoftware.UaBaseServer;
 #endregion
 
 namespace SampleCompany.SampleServer

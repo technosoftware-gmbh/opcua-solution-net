@@ -37,7 +37,7 @@ using System.Threading;
 using Opc.Ua;
 using SampleCompany.SampleServer.Model;
 using Technosoftware.UaServer;
-using Technosoftware.ServerBase;
+using Technosoftware.UaBaseServer;
 
 using BrowseNames = Opc.Ua.BrowseNames;
 using DataTypeIds = Opc.Ua.DataTypeIds;

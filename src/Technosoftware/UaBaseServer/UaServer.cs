@@ -36,7 +36,7 @@ using Technosoftware.UaConfiguration;
 using Technosoftware.UaServer;
 #endregion
 
-namespace Technosoftware.ServerBase
+namespace Technosoftware.UaBaseServer
 {
     /// <summary>
     ///     Main class for starting up the UA server

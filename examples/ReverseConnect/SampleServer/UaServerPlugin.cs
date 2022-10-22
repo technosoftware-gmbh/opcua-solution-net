@@ -38,7 +38,7 @@ using Opc.Ua;
 
 using Technosoftware.UaConfiguration;
 using Technosoftware.UaServer;
-using Technosoftware.ServerBase;
+using Technosoftware.UaBaseServer;
 #endregion
 
 namespace SampleCompany.SampleServer

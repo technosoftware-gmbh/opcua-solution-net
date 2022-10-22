@@ -46,7 +46,7 @@ using Technosoftware.UaServer.Sessions;
 using Technosoftware.UaServer.Subscriptions;
 #endregion
 
-namespace Technosoftware.ServerBase
+namespace Technosoftware.UaBaseServer
 {
     /// <summary>
     /// The standard implementation of an OPC UA server with reverse connect.

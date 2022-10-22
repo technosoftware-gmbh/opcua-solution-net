@@ -33,7 +33,7 @@ using Opc.Ua;
 using Technosoftware.UaServer;
 #endregion
 
-namespace Technosoftware.ServerBase
+namespace Technosoftware.UaBaseServer
 {
     /// <summary>
     /// This interface defines functionality which can be implemented by Server Customization DLLs. In general it is
