@@ -32,10 +32,7 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 
-using Opc.Ua;
-
-using Technosoftware.UaServer;
-using Technosoftware.UaServer.Sessions;
+using Technosoftware.UaBaseServer;
 #endregion
 
 namespace EmptyCompany.EmptyServer

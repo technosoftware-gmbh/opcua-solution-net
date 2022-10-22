@@ -28,42 +28,41 @@
 #endregion Copyright (c) 2011-2022 Technosoftware GmbH. All rights reserved
 
 #region Using Directives
-using System;
-using System.Diagnostics;
-using System.Reflection;
-
 using Opc.Ua;
 
 using Technosoftware.UaServer;
-using Technosoftware.UaServer.Sessions;
-using Technosoftware.UaBaseServer;
 #endregion
 
-namespace SampleCompany.SampleServer
+namespace Technosoftware.UaBaseServer
 {
     /// <summary>
-    /// Implements a basic OPC UA Server.
+    /// This interface defines functionality which can be implemented by Server Customization DLLs. In general it is
+    /// required to implement Historical Events, Historical Access, Alarms and Conditions or more advanced servers. 
+    /// The IUaOptionalServerPlugin interface can be implemented by a UaServerPlugin class implementation.
     /// </summary>
-    /// <remarks>
-    /// Each server instance must have one instance of a StandardServer object which is
-    /// responsible for reading the configuration file, creating the endpoints and dispatching
-    /// incoming requests to the appropriate handler.
-    /// 
-    /// This sub-class specifies non-configurable metadata such as Product Name and initializes
-    /// the EmptyServerNodeManager which provides access to the data exposed by the Server.
-    /// </remarks>
-    public class SampleServer : UaBaseServer
+    public interface IUaOptionalServerPlugin
     {
-        #region Overridden Methods
         /// <summary>
-        /// Adds all encodeable types to the server.
+        /// Get the server manager to be used.
         /// </summary>
-        /// <param name="uaServerData">The uaServerData data implementing the IUaServerData interface.</param>
-        public override void AddEncodeableTypes(IUaServerData uaServerData)
-        {
-            // add the types defined in the information model library to the factory.
-            uaServerData.Factory.AddEncodeableTypes(GetType().GetTypeInfo().Assembly);
-        }
-        #endregion
+        /// <returns>
+        /// The server manager class based on the UaBaseServer class. If null is returned the UaBaserServer class is used
+        /// as the standard version.
+        /// </returns>
+        UaBaseServer OnGetServer();
+
+        /// <summary>
+        /// Get the node manager to be used for the server.
+        /// </summary>
+        /// <param name="opcServer">The generic server object. Used to call methods the generic server provides.</param>
+        /// <param name="uaServer">Server object that provides access to the shared components of the UA Server.</param>
+        /// <param name="configuration">The application configuration.</param>
+        /// <param name="namespaceUris">Array of namespaces that are used by the application.</param>
+        /// <returns>
+        /// The node manager class based on the UaBaseNodeManager class. If null is returned the generic server use the
+        /// standard version of the UaBaseNodeManager.
+        /// </returns>
+        UaBaseNodeManager OnGetNodeManager(IUaServer opcServer, IUaServerData uaServer,
+            ApplicationConfiguration configuration, params string[] namespaceUris);
     }
 }

@@ -34,7 +34,9 @@ using System.Reflection;
 using System.Threading;
 
 using Opc.Ua;
+
 using Technosoftware.UaServer;
+using Technosoftware.UaBaseServer;
 #endregion
 
 namespace EmptyCompany.EmptyServer

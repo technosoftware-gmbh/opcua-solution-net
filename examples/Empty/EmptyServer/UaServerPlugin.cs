@@ -38,6 +38,7 @@ using Opc.Ua;
 
 using Technosoftware.UaConfiguration;
 using Technosoftware.UaServer;
+using Technosoftware.UaBaseServer;
 #endregion
 
 namespace EmptyCompany.EmptyServer

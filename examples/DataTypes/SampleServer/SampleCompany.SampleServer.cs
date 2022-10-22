@@ -36,6 +36,7 @@ using Opc.Ua;
 
 using Technosoftware.UaServer;
 using Technosoftware.UaServer.Sessions;
+using Technosoftware.UaBaseServer;
 #endregion
 
 namespace SampleCompany.SampleServer

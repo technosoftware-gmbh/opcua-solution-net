@@ -1,7 +1,7 @@
 #region Copyright (c) 2011-2022 Technosoftware GmbH. All rights reserved
 //-----------------------------------------------------------------------------
-// Copyright (c) 2011-2022 Technosoftware GmbH. All rights reserved
-// Web: https://technosoftware.com  
+// Copyright (c) 2021 Technosoftware GmbH. All rights reserved
+// Web: https://technosoftware.com 
 // 
 // License: 
 // 
@@ -28,57 +28,26 @@
 #endregion Copyright (c) 2011-2022 Technosoftware GmbH. All rights reserved
 
 #region Using Directives
-using System.Runtime.Serialization;
+using Opc.Ua;
+
+using Technosoftware.UaServer;
 #endregion
 
-namespace Technosoftware.ReferenceServer
+namespace Technosoftware.UaBaseServer
 {
     /// <summary>
-    /// Stores the configuration the Reference server.
+    /// This interface defines functionality which can be implemented by Server Customization DLLs. In general it is
+    /// required to implement Reverse Connect Feature. The IUaReverseConnectServerPlugin
+    /// interface can be implemented by a UaServerPlugin class implementation.
     /// </summary>
-    [DataContract(Namespace = Namespaces.Reference)]
-    public class ReferenceServerConfiguration
+    public interface IUaReverseConnectServerPlugin
     {
-        #region Constructors
         /// <summary>
-        /// The default constructor.
+        /// Specifies whether the server should use reverse connect functionality or not.
         /// </summary>
-        public ReferenceServerConfiguration()
-        {
-            Initialize();
-        }
-
-        /// <summary>
-        /// Initializes the object during deserialization.
-        /// </summary>
-        [OnDeserializing()]
-        private void Initialize(StreamingContext context)
-        {
-            Initialize();
-        }
-
-        /// <summary>
-        /// Sets private members to default values.
-        /// </summary>
-        private void Initialize()
-        {
-        }
-        #endregion
-
-        #region Public Properties
-        /// <summary>
-        /// Whether the user dialog for accepting invalid certificates should be displayed.
-        /// </summary>
-        [DataMember(Order = 1)]
-        public bool ShowCertificateValidationDialog
-        {
-            get { return showCertificateValidationDialog_; }
-            set { showCertificateValidationDialog_ = value; }
-        }
-        #endregion
-
-        #region Private Members
-        private bool showCertificateValidationDialog_;
-        #endregion
+        /// <returns>
+        /// True if server should use reverse functionality; otherwise false.
+        /// </returns>
+        bool OnUseReverseConnect();
     }
 }

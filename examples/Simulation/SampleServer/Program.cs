@@ -39,8 +39,8 @@ using Mono.Options;
 using Opc.Ua;
 
 using Technosoftware.UaConfiguration;
-using Technosoftware.UaServer;
 using Technosoftware.UaServer.Sessions;
+using Technosoftware.UaBaseServer;
 #endregion
 
 namespace SampleCompany.SampleServer
