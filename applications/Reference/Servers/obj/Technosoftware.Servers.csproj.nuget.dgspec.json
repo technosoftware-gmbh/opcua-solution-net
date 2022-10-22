@@ -1,0 +1,315 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\opcua-solution-net-fork-25\\dotnetcore\\applications\\Reference\\Servers\\Technosoftware.Servers.csproj": {}
+  },
+  "projects": {
+    "C:\\opcua-solution-net-fork-25\\dotnetcore\\applications\\Reference\\Servers\\Technosoftware.Servers.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\opcua-solution-net-fork-25\\dotnetcore\\applications\\Reference\\Servers\\Technosoftware.Servers.csproj",
+        "projectName": "Technosoftware.Servers.Debug",
+        "projectPath": "C:\\opcua-solution-net-fork-25\\dotnetcore\\applications\\Reference\\Servers\\Technosoftware.Servers.csproj",
+        "packagesPath": "C:\\Users\\thomas\\.nuget\\packages\\",
+        "outputPath": "C:\\opcua-solution-net-fork-25\\dotnetcore\\applications\\Reference\\Servers\\obj\\",
+        "projectStyle": "PackageReference",
+        "crossTargeting": true,
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\DevExpress 21.1\\Components\\Offline Packages",
+          "C:\\Program Files (x86)\\Progress\\ToolboxNuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\thomas\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 21.1.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Telerik UI for WinForms.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0",
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\DevExpress 21.1\\Components\\System\\Components\\Packages": {},
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\nuget\\packages": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
+            "projectReferences": {
+              "C:\\opcua-solution-net-fork-25\\dotnetcore\\src\\Technosoftware\\UaStandardServer\\Technosoftware.UaStandardServer.csproj": {
+                "projectPath": "C:\\opcua-solution-net-fork-25\\dotnetcore\\src\\Technosoftware\\UaStandardServer\\Technosoftware.UaStandardServer.csproj"
+              }
+            }
+          },
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "C:\\opcua-solution-net-fork-25\\dotnetcore\\src\\Technosoftware\\UaStandardServer\\Technosoftware.UaStandardServer.csproj": {
+                "projectPath": "C:\\opcua-solution-net-fork-25\\dotnetcore\\src\\Technosoftware\\UaStandardServer\\Technosoftware.UaStandardServer.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
+          "dependencies": {
+            "Technosoftware.UaSolution.UaConfiguration": {
+              "target": "Package",
+              "version": "[2.5.0, )"
+            },
+            "Technosoftware.UaSolution.UaCore": {
+              "target": "Package",
+              "version": "[2.5.0, )"
+            },
+            "Technosoftware.UaSolution.UaServer": {
+              "target": "Package",
+              "version": "[2.5.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.300\\RuntimeIdentifierGraph.json"
+        },
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "Technosoftware.UaSolution.UaConfiguration": {
+              "target": "Package",
+              "version": "[2.5.0, )"
+            },
+            "Technosoftware.UaSolution.UaCore": {
+              "target": "Package",
+              "version": "[2.5.0, )"
+            },
+            "Technosoftware.UaSolution.UaServer": {
+              "target": "Package",
+              "version": "[2.5.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.300\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\opcua-solution-net-fork-25\\dotnetcore\\src\\Technosoftware\\UaStandardServer\\Technosoftware.UaStandardServer.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\opcua-solution-net-fork-25\\dotnetcore\\src\\Technosoftware\\UaStandardServer\\Technosoftware.UaStandardServer.csproj",
+        "projectName": "Technosoftware.UaStandardServer.Debug",
+        "projectPath": "C:\\opcua-solution-net-fork-25\\dotnetcore\\src\\Technosoftware\\UaStandardServer\\Technosoftware.UaStandardServer.csproj",
+        "packagesPath": "C:\\Users\\thomas\\.nuget\\packages\\",
+        "outputPath": "C:\\opcua-solution-net-fork-25\\dotnetcore\\src\\Technosoftware\\UaStandardServer\\obj\\",
+        "projectStyle": "PackageReference",
+        "crossTargeting": true,
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\DevExpress 21.1\\Components\\Offline Packages",
+          "C:\\Program Files (x86)\\Progress\\ToolboxNuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\thomas\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 21.1.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Telerik UI for WinForms.config"
+        ],
+        "originalTargetFrameworks": [
+          "net462",
+          "net472",
+          "net48",
+          "net6.0",
+          "netstandard2.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\DevExpress 21.1\\Components\\System\\Components\\Packages": {},
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\nuget\\packages": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          },
+          "net462": {
+            "targetAlias": "net462",
+            "projectReferences": {}
+          },
+          "net472": {
+            "targetAlias": "net472",
+            "projectReferences": {}
+          },
+          "net48": {
+            "targetAlias": "net48",
+            "projectReferences": {}
+          },
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "Technosoftware.UaSolution.UaConfiguration": {
+              "target": "Package",
+              "version": "[2.5.0, )"
+            },
+            "Technosoftware.UaSolution.UaCore": {
+              "target": "Package",
+              "version": "[2.5.0, )"
+            },
+            "Technosoftware.UaSolution.UaServer": {
+              "target": "Package",
+              "version": "[2.5.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.300\\RuntimeIdentifierGraph.json"
+        },
+        "net462": {
+          "targetAlias": "net462",
+          "dependencies": {
+            "Technosoftware.UaSolution.UaConfiguration": {
+              "target": "Package",
+              "version": "[2.5.0, )"
+            },
+            "Technosoftware.UaSolution.UaCore": {
+              "target": "Package",
+              "version": "[2.5.0, )"
+            },
+            "Technosoftware.UaSolution.UaServer": {
+              "target": "Package",
+              "version": "[2.5.0, )"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.300\\RuntimeIdentifierGraph.json"
+        },
+        "net472": {
+          "targetAlias": "net472",
+          "dependencies": {
+            "Technosoftware.UaSolution.UaConfiguration": {
+              "target": "Package",
+              "version": "[2.5.0, )"
+            },
+            "Technosoftware.UaSolution.UaCore": {
+              "target": "Package",
+              "version": "[2.5.0, )"
+            },
+            "Technosoftware.UaSolution.UaServer": {
+              "target": "Package",
+              "version": "[2.5.0, )"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.300\\RuntimeIdentifierGraph.json"
+        },
+        "net48": {
+          "targetAlias": "net48",
+          "dependencies": {
+            "Technosoftware.UaSolution.UaConfiguration": {
+              "target": "Package",
+              "version": "[2.5.0, )"
+            },
+            "Technosoftware.UaSolution.UaCore": {
+              "target": "Package",
+              "version": "[2.5.0, )"
+            },
+            "Technosoftware.UaSolution.UaServer": {
+              "target": "Package",
+              "version": "[2.5.0, )"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.300\\RuntimeIdentifierGraph.json"
+        },
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "dependencies": {
+            "Technosoftware.UaSolution.UaConfiguration": {
+              "target": "Package",
+              "version": "[2.5.0, )"
+            },
+            "Technosoftware.UaSolution.UaCore": {
+              "target": "Package",
+              "version": "[2.5.0, )"
+            },
+            "Technosoftware.UaSolution.UaServer": {
+              "target": "Package",
+              "version": "[2.5.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "NETStandard.Library": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.300\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

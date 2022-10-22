@@ -1,16 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <DefineConstants>$(DefineConstants);NET_STANDARD</DefineConstants>
-    <AssemblyName>Technosoftware.UaBaseServer</AssemblyName>
-    <TargetFramework>$(LibTargetFramework)</TargetFramework>
-    <PackageId>Technosoftware.UaBaseServer</PackageId>
-    <RootNamespace>Technosoftware.UaBaseServer</RootNamespace>
-    <Company>Technosoftware GmbH</Company>
-    <Product>OPC UA Solution .NET</Product>
-    <Description>OPC UA Solution .NET Base Server Library</Description>
-    <Copyright>Copyright © 2018 - 2022 Technosoftware GmbH</Copyright>
+    <AssemblyName>Technosoftware.UaStandardServer</AssemblyName>
+    <TargetFrameworks>$(LibTargetFrameworks)</TargetFrameworks>
     <LangVersion>7.3</LangVersion>
+    <PackageId>Technosoftware.UaStandardServer</PackageId>
+    <RootNamespace>Technosoftware.UaStandardServer</RootNamespace>
+    <Description>OPC UA Solution .NET Standard Server Library</Description>
+    <Copyright>Copyright © 2018 - 2022 Technosoftware GmbH</Copyright>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
     <IsPackable>false</IsPackable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -18,6 +15,10 @@
 
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <PackageId>$(PackageId).Debug</PackageId>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(SignAssembly)' == 'true'">
+    <DefineConstants>$(DefineConstants);SIGNASSEMBLY</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -37,10 +38,6 @@
   <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
     <Reference Include="System.IdentityModel" />
   </ItemGroup>
-
-  <PropertyGroup Condition="'$(SignAssembly)' == 'true'">
-    <DefineConstants>$(DefineConstants);SIGNASSEMBLY</DefineConstants>
-  </PropertyGroup>
 
   <Target Name="GetPackagingOutputs" />
 
