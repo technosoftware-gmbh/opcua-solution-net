@@ -42,11 +42,11 @@ You can use the following documents as a starting point:
 
 [![Build Status](https://app.travis-ci.com/technosoftware-gmbh/opcua-solution-net-samples.svg?branch=master)](https://app.travis-ci.com/technosoftware-gmbh/opcua-solution-net-samples)
 [![Build status](https://ci.appveyor.com/api/projects/status/j5joansdme5525lu?svg=true)](https://ci.appveyor.com/project/technosoftware-gmbh/opcua-solution-net-samples)
-[![Github Actions](https://github.com/technosoftware/opcua-solution-net-samples/actions/workflows/buildandtest.yml/badge.svg)](https://github.com/technosoftware/opcua-solution-net-samples/actions/workflows/buildandtest.yml)
+[![Build and Test .NET 6.0](https://github.com/technosoftware-gmbh/opcua-solution-net-samples/actions/workflows/buildandtest.yml/badge.svg)](https://github.com/technosoftware-gmbh/opcua-solution-net-samples/actions/workflows/buildandtest.yml)
 
 ### Code Quality
 [![CodeQL](https://github.com/technosoftware-gmbh/opcua-solution-net-samples/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/technosoftware-gmbh/opcua-solution-net-samples/actions/workflows/codeql-analysis.yml)
-[![codecov](https://codecov.io/gh/technosoftware-gmbh/opcua-solution-net-samples/branch/master/graph/badge.svg?token=I71TX9SSN7)](https://codecov.io/gh/technosoftware-gmbh/opcua-solution-net-samples)
+[![codecov](https://codecov.io/gh/technosoftware-gmbh/opcua-solution-net-samples/branch/master/graph/badge.svg?token=PJ39TDO2RE)](https://codecov.io/gh/technosoftware-gmbh/opcua-solution-net-samples)
 
 ## Workshop
 
