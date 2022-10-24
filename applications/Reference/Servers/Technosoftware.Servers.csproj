@@ -2,16 +2,17 @@
 
   <PropertyGroup>
     <DefineConstants>$(DefineConstants);NET_STANDARD</DefineConstants>
-    <AssemblyName>Technosoftware.UaBaseServer</AssemblyName>
-    <TargetFrameworks>$(LibTargetFrameworks)</TargetFrameworks>
-    <LangVersion>7.3</LangVersion>
-    <PackageId>Technosoftware.UaBaseServer</PackageId>
-    <RootNamespace>Technosoftware.UaBaseServer</RootNamespace>
+    <AssemblyName>Technosoftware.Servers</AssemblyName>
+    <TargetFrameworks>$(AppTargetFrameworks)</TargetFrameworks>
+    <PackageId>Technosoftware.Servers</PackageId>
+    <RootNamespace>Technosoftware.Servers</RootNamespace>
     <Company>Technosoftware GmbH</Company>
     <Product>OPC UA Solution .NET</Product>
-    <Description>OPC UA Solution .NET Base Server Library</Description>
+    <Description>OPC UA Solution .NET Servers Library</Description>
     <Copyright>Copyright © 2018 - 2022 Technosoftware GmbH</Copyright>
+    <LangVersion>7.3</LangVersion>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <NoWarn>CS1591;CS1573;RCS1139</NoWarn>
     <IsPackable>false</IsPackable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
@@ -30,16 +31,18 @@
     <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.5.0" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
-    <Reference Include="System.IdentityModel" />
+  <ItemGroup>
+    <EmbeddedResource Include="TestData\TestData.PredefinedNodes.uanodes;MemoryBuffer\MemoryBuffer.PredefinedNodes.uanodes" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
-    <Reference Include="System.IdentityModel" />
+  <ItemGroup>
+    <Compile Remove="Properties\**" />
+    <EmbeddedResource Remove="Properties\**" />
+    <None Remove="Properties\**" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
-    <Reference Include="System.IdentityModel" />
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Technosoftware\UaStandardServer\Technosoftware.UaStandardServer.csproj" />
   </ItemGroup>
 
   <Target Name="GetPackagingOutputs" />
