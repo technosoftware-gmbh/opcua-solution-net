@@ -35,17 +35,17 @@ namespace Technosoftware.UaSample
         public SampleNodeManager(IUaServerData server)
         {
             // save a reference to the server that owns the node manager.
-            server_ = server;
+            ServerData = server;
 
             // create the default context.
-            systemContext_ = server_.DefaultSystemContext.Copy();
+            SystemContext = ServerData.DefaultSystemContext.Copy();
 
-            systemContext_.SystemHandle = null;
-            systemContext_.NodeIdFactory = this;
+            SystemContext.SystemHandle = null;
+            SystemContext.NodeIdFactory = this;
 
             // create the table of nodes. 
-            predefinedNodes_ = new NodeIdDictionary<NodeState>();
-            rootNotifiers_ = new List<NodeState>();
+            PredefinedNodes = new NodeIdDictionary<NodeState>();
+            RootNotifiers = new List<NodeState>();
             sampledItems_ = new List<DataChangeMonitoredItem>();
             minimumSamplingInterval_ = 100;
         }
@@ -68,12 +68,12 @@ namespace Technosoftware.UaSample
         {
             if (disposing)
             {
-                lock (lock_)
+                lock (Lock)
                 {
                     Utils.SilentDispose(samplingTimer_);
                     samplingTimer_ = null;
 
-                    foreach (NodeState node in predefinedNodes_.Values)
+                    foreach (NodeState node in PredefinedNodes.Values)
                     {
                         Utils.SilentDispose(node);
                     }
@@ -99,43 +99,92 @@ namespace Technosoftware.UaSample
         /// <summary>
         /// Acquires the lock on the node manager.
         /// </summary>
-        public object Lock
-        {
-            get { return lock_; }
-        }
-        #endregion
+        public object Lock { get; } = new object();
 
-        #region Protected Members
         /// <summary>
-        /// The server that the node manager belongs to.
+        /// Gets the server that the node manager belongs to.
         /// </summary>
-        protected IUaServerData ServerData
-        {
-            get { return server_; }
-        }
+        public IUaServerData ServerData { get; private set; }
 
         /// <summary>
         /// The default context to use.
         /// </summary>
-        protected UaServerContext SystemContext
-        {
-            get { return systemContext_; }
-        }
+        public UaServerContext SystemContext { get; private set; }
 
+        /// <summary>
+        /// Gets the default index for the node manager's namespace.
+        /// </summary>
+        public ushort NamespaceIndex => NamespaceIndexes[0];
+
+        /// <summary>
+        /// Gets the namespace indexes owned by the node manager.
+        /// </summary>
+        /// <value>The namespace indexes.</value>
+        public ushort[] NamespaceIndexes { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the maximum size of a monitored item queue.
+        /// </summary>
+        /// <value>The maximum size of a monitored item queue.</value>
+        public uint MaxQueueSize { get; set; }
+
+        /// <summary>
+        /// The root for the alias assigned to the node manager.
+        /// </summary>
+        public string AliasRoot { get; set; }
+        #endregion
+
+        #region Protected Members
         /// <summary>
         /// The predefined nodes managed by the node manager.
         /// </summary>
-        protected NodeIdDictionary<NodeState> PredefinedNodes
-        {
-            get { return predefinedNodes_; }
-        }
+        protected NodeIdDictionary<NodeState> PredefinedNodes { get; private set; }
 
         /// <summary>
         /// The root notifiers for the node manager.
         /// </summary>
-        protected List<NodeState> RootNotifiers
+        protected List<NodeState> RootNotifiers { get; private set; }
+
+        /// <summary>
+        /// Gets the table of monitored items.
+        /// </summary>
+        protected Dictionary<uint, IUaDataChangeMonitoredItem> MonitoredItems { get; private set; }
+
+        /// <summary>
+        /// Gets the table of nodes being monitored.
+        /// </summary>
+        protected Dictionary<NodeId, UaMonitoredNode> MonitoredNodes { get; private set; }
+
+        /// <summary>
+        /// Sets the namespaces supported by the NodeManager.
+        /// </summary>
+        /// <param name="namespaceUris">The namespace uris.</param>
+        protected void SetNamespaces(params string[] namespaceUris)
         {
-            get { return rootNotifiers_; }
+            // create the table of namespaces that are used by the NodeManager.
+            namespaceUris_ = namespaceUris;
+
+            // add the uris to the server's namespace table and cache the indexes.
+            NamespaceIndexes = new ushort[namespaceUris_.Length];
+
+            for (var ii = 0; ii < namespaceUris_.Length; ii++)
+            {
+                NamespaceIndexes[ii] = ServerData.NamespaceUris.GetIndexOrAppend(namespaceUris_[ii]);
+            }
+        }
+
+        /// <summary>
+        /// Sets the namespace indexes supported by the NodeManager.
+        /// </summary>
+        protected void SetNamespaceIndexes(ushort[] namespaceIndexes)
+        {
+            NamespaceIndexes = namespaceIndexes;
+            namespaceUris_ = new string[namespaceIndexes.Length];
+
+            for (var ii = 0; ii < namespaceIndexes.Length; ii++)
+            {
+                namespaceUris_[ii] = ServerData.NamespaceUris.GetString(namespaceIndexes[ii]);
+            }
         }
 
         /// <summary>
@@ -145,15 +194,16 @@ namespace Technosoftware.UaSample
         /// <returns>True if the namespace is one of the nodes.</returns>
         protected virtual bool IsNodeIdInNamespace(NodeId nodeId)
         {
+            // nulls are never a valid node.
             if (NodeId.IsNull(nodeId))
             {
                 return false;
             }
 
             // quickly exclude nodes that not in the namespace.
-            for (int ii = 0; ii < namespaceIndexes_.Length; ii++)
+            foreach (var namespaceIndex in NamespaceIndexes)
             {
-                if (nodeId.NamespaceIndex == namespaceIndexes_[ii])
+                if (nodeId.NamespaceIndex == namespaceIndex)
                 {
                     return true;
                 }
@@ -218,7 +268,7 @@ namespace Technosoftware.UaSample
             QualifiedName browseName,
             BaseInstanceState instance)
         {
-            UaServerContext contextToUse = (UaServerContext)systemContext_.Copy(context);
+            UaServerContext contextToUse = (UaServerContext)SystemContext.Copy(context);
 
             lock (Lock)
             {
@@ -253,7 +303,7 @@ namespace Technosoftware.UaSample
             UaServerContext context,
             NodeId nodeId)
         {
-            UaServerContext contextToUse = systemContext_.Copy(context);
+            UaServerContext contextToUse = SystemContext.Copy(context);
 
             bool found = false;
             List<Technosoftware.UaServer.NodeManager.LocalReference> referencesToRemove = new List<Technosoftware.UaServer.NodeManager.LocalReference>();
@@ -291,7 +341,7 @@ namespace Technosoftware.UaSample
         }
         #endregion
 
-        #region INodeManager Members
+        #region IUaNodeManager Members
         /// <summary>
         /// Returns the namespaces used by the node manager.
         /// </summary>
@@ -301,23 +351,13 @@ namespace Technosoftware.UaSample
         /// </remarks>
         public virtual IEnumerable<string> NamespaceUris
         {
-            get
-            {
-                return namespaceUris_;
-            }
+            get => namespaceUris_;
 
             protected set
             {
-                if (value != null)
-                {
-                    namespaceUris_ = new List<string>(value);
-                }
-                else
-                {
-                    namespaceUris_ = new List<string>();
-                }
-
-                namespaceIndexes_ = new ushort[namespaceUris_.Count];
+                if (value == null) throw new ArgumentNullException(nameof(value));
+                var namespaceUris = new List<string>(value);
+                SetNamespaces(namespaceUris.ToArray());
             }
         }
 
@@ -334,19 +374,23 @@ namespace Technosoftware.UaSample
             lock (Lock)
             {
                 // add the uris to the server's namespace table and cache the indexes.
-                for (int ii = 0; ii < namespaceUris_.Count; ii++)
+                for (int ii = 0; ii < namespaceUris_.Length; ii++)
                 {
-                    namespaceIndexes_[ii] = server_.NamespaceUris.GetIndexOrAppend(namespaceUris_[ii]);
+                    NamespaceIndexes[ii] = ServerData.NamespaceUris.GetIndexOrAppend(namespaceUris_[ii]);
                 }
 
-                LoadPredefinedNodes(systemContext_, externalReferences);
+                LoadPredefinedNodes(SystemContext, externalReferences);
             }
         }
 
         #region CreateAddressSpace Support Functions
         /// <summary>
-        /// Loads a node set from a file or resource and addes them to the set of predefined nodes.
+        /// Loads a node set from a file or resource and add them to the set of predefined nodes.
         /// </summary>
+        /// <param name="context">The UA server implementation of the ISystemContext interface.</param>
+        /// <param name="resourcePath">The resource path.</param>
+        /// <param name="assembly">The assembly containing the resource.</param>
+        /// <param name="externalReferences"></param>
         public virtual void LoadPredefinedNodes(
             ISystemContext context,
             Assembly assembly,
@@ -416,7 +460,7 @@ namespace Technosoftware.UaSample
         protected virtual void AddPredefinedNode(ISystemContext context, NodeState node)
         {
             NodeState activeNode = AddBehaviourToPredefinedNode(context, node);
-            predefinedNodes_[activeNode.NodeId] = activeNode;
+            PredefinedNodes[activeNode.NodeId] = activeNode;
 
             BaseTypeState type = activeNode as BaseTypeState;
 
@@ -442,7 +486,7 @@ namespace Technosoftware.UaSample
             NodeState node,
             List<Technosoftware.UaServer.NodeManager.LocalReference> referencesToRemove)
         {
-            predefinedNodes_.Remove(node.NodeId);
+            PredefinedNodes.Remove(node.NodeId);
             node.UpdateChangeMasks(NodeStateChangeMasks.Deleted);
             node.ClearChangeMasks(context, false);
             OnNodeRemoved(node);
@@ -474,7 +518,7 @@ namespace Technosoftware.UaSample
 
             if (type != null)
             {
-                server_.TypeTree.Remove(type.NodeId);
+                ServerData.TypeTree.Remove(type.NodeId);
             }
 
             // remove inverse references.
@@ -513,20 +557,20 @@ namespace Technosoftware.UaSample
         /// </summary>
         protected virtual void AddRootNotifier(NodeState notifier)
         {
-            for (int ii = 0; ii < rootNotifiers_.Count; ii++)
+            for (int ii = 0; ii < RootNotifiers.Count; ii++)
             {
-                if (Object.ReferenceEquals(notifier, rootNotifiers_[ii]))
+                if (Object.ReferenceEquals(notifier, RootNotifiers[ii]))
                 {
                     return;
                 }
             }
 
-            rootNotifiers_.Add(notifier);
+            RootNotifiers.Add(notifier);
 
             // subscribe to existing events.
-            if (server_.EventManager != null)
+            if (ServerData.EventManager != null)
             {
-                IList<IUaEventMonitoredItem> monitoredItems = server_.EventManager.GetMonitoredItems();
+                IList<IUaEventMonitoredItem> monitoredItems = ServerData.EventManager.GetMonitoredItems();
 
                 for (int ii = 0; ii < monitoredItems.Count; ii++)
                 {
@@ -547,11 +591,11 @@ namespace Technosoftware.UaSample
         /// </summary>
         protected virtual void RemoveRootNotifier(NodeState notifier)
         {
-            for (int ii = 0; ii < rootNotifiers_.Count; ii++)
+            for (int ii = 0; ii < RootNotifiers.Count; ii++)
             {
-                if (Object.ReferenceEquals(notifier, rootNotifiers_[ii]))
+                if (Object.ReferenceEquals(notifier, RootNotifiers[ii]))
                 {
-                    rootNotifiers_.RemoveAt(ii);
+                    RootNotifiers.RemoveAt(ii);
                     break;
                 }
             }
@@ -563,7 +607,7 @@ namespace Technosoftware.UaSample
         /// <param name="externalReferences">A list of references to add to external targets.</param>
         protected virtual void AddReverseReferences(IDictionary<NodeId, IList<IReference>> externalReferences)
         {
-            foreach (NodeState source in predefinedNodes_.Values)
+            foreach (NodeState source in PredefinedNodes.Values)
             {
                 // assign a default value to any variable value.
                 BaseVariableState variable = source as BaseVariableState;
@@ -609,7 +653,7 @@ namespace Technosoftware.UaSample
                     // add inverse reference to internal targets.
                     NodeState target = null;
 
-                    if (predefinedNodes_.TryGetValue(targetId, out target))
+                    if (PredefinedNodes.TryGetValue(targetId, out target))
                     {
                         if (!target.ReferenceExists(reference.ReferenceTypeId, !reference.IsInverse, source.NodeId))
                         {
@@ -752,7 +796,7 @@ namespace Technosoftware.UaSample
         {
             lock (Lock)
             {
-                predefinedNodes_.Clear();
+                PredefinedNodes.Clear();
             }
         }
 
@@ -770,7 +814,7 @@ namespace Technosoftware.UaSample
         {
             lock (Lock)
             {
-                return GetManagerHandle(systemContext_, nodeId, null);
+                return GetManagerHandle(SystemContext, nodeId, null);
             }
         }
 
@@ -795,7 +839,7 @@ namespace Technosoftware.UaSample
                 // lookup the node.
                 NodeState node = null;
 
-                if (!predefinedNodes_.TryGetValue(nodeId, out node))
+                if (!PredefinedNodes.TryGetValue(nodeId, out node))
                 {
                     return null;
                 }
@@ -817,7 +861,7 @@ namespace Technosoftware.UaSample
                 foreach (KeyValuePair<NodeId, IList<IReference>> current in references)
                 {
                     // check for valid handle.
-                    NodeState source = GetManagerHandle(systemContext_, current.Key, null) as NodeState;
+                    NodeState source = GetManagerHandle(SystemContext, current.Key, null) as NodeState;
 
                     if (source == null)
                     {
@@ -860,7 +904,7 @@ namespace Technosoftware.UaSample
                     // check if the target is also managed by the node manager.
                     if (!targetId.IsAbsolute)
                     {
-                        NodeState target = GetManagerHandle(systemContext_, (NodeId)targetId, null) as NodeState;
+                        NodeState target = GetManagerHandle(SystemContext, (NodeId)targetId, null) as NodeState;
 
                         if (target != null)
                         {
@@ -884,7 +928,7 @@ namespace Technosoftware.UaSample
             object targetHandle,
             BrowseResultMask resultMask)
         {
-            UaServerContext systemContext = systemContext_.Copy(context);
+            UaServerContext systemContext = SystemContext.Copy(context);
 
             lock (Lock)
             {
@@ -988,7 +1032,7 @@ namespace Technosoftware.UaSample
                 throw new ServiceResultException(StatusCodes.BadViewIdUnknown);
             }
 
-            UaServerContext systemContext = systemContext_.Copy(context);
+            UaServerContext systemContext = SystemContext.Copy(context);
 
             lock (Lock)
             {
@@ -1154,7 +1198,7 @@ namespace Technosoftware.UaSample
             IList<ExpandedNodeId> targetIds,
             IList<NodeId> unresolvedTargetIds)
         {
-            UaServerContext systemContext = systemContext_.Copy(context);
+            UaServerContext systemContext = SystemContext.Copy(context);
             IDictionary<NodeId, NodeState> operationCache = new NodeIdDictionary<NodeState>();
 
             lock (Lock)
@@ -1253,7 +1297,7 @@ namespace Technosoftware.UaSample
             IList<DataValue> values,
             IList<ServiceResult> errors)
         {
-            UaServerContext systemContext = systemContext_.Copy(context);
+            UaServerContext systemContext = SystemContext.Copy(context);
             IDictionary<NodeId, NodeState> operationCache = new NodeIdDictionary<NodeState>();
             List<ReadWriteOperationState> nodesToValidate = new List<ReadWriteOperationState>();
 
@@ -1378,7 +1422,7 @@ namespace Technosoftware.UaSample
             IList<HistoryReadResult> results,
             IList<ServiceResult> errors)
         {
-            UaServerContext systemContext = systemContext_.Copy(context);
+            UaServerContext systemContext = SystemContext.Copy(context);
             IDictionary<NodeId, NodeState> operationCache = new NodeIdDictionary<NodeState>();
             List<ReadWriteOperationState> nodesToValidate = new List<ReadWriteOperationState>();
             List<ReadWriteOperationState> readsToComplete = new List<ReadWriteOperationState>();
@@ -1596,7 +1640,7 @@ namespace Technosoftware.UaSample
             IList<WriteValue> nodesToWrite,
             IList<ServiceResult> errors)
         {
-            UaServerContext systemContext = systemContext_.Copy(context);
+            UaServerContext systemContext = SystemContext.Copy(context);
             IDictionary<NodeId, NodeState> operationCache = new NodeIdDictionary<NodeState>();
             List<ReadWriteOperationState> nodesToValidate = new List<ReadWriteOperationState>();
 
@@ -1698,7 +1742,7 @@ namespace Technosoftware.UaSample
             IList<HistoryUpdateResult> results,
             IList<ServiceResult> errors)
         {
-            UaServerContext systemContext = systemContext_.Copy(context);
+            UaServerContext systemContext = SystemContext.Copy(context);
             IDictionary<NodeId, NodeState> operationCache = new NodeIdDictionary<NodeState>();
             List<ReadWriteOperationState> nodesToValidate = new List<ReadWriteOperationState>();
 
@@ -1776,7 +1820,7 @@ namespace Technosoftware.UaSample
             IList<CallMethodResult> results,
             IList<ServiceResult> errors)
         {
-            UaServerContext systemContext = systemContext_.Copy(context);
+            UaServerContext systemContext = SystemContext.Copy(context);
             IDictionary<NodeId, NodeState> operationCache = new NodeIdDictionary<NodeState>();
             List<CallOperationState> nodesToValidate = new List<CallOperationState>();
 
@@ -1982,7 +2026,7 @@ namespace Technosoftware.UaSample
             IUaEventMonitoredItem monitoredItem,
             bool unsubscribe)
         {
-            UaServerContext systemContext = systemContext_.Copy(context);
+            UaServerContext systemContext = SystemContext.Copy(context);
 
             lock (Lock)
             {
@@ -2021,7 +2065,7 @@ namespace Technosoftware.UaSample
                 // subscribe to events.
                 if (monitoredNode == null)
                 {
-                    instance.Handle = monitoredNode = new MonitoredNode(server_, this, source);
+                    instance.Handle = monitoredNode = new MonitoredNode(ServerData, this, source);
                 }
 
                 monitoredNode.SubscribeToEvents(systemContext, monitoredItem);
@@ -2046,18 +2090,18 @@ namespace Technosoftware.UaSample
             IUaEventMonitoredItem monitoredItem,
             bool unsubscribe)
         {
-            UaServerContext systemContext = systemContext_.Copy(context);
+            UaServerContext systemContext = SystemContext.Copy(context);
 
             lock (Lock)
             {
                 // update root notifiers.
-                for (int ii = 0; ii < rootNotifiers_.Count; ii++)
+                for (int ii = 0; ii < RootNotifiers.Count; ii++)
                 {
                     SubscribeToAllEvents(
                         systemContext,
                         monitoredItem,
                         unsubscribe,
-                        rootNotifiers_[ii]);
+                        RootNotifiers[ii]);
                 }
 
                 return ServiceResult.Good;
@@ -2092,7 +2136,7 @@ namespace Technosoftware.UaSample
             // subscribe to events.
             if (monitoredNode == null)
             {
-                source.Handle = monitoredNode = new MonitoredNode(server_, this, source);
+                source.Handle = monitoredNode = new MonitoredNode(ServerData, this, source);
             }
 
             monitoredNode.SubscribeToEvents(systemContext, monitoredItem);
@@ -2134,7 +2178,7 @@ namespace Technosoftware.UaSample
             UaServerOperationContext context,
             IList<IUaEventMonitoredItem> monitoredItems)
         {
-            UaServerContext systemContext = systemContext_.Copy(context);
+            UaServerContext systemContext = SystemContext.Copy(context);
 
             lock (Lock)
             {
@@ -2150,9 +2194,9 @@ namespace Technosoftware.UaSample
                     // check for global subscription.
                     if (monitoredItem.MonitoringAllEvents)
                     {
-                        for (int jj = 0; jj < rootNotifiers_.Count; jj++)
+                        for (int jj = 0; jj < RootNotifiers.Count; jj++)
                         {
-                            MonitoredNode monitoredNode = rootNotifiers_[jj].Handle as MonitoredNode;
+                            MonitoredNode monitoredNode = RootNotifiers[jj].Handle as MonitoredNode;
 
                             if (monitoredNode == null)
                             {
@@ -2205,7 +2249,7 @@ namespace Technosoftware.UaSample
             IList<IUaMonitoredItem> monitoredItems,
             ref long globalIdCounter)
         {
-            UaServerContext systemContext = systemContext_.Copy(context);
+            UaServerContext systemContext = SystemContext.Copy(context);
             IDictionary<NodeId, NodeState> operationCache = new NodeIdDictionary<NodeState>();
             List<ReadWriteOperationState> nodesToValidate = new List<ReadWriteOperationState>();
 
@@ -2338,7 +2382,8 @@ namespace Technosoftware.UaSample
             IUaDataChangeMonitoredItem2 monitoredItem,
             bool ignoreFilters)
         {
-            DataValue initialValue = new DataValue {
+            DataValue initialValue = new DataValue
+            {
                 Value = null,
                 ServerTimestamp = DateTime.UtcNow,
                 SourceTimestamp = DateTime.MinValue,
@@ -2463,7 +2508,8 @@ namespace Technosoftware.UaSample
             ServiceResult error = null;
 
             // read initial value.
-            DataValue initialValue = new DataValue {
+            DataValue initialValue = new DataValue
+            {
                 Value = null,
                 ServerTimestamp = DateTime.UtcNow,
                 SourceTimestamp = DateTime.MinValue,
@@ -2518,7 +2564,7 @@ namespace Technosoftware.UaSample
 
             if (monitoredNode == null)
             {
-                source.Handle = monitoredNode = new MonitoredNode(server_, this, source);
+                source.Handle = monitoredNode = new MonitoredNode(ServerData, this, source);
             }
 
             // create a globally unique identifier.
@@ -2645,7 +2691,7 @@ namespace Technosoftware.UaSample
         {
             try
             {
-                lock (lock_)
+                lock (Lock)
                 {
                     for (int ii = 0; ii < sampledItems_.Count; ii++)
                     {
@@ -2687,7 +2733,7 @@ namespace Technosoftware.UaSample
             IList<ServiceResult> errors,
             IList<MonitoringFilterResult> filterErrors)
         {
-            UaServerContext systemContext = systemContext_.Copy(context);
+            UaServerContext systemContext = SystemContext.Copy(context);
 
             lock (Lock)
             {
@@ -2833,7 +2879,7 @@ namespace Technosoftware.UaSample
             IList<bool> processedItems,
             IList<ServiceResult> errors)
         {
-            UaServerContext systemContext = systemContext_.Copy(context);
+            UaServerContext systemContext = SystemContext.Copy(context);
 
             lock (Lock)
             {
@@ -2937,7 +2983,7 @@ namespace Technosoftware.UaSample
             IList<bool> processedItems,
             IList<ServiceResult> errors)
         {
-            UaServerContext systemContext = systemContext_.Copy(context);
+            UaServerContext systemContext = SystemContext.Copy(context);
             IList<IUaMonitoredItem> transferredItems = new List<IUaMonitoredItem>();
             lock (Lock)
             {
@@ -2997,7 +3043,7 @@ namespace Technosoftware.UaSample
             IList<bool> processedItems,
             IList<ServiceResult> errors)
         {
-            UaServerContext systemContext = systemContext_.Copy(context);
+            UaServerContext systemContext = SystemContext.Copy(context);
 
             lock (Lock)
             {
@@ -3084,14 +3130,7 @@ namespace Technosoftware.UaSample
         #endregion
 
         #region Private Fields
-        private object lock_ = new object();
-        private IUaServerData server_;
-        private UaServerContext systemContext_;
-        private IList<string> namespaceUris_;
-        private ushort[] namespaceIndexes_;
-        private NodeIdDictionary<NodeState> predefinedNodes_;
-        private List<NodeState> rootNotifiers_;
-
+        private string[] namespaceUris_;
         private Timer samplingTimer_;
         private List<DataChangeMonitoredItem> sampledItems_;
         private double minimumSamplingInterval_;

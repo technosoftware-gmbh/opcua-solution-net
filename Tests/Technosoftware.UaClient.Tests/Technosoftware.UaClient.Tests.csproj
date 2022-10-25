@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <DefineConstants>$(DefineConstants);CLIENT_ASYNC</DefineConstants>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>$(TestsTargetFrameworks)</TargetFrameworks>
+    <RootNamespace>Technosoftware.UaClient.Tests</RootNamespace>
+    <GenerateProgramFile>false</GenerateProgramFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+    <PackageReference Include="NUnit" Version="3.13.3" />
+    <PackageReference Include="NUnit.Console" Version="3.15.2" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.2.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="coverlet.collector" Version="3.1.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Technosoftware.UaSolution.UaCore" Version="2.5.1" />
+    <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.5.1" />
+    <PackageReference Include="Technosoftware.UaSolution.UaClient" Version="2.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Common\Main.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Technosoftware.UaStandardServer.Tests\Technosoftware.UaStandardServer.Tests.csproj" />
+  </ItemGroup>
+
+</Project>
