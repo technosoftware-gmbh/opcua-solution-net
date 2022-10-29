@@ -34,8 +34,6 @@ namespace Technosoftware.UaClient.Tests
     [NonParallelizable]
     public class ReverseConnectTest : ClientTestFramework
     {
-        Uri endpointUrl_;
-
         #region DataPointSources
         #endregion
 
@@ -109,6 +107,52 @@ namespace Technosoftware.UaClient.Tests
         public async Task GetEndpoints()
         {
             await RequireEndpoints().ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Add the same Uri for reverse connection. Should throw an ArgumentException
+        /// </summary>
+        [Test, Order(101)]
+        public void AddReverseConnection()
+        {
+            try
+            {
+                ReferenceServer.AddReverseConnection(new Uri(ClientFixture.ReverseConnectUri), MaxTimeout);
+                Assert.Fail(); 
+            }
+            catch (ArgumentException)
+            {
+                // Catches the assertion exception, and the test passes
+            }
+        }
+
+        /// <summary>
+        /// Add the same Uri for reverse connection. Should throw an ArgumentException
+        /// </summary>
+        [Test, Order(102)]
+        public void RemoveReverseConnection()
+        {
+            var reverseConnectUri = new Uri("opc.tcp://localhost:" + ServerFixtureUtils.GetNextFreeIPPort());
+            ReferenceServer.AddReverseConnection(reverseConnectUri, MaxTimeout);
+            var succeeded = ReferenceServer.RemoveReverseConnection(reverseConnectUri);
+            Assert.IsTrue(succeeded);
+        }
+
+        /// <summary>
+        /// Add the same Uri for reverse connection. Should throw an ArgumentException
+        /// </summary>
+        [Test, Order(103)]
+        public void RemoveReverseConnectionFailed()
+        {
+            try
+            {
+                var succeeded = ReferenceServer.RemoveReverseConnection(null);
+                Assert.Fail();
+            }
+            catch (ArgumentException)
+            {
+                // Catches the assertion exception, and the test passes
+            }
         }
 
         /// <summary>
@@ -249,6 +293,9 @@ namespace Technosoftware.UaClient.Tests
         }
         #endregion
 
+        #region Private Fields
         private SemaphoreSlim requiredLock_ = new SemaphoreSlim(1);
+        private Uri endpointUrl_;
+        #endregion
     }
 }
