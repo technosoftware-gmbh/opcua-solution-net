@@ -23,13 +23,13 @@
     <PackageReference Include="BenchmarkDotNet" Version="0.13.2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Technosoftware.UaSolution.UaCore" Version="2.5.1" />
-    <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.5.1" />
-    <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.5.1" />
-  </ItemGroup>
   <ItemGroup Condition=" '$(NoHttps)' != 'true' ">
-    <PackageReference Include="Technosoftware.UaSolution.UaBindings.Https" Version="2.5.1" />
+    <PackageReference Include="Technosoftware.UaSolution.UaBindings.Https" Version="2.5.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Technosoftware.UaSolution.UaCore" Version="2.5.2" />
+    <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.5.2" />
+    <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.5.2" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,4 +1,11 @@
 -------------------------------------------------------------------------------------------------------------
+## OPC UA Solution .NET - 2.5.2
+
+### Changes
+- Stack: Updated until 24-OCT-2022
+- Server: Moved several classes to Technosoftware.UaStandardServer.csproj available at src\Technosoftware\UaStandardServer. 
+
+-------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 2.5.0
 
 ### Breaking Changes
