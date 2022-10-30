@@ -1,13 +1,13 @@
-#region Copyright (c) 2011-2022 Technosoftware GmbH. All rights reserved
+#region Copyright (c) 2022 Technosoftware GmbH. All rights reserved
 //-----------------------------------------------------------------------------
-// Copyright (c) 2011-2022 Technosoftware GmbH. All rights reserved
+// Copyright (c) 2022 Technosoftware GmbH. All rights reserved
 // Web: https://technosoftware.com 
 //
 // The Software is based on the OPC Foundation MIT License. 
 // The complete license agreement for that can be found here:
 // http://opcfoundation.org/License/MIT/1.00/
 //-----------------------------------------------------------------------------
-#endregion Copyright (c) 2011-2022 Technosoftware GmbH. All rights reserved
+#endregion Copyright (c) 2022 Technosoftware GmbH. All rights reserved
 
 #region Using Directives
 using System;
@@ -31,46 +31,39 @@ namespace Technosoftware.UaStandardServer.Tests
         #region Public Test Sets
         public static readonly ExpandedNodeId[] NodeIdTestSetStatic =
         {
-            new ExpandedNodeId("Scalar_Static_SByte", Technosoftware.ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Static_Int16", Technosoftware.ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Static_Int32", Technosoftware.ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Static_Byte", Technosoftware.ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Static_UInt16", Technosoftware.ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Static_UInt32", Technosoftware.ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Static_NodeId", Technosoftware.ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Static_LocalizedText", Technosoftware.ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Static_QualifiedName", Technosoftware.ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Static_Variant", Technosoftware.ReferenceServer.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Static_SByte", ReferenceServer.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Static_Int16", ReferenceServer.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Static_Int32", ReferenceServer.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Static_Byte", ReferenceServer.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Static_UInt16", ReferenceServer.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Static_UInt32", ReferenceServer.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Static_NodeId", ReferenceServer.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Static_LocalizedText", ReferenceServer.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Static_QualifiedName", ReferenceServer.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Static_Variant", ReferenceServer.Namespaces.ReferenceServer),
         };
 
         // static variables from namespace TestData
         public static readonly ExpandedNodeId[] NodeIdTestDataSetStatic =
         {
-            new ExpandedNodeId(TestData.Variables.Data_Static_Scalar_Int16Value, TestData.Namespaces.TestData),
-            new ExpandedNodeId(TestData.Variables.Data_Static_Scalar_Int32Value, TestData.Namespaces.TestData),
-            new ExpandedNodeId(TestData.Variables.Data_Static_Scalar_UInt16Value, TestData.Namespaces.TestData),
-            new ExpandedNodeId(TestData.Variables.Data_Static_Scalar_UInt32Value, TestData.Namespaces.TestData),
+            new ExpandedNodeId("Scalar_Static_Int16", ReferenceServer.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Static_Int32", ReferenceServer.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Static_UInt16", ReferenceServer.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Static_UInt32", ReferenceServer.Namespaces.ReferenceServer),
         };
 
         public static readonly ExpandedNodeId[] NodeIdTestSetSimulation =
         {
-            new ExpandedNodeId("Scalar_Simulation_SByte", Technosoftware.ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Simulation_Int16", Technosoftware.ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Simulation_Int32", Technosoftware.ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Simulation_Byte", Technosoftware.ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Simulation_UInt16", Technosoftware.ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Simulation_UInt32", Technosoftware.ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Simulation_NodeId", Technosoftware.ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Simulation_LocalizedText", Technosoftware.ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Simulation_QualifiedName", Technosoftware.ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Simulation_Variant", Technosoftware.ReferenceServer.Namespaces.ReferenceServer),
-        };
-
-        public static readonly ExpandedNodeId[] NodeIdMemoryBufferSimulation =
-        {
-            // dynamic variables from namespace MemoryBuffer
-            new ExpandedNodeId("UInt32[64]", MemoryBuffer.Namespaces.MemoryBuffer + "/Instance"),
-            new ExpandedNodeId("Double[40]", MemoryBuffer.Namespaces.MemoryBuffer + "/Instance"),
+            new ExpandedNodeId("Scalar_Simulation_SByte", ReferenceServer.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Simulation_Int16", ReferenceServer.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Simulation_Int32", ReferenceServer.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Simulation_Byte", ReferenceServer.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Simulation_UInt16", ReferenceServer.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Simulation_UInt32", ReferenceServer.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Simulation_NodeId", ReferenceServer.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Simulation_LocalizedText", ReferenceServer.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Simulation_QualifiedName", ReferenceServer.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Simulation_Variant", ReferenceServer.Namespaces.ReferenceServer),
         };
         #endregion
 
