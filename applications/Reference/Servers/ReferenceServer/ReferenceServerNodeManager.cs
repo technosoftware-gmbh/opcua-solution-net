@@ -94,18 +94,6 @@ namespace Technosoftware.ReferenceServer
         #endregion
 
         #region Private Helper Functions
-        private static bool IsUnsignedAnalogType(BuiltInType builtInType)
-        {
-            if (builtInType == BuiltInType.Byte ||
-                builtInType == BuiltInType.UInt16 ||
-                builtInType == BuiltInType.UInt32 ||
-                builtInType == BuiltInType.UInt64)
-            {
-                return true;
-            }
-            return false;
-        }
-
         private static bool IsAnalogType(BuiltInType builtInType)
         {
             switch (builtInType)
@@ -895,212 +883,75 @@ namespace Technosoftware.ReferenceServer
                     #region Add Method
                     var addMethod = CreateMethodState(methodsFolder, methods + "Add", "Add", OnAddCall);
                     // set input arguments
-                    addMethod.InputArguments = new PropertyState<Argument[]>(addMethod)
-                    {
-                        NodeId = new NodeId(addMethod.BrowseName.Name + "InArgs", NamespaceIndex),
-                        BrowseName = BrowseNames.InputArguments
-                    };
-                    addMethod.InputArguments.DisplayName = addMethod.InputArguments.BrowseName.Name;
-                    addMethod.InputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
-                    addMethod.InputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
-                    addMethod.InputArguments.DataType = DataTypeIds.Argument;
-                    addMethod.InputArguments.ValueRank = ValueRanks.OneDimension;
-
-                    addMethod.InputArguments.Value = new[]
-                    {
-                        new Argument() { Name = "Float value", Description = "Float value",  DataType = DataTypeIds.Float, ValueRank = ValueRanks.Scalar },
-                        new Argument() { Name = "UInt32 value", Description = "UInt32 value",  DataType = DataTypeIds.UInt32, ValueRank = ValueRanks.Scalar }
-                    };
+                    var inputArgument1 = CreateArgument("Float value","Float value",BuiltInType.Float,ValueRanks.Scalar);
+                    var inputArgument2 = CreateArgument("UInt32 value","UInt32 value",BuiltInType.UInt32,ValueRanks.Scalar);
+                    AddInputArguments(addMethod, "InArgs", new[] { inputArgument1, inputArgument2} );
 
                     // set output arguments
-                    addMethod.OutputArguments = new PropertyState<Argument[]>(addMethod)
-                    {
-                        NodeId = new NodeId(addMethod.BrowseName.Name + "OutArgs", NamespaceIndex),
-                        BrowseName = BrowseNames.OutputArguments
-                    };
-                    addMethod.OutputArguments.DisplayName = addMethod.OutputArguments.BrowseName.Name;
-                    addMethod.OutputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
-                    addMethod.OutputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
-                    addMethod.OutputArguments.DataType = DataTypeIds.Argument;
-                    addMethod.OutputArguments.ValueRank = ValueRanks.OneDimension;
-
-                    addMethod.OutputArguments.Value = new[]
-                    {
-                        new Argument() { Name = "Add Result", Description = "Add Result",  DataType = DataTypeIds.Float, ValueRank = ValueRanks.Scalar }
-                    };
+                    var outputArgument1 = CreateArgument("Add Result","Add Result",BuiltInType.Float,ValueRanks.Scalar);
+                    AddOutputArguments(addMethod, "OutArgs", new[] { outputArgument1 } );
                     #endregion
 
                     #region Multiply Method
                     var multiplyMethod = CreateMethodState(methodsFolder, methods + "Multiply", "Multiply", OnMultiplyCall);
                     // set input arguments
-                    multiplyMethod.InputArguments = new PropertyState<Argument[]>(multiplyMethod);
-                    multiplyMethod.InputArguments.NodeId = new NodeId(multiplyMethod.BrowseName.Name + "InArgs", NamespaceIndex);
-                    multiplyMethod.InputArguments.BrowseName = BrowseNames.InputArguments;
-                    multiplyMethod.InputArguments.DisplayName = multiplyMethod.InputArguments.BrowseName.Name;
-                    multiplyMethod.InputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
-                    multiplyMethod.InputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
-                    multiplyMethod.InputArguments.DataType = DataTypeIds.Argument;
-                    multiplyMethod.InputArguments.ValueRank = ValueRanks.OneDimension;
-
-                    multiplyMethod.InputArguments.Value = new Argument[]
-                    {
-                        new Argument() { Name = "Int16 value", Description = "Int16 value",  DataType = DataTypeIds.Int16, ValueRank = ValueRanks.Scalar },
-                        new Argument() { Name = "UInt16 value", Description = "UInt16 value",  DataType = DataTypeIds.UInt16, ValueRank = ValueRanks.Scalar }
-                    };
+                    inputArgument1 = CreateArgument("Int16 value","Int16 value",BuiltInType.Int16,ValueRanks.Scalar);
+                    inputArgument2 = CreateArgument("UInt16 value","UInt16 value",BuiltInType.UInt16,ValueRanks.Scalar);
+                    AddInputArguments(multiplyMethod, "InArgs", new[] { inputArgument1, inputArgument2} );
 
                     // set output arguments
-                    multiplyMethod.OutputArguments = new PropertyState<Argument[]>(multiplyMethod);
-                    multiplyMethod.OutputArguments.NodeId = new NodeId(multiplyMethod.BrowseName.Name + "OutArgs", NamespaceIndex);
-                    multiplyMethod.OutputArguments.BrowseName = BrowseNames.OutputArguments;
-                    multiplyMethod.OutputArguments.DisplayName = multiplyMethod.OutputArguments.BrowseName.Name;
-                    multiplyMethod.OutputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
-                    multiplyMethod.OutputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
-                    multiplyMethod.OutputArguments.DataType = DataTypeIds.Argument;
-                    multiplyMethod.OutputArguments.ValueRank = ValueRanks.OneDimension;
-
-                    multiplyMethod.OutputArguments.Value = new Argument[]
-                    {
-                        new Argument() { Name = "Multiply Result", Description = "Multiply Result",  DataType = DataTypeIds.Int32, ValueRank = ValueRanks.Scalar }
-                    };
-
+                    outputArgument1 = CreateArgument("Multiply Result","Multiply Result",BuiltInType.Int32,ValueRanks.Scalar);
+                    AddOutputArguments(multiplyMethod, "OutArgs", new[] { outputArgument1 } );
                     #endregion
 
                     #region Divide Method
                     var divideMethod = CreateMethodState(methodsFolder, methods + "Divide", "Divide", new GenericMethodCalledEventHandler2(OnDivideCall));
                     // set input arguments
-                    divideMethod.InputArguments = new PropertyState<Argument[]>(divideMethod);
-                    divideMethod.InputArguments.NodeId = new NodeId(divideMethod.BrowseName.Name + "InArgs", NamespaceIndex);
-                    divideMethod.InputArguments.BrowseName = BrowseNames.InputArguments;
-                    divideMethod.InputArguments.DisplayName = divideMethod.InputArguments.BrowseName.Name;
-                    divideMethod.InputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
-                    divideMethod.InputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
-                    divideMethod.InputArguments.DataType = DataTypeIds.Argument;
-                    divideMethod.InputArguments.ValueRank = ValueRanks.OneDimension;
-
-                    divideMethod.InputArguments.Value = new Argument[]
-                    {
-                        new Argument() { Name = "Int32 value", Description = "Int32 value",  DataType = DataTypeIds.Int32, ValueRank = ValueRanks.Scalar },
-                        new Argument() { Name = "UInt16 value", Description = "UInt16 value",  DataType = DataTypeIds.UInt16, ValueRank = ValueRanks.Scalar }
-                    };
+                    inputArgument1 = CreateArgument("Int32 value","Int32 value",BuiltInType.Int32,ValueRanks.Scalar);
+                    inputArgument2 = CreateArgument("UInt16 value","UInt16 value",BuiltInType.UInt16,ValueRanks.Scalar);
+                    AddInputArguments(divideMethod, "InArgs", new[] { inputArgument1, inputArgument2} );
 
                     // set output arguments
-                    divideMethod.OutputArguments = new PropertyState<Argument[]>(divideMethod);
-                    divideMethod.OutputArguments.NodeId = new NodeId(divideMethod.BrowseName.Name + "OutArgs", NamespaceIndex);
-                    divideMethod.OutputArguments.BrowseName = BrowseNames.OutputArguments;
-                    divideMethod.OutputArguments.DisplayName = divideMethod.OutputArguments.BrowseName.Name;
-                    divideMethod.OutputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
-                    divideMethod.OutputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
-                    divideMethod.OutputArguments.DataType = DataTypeIds.Argument;
-                    divideMethod.OutputArguments.ValueRank = ValueRanks.OneDimension;
-
-                    divideMethod.OutputArguments.Value = new Argument[]
-                    {
-                        new Argument() { Name = "Divide Result", Description = "Divide Result",  DataType = DataTypeIds.Float, ValueRank = ValueRanks.Scalar }
-                    };
+                    outputArgument1 = CreateArgument("Divide Result","Divide Result",BuiltInType.Float,ValueRanks.Scalar);
+                    AddOutputArguments(divideMethod, "OutArgs", new[] { outputArgument1 } );
                     #endregion
 
                     #region Substract Method
                     var substractMethod = CreateMethodState(methodsFolder, methods + "Substract", "Substract", new GenericMethodCalledEventHandler2(OnSubstractCall));
                     // set input arguments
-                    substractMethod.InputArguments = new PropertyState<Argument[]>(substractMethod);
-                    substractMethod.InputArguments.NodeId = new NodeId(substractMethod.BrowseName.Name + "InArgs", NamespaceIndex);
-                    substractMethod.InputArguments.BrowseName = BrowseNames.InputArguments;
-                    substractMethod.InputArguments.DisplayName = substractMethod.InputArguments.BrowseName.Name;
-                    substractMethod.InputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
-                    substractMethod.InputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
-                    substractMethod.InputArguments.DataType = DataTypeIds.Argument;
-                    substractMethod.InputArguments.ValueRank = ValueRanks.OneDimension;
-
-                    substractMethod.InputArguments.Value = new Argument[]
-                    {
-                        new Argument() { Name = "Int16 value", Description = "Int16 value",  DataType = DataTypeIds.Int16, ValueRank = ValueRanks.Scalar },
-                        new Argument() { Name = "Byte value", Description = "Byte value",  DataType = DataTypeIds.Byte, ValueRank = ValueRanks.Scalar }
-                    };
+                    inputArgument1 = CreateArgument("Int16 value","Int16 value",BuiltInType.Int16,ValueRanks.Scalar);
+                    inputArgument2 = CreateArgument("Byte value","Byte value",BuiltInType.Byte,ValueRanks.Scalar);
+                    AddInputArguments(substractMethod, "InArgs", new[] { inputArgument1, inputArgument2} );
 
                     // set output arguments
-                    substractMethod.OutputArguments = new PropertyState<Argument[]>(substractMethod);
-                    substractMethod.OutputArguments.NodeId = new NodeId(substractMethod.BrowseName.Name + "OutArgs", NamespaceIndex);
-                    substractMethod.OutputArguments.BrowseName = BrowseNames.OutputArguments;
-                    substractMethod.OutputArguments.DisplayName = substractMethod.OutputArguments.BrowseName.Name;
-                    substractMethod.OutputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
-                    substractMethod.OutputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
-                    substractMethod.OutputArguments.DataType = DataTypeIds.Argument;
-                    substractMethod.OutputArguments.ValueRank = ValueRanks.OneDimension;
-
-                    substractMethod.OutputArguments.Value = new Argument[]
-                    {
-                        new Argument() { Name = "Substract Result", Description = "Substract Result",  DataType = DataTypeIds.Int16, ValueRank = ValueRanks.Scalar }
-                    };
+                    outputArgument1 = CreateArgument("Substract Result","Substract Result",BuiltInType.Int16,ValueRanks.Scalar);
+                    AddOutputArguments(substractMethod, "OutArgs", new[] { outputArgument1 } );
                     #endregion
 
                     #region Hello Method
                     var helloMethod = CreateMethodState(methodsFolder, methods + "Hello", "Hello", new GenericMethodCalledEventHandler2(OnHelloCall));
                     // set input arguments
-                    helloMethod.InputArguments = new PropertyState<Argument[]>(helloMethod);
-                    helloMethod.InputArguments.NodeId = new NodeId(helloMethod.BrowseName.Name + "InArgs", NamespaceIndex);
-                    helloMethod.InputArguments.BrowseName = BrowseNames.InputArguments;
-                    helloMethod.InputArguments.DisplayName = helloMethod.InputArguments.BrowseName.Name;
-                    helloMethod.InputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
-                    helloMethod.InputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
-                    helloMethod.InputArguments.DataType = DataTypeIds.Argument;
-                    helloMethod.InputArguments.ValueRank = ValueRanks.OneDimension;
-
-                    helloMethod.InputArguments.Value = new Argument[]
-                    {
-                        new Argument() { Name = "String value", Description = "String value",  DataType = DataTypeIds.String, ValueRank = ValueRanks.Scalar }
-                    };
+                    inputArgument1 = CreateArgument("String value","String value",BuiltInType.String,ValueRanks.Scalar);
+                    AddInputArguments(helloMethod, "InArgs", new[] { inputArgument1 } );
 
                     // set output arguments
-                    helloMethod.OutputArguments = new PropertyState<Argument[]>(helloMethod);
-                    helloMethod.OutputArguments.NodeId = new NodeId(helloMethod.BrowseName.Name + "OutArgs", NamespaceIndex);
-                    helloMethod.OutputArguments.BrowseName = BrowseNames.OutputArguments;
-                    helloMethod.OutputArguments.DisplayName = helloMethod.OutputArguments.BrowseName.Name;
-                    helloMethod.OutputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
-                    helloMethod.OutputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
-                    helloMethod.OutputArguments.DataType = DataTypeIds.Argument;
-                    helloMethod.OutputArguments.ValueRank = ValueRanks.OneDimension;
-
-                    helloMethod.OutputArguments.Value = new Argument[]
-                    {
-                        new Argument() { Name = "Hello Result", Description = "Hello Result",  DataType = DataTypeIds.String, ValueRank = ValueRanks.Scalar }
-                    };
+                    outputArgument1 = CreateArgument("Hello Result","Hello Result",BuiltInType.String,ValueRanks.Scalar);
+                    AddOutputArguments(helloMethod, "OutArgs", new[] { outputArgument1 } );
                     #endregion
 
                     #region Input Method
                     var inputMethod = CreateMethodState(methodsFolder, methods + "Input", "Input", new GenericMethodCalledEventHandler2(OnInputCall));
                     // set input arguments
-                    inputMethod.InputArguments = new PropertyState<Argument[]>(inputMethod);
-                    inputMethod.InputArguments.NodeId = new NodeId(inputMethod.BrowseName.Name + "InArgs", NamespaceIndex);
-                    inputMethod.InputArguments.BrowseName = BrowseNames.InputArguments;
-                    inputMethod.InputArguments.DisplayName = inputMethod.InputArguments.BrowseName.Name;
-                    inputMethod.InputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
-                    inputMethod.InputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
-                    inputMethod.InputArguments.DataType = DataTypeIds.Argument;
-                    inputMethod.InputArguments.ValueRank = ValueRanks.OneDimension;
-
-                    inputMethod.InputArguments.Value = new Argument[]
-                    {
-                        new Argument() { Name = "String value", Description = "String value",  DataType = DataTypeIds.String, ValueRank = ValueRanks.Scalar }
-                    };
+                    inputArgument1 = CreateArgument("String value","String value",BuiltInType.String,ValueRanks.Scalar);
+                    AddInputArguments(inputMethod, "InArgs", new[] { inputArgument1 } );
                     #endregion
 
                     #region Output Method
                     var outputMethod = CreateMethodState(methodsFolder, methods + "Output", "Output", new GenericMethodCalledEventHandler2(OnOutputCall));
 
                     // set output arguments
-                    outputMethod.OutputArguments = new PropertyState<Argument[]>(helloMethod);
-                    outputMethod.OutputArguments.NodeId = new NodeId(helloMethod.BrowseName.Name + "OutArgs", NamespaceIndex);
-                    outputMethod.OutputArguments.BrowseName = BrowseNames.OutputArguments;
-                    outputMethod.OutputArguments.DisplayName = helloMethod.OutputArguments.BrowseName.Name;
-                    outputMethod.OutputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
-                    outputMethod.OutputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
-                    outputMethod.OutputArguments.DataType = DataTypeIds.Argument;
-                    outputMethod.OutputArguments.ValueRank = ValueRanks.OneDimension;
-
-                    outputMethod.OutputArguments.Value = new Argument[]
-                    {
-                        new Argument() { Name = "Output Result", Description = "Output Result",  DataType = DataTypeIds.String, ValueRank = ValueRanks.Scalar }
-                    };
+                    outputArgument1 = CreateArgument("Output Result","Output Result",BuiltInType.String,ValueRanks.Scalar);
+                    AddOutputArguments(outputMethod, "OutArgs", new[] { outputArgument1 } );
                     #endregion
                     #endregion
 
