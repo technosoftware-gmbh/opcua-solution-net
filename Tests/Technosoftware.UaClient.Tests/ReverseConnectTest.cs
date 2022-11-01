@@ -135,8 +135,17 @@ namespace Technosoftware.UaClient.Tests
         {
             var reverseConnectUri = new Uri("opc.tcp://localhost:" + ServerFixtureUtils.GetNextFreeIPPort());
             ReferenceServer.AddReverseConnection(reverseConnectUri, MaxTimeout);
+            var connections = ReferenceServer.GetReverseConnections();
+            Assert.AreEqual(connections.Count, 2);
             var succeeded = ReferenceServer.RemoveReverseConnection(reverseConnectUri);
             Assert.IsTrue(succeeded);
+            Assert.AreEqual(connections.Count, 1);
+            succeeded = ReferenceServer.RemoveReverseConnection(new Uri(ClientFixture.ReverseConnectUri));
+            Assert.IsTrue(succeeded);
+            Assert.AreEqual(connections.Count, 0);
+            ReferenceServer.AddReverseConnection(new Uri(ClientFixture.ReverseConnectUri), MaxTimeout);
+            connections = ReferenceServer.GetReverseConnections();
+            Assert.AreEqual(connections.Count, 1);
         }
 
         /// <summary>
