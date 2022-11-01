@@ -1,4 +1,4 @@
-# A CodeQL query for the OPC UA Solutions project
+# A CodeQL query for the OPC UA Solutions .NET Samples project
 name: "CodeQL"
 
 on:
