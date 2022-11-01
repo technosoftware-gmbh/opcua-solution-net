@@ -14,19 +14,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
-using System.Threading.Tasks;
 
 using Opc.Ua;
-using Opc.Ua.Test;
 
-using Technosoftware.UaConfiguration;
 using Technosoftware.UaServer;
-using Technosoftware.UaServer.NodeManager;
-using Technosoftware.UaServer.Server;
-using Technosoftware.UaServer.Sessions;
-using Technosoftware.UaServer.Subscriptions;
 #endregion
 
 namespace Technosoftware.UaStandardServer
@@ -105,20 +97,17 @@ namespace Technosoftware.UaStandardServer
         /// </summary>
         public virtual void AddReverseConnection(Uri url, int timeout = 0, int maxSessionCount = 0, bool enabled = true)
         {
-            if (connections_.ContainsKey(url))
+            lock (connectionsLock_)
             {
-                throw new ArgumentException("Connection for specified clientUrl is already configured", nameof(url));
-            }
-            else
-            {
-                var reverseConnection = new UaReverseConnectProperty(url, timeout, maxSessionCount, false, enabled);
-                lock (connectionsLock_)
+                if (connections_.ContainsKey(url))
                 {
-                    connections_[url] = reverseConnection;
-                    Utils.LogInfo("Reverse Connection added for EndpointUrl: {0}.", url);
-
-                    StartTimer(false);
+                    throw new ArgumentException("Connection for specified clientUrl is already configured", nameof(url));
                 }
+
+                var reverseConnection = new UaReverseConnectProperty(url, timeout, maxSessionCount, false, enabled);
+                connections_[url] = reverseConnection;
+                Utils.LogInfo("Reverse Connection added for EndpointUrl: {0}.", url);
+                StartTimer(false);
             }
         }
 
@@ -152,7 +141,7 @@ namespace Technosoftware.UaStandardServer
         /// </summary>
         public virtual ReadOnlyDictionary<Uri, UaReverseConnectProperty> GetReverseConnections()
         {
-            lock (connections_)
+            lock (connectionsLock_)
             {
                 return new ReadOnlyDictionary<Uri, UaReverseConnectProperty>(connections_);
             }
