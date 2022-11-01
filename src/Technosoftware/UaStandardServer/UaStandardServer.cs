@@ -346,22 +346,6 @@ namespace Technosoftware.UaStandardServer
         }
         #endregion
 
-        #region Public Properties
-        /// <summary>The product the license was issued for.</summary>
-        public string Product { get; set; }
-
-        /// <summary>
-        ///     Indicates whether the server must be restarted. This is mainly the case if the server is used in evaluation mode
-        ///     and the 90 minutes evaluation time expired.
-        /// </summary>
-        public bool RestartRequired => Opc.Ua.LicenseHandler.IsExpired;
-
-        /// <summary>
-        ///     Indicates whether the server should use reverse connect or not.
-        /// </summary>
-        public bool UseReverseConnect { get; set; }
-        #endregion
-
         #region Private Fields
         private Timer reverseConnectTimer_;
         private int connectInterval_;
