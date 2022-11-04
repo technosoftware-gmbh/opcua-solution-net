@@ -1,6 +1,6 @@
 #region Copyright (c) 2022 Technosoftware GmbH. All rights reserved
 //-----------------------------------------------------------------------------
-//Copyright (c) 2022 Technosoftware GmbH. All rights reserved
+// Copyright (c) 2022 Technosoftware GmbH. All rights reserved
 // Web: https://technosoftware.com 
 //
 // The Software is based on the OPC Foundation MIT License. 
