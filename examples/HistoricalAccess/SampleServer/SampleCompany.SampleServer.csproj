@@ -23,6 +23,7 @@
   <ItemGroup>
     <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.5.2" />
     <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.5.2" />
+    <PackageReference Include="Technosoftware.UaSolution.UaBaseServer" Version="2.5.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -54,10 +55,6 @@
     <EmbeddedResource Include="Data\Sample\UInt32.txt" />
     <EmbeddedResource Include="Data\Sample\UInt64.txt" />
     <Content Include="Data.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Technosoftware\UaBaseServer\Technosoftware.UaBaseServer.csproj" />
   </ItemGroup>
 
   <ItemGroup>
