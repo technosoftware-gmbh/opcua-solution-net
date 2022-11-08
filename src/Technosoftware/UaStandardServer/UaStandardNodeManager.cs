@@ -57,6 +57,7 @@ namespace Technosoftware.UaStandardServer
         /// <returns>The new NodeId.</returns>
         public override NodeId Create(ISystemContext context, NodeState node)
         {
+            if (node == null) throw new ArgumentNullException(nameof(node));
             if (node is BaseInstanceState instance && instance.Parent != null)
             {
                 if (instance.Parent.NodeId.Identifier is string id)
@@ -441,13 +442,15 @@ namespace Technosoftware.UaStandardServer
                 ContainsNoLoops = true
             };
 
-            if (!externalReferences.TryGetValue(ObjectIds.ViewsFolder, out var references))
+            if (externalReferences != null)
             {
-                externalReferences[ObjectIds.ViewsFolder] = references = new List<IReference>();
+                if (!externalReferences.TryGetValue(ObjectIds.ViewsFolder, out var references))
+                {
+                    externalReferences[ObjectIds.ViewsFolder] = references = new List<IReference>();
+                }
+                viewState.AddReference(ReferenceTypeIds.Organizes, true, ObjectIds.ViewsFolder);
+                references.Add(new NodeStateReference(ReferenceTypeIds.Organizes, false, viewState.NodeId));
             }
-
-            viewState.AddReference(ReferenceTypeIds.Organizes, true, ObjectIds.ViewsFolder);
-            references.Add(new NodeStateReference(ReferenceTypeIds.Organizes, false, viewState.NodeId));
 
             if (parent != null)
             {
@@ -508,62 +511,64 @@ namespace Technosoftware.UaStandardServer
             RolePermissionTypeCollection rolePermissions = null,
             RolePermissionTypeCollection userRolePermissions = null)
         {
-            return CreateBaseDataVariableState(parent, browseName, displayName, description, (uint)dataType, valueRank,
-                accessLevel, initialValue, writeMask, userWriteMask, rolePermissions, userRolePermissions);
+            if (displayName == null)
+            {
+                displayName = new LocalizedText("");
+            }
+
+            if (description == null)
+            {
+                description = new LocalizedText("");
+            }
+
+            if (rolePermissions == null)
+            {
+                rolePermissions = new RolePermissionTypeCollection();
+            }
+
+            if (userRolePermissions == null)
+            {
+                userRolePermissions = new RolePermissionTypeCollection();
+            }
+
+            var baseDataVariableTypeState = new BaseDataVariableState(parent)
+            {
+                SymbolicName = displayName.ToString(),
+                ReferenceTypeId = ReferenceTypes.Organizes,
+                TypeDefinitionId = VariableTypeIds.BaseDataVariableType,
+                NodeId = new NodeId(browseName, NamespaceIndex),
+                BrowseName = new QualifiedName(browseName, NamespaceIndex),
+                DisplayName = displayName,
+                Description = description,
+                WriteMask = writeMask,
+                UserWriteMask = userWriteMask,
+                RolePermissions = rolePermissions,
+                UserRolePermissions = userRolePermissions,
+                DataType = (uint)dataType,
+                ValueRank = valueRank,
+                AccessLevel = accessLevel,
+                UserAccessLevel = accessLevel,
+                Historizing = false
+            };
+
+            baseDataVariableTypeState.Value = initialValue ?? GetNewValue(baseDataVariableTypeState);
+            baseDataVariableTypeState.StatusCode = StatusCodes.Good;
+            baseDataVariableTypeState.Timestamp = DateTime.UtcNow;
+
+            if (valueRank == ValueRanks.OneDimension)
+            {
+                baseDataVariableTypeState.ArrayDimensions = new ReadOnlyList<uint>(new List<uint> { 0 });
+            }
+            else if (valueRank == ValueRanks.TwoDimensions)
+            {
+                baseDataVariableTypeState.ArrayDimensions = new ReadOnlyList<uint>(new List<uint> { 0, 0 });
+            }
+
+            parent?.AddChild(baseDataVariableTypeState);
+
+            return baseDataVariableTypeState;
         }
 
-        /// <summary>Creates a new DataVariable NodeClass.</summary>
-        /// <param name="parent">The parent NodeState object the new DataVariable NodeClass will be created in.</param>
-        /// <param name="browseName">Nodes have a BrowseName Attribute that is used as a non-localized human-readable name when browsing the AddressSpace to create paths out of BrowseNames. The
-        /// TranslateBrowsePathsToNodeIds Service defined in OPC 10000-4 can be used to follow a path constructed of BrowseNames, e.g. /Static/Simple Types</param>
-        /// <param name="displayName">
-        ///   <para>The DisplayName Attribute contains the localized name of the Node, e.g. Simple Types. Clients should use this Attribute if they want to display the name of
-        /// the Node to the user. They should not use the BrowseName for this purpose.</para>
-        ///   <para>The string part of the DisplayName is restricted to 512 characters.</para>
-        /// </param>
-        /// <param name="description">The optional Description Attribute shall explain the meaning of the Node in a localized text using the same mechanisms for localization as described for the
-        /// DisplayName.</param>
-        /// <param name="dataType">
-        ///     The Expanded Node Id of the node used as data type of the new variable.
-        /// </param>
-        /// <param name="valueRank">
-        ///     The value rank of the new variable, e.g. <see cref="ValueRanks.Scalar" />. See
-        ///     <see cref="ValueRanks" /> for all possible value ranks.
-        /// </param>
-        /// <param name="accessLevel">
-        ///     The access level of the new variable, e.g. <see cref="AccessLevels.CurrentRead" />. See
-        ///     <see cref="AccessLevels" /> for all possible access levels.
-        /// </param>
-        /// <param name="initialValue">The initial value. If null a default value is used as initial value.</param>
-        /// <param name="writeMask">
-        ///   <para>The optional WriteMask Attribute exposes the possibilities of a client to write the Attributes of the Node. The WriteMask Attribute does not take any user
-        /// access rights into account, that is, although an Attribute is writable this may be restricted to a certain user/user group.</para>
-        ///   <para>If the OPC UA Server does not have the ability to get the WriteMask information for a specific Attribute from the underlying system, it should state that it
-        /// is writable. If a write operation is called on the Attribute, the Server should transfer this request and return the corresponding StatusCode if such a request
-        /// is rejected. StatusCodes are defined in OPC 10000-4.</para>
-        /// </param>
-        /// <param name="userWriteMask">
-        ///   <para>The optional UserWriteMask Attribute exposes the possibilities of a client to write the Attributes of the Node taking user access rights into account. It
-        /// uses the AttributeWriteMask DataType which is defined in 0.</para>
-        ///   <para>The UserWriteMask Attribute can only further restrict the WriteMask Attribute, when it is set to not writable in the general case that applies for every
-        /// user.</para>
-        ///   <para>Clients cannot assume an Attribute can be written based on the UserWriteMask Attribute.It is possible that the Server may return an access denied error due
-        /// to some server specific change which was not reflected in the state of this Attribute at the time the Client accessed it.</para>
-        /// </param>
-        /// <param name="rolePermissions">The optional RolePermissions Attribute specifies the Permissions that apply to a Node for all Roles which have access to the Node.</param>
-        /// <param name="userRolePermissions">The optional UserRolePermissions Attribute specifies the Permissions that apply to a Node for all Roles granted to current Session.</param>
-        /// <returns>The created <see cref="BaseDataVariableState" /></returns>
-        protected BaseDataVariableState CreateBaseDataVariableState(NodeState parent, string browseName,
-            LocalizedText displayName, LocalizedText description, ExpandedNodeId dataType, int valueRank,
-            byte accessLevel, object initialValue, AttributeWriteMask writeMask = AttributeWriteMask.None,
-            AttributeWriteMask userWriteMask = AttributeWriteMask.None,
-            RolePermissionTypeCollection rolePermissions = null,
-            RolePermissionTypeCollection userRolePermissions = null)
-        {
-            return CreateBaseDataVariableState(parent, browseName, displayName, description, (NodeId)dataType, valueRank,
-                accessLevel, initialValue, writeMask, userWriteMask, rolePermissions, userRolePermissions);
-        }
-                
         /// <summary>Creates a new DataVariable NodeClass.</summary>
         /// <param name="parent">The parent NodeState object the new DataVariable NodeClass will be created in.</param>
         /// <param name="browseName">Nodes have a BrowseName Attribute that is used as a non-localized human-readable name when browsing the AddressSpace to create paths out of BrowseNames. The
@@ -646,6 +651,112 @@ namespace Technosoftware.UaStandardServer
                 RolePermissions = rolePermissions,
                 UserRolePermissions = userRolePermissions,
                 DataType = dataType,
+                ValueRank = valueRank,
+                AccessLevel = accessLevel,
+                UserAccessLevel = accessLevel,
+                Historizing = false
+            };
+
+            baseDataVariableTypeState.Value = initialValue ?? GetNewValue(baseDataVariableTypeState);
+            baseDataVariableTypeState.StatusCode = StatusCodes.Good;
+            baseDataVariableTypeState.Timestamp = DateTime.UtcNow;
+
+            if (valueRank == ValueRanks.OneDimension)
+            {
+                baseDataVariableTypeState.ArrayDimensions = new ReadOnlyList<uint>(new List<uint> { 0 });
+            }
+            else if (valueRank == ValueRanks.TwoDimensions)
+            {
+                baseDataVariableTypeState.ArrayDimensions = new ReadOnlyList<uint>(new List<uint> { 0, 0 });
+            }
+
+            parent?.AddChild(baseDataVariableTypeState);
+
+            return baseDataVariableTypeState;
+        }
+
+        /// <summary>Creates a new DataVariable NodeClass.</summary>
+        /// <param name="parent">The parent NodeState object the new DataVariable NodeClass will be created in.</param>
+        /// <param name="browseName">Nodes have a BrowseName Attribute that is used as a non-localized human-readable name when browsing the AddressSpace to create paths out of BrowseNames. The
+        /// TranslateBrowsePathsToNodeIds Service defined in OPC 10000-4 can be used to follow a path constructed of BrowseNames, e.g. /Static/Simple Types</param>
+        /// <param name="displayName">
+        ///   <para>The DisplayName Attribute contains the localized name of the Node, e.g. Simple Types. Clients should use this Attribute if they want to display the name of
+        /// the Node to the user. They should not use the BrowseName for this purpose.</para>
+        ///   <para>The string part of the DisplayName is restricted to 512 characters.</para>
+        /// </param>
+        /// <param name="description">The optional Description Attribute shall explain the meaning of the Node in a localized text using the same mechanisms for localization as described for the
+        /// DisplayName.</param>
+        /// <param name="dataType">
+        ///     The Expanded Node Id of the node used as data type of the new variable.
+        /// </param>
+        /// <param name="valueRank">
+        ///     The value rank of the new variable, e.g. <see cref="ValueRanks.Scalar" />. See
+        ///     <see cref="ValueRanks" /> for all possible value ranks.
+        /// </param>
+        /// <param name="accessLevel">
+        ///     The access level of the new variable, e.g. <see cref="AccessLevels.CurrentRead" />. See
+        ///     <see cref="AccessLevels" /> for all possible access levels.
+        /// </param>
+        /// <param name="initialValue">The initial value. If null a default value is used as initial value.</param>
+        /// <param name="writeMask">
+        ///   <para>The optional WriteMask Attribute exposes the possibilities of a client to write the Attributes of the Node. The WriteMask Attribute does not take any user
+        /// access rights into account, that is, although an Attribute is writable this may be restricted to a certain user/user group.</para>
+        ///   <para>If the OPC UA Server does not have the ability to get the WriteMask information for a specific Attribute from the underlying system, it should state that it
+        /// is writable. If a write operation is called on the Attribute, the Server should transfer this request and return the corresponding StatusCode if such a request
+        /// is rejected. StatusCodes are defined in OPC 10000-4.</para>
+        /// </param>
+        /// <param name="userWriteMask">
+        ///   <para>The optional UserWriteMask Attribute exposes the possibilities of a client to write the Attributes of the Node taking user access rights into account. It
+        /// uses the AttributeWriteMask DataType which is defined in 0.</para>
+        ///   <para>The UserWriteMask Attribute can only further restrict the WriteMask Attribute, when it is set to not writable in the general case that applies for every
+        /// user.</para>
+        ///   <para>Clients cannot assume an Attribute can be written based on the UserWriteMask Attribute.It is possible that the Server may return an access denied error due
+        /// to some server specific change which was not reflected in the state of this Attribute at the time the Client accessed it.</para>
+        /// </param>
+        /// <param name="rolePermissions">The optional RolePermissions Attribute specifies the Permissions that apply to a Node for all Roles which have access to the Node.</param>
+        /// <param name="userRolePermissions">The optional UserRolePermissions Attribute specifies the Permissions that apply to a Node for all Roles granted to current Session.</param>
+        /// <returns>The created <see cref="BaseDataVariableState" /></returns>
+        protected BaseDataVariableState CreateBaseDataVariableState(NodeState parent, string browseName,
+            LocalizedText displayName, LocalizedText description, ExpandedNodeId dataType, int valueRank,
+            byte accessLevel, object initialValue, AttributeWriteMask writeMask = AttributeWriteMask.None,
+            AttributeWriteMask userWriteMask = AttributeWriteMask.None,
+            RolePermissionTypeCollection rolePermissions = null,
+            RolePermissionTypeCollection userRolePermissions = null)
+        {
+            if (displayName == null)
+            {
+                displayName = new LocalizedText("");
+            }
+
+            if (description == null)
+            {
+                description = new LocalizedText("");
+            }
+
+            if (rolePermissions == null)
+            {
+                rolePermissions = new RolePermissionTypeCollection();
+            }
+
+            if (userRolePermissions == null)
+            {
+                userRolePermissions = new RolePermissionTypeCollection();
+            }
+
+            var baseDataVariableTypeState = new BaseDataVariableState(parent)
+            {
+                SymbolicName = displayName.ToString(),
+                ReferenceTypeId = ReferenceTypes.Organizes,
+                TypeDefinitionId = VariableTypeIds.BaseDataVariableType,
+                NodeId = new NodeId(browseName, NamespaceIndex),
+                BrowseName = new QualifiedName(browseName, NamespaceIndex),
+                DisplayName = displayName,
+                Description = description,
+                WriteMask = writeMask,
+                UserWriteMask = userWriteMask,
+                RolePermissions = rolePermissions,
+                UserRolePermissions = userRolePermissions,
+                DataType = (NodeId)dataType,
                 ValueRank = valueRank,
                 AccessLevel = accessLevel,
                 UserAccessLevel = accessLevel,
@@ -760,13 +871,15 @@ namespace Technosoftware.UaStandardServer
                 Value = null
             };
 
-            if (!externalReferences.TryGetValue(VariableTypeIds.BaseDataVariableType, out var references))
+            if (externalReferences != null)
             {
-                externalReferences[VariableTypeIds.BaseDataVariableType] = references = new List<IReference>();
+                if (!externalReferences.TryGetValue(VariableTypeIds.BaseDataVariableType, out var references))
+                {
+                    externalReferences[VariableTypeIds.BaseDataVariableType] = references = new List<IReference>();
+                }
+                references.Add(new NodeStateReference(ReferenceTypes.HasSubtype, false, baseDataVariableTypeState.NodeId));
             }
-
-            references.Add(new NodeStateReference(ReferenceTypes.HasSubtype, false, baseDataVariableTypeState.NodeId));
-
+            
             if (parent != null)
             {
                 parent.AddReference(ReferenceTypes.Organizes, false, baseDataVariableTypeState.NodeId);
@@ -854,13 +967,15 @@ namespace Technosoftware.UaStandardServer
                 IsAbstract = false
             };
 
-            if (!externalReferences.TryGetValue(ObjectTypeIds.BaseObjectType, out var references))
+            if (externalReferences != null)   
             {
-                externalReferences[ObjectTypeIds.BaseObjectType] = references = new List<IReference>();
+                if (!externalReferences.TryGetValue(ObjectTypeIds.BaseObjectType, out var references))
+                {
+                    externalReferences[ObjectTypeIds.BaseObjectType] = references = new List<IReference>();
+                }
+                references.Add(new NodeStateReference(ReferenceTypes.HasSubtype, false, baseObjectTypeState.NodeId));
             }
-
-            references.Add(new NodeStateReference(ReferenceTypes.HasSubtype, false, baseObjectTypeState.NodeId));
-
+            
             if (parent != null)
             {
                 parent.AddReference(ReferenceTypes.Organizes, false, baseObjectTypeState.NodeId);
@@ -945,12 +1060,14 @@ namespace Technosoftware.UaStandardServer
                 IsAbstract = false
             };
 
-            if (!externalReferences.TryGetValue(DataTypeIds.Structure, out var references))
+            if (externalReferences != null)
             {
-                externalReferences[DataTypeIds.Structure] = references = new List<IReference>();
+                if (!externalReferences.TryGetValue(DataTypeIds.Structure, out var references))
+                {
+                    externalReferences[DataTypeIds.Structure] = references = new List<IReference>();
+                }
+                references.Add(new NodeStateReference(ReferenceTypeIds.HasSubtype, false, type.NodeId));
             }
-
-            references.Add(new NodeStateReference(ReferenceTypeIds.HasSubtype, false, type.NodeId));
 
             if (parent != null)
             {
@@ -1140,13 +1257,14 @@ namespace Technosoftware.UaStandardServer
             variable.StatusCode = StatusCodes.Good;
             variable.Timestamp = DateTime.UtcNow;
 
-            if (valueRank == ValueRanks.OneDimension)
+            switch (valueRank)
             {
-                variable.ArrayDimensions = new ReadOnlyList<uint>(new List<uint> { 0 });
-            }
-            else if (valueRank == ValueRanks.TwoDimensions)
-            {
-                variable.ArrayDimensions = new ReadOnlyList<uint>(new List<uint> { 0, 0 });
+                case ValueRanks.OneDimension:
+                    variable.ArrayDimensions = new ReadOnlyList<uint>(new List<uint> { 0 });
+                    break;
+                case ValueRanks.TwoDimensions:
+                    variable.ArrayDimensions = new ReadOnlyList<uint>(new List<uint> { 0, 0 });
+                    break;
             }
 
             if (definition != null)
@@ -1446,7 +1564,7 @@ namespace Technosoftware.UaStandardServer
             variable.EURange.AccessLevel = accessLevel;
             variable.EURange.UserAccessLevel = accessLevel;
 
-            variable.Value = initialValue ?? Opc.Ua.TypeInfo.GetDefaultValue(dataType, valueRank, ServerData.TypeTree);
+            variable.Value = initialValue ?? TypeInfo.GetDefaultValue(dataType, valueRank, ServerData.TypeTree);
 
             variable.StatusCode = StatusCodes.Good;
             variable.Timestamp = DateTime.UtcNow;
@@ -1823,16 +1941,22 @@ namespace Technosoftware.UaStandardServer
             variable.Timestamp = DateTime.UtcNow;
 
             // set the enumerated values
-            var values = new EnumValueType[enumNames.Length];
-            for (var ii = 0; ii < values.Length; ii++)
+            if (enumNames != null)
             {
-                values[ii] = new EnumValueType();
-                values[ii].Value = ii;
-                values[ii].Description = enumNames[ii];
-                values[ii].DisplayName = enumNames[ii];
+                var values = new EnumValueType[enumNames.Length];
+                for (var ii = 0; ii < values.Length; ii++)
+                {
+                    values[ii] = new EnumValueType
+                    {
+                        Value = ii,
+                        Description = enumNames[ii],
+                        DisplayName = enumNames[ii]
+                    };
+                }
+
+                variable.EnumValues.Value = values;
             }
 
-            variable.EnumValues.Value = values;
             variable.EnumValues.AccessLevel = accessLevel;
             variable.EnumValues.UserAccessLevel = accessLevel;
             variable.ValueAsText.Value = variable.EnumValues.Value[0].DisplayName;
@@ -1936,19 +2060,24 @@ namespace Technosoftware.UaStandardServer
         protected StatusCode AddInputArguments(MethodState parent, object nodeId,
             params Argument[] inputArguments)
         {
-            parent.InputArguments = new PropertyState<Argument[]>(parent)
+            if (parent != null)
             {
-                NodeId = new NodeId(nodeId, NamespaceIndex), BrowseName = BrowseNames.InputArguments
-            };
-            parent.InputArguments.DisplayName = parent.InputArguments.BrowseName.Name;
-            parent.InputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
-            parent.InputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
-            parent.InputArguments.DataType = DataTypeIds.Argument;
-            parent.InputArguments.ValueRank = ValueRanks.OneDimension;
+                parent.InputArguments = new PropertyState<Argument[]>(parent)
+                {
+                    NodeId = new NodeId(nodeId, NamespaceIndex), BrowseName = BrowseNames.InputArguments
+                };
+                parent.InputArguments.DisplayName = parent.InputArguments.BrowseName.Name;
+                parent.InputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
+                parent.InputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
+                parent.InputArguments.DataType = DataTypeIds.Argument;
+                parent.InputArguments.ValueRank = ValueRanks.OneDimension;
 
-            parent.InputArguments.Value = inputArguments;
+                parent.InputArguments.Value = inputArguments;
 
-            return StatusCodes.Good;
+                return StatusCodes.Good;
+            }
+
+            return StatusCodes.Bad;
         }
 
         /// <summary>Adds the output arguments to a method.</summary>
@@ -1974,19 +2103,23 @@ namespace Technosoftware.UaStandardServer
         /// <returns>A <see cref="StatusCode" /> code with the result of the operation.</returns>
         protected StatusCode AddOutputArguments(MethodState parent, object nodeId, params Argument[] outputArguments)
         {
-            parent.OutputArguments = new PropertyState<Argument[]>(parent)
+            if (parent != null)
             {
-                NodeId = new NodeId(nodeId, NamespaceIndex), BrowseName = BrowseNames.OutputArguments
-            };
-            parent.OutputArguments.DisplayName = parent.OutputArguments.BrowseName.Name;
-            parent.OutputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
-            parent.OutputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
-            parent.OutputArguments.DataType = DataTypeIds.Argument;
-            parent.OutputArguments.ValueRank = ValueRanks.OneDimension;
+                parent.OutputArguments = new PropertyState<Argument[]>(parent)
+                {
+                    NodeId = new NodeId(nodeId, NamespaceIndex), BrowseName = BrowseNames.OutputArguments
+                };
+                parent.OutputArguments.DisplayName = parent.OutputArguments.BrowseName.Name;
+                parent.OutputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
+                parent.OutputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
+                parent.OutputArguments.DataType = DataTypeIds.Argument;
+                parent.OutputArguments.ValueRank = ValueRanks.OneDimension;
 
-            parent.OutputArguments.Value = outputArguments;
+                parent.OutputArguments.Value = outputArguments;
+                return StatusCodes.Good;
+            }
 
-            return StatusCodes.Good;
+            return StatusCodes.Bad;
         }
 
         private object GetNewValue(BaseVariableState variable)
