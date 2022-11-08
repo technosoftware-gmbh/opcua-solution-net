@@ -36,19 +36,6 @@ namespace Technosoftware.UaStandardServer
         /// Initializes the node manager.
         /// </summary>
         /// <param name="uaServerData">The uaServerData data implementing the IUaServerData interface.</param>
-        /// <param name="namespaceUris">Array of namespaces that are used by the application.</param>
-        protected UaStandardNodeManager(
-            IUaServerData uaServerData,
-            params string[] namespaceUris)
-            :
-            this(uaServerData, null, namespaceUris)
-        {
-        }
-
-        /// <summary>
-        /// Initializes the node manager.
-        /// </summary>
-        /// <param name="uaServerData">The uaServerData data implementing the IUaServerData interface.</param>
         /// <param name="configuration">The used application configuration.</param>
         /// <param name="namespaceUris">Array of namespaces that are used by the application.</param>
         protected UaStandardNodeManager(
@@ -70,6 +57,7 @@ namespace Technosoftware.UaStandardServer
         /// <returns>The new NodeId.</returns>
         public override NodeId Create(ISystemContext context, NodeState node)
         {
+            if (node == null) throw new ArgumentNullException(nameof(node));
             if (node is BaseInstanceState instance && instance.Parent != null)
             {
                 if (instance.Parent.NodeId.Identifier is string id)
@@ -454,13 +442,15 @@ namespace Technosoftware.UaStandardServer
                 ContainsNoLoops = true
             };
 
-            if (!externalReferences.TryGetValue(ObjectIds.ViewsFolder, out var references))
+            if (externalReferences != null)
             {
-                externalReferences[ObjectIds.ViewsFolder] = references = new List<IReference>();
+                if (!externalReferences.TryGetValue(ObjectIds.ViewsFolder, out var references))
+                {
+                    externalReferences[ObjectIds.ViewsFolder] = references = new List<IReference>();
+                }
+                viewState.AddReference(ReferenceTypeIds.Organizes, true, ObjectIds.ViewsFolder);
+                references.Add(new NodeStateReference(ReferenceTypeIds.Organizes, false, viewState.NodeId));
             }
-
-            viewState.AddReference(ReferenceTypeIds.Organizes, true, ObjectIds.ViewsFolder);
-            references.Add(new NodeStateReference(ReferenceTypeIds.Organizes, false, viewState.NodeId));
 
             if (parent != null)
             {
@@ -881,13 +871,15 @@ namespace Technosoftware.UaStandardServer
                 Value = null
             };
 
-            if (!externalReferences.TryGetValue(VariableTypeIds.BaseDataVariableType, out var references))
+            if (externalReferences != null)
             {
-                externalReferences[VariableTypeIds.BaseDataVariableType] = references = new List<IReference>();
+                if (!externalReferences.TryGetValue(VariableTypeIds.BaseDataVariableType, out var references))
+                {
+                    externalReferences[VariableTypeIds.BaseDataVariableType] = references = new List<IReference>();
+                }
+                references.Add(new NodeStateReference(ReferenceTypes.HasSubtype, false, baseDataVariableTypeState.NodeId));
             }
-
-            references.Add(new NodeStateReference(ReferenceTypes.HasSubtype, false, baseDataVariableTypeState.NodeId));
-
+            
             if (parent != null)
             {
                 parent.AddReference(ReferenceTypes.Organizes, false, baseDataVariableTypeState.NodeId);
@@ -975,13 +967,15 @@ namespace Technosoftware.UaStandardServer
                 IsAbstract = false
             };
 
-            if (!externalReferences.TryGetValue(ObjectTypeIds.BaseObjectType, out var references))
+            if (externalReferences != null)   
             {
-                externalReferences[ObjectTypeIds.BaseObjectType] = references = new List<IReference>();
+                if (!externalReferences.TryGetValue(ObjectTypeIds.BaseObjectType, out var references))
+                {
+                    externalReferences[ObjectTypeIds.BaseObjectType] = references = new List<IReference>();
+                }
+                references.Add(new NodeStateReference(ReferenceTypes.HasSubtype, false, baseObjectTypeState.NodeId));
             }
-
-            references.Add(new NodeStateReference(ReferenceTypes.HasSubtype, false, baseObjectTypeState.NodeId));
-
+            
             if (parent != null)
             {
                 parent.AddReference(ReferenceTypes.Organizes, false, baseObjectTypeState.NodeId);
@@ -1066,12 +1060,14 @@ namespace Technosoftware.UaStandardServer
                 IsAbstract = false
             };
 
-            if (!externalReferences.TryGetValue(DataTypeIds.Structure, out var references))
+            if (externalReferences != null)
             {
-                externalReferences[DataTypeIds.Structure] = references = new List<IReference>();
+                if (!externalReferences.TryGetValue(DataTypeIds.Structure, out var references))
+                {
+                    externalReferences[DataTypeIds.Structure] = references = new List<IReference>();
+                }
+                references.Add(new NodeStateReference(ReferenceTypeIds.HasSubtype, false, type.NodeId));
             }
-
-            references.Add(new NodeStateReference(ReferenceTypeIds.HasSubtype, false, type.NodeId));
 
             if (parent != null)
             {
@@ -1261,13 +1257,14 @@ namespace Technosoftware.UaStandardServer
             variable.StatusCode = StatusCodes.Good;
             variable.Timestamp = DateTime.UtcNow;
 
-            if (valueRank == ValueRanks.OneDimension)
+            switch (valueRank)
             {
-                variable.ArrayDimensions = new ReadOnlyList<uint>(new List<uint> { 0 });
-            }
-            else if (valueRank == ValueRanks.TwoDimensions)
-            {
-                variable.ArrayDimensions = new ReadOnlyList<uint>(new List<uint> { 0, 0 });
+                case ValueRanks.OneDimension:
+                    variable.ArrayDimensions = new ReadOnlyList<uint>(new List<uint> { 0 });
+                    break;
+                case ValueRanks.TwoDimensions:
+                    variable.ArrayDimensions = new ReadOnlyList<uint>(new List<uint> { 0, 0 });
+                    break;
             }
 
             if (definition != null)
@@ -1567,7 +1564,7 @@ namespace Technosoftware.UaStandardServer
             variable.EURange.AccessLevel = accessLevel;
             variable.EURange.UserAccessLevel = accessLevel;
 
-            variable.Value = initialValue ?? Opc.Ua.TypeInfo.GetDefaultValue(dataType, valueRank, ServerData.TypeTree);
+            variable.Value = initialValue ?? TypeInfo.GetDefaultValue(dataType, valueRank, ServerData.TypeTree);
 
             variable.StatusCode = StatusCodes.Good;
             variable.Timestamp = DateTime.UtcNow;
@@ -1944,16 +1941,22 @@ namespace Technosoftware.UaStandardServer
             variable.Timestamp = DateTime.UtcNow;
 
             // set the enumerated values
-            var values = new EnumValueType[enumNames.Length];
-            for (var ii = 0; ii < values.Length; ii++)
+            if (enumNames != null)
             {
-                values[ii] = new EnumValueType();
-                values[ii].Value = ii;
-                values[ii].Description = enumNames[ii];
-                values[ii].DisplayName = enumNames[ii];
+                var values = new EnumValueType[enumNames.Length];
+                for (var ii = 0; ii < values.Length; ii++)
+                {
+                    values[ii] = new EnumValueType
+                    {
+                        Value = ii,
+                        Description = enumNames[ii],
+                        DisplayName = enumNames[ii]
+                    };
+                }
+
+                variable.EnumValues.Value = values;
             }
 
-            variable.EnumValues.Value = values;
             variable.EnumValues.AccessLevel = accessLevel;
             variable.EnumValues.UserAccessLevel = accessLevel;
             variable.ValueAsText.Value = variable.EnumValues.Value[0].DisplayName;
@@ -2057,19 +2060,24 @@ namespace Technosoftware.UaStandardServer
         protected StatusCode AddInputArguments(MethodState parent, object nodeId,
             params Argument[] inputArguments)
         {
-            parent.InputArguments = new PropertyState<Argument[]>(parent)
+            if (parent != null)
             {
-                NodeId = new NodeId(nodeId, NamespaceIndex), BrowseName = BrowseNames.InputArguments
-            };
-            parent.InputArguments.DisplayName = parent.InputArguments.BrowseName.Name;
-            parent.InputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
-            parent.InputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
-            parent.InputArguments.DataType = DataTypeIds.Argument;
-            parent.InputArguments.ValueRank = ValueRanks.OneDimension;
+                parent.InputArguments = new PropertyState<Argument[]>(parent)
+                {
+                    NodeId = new NodeId(nodeId, NamespaceIndex), BrowseName = BrowseNames.InputArguments
+                };
+                parent.InputArguments.DisplayName = parent.InputArguments.BrowseName.Name;
+                parent.InputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
+                parent.InputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
+                parent.InputArguments.DataType = DataTypeIds.Argument;
+                parent.InputArguments.ValueRank = ValueRanks.OneDimension;
 
-            parent.InputArguments.Value = inputArguments;
+                parent.InputArguments.Value = inputArguments;
 
-            return StatusCodes.Good;
+                return StatusCodes.Good;
+            }
+
+            return StatusCodes.Bad;
         }
 
         /// <summary>Adds the output arguments to a method.</summary>
@@ -2095,19 +2103,23 @@ namespace Technosoftware.UaStandardServer
         /// <returns>A <see cref="StatusCode" /> code with the result of the operation.</returns>
         protected StatusCode AddOutputArguments(MethodState parent, object nodeId, params Argument[] outputArguments)
         {
-            parent.OutputArguments = new PropertyState<Argument[]>(parent)
+            if (parent != null)
             {
-                NodeId = new NodeId(nodeId, NamespaceIndex), BrowseName = BrowseNames.OutputArguments
-            };
-            parent.OutputArguments.DisplayName = parent.OutputArguments.BrowseName.Name;
-            parent.OutputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
-            parent.OutputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
-            parent.OutputArguments.DataType = DataTypeIds.Argument;
-            parent.OutputArguments.ValueRank = ValueRanks.OneDimension;
+                parent.OutputArguments = new PropertyState<Argument[]>(parent)
+                {
+                    NodeId = new NodeId(nodeId, NamespaceIndex), BrowseName = BrowseNames.OutputArguments
+                };
+                parent.OutputArguments.DisplayName = parent.OutputArguments.BrowseName.Name;
+                parent.OutputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
+                parent.OutputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
+                parent.OutputArguments.DataType = DataTypeIds.Argument;
+                parent.OutputArguments.ValueRank = ValueRanks.OneDimension;
 
-            parent.OutputArguments.Value = outputArguments;
+                parent.OutputArguments.Value = outputArguments;
+                return StatusCodes.Good;
+            }
 
-            return StatusCodes.Good;
+            return StatusCodes.Bad;
         }
 
         private object GetNewValue(BaseVariableState variable)
