@@ -2,7 +2,10 @@
 ## OPC UA Solution .NET - 2.5.3
 
 ### Changes
+- Only load optional bindings assemblies if needed.
 - Server: Provided UaBaseServer as nuget package.
+- Server: Fix audit event that may throw exception when server is halted.
+
 
 -------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 2.5.2
