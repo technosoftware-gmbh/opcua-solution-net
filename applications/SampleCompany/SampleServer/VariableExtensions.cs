@@ -1,4 +1,4 @@
-#region Copyright (c) 2022 Technosoftware GmbH. All rights reserved
+﻿#region Copyright (c) 2022 Technosoftware GmbH. All rights reserved
 //-----------------------------------------------------------------------------
 // Copyright (c) 2022 Technosoftware GmbH. All rights reserved
 // Web: https://technosoftware.com 
@@ -13,10 +13,14 @@
 using Opc.Ua;
 #endregion
 
-namespace Technosoftware.Servers.ReferenceServer
+namespace SampleCompany.SampleServer
 {
-    public interface ITokenValidator
+    public static class VariableExtensions
     {
-        IUserIdentity ValidateToken(IssuedIdentityToken issuedToken);
+        public static BaseDataVariableState MinimumSamplingInterval(this BaseDataVariableState variable, int minimumSamplingInterval)
+        {
+            variable.MinimumSamplingInterval = minimumSamplingInterval;
+            return variable;
+        }
     }
 }

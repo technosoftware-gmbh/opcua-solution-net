@@ -12,7 +12,7 @@
 #region Using Directives
 using Opc.Ua;
 
-using Technosoftware.ReferenceServer;
+using Technosoftware.Servers.ReferenceServer;
 #endregion
 
 namespace Technosoftware.UaClient.Tests

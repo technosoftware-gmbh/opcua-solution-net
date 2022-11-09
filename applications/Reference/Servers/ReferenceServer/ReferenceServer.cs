@@ -23,7 +23,7 @@ using Technosoftware.UaServer.Configuration;
 using Technosoftware.UaServer.NodeManager;
 #endregion
 
-namespace Technosoftware.ReferenceServer
+namespace Technosoftware.Servers.ReferenceServer
 {
     /// <summary>
     /// Implements a basic OPC UA Server.
@@ -40,8 +40,8 @@ namespace Technosoftware.ReferenceServer
     {
         #region Properties
         public ITokenValidator TokenValidator { get; set; }
-
         #endregion
+
         #region Overridden Methods
         /// <summary>
         /// Creates the node managers for the server.

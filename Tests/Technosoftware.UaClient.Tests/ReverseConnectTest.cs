@@ -22,7 +22,7 @@ using NUnit.Framework;
 using Opc.Ua;
 
 using Technosoftware.UaStandardServer.Tests;
-using Technosoftware.ReferenceServer;
+using Technosoftware.Servers.ReferenceServer;
 #endregion
 
 namespace Technosoftware.UaClient.Tests
@@ -49,7 +49,7 @@ namespace Technosoftware.UaClient.Tests
             PkiRoot = Path.GetTempPath() + Path.GetRandomFileName();
 
             // start ref server with reverse connect
-            ServerFixture = new ServerFixture<ReferenceServer.ReferenceServer> {
+            ServerFixture = new ServerFixture<ReferenceServer> {
                 AutoAccept = true,
                 SecurityNone = true,
                 ReverseConnectTimeout = MaxTimeout,

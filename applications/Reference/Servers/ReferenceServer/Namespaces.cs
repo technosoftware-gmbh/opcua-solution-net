@@ -12,7 +12,7 @@
 #region Using Directives
 #endregion
 
-namespace Technosoftware.ReferenceServer
+namespace Technosoftware.Servers.ReferenceServer
 {
     /// <summary>
     /// Defines constants for namespaces used by the servers.

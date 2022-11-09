@@ -29,33 +29,23 @@ using Technosoftware.UaServer;
 using Technosoftware.UaStandardServer;
 #endregion
 
-namespace Technosoftware.Servers.ReferenceServer
+namespace SampleCompany.SampleServer
 {
     /// <summary>
     /// A node manager for a server that exposes several variables.
     /// </summary>
-    public class ReferenceServerNodeManager : UaStandardNodeManager
+    public class SampleServerNodeManager : UaStandardNodeManager
     {
         #region Constructors, Destructor, Initialization
-
         /// <summary>
         /// Initializes the node manager.
         /// </summary>
-        public ReferenceServerNodeManager(
+        public SampleServerNodeManager(
             IUaServerData uaServer,
             ApplicationConfiguration configuration)
-            : base(uaServer, configuration, Namespaces.ReferenceServer)
+            : base(uaServer, configuration, Namespaces.SampleServer)
         {
             SystemContext.NodeIdFactory = this;
-
-            // get the configuration for the node manager.
-            configuration_ = configuration.ParseExtension<ReferenceServerConfiguration>();
-
-            // use suitable defaults if no configuration exists.
-            if (configuration_ == null)
-            {
-                configuration_ = new ReferenceServerConfiguration();
-            }
 
             dynamicNodes_ = new List<BaseDataVariableState>();
         }
@@ -63,83 +53,45 @@ namespace Technosoftware.Servers.ReferenceServer
 
         #region IDisposable Members
         /// <summary>
-        /// An overrideable version of the Dispose.
+        /// Dispose(bool disposing) executes in two distinct scenarios.
+        /// If disposing equals true, the method has been called directly
+        /// or indirectly by a user's code. Managed and unmanaged resources
+        /// can be disposed.
+        /// If disposing equals false, the method has been called by the
+        /// runtime from inside the finalizer and you should not reference
+        /// other objects. Only unmanaged resources can be disposed.
         /// </summary>
+        /// <param name="disposing">If disposing equals true, the method has been called directly
+        /// or indirectly by a user's code. Managed and unmanaged resources
+        /// can be disposed.
+        /// If disposing equals false, the method has been called by the
+        /// runtime from inside the finalizer and you should not reference
+        /// other objects. Only unmanaged resources can be disposed.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            // Check to see if Dispose has already been called.
+            if (!disposed_)
             {
-                // TBD
-            }
-            base.Dispose(disposing);
-        }
-        #endregion
-
-        #region INodeIdFactory Members
-        /// <summary>
-        /// Creates the NodeId for the specified node.
-        /// </summary>
-        public override NodeId Create(ISystemContext context, NodeState node)
-        {
-            if (node is BaseInstanceState instance && instance.Parent != null)
-            {
-                if (instance.Parent.NodeId.Identifier is string id)
+                lock (lockDisposable_)
                 {
-                    return new NodeId(id + "_" + instance.SymbolicName, instance.Parent.NodeId.NamespaceIndex);
+                    // If disposing equals true, dispose all managed
+                    // and unmanaged resources.
+                    if (disposing)
+                    {
+                        // Dispose managed resources.
+                        simulationTimer_?.Dispose();
+                    }
+
+                    // Call the appropriate methods to clean up
+                    // unmanaged resources here.
+                    // If disposing is false,
+                    // only the following code is executed.
+
+                    // Disposing has been done.
+                    disposed_ = true;
                 }
             }
-
-            return node.NodeId;
-        }
-        #endregion
-
-        #region Private Helper Functions
-        private static bool IsAnalogType(BuiltInType builtInType)
-        {
-            switch (builtInType)
-            {
-                case BuiltInType.Byte:
-                case BuiltInType.UInt16:
-                case BuiltInType.UInt32:
-                case BuiltInType.UInt64:
-                case BuiltInType.SByte:
-                case BuiltInType.Int16:
-                case BuiltInType.Int32:
-                case BuiltInType.Int64:
-                case BuiltInType.Float:
-                case BuiltInType.Double:
-                    return true;
-            }
-            return false;
-        }
-
-        private static Opc.Ua.Range GetAnalogRange(BuiltInType builtInType)
-        {
-            switch (builtInType)
-            {
-                case BuiltInType.UInt16:
-                    return new Opc.Ua.Range(UInt16.MaxValue, UInt16.MinValue);
-                case BuiltInType.UInt32:
-                    return new Opc.Ua.Range(UInt32.MaxValue, UInt32.MinValue);
-                case BuiltInType.UInt64:
-                    return new Opc.Ua.Range(UInt64.MaxValue, UInt64.MinValue);
-                case BuiltInType.SByte:
-                    return new Opc.Ua.Range(SByte.MaxValue, SByte.MinValue);
-                case BuiltInType.Int16:
-                    return new Opc.Ua.Range(Int16.MaxValue, Int16.MinValue);
-                case BuiltInType.Int32:
-                    return new Opc.Ua.Range(Int32.MaxValue, Int32.MinValue);
-                case BuiltInType.Int64:
-                    return new Opc.Ua.Range(Int64.MaxValue, Int64.MinValue);
-                case BuiltInType.Float:
-                    return new Opc.Ua.Range(Single.MaxValue, Single.MinValue);
-                case BuiltInType.Double:
-                    return new Opc.Ua.Range(Double.MaxValue, Double.MinValue);
-                case BuiltInType.Byte:
-                    return new Opc.Ua.Range(Byte.MaxValue, Byte.MinValue);
-                default:
-                    return new Opc.Ua.Range(SByte.MaxValue, SByte.MinValue);
-            }
+            base.Dispose(disposing);
         }
         #endregion
 
@@ -1955,8 +1907,61 @@ namespace Technosoftware.Servers.ReferenceServer
         #region Overrides
         #endregion
 
+        #region Private Helper Functions
+        private static bool IsAnalogType(BuiltInType builtInType)
+        {
+            switch (builtInType)
+            {
+                case BuiltInType.Byte:
+                case BuiltInType.UInt16:
+                case BuiltInType.UInt32:
+                case BuiltInType.UInt64:
+                case BuiltInType.SByte:
+                case BuiltInType.Int16:
+                case BuiltInType.Int32:
+                case BuiltInType.Int64:
+                case BuiltInType.Float:
+                case BuiltInType.Double:
+                    return true;
+            }
+            return false;
+        }
+
+        private static Opc.Ua.Range GetAnalogRange(BuiltInType builtInType)
+        {
+            switch (builtInType)
+            {
+                case BuiltInType.UInt16:
+                    return new Opc.Ua.Range(UInt16.MaxValue, UInt16.MinValue);
+                case BuiltInType.UInt32:
+                    return new Opc.Ua.Range(UInt32.MaxValue, UInt32.MinValue);
+                case BuiltInType.UInt64:
+                    return new Opc.Ua.Range(UInt64.MaxValue, UInt64.MinValue);
+                case BuiltInType.SByte:
+                    return new Opc.Ua.Range(SByte.MaxValue, SByte.MinValue);
+                case BuiltInType.Int16:
+                    return new Opc.Ua.Range(Int16.MaxValue, Int16.MinValue);
+                case BuiltInType.Int32:
+                    return new Opc.Ua.Range(Int32.MaxValue, Int32.MinValue);
+                case BuiltInType.Int64:
+                    return new Opc.Ua.Range(Int64.MaxValue, Int64.MinValue);
+                case BuiltInType.Float:
+                    return new Opc.Ua.Range(Single.MaxValue, Single.MinValue);
+                case BuiltInType.Double:
+                    return new Opc.Ua.Range(Double.MaxValue, Double.MinValue);
+                case BuiltInType.Byte:
+                    return new Opc.Ua.Range(Byte.MaxValue, Byte.MinValue);
+                default:
+                    return new Opc.Ua.Range(SByte.MaxValue, SByte.MinValue);
+            }
+        }
+        #endregion
+
         #region Private Fields
-        private ReferenceServerConfiguration configuration_;
+        // Track whether Dispose has been called.
+        private bool disposed_;
+        private readonly object lockDisposable_ = new object();
+
         private RandomSource randomSource_;
         private DataGenerator generator_;
         private Timer simulationTimer_;
@@ -1964,14 +1969,5 @@ namespace Technosoftware.Servers.ReferenceServer
         private bool simulationEnabled_ = true;
         private List<BaseDataVariableState> dynamicNodes_;
         #endregion
-    }
-
-    public static class VariableExtensions
-    {
-        public static BaseDataVariableState MinimumSamplingInterval(this BaseDataVariableState variable, int minimumSamplingInterval)
-        {
-            variable.MinimumSamplingInterval = minimumSamplingInterval;
-            return variable;
-        }
     }
 }

@@ -1,0 +1,60 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>$(AppTargetFramework)</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <AssemblyName>SampleCompany.SampleServer</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <PackageId>SampleCompany.SampleServer</PackageId>
+    <Company>SampleCompany</Company>
+    <Product>SampleCompany SampleServer</Product>
+    <Description>SampleCompany SampleServer</Description>
+    <Copyright>Copyright © 2022 SampleCompany</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <Choose>
+    <When Condition="Exists('Model\SampleCompany.SampleServer.Model.PredefinedNodes.uanodes')">
+      <ItemGroup>
+        <None Remove="Model\SampleCompany.SampleServer.Model.PredefinedNodes.uanodes" />
+      </ItemGroup>
+      <ItemGroup>
+        <EmbeddedResource Include="Model\SampleCompany.SampleServer.Model.PredefinedNodes.uanodes" />
+      </ItemGroup>
+    </When>
+  </Choose>
+
+  <ItemGroup Condition=" '$(NoHttps)' != 'true' ">
+    <PackageReference Include="Technosoftware.UaSolution.UaBindings.Https" Version="2.5.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Technosoftware.UaSolution.UaCore" Version="2.5.3" />
+    <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.5.3" />
+    <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.5.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.2" />
+    <PackageReference Include="Mono.Options" Version="6.12.0.148" />
+    <PackageReference Include="Serilog" Version="2.12.0" />
+    <PackageReference Include="Serilog.Expressions" Version="3.4.1" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+    <PackageReference Include="Serilog.Sinks.Debug" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Technosoftware\UaStandardServer\Technosoftware.UaStandardServer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="SampleCompany.SampleServer.Config.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

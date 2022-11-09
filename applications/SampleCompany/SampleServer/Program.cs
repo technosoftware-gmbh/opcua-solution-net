@@ -1,4 +1,4 @@
-#region Copyright (c) 2022 Technosoftware GmbH. All rights reserved
+﻿#region Copyright (c) 2022 Technosoftware GmbH. All rights reserved
 //-----------------------------------------------------------------------------
 // Copyright (c) 2022 Technosoftware GmbH. All rights reserved
 // Web: https://technosoftware.com 
@@ -13,14 +13,13 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+
 using Microsoft.Extensions.Logging;
 
 using Opc.Ua;
-
-using Technosoftware.Servers;
 #endregion
 
-namespace Technosoftware.ReferenceServer
+namespace SampleCompany.SampleServer
 {
     /// <summary>
     /// The program.
@@ -33,11 +32,11 @@ namespace Technosoftware.ReferenceServer
         public static async Task<int> Main(string[] args)
         {
             TextWriter output = Console.Out;
-            output.WriteLine("Technosoftware {0} OPC UA Reference Server", Utils.IsRunningOnMono() ? "Mono" : ".NET Core");
+            output.WriteLine("SampleCompany {0} OPC UA Sample Server", Utils.IsRunningOnMono() ? "Mono" : ".NET Core");
 
             // The application name and config file names
-            var applicationName = "Technosoftware.ReferenceServer";
-            var configSectionName = "Technosoftware.ReferenceServer";
+            var applicationName = "SampleCompany.SampleServer";
+            var configSectionName = "SampleCompany.SampleServer";
 
             // command line options
             bool showHelp = false;
@@ -73,7 +72,7 @@ namespace Technosoftware.ReferenceServer
                 }
 
                 // create the UA server
-                var server = new MyUaServer<Servers.ReferenceServer.ReferenceServer>(output) {
+                var server = new MyUaServer<SampleServer>(output) {
                     AutoAccept = autoAccept,
                     Password = password
                 };
@@ -104,9 +103,6 @@ namespace Technosoftware.ReferenceServer
                 // check or renew the certificate
                 output.WriteLine("Check the certificate.");
                 await server.CheckCertificateAsync(renewCertificate).ConfigureAwait(false);
-
-                // Create and add the node managers
-                server.Create(ServerUtils.NodeManagerFactories);
 
                 // start the server
                 output.WriteLine("Start the server.");

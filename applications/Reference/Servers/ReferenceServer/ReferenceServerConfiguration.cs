@@ -13,7 +13,7 @@
 using System.Runtime.Serialization;
 #endregion
 
-namespace Technosoftware.ReferenceServer
+namespace Technosoftware.Servers.ReferenceServer
 {
     /// <summary>
     /// Stores the configuration the Reference server.
