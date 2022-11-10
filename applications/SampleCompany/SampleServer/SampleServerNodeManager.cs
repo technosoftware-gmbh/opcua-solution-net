@@ -20,7 +20,6 @@ using System.Numerics;
 using Opc.Ua;
 using BrowseNames = Opc.Ua.BrowseNames;
 using ObjectIds = Opc.Ua.ObjectIds;
-using ReferenceTypeIds = Opc.Ua.ReferenceTypeIds;
 using ReferenceTypes = Opc.Ua.ReferenceTypes;
 
 using Opc.Ua.Test;
@@ -112,7 +111,11 @@ namespace SampleCompany.SampleServer
                 {
                     externalReferences[ObjectIds.ObjectsFolder] = References = new List<IReference>();
                 }
-
+                else
+                {
+                    References = references;
+                }
+                
                 var root = CreateFolderState(null, "CTT", "CTT", null);
 
                 var variables = new List<BaseDataVariableState>();

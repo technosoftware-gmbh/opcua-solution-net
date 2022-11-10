@@ -35,7 +35,7 @@ namespace SampleCompany.SampleServer
 
         #region Overridden Methods
         /// <inheritdoc/>
-        public override void Message(string text, bool ask)
+        public override void Message(string text, bool ask = false)
         {
             message_ = text;
             ask_ = ask;
@@ -48,12 +48,12 @@ namespace SampleCompany.SampleServer
             {
                 var message = new StringBuilder(message_);
                 message.Append(" (y/n, default y): ");
-                output_.Write(message.ToString());
+                await output_.WriteAsync(message.ToString());
 
                 try
                 {
                     ConsoleKeyInfo result = Console.ReadKey();
-                    output_.WriteLine();
+                    await output_.WriteLineAsync();
                     return await Task.FromResult((result.KeyChar == 'y') ||
                         (result.KeyChar == 'Y') || (result.KeyChar == '\r')).ConfigureAwait(false);
                 }
@@ -64,7 +64,7 @@ namespace SampleCompany.SampleServer
             }
             else
             {
-                output_.WriteLine(message_);
+                await output_.WriteLineAsync(message_);
             }
 
             return await Task.FromResult(true).ConfigureAwait(false);
@@ -78,7 +78,7 @@ namespace SampleCompany.SampleServer
         #endregion
 
         #region Private Fields
-        private TextWriter output_;
+        private readonly TextWriter output_;
         private string message_ = string.Empty;
         private bool ask_;
         #endregion

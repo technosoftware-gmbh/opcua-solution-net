@@ -17,6 +17,12 @@ namespace SampleCompany.SampleServer
 {
     public static class VariableExtensions
     {
+        /// <summary>
+        /// Set the minimum sampling interval supported by the variable.
+        /// </summary>
+        /// <param name="variable">The variable to set the MinimumSamplingInterval.</param>
+        /// <param name="minimumSamplingInterval">The minimum sampling interval.</param>
+        /// <returns></returns>
         public static BaseDataVariableState MinimumSamplingInterval(this BaseDataVariableState variable, int minimumSamplingInterval)
         {
             variable.MinimumSamplingInterval = minimumSamplingInterval;

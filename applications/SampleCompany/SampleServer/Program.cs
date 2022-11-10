@@ -44,7 +44,6 @@ namespace SampleCompany.SampleServer
             bool logConsole = false;
             bool appLog = false;
             bool renewCertificate = false;
-            bool shadowConfig = false;
             string password = null;
             int timeout = -1;
 
@@ -55,10 +54,9 @@ namespace SampleCompany.SampleServer
                 { "a|autoaccept", "auto accept certificates (for testing only)", a => autoAccept = a != null },
                 { "c|console", "log to console", c => logConsole = c != null },
                 { "l|log", "log app output", c => appLog = c != null },
-                { "p|password=", "optional password for private key", (string p) => password = p },
+                { "p|password=", "optional password for private key", p => password = p },
                 { "r|renew", "renew application certificate", r => renewCertificate = r != null },
                 { "t|timeout=", "timeout in seconds to exit application", (int t) => timeout = t * 1000 },
-                { "s|shadowconfig", "create configuration in pki root", s => shadowConfig = s != null },
             };
 
             try
@@ -81,49 +79,33 @@ namespace SampleCompany.SampleServer
                 output.WriteLine("Loading configuration from {0}.", configSectionName);
                 await server.LoadAsync(applicationName, configSectionName).ConfigureAwait(false);
 
-                // use the shadow config to map the config to an externally accessible location
-                if (shadowConfig)
-                {
-                    output.WriteLine("Using shadow configuration.");
-                    var shadowPath = Directory.GetParent(Path.GetDirectoryName(
-                        Utils.ReplaceSpecialFolderNames(server.Configuration.TraceConfiguration.OutputFilePath))).FullName;
-                    var shadowFilePath = Path.Combine(shadowPath, Path.GetFileName(server.Configuration.SourceFilePath));
-                    if (!File.Exists(shadowFilePath))
-                    {
-                        output.WriteLine("Create a copy of the config in the shadow location.");
-                        File.Copy(server.Configuration.SourceFilePath, shadowFilePath, true);
-                    }
-                    output.WriteLine("Reloading configuration from {0}.", shadowFilePath);
-                    await server.LoadAsync(applicationName, Path.Combine(shadowPath, configSectionName)).ConfigureAwait(false);
-                }
-
                 // setup the logging
                 ConsoleUtils.ConfigureLogging(server.Configuration, applicationName, logConsole, LogLevel.Information);
 
                 // check or renew the certificate
-                output.WriteLine("Check the certificate.");
+                await output.WriteLineAsync("Check the certificate.");
                 await server.CheckCertificateAsync(renewCertificate).ConfigureAwait(false);
 
                 // start the server
-                output.WriteLine("Start the server.");
+                await output.WriteLineAsync("Start the server.");
                 await server.StartAsync().ConfigureAwait(false);
 
-                output.WriteLine("Server started. Press Ctrl-C to exit...");
+                await output.WriteLineAsync("Server started. Press Ctrl-C to exit...");
 
                 // wait for timeout or Ctrl-C
                 var quitEvent = ConsoleUtils.CtrlCHandler();
-                bool ctrlc = quitEvent.WaitOne(timeout);
+                quitEvent.WaitOne(timeout);
 
                 // stop server. May have to wait for clients to disconnect.
-                output.WriteLine("Server stopped. Waiting for exit...");
+                await output.WriteLineAsync("Server stopped. Waiting for exit...");
                 await server.StopAsync().ConfigureAwait(false);
 
                 return (int)ExitCode.Ok;
             }
-            catch (ErrorExitException eee)
+            catch (ErrorExitException errorExitException)
             {
-                output.WriteLine("The application exits with error: {0}", eee.Message);
-                return (int)eee.ExitCode;
+                output.WriteLine("The application exits with error: {0}", errorExitException.Message);
+                return (int)errorExitException.ExitCode;
             }
         }
     }
