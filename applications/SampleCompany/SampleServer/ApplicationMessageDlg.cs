@@ -27,6 +27,10 @@ namespace SampleCompany.SampleServer
     public class ApplicationMessageDlg : IUaApplicationMessageDlg
     {
         #region Constructors, Destructor, Initialization
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="output">The TextWriter to use for the output</param>
         public ApplicationMessageDlg(TextWriter output)
         {
             output_ = output;

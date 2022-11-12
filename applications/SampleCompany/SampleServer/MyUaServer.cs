@@ -16,6 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using Opc.Ua;
 
 using Technosoftware.UaConfiguration;
@@ -28,14 +29,7 @@ namespace SampleCompany.SampleServer
 {
     public class MyUaServer<T> where T : UaStandardServer, new()
     {
-        public ApplicationInstance Application => application_;
-        public ApplicationConfiguration Configuration => application_.ApplicationConfiguration;
-
-        public bool AutoAccept { get; set; }
-        public string Password { get; set; }
-
-        public ExitCode ExitCode { get; private set; }
-
+        #region Constructors, Destructor, Initialization
         /// <summary>
         /// Ctor of the server.
         /// </summary>
@@ -44,7 +38,20 @@ namespace SampleCompany.SampleServer
         {
             output_ = writer;
         }
+        #endregion
 
+        #region Public Properties
+        public ApplicationInstance Application { get; private set; }
+
+        public ApplicationConfiguration Configuration => Application.ApplicationConfiguration;
+
+        public bool AutoAccept { get; set; }
+        public string Password { get; set; }
+
+        public ExitCode ExitCode { get; private set; }
+        #endregion
+
+        #region Public Methods
         /// <summary>
         /// Load the application configuration.
         /// </summary>
@@ -56,7 +63,7 @@ namespace SampleCompany.SampleServer
 
                 ApplicationInstance.MessageDlg = new ApplicationMessageDlg(output_);
                 CertificatePasswordProvider PasswordProvider = new CertificatePasswordProvider(Password);
-                application_ = new ApplicationInstance {
+                Application = new ApplicationInstance {
                     ApplicationName = applicationName,
                     ApplicationType = ApplicationType.Server,
                     ConfigSectionName = configSectionName,
@@ -64,7 +71,7 @@ namespace SampleCompany.SampleServer
                 };
 
                 // load the application configuration.
-                await application_.LoadApplicationConfigurationAsync(false).ConfigureAwait(false);
+                await Application.LoadApplicationConfigurationAsync(false).ConfigureAwait(false);
 
             }
             catch (Exception ex)
@@ -80,14 +87,14 @@ namespace SampleCompany.SampleServer
         {
             try
             {
-                var config = application_.ApplicationConfiguration;
+                var config = Application.ApplicationConfiguration;
                 if (renewCertificate)
                 {
-                    await application_.DeleteApplicationInstanceCertificateAsync().ConfigureAwait(false);
+                    await Application.DeleteApplicationInstanceCertificateAsync().ConfigureAwait(false);
                 }
 
                 // check the application certificate.
-                bool haveAppCertificate = await application_.CheckApplicationInstanceCertificate(false, minimumKeySize: 0).ConfigureAwait(false);
+                bool haveAppCertificate = await Application.CheckApplicationInstanceCertificate(false, minimumKeySize: 0).ConfigureAwait(false);
                 if (!haveAppCertificate)
                 {
                     throw new ErrorExitException("Application instance certificate invalid!");
@@ -95,7 +102,7 @@ namespace SampleCompany.SampleServer
 
                 if (!config.SecurityConfiguration.AutoAcceptUntrustedCertificates)
                 {
-                    config.CertificateValidator.CertificateValidation += new CertificateValidationEventHandler(CertificateValidator_CertificateValidation);
+                    config.CertificateValidator.CertificateValidation += new CertificateValidationEventHandler(OnCertificateValidation);
                 }
             }
             catch (Exception ex)
@@ -138,13 +145,13 @@ namespace SampleCompany.SampleServer
                 server_ = server_ ?? new T();
 
                 // start the server
-                await application_.StartAsync(server_).ConfigureAwait(false);
+                await Application.StartAsync(server_).ConfigureAwait(false);
 
                 // save state
                 ExitCode = ExitCode.ErrorRunning;
 
                 // print endpoint info
-                var endpoints = application_.BaseServer.GetEndpoints().Select(e => e.EndpointUrl).Distinct();
+                var endpoints = Application.BaseServer.GetEndpoints().Select(e => e.EndpointUrl).Distinct();
                 foreach (var endpoint in endpoints)
                 {
                     output_.WriteLine(endpoint);
@@ -191,12 +198,14 @@ namespace SampleCompany.SampleServer
                 throw new ErrorExitException(ex.Message, ExitCode.ErrorStopping);
             }
         }
+        #endregion
 
+        #region Event Handlers
         /// <summary>
         /// The certificate validator is used
         /// if auto accept is not selected in the configuration.
         /// </summary>
-        private void CertificateValidator_CertificateValidation(CertificateValidator validator, CertificateValidationEventArgs e)
+        private void OnCertificateValidation(CertificateValidator validator, CertificateValidationEventArgs e)
         {
             if (e.Error.StatusCode == StatusCodes.BadCertificateUntrusted)
             {
@@ -209,7 +218,9 @@ namespace SampleCompany.SampleServer
             }
             output_.WriteLine("Rejected Certificate: {0} [{1}] [{2}]", e.Error, e.Certificate.Subject, e.Certificate.Thumbprint);
         }
+        #endregion
 
+        #region Helper Methods
         /// <summary>
         /// Update the session status.
         /// </summary>
@@ -265,10 +276,10 @@ namespace SampleCompany.SampleServer
                 await Task.Delay(1000).ConfigureAwait(false);
             }
         }
+        #endregion
 
-        #region Private Members
+        #region Private Fields
         private readonly TextWriter output_;
-        private ApplicationInstance application_;
         private T server_;
         private Task status_;
         private DateTime lastEventTime_;
