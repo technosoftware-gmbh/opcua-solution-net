@@ -29,6 +29,7 @@ namespace SampleCompany.SampleServer
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
+        /// <param name="args">The arguments.</param>
         public static async Task<int> Main(string[] args)
         {
             TextWriter output = Console.Out;

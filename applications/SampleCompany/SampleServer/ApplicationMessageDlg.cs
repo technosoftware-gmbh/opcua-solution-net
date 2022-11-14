@@ -20,7 +20,6 @@ using Technosoftware.UaConfiguration;
 
 namespace SampleCompany.SampleServer
 {
-    #region The certificate application message
     /// <summary>
     /// A dialog which asks for user input.
     /// </summary>
@@ -28,7 +27,7 @@ namespace SampleCompany.SampleServer
     {
         #region Constructors, Destructor, Initialization
         /// <summary>
-        /// 
+        /// Generic Message Dialog for issues during loading of an application
         /// </summary>
         /// <param name="output">The TextWriter to use for the output</param>
         public ApplicationMessageDlg(TextWriter output)
@@ -87,6 +86,5 @@ namespace SampleCompany.SampleServer
         private bool ask_;
         #endregion
     }
-    #endregion
 }
 

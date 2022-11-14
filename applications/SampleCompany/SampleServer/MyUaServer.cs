@@ -27,6 +27,10 @@ using Technosoftware.UaStandardServer;
 
 namespace SampleCompany.SampleServer
 {
+    /// <summary>
+    /// Main class for the Sample UA server
+    /// </summary>
+    /// <typeparam name="T">Any class based on the UaStandardServer class.</typeparam>
     public class MyUaServer<T> where T : UaStandardServer, new()
     {
         #region Constructors, Destructor, Initialization
@@ -41,13 +45,29 @@ namespace SampleCompany.SampleServer
         #endregion
 
         #region Public Properties
+        /// <summary>
+        /// Application instance used by the UA server.
+        /// </summary>
         public ApplicationInstance Application { get; private set; }
 
+        /// <summary>
+        /// Application configuration used by the UA server.
+        /// </summary>
         public ApplicationConfiguration Configuration => Application.ApplicationConfiguration;
 
+        /// <summary>
+        /// Specifies whether a certificate is automatically accepted (True) or not (False).
+        /// </summary>
         public bool AutoAccept { get; set; }
+
+        /// <summary>
+        /// In case the private key is protected by a password it is specified by this property.
+        /// </summary>
         public string Password { get; set; }
 
+        /// <summary>
+        /// The exit code at the time the server stopped.
+        /// </summary>
         public ExitCode ExitCode { get; private set; }
         #endregion
 
@@ -55,6 +75,8 @@ namespace SampleCompany.SampleServer
         /// <summary>
         /// Load the application configuration.
         /// </summary>
+        /// <param name="applicationName">The name of the application.</param>
+        /// <param name="configSectionName">The section name within the configuration.</param>
         public async Task LoadAsync(string applicationName, string configSectionName)
         {
             try
@@ -62,8 +84,9 @@ namespace SampleCompany.SampleServer
                 ExitCode = ExitCode.ErrorNotStarted;
 
                 ApplicationInstance.MessageDlg = new ApplicationMessageDlg(output_);
-                CertificatePasswordProvider PasswordProvider = new CertificatePasswordProvider(Password);
-                Application = new ApplicationInstance {
+                var PasswordProvider = new CertificatePasswordProvider(Password);
+                Application = new ApplicationInstance
+                {
                     ApplicationName = applicationName,
                     ApplicationType = ApplicationType.Server,
                     ConfigSectionName = configSectionName,
@@ -83,6 +106,7 @@ namespace SampleCompany.SampleServer
         /// <summary>
         /// Load the application configuration.
         /// </summary>
+        /// <param name="renewCertificate">Specifies whether the certificate should be renewed (true) or not (false)</param>
         public async Task CheckCertificateAsync(bool renewCertificate)
         {
             try
@@ -103,29 +127,6 @@ namespace SampleCompany.SampleServer
                 if (!config.SecurityConfiguration.AutoAcceptUntrustedCertificates)
                 {
                     config.CertificateValidator.CertificateValidation += new CertificateValidationEventHandler(OnCertificateValidation);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new ErrorExitException(ex.Message, ExitCode);
-            }
-        }
-
-        /// <summary>
-        /// Create server instance and add node managers.
-        /// </summary>
-        public void Create(IList<IUaNodeManagerFactory> nodeManagerFactories)
-        {
-            try
-            {
-                // create the server.
-                server_ = new T();
-                if (nodeManagerFactories != null)
-                {
-                    foreach (var factory in nodeManagerFactories)
-                    {
-                        server_.AddNodeManager(factory);
-                    }
                 }
             }
             catch (Exception ex)
@@ -161,9 +162,9 @@ namespace SampleCompany.SampleServer
                 status_ = Task.Run(StatusThreadAsync);
 
                 // print notification on session events
-                server_.CurrentInstance.SessionManager.SessionActivatedEvent += EventStatus;
-                server_.CurrentInstance.SessionManager.SessionClosingEvent += EventStatus;
-                server_.CurrentInstance.SessionManager.SessionCreatedEvent += EventStatus;
+                server_.CurrentInstance.SessionManager.SessionActivatedEvent += OnEventStatus;
+                server_.CurrentInstance.SessionManager.SessionClosingEvent += OnEventStatus;
+                server_.CurrentInstance.SessionManager.SessionCreatedEvent += OnEventStatus;
             }
             catch (Exception ex)
             {
@@ -202,8 +203,7 @@ namespace SampleCompany.SampleServer
 
         #region Event Handlers
         /// <summary>
-        /// The certificate validator is used
-        /// if auto accept is not selected in the configuration.
+        /// The certificate validator is used if auto accept is not selected in the configuration.
         /// </summary>
         private void OnCertificateValidation(CertificateValidator validator, CertificateValidationEventArgs e)
         {
@@ -218,22 +218,25 @@ namespace SampleCompany.SampleServer
             }
             output_.WriteLine("Rejected Certificate: {0} [{1}] [{2}]", e.Error, e.Certificate.Subject, e.Certificate.Thumbprint);
         }
-        #endregion
 
-        #region Helper Methods
         /// <summary>
         /// Update the session status.
         /// </summary>
-        private void EventStatus(object sender, SessionEventArgs eventArgs)
+        private void OnEventStatus(object sender, SessionEventArgs eventArgs)
         {
             lastEventTime_ = DateTime.UtcNow;
             var session = sender as Session;
             PrintSessionStatus(session, eventArgs.Reason.ToString());
         }
+        #endregion
 
+        #region Helper Methods
         /// <summary>
         /// Output the status of a connected session.
         /// </summary>
+        /// <param name="session">The session.</param>
+        /// <param name="reason">The reason</param>
+        /// <param name="lastContact">true if the date/time of the last event should also be in the output; false if not.</param>
         private void PrintSessionStatus(Session session, string reason, bool lastContact = false)
         {
             StringBuilder item = new StringBuilder();

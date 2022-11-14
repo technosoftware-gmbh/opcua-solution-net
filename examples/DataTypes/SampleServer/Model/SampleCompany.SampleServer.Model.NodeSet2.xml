@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<UANodeSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" LastModified="2022-11-13T16:55:54.8163342Z" xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd">
+<UANodeSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" LastModified="2022-11-14T06:46:01.6379265Z" xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd">
   <NamespaceUris>
     <Uri>http://samplecompany.com/SampleServer/Model</Uri>
   </NamespaceUris>
   <Models>
-    <Model ModelUri="http://samplecompany.com/SampleServer/Model" Version="1.0.0" PublicationDate="2022-11-13T16:55:54.8163342Z">
+    <Model ModelUri="http://samplecompany.com/SampleServer/Model" Version="1.0.0" PublicationDate="2022-11-14T06:46:01.6379265Z">
       <RequiredModel ModelUri="http://opcfoundation.org/UA/" XmlSchemaUri="http://opcfoundation.org/UA/2008/02/Types.xsd" />
     </Model>
   </Models>
@@ -450,7 +450,7 @@ b2RlbCINCiAgdGFyZ2V0TmFtZXNwYWNlPSJodHRwOi8vc2FtcGxlY29tcGFueS5jb20vU2FtcGxl
 U2VydmVyL01vZGVsIg0KICBlbGVtZW50Rm9ybURlZmF1bHQ9InF1YWxpZmllZCINCj4NCiAgPHhz
 OmFubm90YXRpb24+DQogICAgPHhzOmFwcGluZm8+DQogICAgICA8dG5zOk1vZGVsIE1vZGVsVXJp
 PSJodHRwOi8vc2FtcGxlY29tcGFueS5jb20vU2FtcGxlU2VydmVyL01vZGVsIiBWZXJzaW9uPSIx
-LjAuMCIgUHVibGljYXRpb25EYXRlPSIyMDIyLTExLTEzVDE2OjU1OjU0LjgxNjMzNDJaIiAvPg0K
+LjAuMCIgUHVibGljYXRpb25EYXRlPSIyMDIyLTExLTE0VDA2OjQ2OjAxLjYzNzkyNjVaIiAvPg0K
 ICAgIDwveHM6YXBwaW5mbz4NCiAgPC94czphbm5vdGF0aW9uPg0KICANCiAgPHhzOmltcG9ydCBu
 YW1lc3BhY2U9Imh0dHA6Ly9vcGNmb3VuZGF0aW9uLm9yZy9VQS8yMDA4LzAyL1R5cGVzLnhzZCIg
 Lz4NCg0KICA8eHM6c2ltcGxlVHlwZSAgbmFtZT0iTWFjaGluZVN0YXRlRGF0YVR5cGUiPg0KICAg

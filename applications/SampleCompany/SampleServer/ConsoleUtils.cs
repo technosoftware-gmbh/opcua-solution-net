@@ -40,22 +40,28 @@ namespace SampleCompany.SampleServer
         /// <summary>
         /// Process a command line of the console sample application.
         /// </summary>
+        /// <param name="output">The TextWriter to use for the output.</param>
+        /// <param name="args">The arguments to handle.</param>
+        /// <param name="options">The available options to parse.</param>
+        /// <param name="showHelp">true if help should be shown; false otherwise.</param>
+        /// <param name="additionalArgs">true if additional arguments should be returned; false otherwise.</param>
+        /// <returns>Returns an additional argument provided and not handled yet, e.g. used for client as Url.</returns>
         public static string ProcessCommandLine(
             TextWriter output,
             string[] args,
             Mono.Options.OptionSet options,
             ref bool showHelp,
-            bool noExtraArgs = true)
+            bool additionalArgs = false)
         {
-            IList<string> extraArgs = null;
+            IList<string> additionalArguments = null;
             try
             {
-                extraArgs = options.Parse(args);
-                if (noExtraArgs)
+                additionalArguments = options.Parse(args);
+                if (!additionalArgs)
                 {
-                    foreach (string extraArg in extraArgs)
+                    foreach (string additionalArg in additionalArguments)
                     {
-                        output.WriteLine("Error: Unknown option: {0}", extraArg);
+                        output.WriteLine("Error: Unknown option: {0}", additionalArg);
                         showHelp = true;
                     }
                 }
@@ -72,15 +78,15 @@ namespace SampleCompany.SampleServer
                 throw new ErrorExitException("Invalid Commandline or help requested.", ExitCode.ErrorInvalidCommandLine);
             }
 
-            return extraArgs.FirstOrDefault();
+            return additionalArguments.FirstOrDefault();
         }
 
         /// <summary>
         /// Configure the logging providers.
         /// </summary>
         /// <remarks>
-        /// Replaces the Opc.Ua.Core default ILogger with a
-        /// Microsoft.Extension.Logger with a Serilog file, debug and console logger.
+        /// Replaces the Opc.Ua.Core default ILogger with a Microsoft.Extension.Logger with a 
+        /// Serilog file, debug and console logger.
         /// The debug logger is only enabled for debug builds.
         /// The console logger is enabled by the logConsole flag at the consoleLogLevel.
         /// The file logger uses the setting in the ApplicationConfiguration.
