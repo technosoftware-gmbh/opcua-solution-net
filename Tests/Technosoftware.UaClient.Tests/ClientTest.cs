@@ -26,7 +26,6 @@ using Opc.Ua;
 
 using Technosoftware.UaConfiguration;
 using Technosoftware.UaStandardServer.Tests;
-using Technosoftware.ReferenceServer;
 #endregion
 
 namespace Technosoftware.UaClient.Tests

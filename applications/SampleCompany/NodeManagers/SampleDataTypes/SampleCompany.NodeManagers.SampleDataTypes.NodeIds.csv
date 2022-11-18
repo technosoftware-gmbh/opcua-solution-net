@@ -1,0 +1,12 @@
+FlowControllerType,20,ObjectType
+GenericControllerType,7,ObjectType
+LevelControllerType,33,ObjectType
+MachineDataType,3,DataType
+MachineDataType_Encoding_DefaultBinary,100,Object
+MachineDataType_Encoding_DefaultJson,116,Object
+MachineDataType_Encoding_DefaultXml,108,Object
+MachineStateDataType,1,DataType
+MachineType,59,ObjectType
+SampleDataTypes_BinarySchema,117,Variable
+SampleDataTypes_XmlSchema,124,Variable
+TemperatureControllerType,46,ObjectType

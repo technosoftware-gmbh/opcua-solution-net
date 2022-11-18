@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <DefineConstants>$(DefineConstants);NET_STANDARD</DefineConstants>
+    <AssemblyName>SampleCompany.NodeManagers</AssemblyName>
+    <TargetFrameworks>$(AppTargetFrameworks)</TargetFrameworks>
+    <PackageId>SampleCompany.NodeManagers</PackageId>
+    <RootNamespace>SampleCompany.NodeManagers</RootNamespace>
+    <Company>SampleCompany GmbH</Company>
+    <Product>OPC UA Solution .NET</Product>
+    <Description>OPC UA Solution .NET NodeManagers Library</Description>
+    <Copyright>Copyright © 2018 - 2022 SampleCompany GmbH</Copyright>
+    <LangVersion>7.3</LangVersion>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <NoWarn>CS1591;CS1573;RCS1139</NoWarn>
+    <IsPackable>false</IsPackable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <PackageId>$(PackageId).Debug</PackageId>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(SignAssembly)' == 'true'">
+    <DefineConstants>$(DefineConstants);SIGNASSEMBLY</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.5.3" />
+    <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.5.3" />
+    <PackageReference Include="Technosoftware.UaSolution.UaBaseServer" Version="2.5.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="SampleDataTypes\SampleCompany.NodeManagers.SampleDataTypes.PredefinedNodes.uanodes;" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Properties\**" />
+    <EmbeddedResource Remove="Properties\**" />
+    <None Remove="Properties\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Technosoftware\UaStandardServer\Technosoftware.UaStandardServer.csproj" />
+  </ItemGroup>
+
+  <Target Name="GetPackagingOutputs" />
+
+</Project>

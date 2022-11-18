@@ -12,6 +12,7 @@
 #region Using Directives
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 using Opc.Ua;
 using Opc.Ua.Test;
@@ -1656,9 +1657,9 @@ namespace Technosoftware.UaStandardServer
 
             variable.Create(
                 SystemContext,
-                null,
-                variable.BrowseName,
-                null,
+                new NodeId(browseName, NamespaceIndex),
+                new QualifiedName(browseName, NamespaceIndex),
+                displayName,
                 true);
 
             if (definition != null)
@@ -1672,9 +1673,6 @@ namespace Technosoftware.UaStandardServer
             variable.ReferenceTypeId = ReferenceTypes.Organizes;
             variable.DataType = DataTypeIds.Boolean;
             variable.ValueRank = ValueRanks.Scalar;
-            variable.NodeId = new NodeId(browseName, NamespaceIndex);
-            variable.BrowseName = new QualifiedName(browseName, NamespaceIndex);
-            variable.DisplayName = displayName;
             variable.Description = description;
             variable.WriteMask = writeMask;
             variable.UserWriteMask = userWriteMask;
@@ -1775,9 +1773,9 @@ namespace Technosoftware.UaStandardServer
 
             variable.Create(
                 SystemContext,
-                null,
-                variable.BrowseName,
-                null,
+                new NodeId(browseName, NamespaceIndex),
+                new QualifiedName(browseName, NamespaceIndex),
+                displayName,
                 true);
 
             if (definition != null)
@@ -1791,9 +1789,6 @@ namespace Technosoftware.UaStandardServer
             variable.ReferenceTypeId = ReferenceTypes.Organizes;
             variable.DataType = DataTypeIds.UInt32;
             variable.ValueRank = ValueRanks.Scalar;
-            variable.NodeId = new NodeId(browseName, NamespaceIndex);
-            variable.BrowseName = new QualifiedName(browseName, NamespaceIndex);
-            variable.DisplayName = displayName;
             variable.Description = description;
             variable.WriteMask = writeMask;
             variable.UserWriteMask = userWriteMask;
@@ -1815,7 +1810,13 @@ namespace Technosoftware.UaStandardServer
             variable.StatusCode = StatusCodes.Good;
             variable.Timestamp = DateTime.UtcNow;
 
-            variable.EnumStrings.Value = values;
+            LocalizedText[] strings = new LocalizedText[values.Length];
+            for (int ii = 0; ii < strings.Length; ii++)
+            {
+                strings[ii] = values[ii];
+            }
+
+            variable.EnumStrings.Value = strings;
             variable.EnumStrings.AccessLevel = accessLevel;
             variable.EnumStrings.UserAccessLevel = accessLevel;
 
@@ -1901,9 +1902,9 @@ namespace Technosoftware.UaStandardServer
 
             variable.Create(
                 SystemContext,
-                null,
-                variable.BrowseName,
-                null,
+                new NodeId(browseName, NamespaceIndex),
+                new QualifiedName(browseName, NamespaceIndex),
+                displayName,
                 true);
 
             if (definition != null)
@@ -1916,9 +1917,7 @@ namespace Technosoftware.UaStandardServer
             variable.SymbolicName = displayName.ToString();
             variable.ReferenceTypeId = ReferenceTypes.Organizes;
             variable.DataType = dataType == null ? DataTypeIds.UInt32 : dataType;
-            variable.NodeId = new NodeId(browseName, NamespaceIndex);
-            variable.BrowseName = new QualifiedName(browseName, NamespaceIndex);
-            variable.DisplayName = displayName;
+            variable.ValueRank = ValueRanks.Scalar;
             variable.Description = description;
             variable.WriteMask = writeMask;
             variable.UserWriteMask = userWriteMask;
@@ -1940,6 +1939,17 @@ namespace Technosoftware.UaStandardServer
             variable.StatusCode = StatusCodes.Good;
             variable.Timestamp = DateTime.UtcNow;
 
+            // there are two enumerations for this type:
+            // EnumStrings = the string representations for enumerated values
+            // ValueAsText = the actual enumerated value
+
+            // set the enumerated strings
+            LocalizedText[] strings = new LocalizedText[enumNames.Length];
+            for (int ii = 0; ii < strings.Length; ii++)
+            {
+                strings[ii] = enumNames[ii];
+            }
+
             // set the enumerated values
             if (enumNames != null)
             {
@@ -1949,8 +1959,8 @@ namespace Technosoftware.UaStandardServer
                     values[ii] = new EnumValueType
                     {
                         Value = ii,
-                        Description = enumNames[ii],
-                        DisplayName = enumNames[ii]
+                        Description = strings[ii],
+                        DisplayName = strings[ii]
                     };
                 }
 
@@ -2038,40 +2048,20 @@ namespace Technosoftware.UaStandardServer
 
         /// <summary>Adds the input arguments to a method.</summary>
         /// <param name="parent">The method object.</param>
-        /// <param name="nodeId">
-        ///     The unique identifier for the variable in the server's address space. The NodeId can be either:
-        ///     <list type="bullet">
-        ///         <item>
-        ///             <see cref="uint" />
-        ///         </item>
-        ///         <item>
-        ///             <see cref="Guid" />
-        ///         </item>
-        ///         <item>
-        ///             <see cref="string" />
-        ///         </item>
-        ///         <item><see cref="byte" />[]</item>
-        ///     </list>
-        ///     <b>Important:</b> Keep in mind that the actual ID's of nodes should be unique such that no two nodes within an
-        ///     address-space share the same ID's.
-        /// </param>
         /// <param name="inputArguments">The input arguments.</param>
         /// <returns>A <see cref="StatusCode" /> code with the result of the operation.</returns>
-        protected StatusCode AddInputArguments(MethodState parent, object nodeId,
-            params Argument[] inputArguments)
+        protected StatusCode AddInputArguments(MethodState parent, Argument[] inputArguments)
         {
             if (parent != null)
             {
-                parent.InputArguments = new PropertyState<Argument[]>(parent)
-                {
-                    NodeId = new NodeId(nodeId, NamespaceIndex), BrowseName = BrowseNames.InputArguments
-                };
+                parent.InputArguments = new PropertyState<Argument[]>(parent);
+                parent.InputArguments.NodeId = new NodeId(parent.BrowseName.Name + "InArgs", NamespaceIndex);
+                parent.InputArguments.BrowseName = BrowseNames.InputArguments;
                 parent.InputArguments.DisplayName = parent.InputArguments.BrowseName.Name;
                 parent.InputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
                 parent.InputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
                 parent.InputArguments.DataType = DataTypeIds.Argument;
                 parent.InputArguments.ValueRank = ValueRanks.OneDimension;
-
                 parent.InputArguments.Value = inputArguments;
 
                 return StatusCodes.Good;
@@ -2082,68 +2072,66 @@ namespace Technosoftware.UaStandardServer
 
         /// <summary>Adds the output arguments to a method.</summary>
         /// <param name="parent">The method object.</param>
-        /// <param name="nodeId">
-        ///     The unique identifier for the variable in the server's address space. The NodeId can be either:
-        ///     <list type="bullet">
-        ///         <item>
-        ///             <see cref="uint" />
-        ///         </item>
-        ///         <item>
-        ///             <see cref="Guid" />
-        ///         </item>
-        ///         <item>
-        ///             <see cref="string" />
-        ///         </item>
-        ///         <item><see cref="byte" />[]</item>
-        ///     </list>
-        ///     <b>Important:</b> Keep in mind that the actual ID's of nodes should be unique such that no two nodes within an
-        ///     address-space share the same ID's.
-        /// </param>
         /// <param name="outputArguments">The output arguments.</param>
         /// <returns>A <see cref="StatusCode" /> code with the result of the operation.</returns>
-        protected StatusCode AddOutputArguments(MethodState parent, object nodeId, params Argument[] outputArguments)
+        protected StatusCode AddOutputArguments(MethodState parent, params Argument[] outputArguments)
         {
             if (parent != null)
             {
-                parent.OutputArguments = new PropertyState<Argument[]>(parent)
-                {
-                    NodeId = new NodeId(nodeId, NamespaceIndex), BrowseName = BrowseNames.OutputArguments
-                };
+                parent.OutputArguments = new PropertyState<Argument[]>(parent);
+                parent.OutputArguments.NodeId = new NodeId(parent.BrowseName.Name + "OutArgs", NamespaceIndex);
+                parent.OutputArguments.BrowseName = BrowseNames.OutputArguments;
                 parent.OutputArguments.DisplayName = parent.OutputArguments.BrowseName.Name;
                 parent.OutputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
                 parent.OutputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
                 parent.OutputArguments.DataType = DataTypeIds.Argument;
                 parent.OutputArguments.ValueRank = ValueRanks.OneDimension;
-
                 parent.OutputArguments.Value = outputArguments;
+
                 return StatusCodes.Good;
             }
 
             return StatusCodes.Bad;
         }
+        #endregion
 
-        private object GetNewValue(BaseVariableState variable)
+        #region Random value generator
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="seed"></param>
+        /// <param name="boundaryValueFrequency"></param>
+        protected void ResetRandomGenerator(int seed, int boundaryValueFrequency = 0)
         {
-            if (generator_ == null)
-            {
-                generator_ = new DataGenerator(null) { BoundaryValueFrequency = 0 };
-            }
+            randomSource_ = new RandomSource(seed);
+            generator_ = new DataGenerator(randomSource_);
+            generator_.BoundaryValueFrequency = boundaryValueFrequency;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="variable"></param>
+        /// <returns></returns>
+        protected object GetNewValue(BaseVariableState variable)
+        {
+            Debug.Assert(generator_ != null, "Need a random generator!");
 
             object value = null;
-            var retryCount = 0;
+            int retryCount = 0;
 
             while (value == null && retryCount < 10)
             {
-                try
+                value = generator_.GetRandom(variable.DataType, variable.ValueRank, new uint[] { 10 }, ServerData.TypeTree);
+                // skip Variant Null
+                if (value is Variant variant)
                 {
-                    value = generator_.GetRandom(variable.DataType, variable.ValueRank, new uint[] { 10 },
-                        ServerData.TypeTree);
-                    retryCount++;
+                    if (variant.Value == null)
+                    {
+                        value = null;
+                    }
                 }
-                catch
-                {
-                    // ignored
-                }
+                retryCount++;
             }
 
             return value;
@@ -2151,6 +2139,7 @@ namespace Technosoftware.UaStandardServer
         #endregion
 
         #region Private Fields
+        private RandomSource randomSource_;
         private DataGenerator generator_;
         #endregion
     }

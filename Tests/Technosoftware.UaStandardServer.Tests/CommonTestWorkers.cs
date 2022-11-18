@@ -13,6 +13,7 @@
 using System;
 using System.Linq;
 using System.Threading;
+
 using NUnit.Framework;
 
 using Opc.Ua;
@@ -31,39 +32,39 @@ namespace Technosoftware.UaStandardServer.Tests
         #region Public Test Sets
         public static readonly ExpandedNodeId[] NodeIdTestSetStatic =
         {
-            new ExpandedNodeId("Scalar_Static_SByte", ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Static_Int16", ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Static_Int32", ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Static_Byte", ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Static_UInt16", ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Static_UInt32", ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Static_NodeId", ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Static_LocalizedText", ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Static_QualifiedName", ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Static_Variant", ReferenceServer.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Static_SByte", SampleCompany.NodeManagers.Reference.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Static_Int16", SampleCompany.NodeManagers.Reference.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Static_Int32", SampleCompany.NodeManagers.Reference.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Static_Byte", SampleCompany.NodeManagers.Reference.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Static_UInt16", SampleCompany.NodeManagers.Reference.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Static_UInt32", SampleCompany.NodeManagers.Reference.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Static_NodeId", SampleCompany.NodeManagers.Reference.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Static_LocalizedText", SampleCompany.NodeManagers.Reference.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Static_QualifiedName", SampleCompany.NodeManagers.Reference.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Static_Variant", SampleCompany.NodeManagers.Reference.Namespaces.ReferenceServer),
         };
 
         // static variables from namespace TestData
         public static readonly ExpandedNodeId[] NodeIdTestDataSetStatic =
         {
-            new ExpandedNodeId("Scalar_Static_Int16", ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Static_Int32", ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Static_UInt16", ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Static_UInt32", ReferenceServer.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Static_Int16", SampleCompany.NodeManagers.Reference.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Static_Int32", SampleCompany.NodeManagers.Reference.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Static_UInt16", SampleCompany.NodeManagers.Reference.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Static_UInt32", SampleCompany.NodeManagers.Reference.Namespaces.ReferenceServer),
         };
 
         public static readonly ExpandedNodeId[] NodeIdTestSetSimulation =
         {
-            new ExpandedNodeId("Scalar_Simulation_SByte", ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Simulation_Int16", ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Simulation_Int32", ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Simulation_Byte", ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Simulation_UInt16", ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Simulation_UInt32", ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Simulation_NodeId", ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Simulation_LocalizedText", ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Simulation_QualifiedName", ReferenceServer.Namespaces.ReferenceServer),
-            new ExpandedNodeId("Scalar_Simulation_Variant", ReferenceServer.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Simulation_SByte", SampleCompany.NodeManagers.Reference.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Simulation_Int16", SampleCompany.NodeManagers.Reference.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Simulation_Int32", SampleCompany.NodeManagers.Reference.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Simulation_Byte", SampleCompany.NodeManagers.Reference.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Simulation_UInt16", SampleCompany.NodeManagers.Reference.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Simulation_UInt32", SampleCompany.NodeManagers.Reference.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Simulation_NodeId", SampleCompany.NodeManagers.Reference.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Simulation_LocalizedText", SampleCompany.NodeManagers.Reference.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Simulation_QualifiedName", SampleCompany.NodeManagers.Reference.Namespaces.ReferenceServer),
+            new ExpandedNodeId("Scalar_Simulation_Variant", SampleCompany.NodeManagers.Reference.Namespaces.ReferenceServer),
         };
         #endregion
 

@@ -38,35 +38,25 @@ namespace SampleCompany.SampleServer.Model
 {
     #region CycleStepDataType Class
     #if (!OPCUA_EXCLUDE_CycleStepDataType)
-    /// <summary>
-    /// 
-    /// </summary>
+    /// <remarks />
     /// <exclude />
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
     [DataContract(Namespace = SampleCompany.SampleServer.Model.Namespaces.SampleServer)]
-    public partial class CycleStepDataType : IEncodeable
+    public partial class CycleStepDataType : IEncodeable, IJsonEncodeable
     {
         #region Constructors
-        /// <summary>
-        /// The default constructor.
-        /// </summary>
+        /// <remarks />
         public CycleStepDataType()
         {
             Initialize();
         }
-
-        /// <summary>
-        /// Called by the .NET framework during deserialization.
-        /// </summary>
+            
         [OnDeserializing]
         private void Initialize(StreamingContext context)
         {
             Initialize();
         }
-
-        /// <summary>
-        /// Sets private members to default values.
-        /// </summary>
+            
         private void Initialize()
         {
             m_name = null;
@@ -94,22 +84,16 @@ namespace SampleCompany.SampleServer.Model
 
         #region IEncodeable Members
         /// <summary cref="IEncodeable.TypeId" />
-        public virtual ExpandedNodeId TypeId
-        {
-            get { return DataTypeIds.CycleStepDataType; }
-        }
+        public virtual ExpandedNodeId TypeId => DataTypeIds.CycleStepDataType; 
 
         /// <summary cref="IEncodeable.BinaryEncodingId" />
-        public virtual ExpandedNodeId BinaryEncodingId
-        {
-            get { return ObjectIds.CycleStepDataType_Encoding_DefaultBinary; }
-        }
+        public virtual ExpandedNodeId BinaryEncodingId => ObjectIds.CycleStepDataType_Encoding_DefaultBinary;
 
         /// <summary cref="IEncodeable.XmlEncodingId" />
-        public virtual ExpandedNodeId XmlEncodingId
-        {
-            get { return ObjectIds.CycleStepDataType_Encoding_DefaultXml; }
-        }
+        public virtual ExpandedNodeId XmlEncodingId => ObjectIds.CycleStepDataType_Encoding_DefaultXml;
+                    
+        /// <summary cref="IJsonEncodeable.JsonEncodingId" />
+        public virtual ExpandedNodeId JsonEncodingId => ObjectIds.CycleStepDataType_Encoding_DefaultJson; 
 
         /// <summary cref="IEncodeable.Encode(IEncoder)" />
         public virtual void Encode(IEncoder encoder)
@@ -181,9 +165,7 @@ namespace SampleCompany.SampleServer.Model
     }
 
     #region CycleStepDataTypeCollection Class
-    /// <summary>
-    /// A collection of CycleStepDataType objects.
-    /// </summary>
+    /// <remarks />
     /// <exclude />
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
     [CollectionDataContract(Name = "ListOfCycleStepDataType", Namespace = SampleCompany.SampleServer.Model.Namespaces.SampleServer, ItemName = "CycleStepDataType")]
@@ -194,26 +176,18 @@ namespace SampleCompany.SampleServer.Model
     #endif
     {
         #region Constructors
-        /// <summary>
-        /// Initializes the collection with default values.
-        /// </summary>
+        /// <remarks />
         public CycleStepDataTypeCollection() {}
 
-        /// <summary>
-        /// Initializes the collection with an initial capacity.
-        /// </summary>
+        /// <remarks />
         public CycleStepDataTypeCollection(int capacity) : base(capacity) {}
 
-        /// <summary>
-        /// Initializes the collection with another collection.
-        /// </summary>
+        /// <remarks />
         public CycleStepDataTypeCollection(IEnumerable<CycleStepDataType> collection) : base(collection) {}
         #endregion
 
         #region Static Operators
-        /// <summary>
-        /// Converts an array to a collection.
-        /// </summary>
+        /// <remarks />
         public static implicit operator CycleStepDataTypeCollection(CycleStepDataType[] values)
         {
             if (values != null)
@@ -224,9 +198,7 @@ namespace SampleCompany.SampleServer.Model
             return new CycleStepDataTypeCollection();
         }
 
-        /// <summary>
-        /// Converts a collection to an array.
-        /// </summary>
+        /// <remarks />
         public static explicit operator CycleStepDataType[](CycleStepDataTypeCollection values)
         {
             if (values != null)
@@ -240,9 +212,7 @@ namespace SampleCompany.SampleServer.Model
 
         #if !NET_STANDARD
         #region ICloneable Methods
-        /// <summary>
-        /// Creates a deep copy of the collection.
-        /// </summary>
+        /// <remarks />
         public object Clone()
         {
             return (CycleStepDataTypeCollection)this.MemberwiseClone();

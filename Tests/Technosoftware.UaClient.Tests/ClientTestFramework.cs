@@ -22,7 +22,8 @@ using NUnit.Framework;
 using Opc.Ua;
 
 using Technosoftware.UaStandardServer.Tests;
-using Technosoftware.ReferenceServer;
+
+using SampleCompany.NodeManagers.Reference;
 #endregion
 
 namespace Technosoftware.UaClient.Tests
@@ -45,9 +46,9 @@ namespace Technosoftware.UaClient.Tests
 
         public bool SingleSession { get; set; } = true;
         public bool SupportsExternalServerUrl { get; set; } = false;
-        public ServerFixture<ReferenceServer.ReferenceServer> ServerFixture { get; set; }
+        public ServerFixture<ReferenceServer> ServerFixture { get; set; }
         public ClientFixture ClientFixture { get; set; }
-        public ReferenceServer.ReferenceServer ReferenceServer { get; set; }
+        public ReferenceServer ReferenceServer { get; set; }
         public EndpointDescriptionCollection Endpoints { get; set; }
         public ReferenceDescriptionCollection ReferenceDescriptions { get; set; }
         public Session Session { get; private set; }
@@ -112,7 +113,7 @@ namespace Technosoftware.UaClient.Tests
             if (customUrl == null)
             {
                 // start Ref server
-                ServerFixture = new ServerFixture<ReferenceServer.ReferenceServer> {
+                ServerFixture = new ServerFixture<ReferenceServer> {
                     UriScheme = UriScheme,
                     SecurityNone = true,
                     AutoAccept = true,

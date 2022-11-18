@@ -38,9 +38,7 @@ namespace SampleCompany.SampleServer.Model
 {
     #region MachineStateDataType Enumeration
     #if (!OPCUA_EXCLUDE_MachineStateDataType)
-    /// <summary>
-    /// 
-    /// </summary>
+    /// <remarks />
     /// <exclude />
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
     [DataContract(Namespace = SampleCompany.SampleServer.Model.Namespaces.SampleServer)]
@@ -96,9 +94,7 @@ namespace SampleCompany.SampleServer.Model
     }
 
     #region MachineStateDataTypeCollection Class
-    /// <summary>
-    /// A collection of MachineStateDataType objects.
-    /// </summary>
+    /// <remarks />
     /// <exclude />
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
     [CollectionDataContract(Name = "ListOfMachineStateDataType", Namespace = SampleCompany.SampleServer.Model.Namespaces.SampleServer, ItemName = "MachineStateDataType")]
@@ -109,26 +105,18 @@ namespace SampleCompany.SampleServer.Model
     #endif
     {
         #region Constructors
-        /// <summary>
-        /// Initializes the collection with default values.
-        /// </summary>
+        /// <remarks />
         public MachineStateDataTypeCollection() {}
 
-        /// <summary>
-        /// Initializes the collection with an initial capacity.
-        /// </summary>
+        /// <remarks />
         public MachineStateDataTypeCollection(int capacity) : base(capacity) {}
 
-        /// <summary>
-        /// Initializes the collection with another collection.
-        /// </summary>
+        /// <remarks />
         public MachineStateDataTypeCollection(IEnumerable<MachineStateDataType> collection) : base(collection) {}
         #endregion
 
         #region Static Operators
-        /// <summary>
-        /// Converts an array to a collection.
-        /// </summary>
+        /// <remarks />
         public static implicit operator MachineStateDataTypeCollection(MachineStateDataType[] values)
         {
             if (values != null)
@@ -139,9 +127,7 @@ namespace SampleCompany.SampleServer.Model
             return new MachineStateDataTypeCollection();
         }
 
-        /// <summary>
-        /// Converts a collection to an array.
-        /// </summary>
+        /// <remarks />
         public static explicit operator MachineStateDataType[](MachineStateDataTypeCollection values)
         {
             if (values != null)
@@ -155,9 +141,7 @@ namespace SampleCompany.SampleServer.Model
 
         #if !NET_STANDARD
         #region ICloneable Methods
-        /// <summary>
-        /// Creates a deep copy of the collection.
-        /// </summary>
+        /// <remarks />
         public object Clone()
         {
             return (MachineStateDataTypeCollection)this.MemberwiseClone();
@@ -184,35 +168,25 @@ namespace SampleCompany.SampleServer.Model
 
     #region MachineDataType Class
     #if (!OPCUA_EXCLUDE_MachineDataType)
-    /// <summary>
-    /// 
-    /// </summary>
+    /// <remarks />
     /// <exclude />
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
     [DataContract(Namespace = SampleCompany.SampleServer.Model.Namespaces.SampleServer)]
-    public partial class MachineDataType : IEncodeable
+    public partial class MachineDataType : IEncodeable, IJsonEncodeable
     {
         #region Constructors
-        /// <summary>
-        /// The default constructor.
-        /// </summary>
+        /// <remarks />
         public MachineDataType()
         {
             Initialize();
         }
-
-        /// <summary>
-        /// Called by the .NET framework during deserialization.
-        /// </summary>
+            
         [OnDeserializing]
         private void Initialize(StreamingContext context)
         {
             Initialize();
         }
-
-        /// <summary>
-        /// Sets private members to default values.
-        /// </summary>
+            
         private void Initialize()
         {
             m_machineName = null;
@@ -258,22 +232,16 @@ namespace SampleCompany.SampleServer.Model
 
         #region IEncodeable Members
         /// <summary cref="IEncodeable.TypeId" />
-        public virtual ExpandedNodeId TypeId
-        {
-            get { return DataTypeIds.MachineDataType; }
-        }
+        public virtual ExpandedNodeId TypeId => DataTypeIds.MachineDataType; 
 
         /// <summary cref="IEncodeable.BinaryEncodingId" />
-        public virtual ExpandedNodeId BinaryEncodingId
-        {
-            get { return ObjectIds.MachineDataType_Encoding_DefaultBinary; }
-        }
+        public virtual ExpandedNodeId BinaryEncodingId => ObjectIds.MachineDataType_Encoding_DefaultBinary;
 
         /// <summary cref="IEncodeable.XmlEncodingId" />
-        public virtual ExpandedNodeId XmlEncodingId
-        {
-            get { return ObjectIds.MachineDataType_Encoding_DefaultXml; }
-        }
+        public virtual ExpandedNodeId XmlEncodingId => ObjectIds.MachineDataType_Encoding_DefaultXml;
+                    
+        /// <summary cref="IJsonEncodeable.JsonEncodingId" />
+        public virtual ExpandedNodeId JsonEncodingId => ObjectIds.MachineDataType_Encoding_DefaultJson; 
 
         /// <summary cref="IEncodeable.Encode(IEncoder)" />
         public virtual void Encode(IEncoder encoder)
@@ -355,9 +323,7 @@ namespace SampleCompany.SampleServer.Model
     }
 
     #region MachineDataTypeCollection Class
-    /// <summary>
-    /// A collection of MachineDataType objects.
-    /// </summary>
+    /// <remarks />
     /// <exclude />
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
     [CollectionDataContract(Name = "ListOfMachineDataType", Namespace = SampleCompany.SampleServer.Model.Namespaces.SampleServer, ItemName = "MachineDataType")]
@@ -368,26 +334,18 @@ namespace SampleCompany.SampleServer.Model
     #endif
     {
         #region Constructors
-        /// <summary>
-        /// Initializes the collection with default values.
-        /// </summary>
+        /// <remarks />
         public MachineDataTypeCollection() {}
 
-        /// <summary>
-        /// Initializes the collection with an initial capacity.
-        /// </summary>
+        /// <remarks />
         public MachineDataTypeCollection(int capacity) : base(capacity) {}
 
-        /// <summary>
-        /// Initializes the collection with another collection.
-        /// </summary>
+        /// <remarks />
         public MachineDataTypeCollection(IEnumerable<MachineDataType> collection) : base(collection) {}
         #endregion
 
         #region Static Operators
-        /// <summary>
-        /// Converts an array to a collection.
-        /// </summary>
+        /// <remarks />
         public static implicit operator MachineDataTypeCollection(MachineDataType[] values)
         {
             if (values != null)
@@ -398,9 +356,7 @@ namespace SampleCompany.SampleServer.Model
             return new MachineDataTypeCollection();
         }
 
-        /// <summary>
-        /// Converts a collection to an array.
-        /// </summary>
+        /// <remarks />
         public static explicit operator MachineDataType[](MachineDataTypeCollection values)
         {
             if (values != null)
@@ -414,9 +370,7 @@ namespace SampleCompany.SampleServer.Model
 
         #if !NET_STANDARD
         #region ICloneable Methods
-        /// <summary>
-        /// Creates a deep copy of the collection.
-        /// </summary>
+        /// <remarks />
         public object Clone()
         {
             return (MachineDataTypeCollection)this.MemberwiseClone();

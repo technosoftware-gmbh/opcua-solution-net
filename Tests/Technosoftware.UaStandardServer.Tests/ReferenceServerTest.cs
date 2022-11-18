@@ -20,7 +20,7 @@ using NUnit.Framework;
 using Opc.Ua;
 using Opc.Ua.Test;
 
-using Technosoftware.ReferenceServer;
+using SampleCompany.NodeManagers.Reference;
 #endregion
 
 namespace Technosoftware.UaStandardServer.Tests
@@ -39,8 +39,8 @@ namespace Technosoftware.UaStandardServer.Tests
         const uint TimeoutHint_ = 10000;
         const uint QueueSize_ = 5;
 
-        ServerFixture<ReferenceServer.ReferenceServer> fixture_;
-        ReferenceServer.ReferenceServer server_;
+        ServerFixture<ReferenceServer> fixture_;
+        ReferenceServer server_;
         RequestHeader requestHeader_;
         OperationLimits operationLimits_;
         ReferenceDescriptionCollection referenceDescriptions_;
@@ -55,7 +55,7 @@ namespace Technosoftware.UaStandardServer.Tests
         public async Task OneTimeSetUp()
         {
             // start Ref server
-            fixture_ = new ServerFixture<ReferenceServer.ReferenceServer>() {
+            fixture_ = new ServerFixture<ReferenceServer>() {
                 AllNodeManagers = true,
                 OperationLimits = true
             };
@@ -106,7 +106,7 @@ namespace Technosoftware.UaStandardServer.Tests
         public void GlobalSetup()
         {
             // start Ref server
-            fixture_ = new ServerFixture<ReferenceServer.ReferenceServer>() { AllNodeManagers = true };
+            fixture_ = new ServerFixture<ReferenceServer>() { AllNodeManagers = true };
             server_ = fixture_.StartAsync(null).GetAwaiter().GetResult();
             requestHeader_ = server_.CreateAndActivateSession("Bench");
         }
