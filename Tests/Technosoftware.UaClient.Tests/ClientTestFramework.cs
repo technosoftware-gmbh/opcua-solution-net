@@ -22,7 +22,8 @@ using NUnit.Framework;
 using Opc.Ua;
 
 using Technosoftware.UaStandardServer.Tests;
-using Technosoftware.Servers.ReferenceServer;
+
+using SampleCompany.NodeManagers.Reference;
 #endregion
 
 namespace Technosoftware.UaClient.Tests

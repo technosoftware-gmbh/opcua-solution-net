@@ -10,22 +10,18 @@
 #endregion Copyright (c) 2022 Technosoftware GmbH. All rights reserved
 
 #region Using Directives
-using Opc.Ua;
-
-using SampleCompany.NodeManagers.Reference;
 #endregion
 
-namespace Technosoftware.UaClient.Tests
+namespace SampleCompany.NodeManagers.Reference
 {
-    public class TokenValidatorMock : ITokenValidator
+    /// <summary>
+    /// Defines constants for namespaces used by the servers.
+    /// </summary>
+    public static partial class Namespaces
     {
-        public IssuedIdentityToken LastIssuedToken { get; set; }
-            
-        public IUserIdentity ValidateToken(IssuedIdentityToken issuedToken)
-        {
-            this.LastIssuedToken = issuedToken;
-
-            return new UserIdentity(issuedToken);
-        }
+        /// <summary>
+        /// The namespace for the nodes provided by the reference server.
+        /// </summary>
+        public const string ReferenceServer = "http://samplecompany.com/SampleServer/NodeManagers/Reference";
     }
 }

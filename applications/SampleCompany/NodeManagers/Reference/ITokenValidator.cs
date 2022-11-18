@@ -11,21 +11,12 @@
 
 #region Using Directives
 using Opc.Ua;
-
-using SampleCompany.NodeManagers.Reference;
 #endregion
 
-namespace Technosoftware.UaClient.Tests
+namespace SampleCompany.NodeManagers.Reference
 {
-    public class TokenValidatorMock : ITokenValidator
+    public interface ITokenValidator
     {
-        public IssuedIdentityToken LastIssuedToken { get; set; }
-            
-        public IUserIdentity ValidateToken(IssuedIdentityToken issuedToken)
-        {
-            this.LastIssuedToken = issuedToken;
-
-            return new UserIdentity(issuedToken);
-        }
+        IUserIdentity ValidateToken(IssuedIdentityToken issuedToken);
     }
 }

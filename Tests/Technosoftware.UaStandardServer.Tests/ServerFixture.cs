@@ -18,6 +18,8 @@ using Opc.Ua;
 
 using Technosoftware.UaConfiguration;
 using Technosoftware.UaServer;
+
+using SampleCompany.NodeManagers;
 #endregion
 
 namespace Technosoftware.UaStandardServer.Tests
@@ -188,7 +190,7 @@ namespace Technosoftware.UaStandardServer.Tests
             T server = new T();
             if (AllNodeManagers && server is UaGenericServer standardServer)
             {
-                Technosoftware.Servers.ServerUtils.AddDefaultNodeManagers(standardServer);
+                NodeManagerUtils.AddDefaultNodeManagers(standardServer);
             }
             await Application.StartAsync(server).ConfigureAwait(false);
             Server = server;
