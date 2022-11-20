@@ -12,6 +12,7 @@
 #region Using Directives
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 using Opc.Ua;
 using Opc.Ua.Test;
@@ -2094,7 +2095,7 @@ namespace Technosoftware.UaBaseServer
         /// <param name="parent">The method object.</param>
         /// <param name="outputArguments">The output arguments.</param>
         /// <returns>A <see cref="StatusCode" /> code with the result of the operation.</returns>
-        protected StatusCode AddOutputArguments(MethodState parent, params Argument[] outputArguments)
+        internal StatusCode AddOutputArguments(MethodState parent, params Argument[] outputArguments)
         {
             if (parent != null)
             {
@@ -2115,28 +2116,43 @@ namespace Technosoftware.UaBaseServer
         }
         #endregion
 
-        private object GetNewValue(BaseVariableState variable)
+        #region Random value generator
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="seed"></param>
+        /// <param name="boundaryValueFrequency"></param>
+        protected void ResetRandomGenerator(int seed, int boundaryValueFrequency = 0)
         {
-            if (generator_ == null)
-            {
-                generator_ = new DataGenerator(null) { BoundaryValueFrequency = 0 };
-            }
+            randomSource_ = new RandomSource(seed);
+            generator_ = new DataGenerator(randomSource_);
+            generator_.BoundaryValueFrequency = boundaryValueFrequency;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="variable"></param>
+        /// <returns></returns>
+        protected object GetNewValue(BaseVariableState variable)
+        {
+            Debug.Assert(generator_ != null, "Need a random generator!");
 
             object value = null;
-            var retryCount = 0;
+            int retryCount = 0;
 
             while (value == null && retryCount < 10)
             {
-                try
+                value = generator_.GetRandom(variable.DataType, variable.ValueRank, new uint[] { 10 }, ServerData.TypeTree);
+                // skip Variant Null
+                if (value is Variant variant)
                 {
-                    value = generator_.GetRandom(variable.DataType, variable.ValueRank, new uint[] { 10 },
-                        ServerData.TypeTree);
-                    retryCount++;
+                    if (variant.Value == null)
+                    {
+                        value = null;
+                    }
                 }
-                catch
-                {
-                    // ignored
-                }
+                retryCount++;
             }
 
             return value;
@@ -2149,6 +2165,8 @@ namespace Technosoftware.UaBaseServer
 
         #region Private Fields
         private readonly IUaServerPlugin opcServerPlugin_;
+
+        private RandomSource randomSource_;
         private DataGenerator generator_;
         #endregion
     }

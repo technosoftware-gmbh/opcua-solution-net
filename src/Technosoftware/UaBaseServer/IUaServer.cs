@@ -717,49 +717,15 @@ namespace Technosoftware.UaBaseServer
 
         /// <summary>Adds the input arguments to a method.</summary>
         /// <param name="parent">The method object.</param>
-        /// <param name="nodeId">
-        ///     The unique identifier for the variable in the server's address space. The NodeId can be either:
-        ///     <list type="bullet">
-        ///         <item>
-        ///             <see cref="uint" />
-        ///         </item>
-        ///         <item>
-        ///             <see cref="Guid" />
-        ///         </item>
-        ///         <item>
-        ///             <see cref="string" />
-        ///         </item>
-        ///         <item><see cref="byte" />[]</item>
-        ///     </list>
-        ///     <b>Important:</b> Keep in mind that the actual ID's of nodes should be unique such that no two nodes within an
-        ///     address-space share the same ID's.
-        /// </param>
         /// <param name="inputArguments">The input arguments.</param>
         /// <returns>A <see cref="StatusCode" /> code with the result of the operation.</returns>
-        StatusCode AddInputArguments(MethodState parent, object nodeId, params Argument[] inputArguments);
+        StatusCode AddInputArguments(MethodState parent,params Argument[] inputArguments);
 
         /// <summary>Adds the output arguments to a method.</summary>
         /// <param name="parent">The method object.</param>
-        /// <param name="nodeId">
-        ///     The unique identifier for the variable in the server's address space. The NodeId can be either:
-        ///     <list type="bullet">
-        ///         <item>
-        ///             <see cref="uint" />
-        ///         </item>
-        ///         <item>
-        ///             <see cref="Guid" />
-        ///         </item>
-        ///         <item>
-        ///             <see cref="string" />
-        ///         </item>
-        ///         <item><see cref="byte" />[]</item>
-        ///     </list>
-        ///     <b>Important:</b> Keep in mind that the actual ID's of nodes should be unique such that no two nodes within an
-        ///     address-space share the same ID's.
-        /// </param>
         /// <param name="outputArguments">The output arguments.</param>
         /// <returns>A <see cref="StatusCode" /> code with the result of the operation.</returns>
-        StatusCode AddOutputArguments(MethodState parent, object nodeId, params Argument[] outputArguments);
+        StatusCode AddOutputArguments(MethodState parent, params Argument[] outputArguments);
         #endregion
 
         #region Events related methods
