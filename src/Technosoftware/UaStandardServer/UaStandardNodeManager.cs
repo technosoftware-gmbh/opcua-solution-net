@@ -1,13 +1,13 @@
-#region Copyright (c) 2022 Technosoftware GmbH. All rights reserved
+#region Copyright (c) 2011-2022 Technosoftware GmbH. All rights reserved
 //-----------------------------------------------------------------------------
-// Copyright (c) 2022 Technosoftware GmbH. All rights reserved
+// Copyright (c) 2011-2022 Technosoftware GmbH. All rights reserved
 // Web: https://technosoftware.com 
 //
 // The Software is based on the OPC Foundation MIT License. 
 // The complete license agreement for that can be found here:
 // http://opcfoundation.org/License/MIT/1.00/
 //-----------------------------------------------------------------------------
-#endregion Copyright (c) 2022 Technosoftware GmbH. All rights reserved
+#endregion Copyright (c) 2011-2022 Technosoftware GmbH. All rights reserved
 
 #region Using Directives
 using System;
@@ -880,7 +880,7 @@ namespace Technosoftware.UaStandardServer
                 }
                 references.Add(new NodeStateReference(ReferenceTypes.HasSubtype, false, baseDataVariableTypeState.NodeId));
             }
-            
+
             if (parent != null)
             {
                 parent.AddReference(ReferenceTypes.Organizes, false, baseDataVariableTypeState.NodeId);
@@ -976,7 +976,7 @@ namespace Technosoftware.UaStandardServer
                 }
                 references.Add(new NodeStateReference(ReferenceTypes.HasSubtype, false, baseObjectTypeState.NodeId));
             }
-            
+
             if (parent != null)
             {
                 parent.AddReference(ReferenceTypes.Organizes, false, baseObjectTypeState.NodeId);
@@ -1565,7 +1565,7 @@ namespace Technosoftware.UaStandardServer
             variable.EURange.AccessLevel = accessLevel;
             variable.EURange.UserAccessLevel = accessLevel;
 
-            variable.Value = initialValue ?? TypeInfo.GetDefaultValue(dataType, valueRank, ServerData.TypeTree);
+            variable.Value = initialValue ?? Opc.Ua.TypeInfo.GetDefaultValue(dataType, valueRank, ServerData.TypeTree);
 
             variable.StatusCode = StatusCodes.Good;
             variable.Timestamp = DateTime.UtcNow;

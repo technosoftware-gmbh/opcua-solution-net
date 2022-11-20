@@ -1,17 +1,18 @@
-#region Copyright (c) 2022 Technosoftware GmbH. All rights reserved
+#region Copyright (c) 2011-2022 Technosoftware GmbH. All rights reserved
 //-----------------------------------------------------------------------------
-// Copyright (c) 2022 Technosoftware GmbH. All rights reserved
+// Copyright (c) 2011-2022 Technosoftware GmbH. All rights reserved
 // Web: https://technosoftware.com 
 //
 // The Software is based on the OPC Foundation MIT License. 
 // The complete license agreement for that can be found here:
 // http://opcfoundation.org/License/MIT/1.00/
 //-----------------------------------------------------------------------------
-#endregion Copyright (c) 2022 Technosoftware GmbH. All rights reserved
+#endregion Copyright (c) 2011-2022 Technosoftware GmbH. All rights reserved
 
 #region Using Directives
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 using Opc.Ua;
 using Opc.Ua.Test;
@@ -78,6 +79,7 @@ namespace Technosoftware.UaBaseServer
         /// <returns>The new NodeId.</returns>
         public override NodeId Create(ISystemContext context, NodeState node)
         {
+            if (node == null) throw new ArgumentNullException(nameof(node));
             if (node is BaseInstanceState instance && instance.Parent != null)
             {
                 if (instance.Parent.NodeId.Identifier is string id)
@@ -462,13 +464,15 @@ namespace Technosoftware.UaBaseServer
                 ContainsNoLoops = true
             };
 
-            if (!externalReferences.TryGetValue(ObjectIds.ViewsFolder, out var references))
+            if (externalReferences != null)
             {
-                externalReferences[ObjectIds.ViewsFolder] = references = new List<IReference>();
+                if (!externalReferences.TryGetValue(ObjectIds.ViewsFolder, out var references))
+                {
+                    externalReferences[ObjectIds.ViewsFolder] = references = new List<IReference>();
+                }
+                viewState.AddReference(ReferenceTypeIds.Organizes, true, ObjectIds.ViewsFolder);
+                references.Add(new NodeStateReference(ReferenceTypeIds.Organizes, false, viewState.NodeId));
             }
-
-            viewState.AddReference(ReferenceTypeIds.Organizes, true, ObjectIds.ViewsFolder);
-            references.Add(new NodeStateReference(ReferenceTypeIds.Organizes, false, viewState.NodeId));
 
             if (parent != null)
             {
@@ -889,12 +893,14 @@ namespace Technosoftware.UaBaseServer
                 Value = null
             };
 
-            if (!externalReferences.TryGetValue(VariableTypeIds.BaseDataVariableType, out var references))
+            if (externalReferences != null)
             {
-                externalReferences[VariableTypeIds.BaseDataVariableType] = references = new List<IReference>();
+                if (!externalReferences.TryGetValue(VariableTypeIds.BaseDataVariableType, out var references))
+                {
+                    externalReferences[VariableTypeIds.BaseDataVariableType] = references = new List<IReference>();
+                }
+                references.Add(new NodeStateReference(ReferenceTypes.HasSubtype, false, baseDataVariableTypeState.NodeId));
             }
-
-            references.Add(new NodeStateReference(ReferenceTypes.HasSubtype, false, baseDataVariableTypeState.NodeId));
 
             if (parent != null)
             {
@@ -983,12 +989,14 @@ namespace Technosoftware.UaBaseServer
                 IsAbstract = false
             };
 
-            if (!externalReferences.TryGetValue(ObjectTypeIds.BaseObjectType, out var references))
+            if (externalReferences != null)   
             {
-                externalReferences[ObjectTypeIds.BaseObjectType] = references = new List<IReference>();
+                if (!externalReferences.TryGetValue(ObjectTypeIds.BaseObjectType, out var references))
+                {
+                    externalReferences[ObjectTypeIds.BaseObjectType] = references = new List<IReference>();
+                }
+                references.Add(new NodeStateReference(ReferenceTypes.HasSubtype, false, baseObjectTypeState.NodeId));
             }
-
-            references.Add(new NodeStateReference(ReferenceTypes.HasSubtype, false, baseObjectTypeState.NodeId));
 
             if (parent != null)
             {
@@ -1074,12 +1082,14 @@ namespace Technosoftware.UaBaseServer
                 IsAbstract = false
             };
 
-            if (!externalReferences.TryGetValue(DataTypeIds.Structure, out var references))
+            if (externalReferences != null)
             {
-                externalReferences[DataTypeIds.Structure] = references = new List<IReference>();
+                if (!externalReferences.TryGetValue(DataTypeIds.Structure, out var references))
+                {
+                    externalReferences[DataTypeIds.Structure] = references = new List<IReference>();
+                }
+                references.Add(new NodeStateReference(ReferenceTypeIds.HasSubtype, false, type.NodeId));
             }
-
-            references.Add(new NodeStateReference(ReferenceTypeIds.HasSubtype, false, type.NodeId));
 
             if (parent != null)
             {
@@ -1269,13 +1279,14 @@ namespace Technosoftware.UaBaseServer
             variable.StatusCode = StatusCodes.Good;
             variable.Timestamp = DateTime.UtcNow;
 
-            if (valueRank == ValueRanks.OneDimension)
+            switch (valueRank)
             {
-                variable.ArrayDimensions = new ReadOnlyList<uint>(new List<uint> { 0 });
-            }
-            else if (valueRank == ValueRanks.TwoDimensions)
-            {
-                variable.ArrayDimensions = new ReadOnlyList<uint>(new List<uint> { 0, 0 });
+                case ValueRanks.OneDimension:
+                    variable.ArrayDimensions = new ReadOnlyList<uint>(new List<uint> { 0 });
+                    break;
+                case ValueRanks.TwoDimensions:
+                    variable.ArrayDimensions = new ReadOnlyList<uint>(new List<uint> { 0, 0 });
+                    break;
             }
 
             if (definition != null)
@@ -1667,9 +1678,9 @@ namespace Technosoftware.UaBaseServer
 
             variable.Create(
                 SystemContext,
-                null,
-                variable.BrowseName,
-                null,
+                new NodeId(browseName, NamespaceIndex),
+                new QualifiedName(browseName, NamespaceIndex),
+                displayName,
                 true);
 
             if (definition != null)
@@ -1683,9 +1694,6 @@ namespace Technosoftware.UaBaseServer
             variable.ReferenceTypeId = ReferenceTypes.Organizes;
             variable.DataType = DataTypeIds.Boolean;
             variable.ValueRank = ValueRanks.Scalar;
-            variable.NodeId = new NodeId(browseName, NamespaceIndex);
-            variable.BrowseName = new QualifiedName(browseName, NamespaceIndex);
-            variable.DisplayName = displayName;
             variable.Description = description;
             variable.WriteMask = writeMask;
             variable.UserWriteMask = userWriteMask;
@@ -1786,9 +1794,9 @@ namespace Technosoftware.UaBaseServer
 
             variable.Create(
                 SystemContext,
-                null,
-                variable.BrowseName,
-                null,
+                new NodeId(browseName, NamespaceIndex),
+                new QualifiedName(browseName, NamespaceIndex),
+                displayName,
                 true);
 
             if (definition != null)
@@ -1802,9 +1810,6 @@ namespace Technosoftware.UaBaseServer
             variable.ReferenceTypeId = ReferenceTypes.Organizes;
             variable.DataType = DataTypeIds.UInt32;
             variable.ValueRank = ValueRanks.Scalar;
-            variable.NodeId = new NodeId(browseName, NamespaceIndex);
-            variable.BrowseName = new QualifiedName(browseName, NamespaceIndex);
-            variable.DisplayName = displayName;
             variable.Description = description;
             variable.WriteMask = writeMask;
             variable.UserWriteMask = userWriteMask;
@@ -1826,7 +1831,13 @@ namespace Technosoftware.UaBaseServer
             variable.StatusCode = StatusCodes.Good;
             variable.Timestamp = DateTime.UtcNow;
 
-            variable.EnumStrings.Value = values;
+            LocalizedText[] strings = new LocalizedText[values.Length];
+            for (int ii = 0; ii < strings.Length; ii++)
+            {
+                strings[ii] = values[ii];
+            }
+
+            variable.EnumStrings.Value = strings;
             variable.EnumStrings.AccessLevel = accessLevel;
             variable.EnumStrings.UserAccessLevel = accessLevel;
 
@@ -1912,9 +1923,9 @@ namespace Technosoftware.UaBaseServer
 
             variable.Create(
                 SystemContext,
-                null,
-                variable.BrowseName,
-                null,
+                new NodeId(browseName, NamespaceIndex),
+                new QualifiedName(browseName, NamespaceIndex),
+                displayName,
                 true);
 
             if (definition != null)
@@ -1927,9 +1938,7 @@ namespace Technosoftware.UaBaseServer
             variable.SymbolicName = displayName.ToString();
             variable.ReferenceTypeId = ReferenceTypes.Organizes;
             variable.DataType = dataType == null ? DataTypeIds.UInt32 : dataType;
-            variable.NodeId = new NodeId(browseName, NamespaceIndex);
-            variable.BrowseName = new QualifiedName(browseName, NamespaceIndex);
-            variable.DisplayName = displayName;
+            variable.ValueRank = ValueRanks.Scalar;
             variable.Description = description;
             variable.WriteMask = writeMask;
             variable.UserWriteMask = userWriteMask;
@@ -1951,17 +1960,34 @@ namespace Technosoftware.UaBaseServer
             variable.StatusCode = StatusCodes.Good;
             variable.Timestamp = DateTime.UtcNow;
 
-            // set the enumerated values
-            var values = new EnumValueType[enumNames.Length];
-            for (var ii = 0; ii < values.Length; ii++)
+            // there are two enumerations for this type:
+            // EnumStrings = the string representations for enumerated values
+            // ValueAsText = the actual enumerated value
+
+            // set the enumerated strings
+            LocalizedText[] strings = new LocalizedText[enumNames.Length];
+            for (int ii = 0; ii < strings.Length; ii++)
             {
-                values[ii] = new EnumValueType();
-                values[ii].Value = ii;
-                values[ii].Description = enumNames[ii];
-                values[ii].DisplayName = enumNames[ii];
+                strings[ii] = enumNames[ii];
             }
 
-            variable.EnumValues.Value = values;
+            // set the enumerated values
+            if (enumNames != null)
+            {
+                var values = new EnumValueType[enumNames.Length];
+                for (var ii = 0; ii < values.Length; ii++)
+                {
+                    values[ii] = new EnumValueType
+                    {
+                        Value = ii,
+                        Description = strings[ii],
+                        DisplayName = strings[ii]
+                    };
+                }
+
+                variable.EnumValues.Value = values;
+            }
+
             variable.EnumValues.AccessLevel = accessLevel;
             variable.EnumValues.UserAccessLevel = accessLevel;
             variable.ValueAsText.Value = variable.EnumValues.Value[0].DisplayName;
@@ -2043,103 +2069,90 @@ namespace Technosoftware.UaBaseServer
 
         /// <summary>Adds the input arguments to a method.</summary>
         /// <param name="parent">The method object.</param>
-        /// <param name="nodeId">
-        ///     The unique identifier for the variable in the server's address space. The NodeId can be either:
-        ///     <list type="bullet">
-        ///         <item>
-        ///             <see cref="uint" />
-        ///         </item>
-        ///         <item>
-        ///             <see cref="Guid" />
-        ///         </item>
-        ///         <item>
-        ///             <see cref="string" />
-        ///         </item>
-        ///         <item><see cref="byte" />[]</item>
-        ///     </list>
-        ///     <b>Important:</b> Keep in mind that the actual ID's of nodes should be unique such that no two nodes within an
-        ///     address-space share the same ID's.
-        /// </param>
         /// <param name="inputArguments">The input arguments.</param>
         /// <returns>A <see cref="StatusCode" /> code with the result of the operation.</returns>
-        internal StatusCode AddInputArguments(MethodState parent, object nodeId,
-            params Argument[] inputArguments)
+        internal StatusCode AddInputArguments(MethodState parent, Argument[] inputArguments)
         {
-            parent.InputArguments = new PropertyState<Argument[]>(parent)
+            if (parent != null)
             {
-                NodeId = new NodeId(nodeId, NamespaceIndex), BrowseName = BrowseNames.InputArguments
-            };
-            parent.InputArguments.DisplayName = parent.InputArguments.BrowseName.Name;
-            parent.InputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
-            parent.InputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
-            parent.InputArguments.DataType = DataTypeIds.Argument;
-            parent.InputArguments.ValueRank = ValueRanks.OneDimension;
+                parent.InputArguments = new PropertyState<Argument[]>(parent);
+                parent.InputArguments.NodeId = new NodeId(parent.BrowseName.Name + "InArgs", NamespaceIndex);
+                parent.InputArguments.BrowseName = BrowseNames.InputArguments;
+                parent.InputArguments.DisplayName = parent.InputArguments.BrowseName.Name;
+                parent.InputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
+                parent.InputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
+                parent.InputArguments.DataType = DataTypeIds.Argument;
+                parent.InputArguments.ValueRank = ValueRanks.OneDimension;
+                parent.InputArguments.Value = inputArguments;
 
-            parent.InputArguments.Value = inputArguments;
+                return StatusCodes.Good;
+            }
 
-            return StatusCodes.Good;
+            return StatusCodes.Bad;
         }
 
         /// <summary>Adds the output arguments to a method.</summary>
         /// <param name="parent">The method object.</param>
-        /// <param name="nodeId">
-        ///     The unique identifier for the variable in the server's address space. The NodeId can be either:
-        ///     <list type="bullet">
-        ///         <item>
-        ///             <see cref="uint" />
-        ///         </item>
-        ///         <item>
-        ///             <see cref="Guid" />
-        ///         </item>
-        ///         <item>
-        ///             <see cref="string" />
-        ///         </item>
-        ///         <item><see cref="byte" />[]</item>
-        ///     </list>
-        ///     <b>Important:</b> Keep in mind that the actual ID's of nodes should be unique such that no two nodes within an
-        ///     address-space share the same ID's.
-        /// </param>
         /// <param name="outputArguments">The output arguments.</param>
         /// <returns>A <see cref="StatusCode" /> code with the result of the operation.</returns>
-        internal StatusCode AddOutputArguments(MethodState parent, object nodeId, params Argument[] outputArguments)
+        internal StatusCode AddOutputArguments(MethodState parent, params Argument[] outputArguments)
         {
-            parent.OutputArguments = new PropertyState<Argument[]>(parent)
+            if (parent != null)
             {
-                NodeId = new NodeId(nodeId, NamespaceIndex), BrowseName = BrowseNames.OutputArguments
-            };
-            parent.OutputArguments.DisplayName = parent.OutputArguments.BrowseName.Name;
-            parent.OutputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
-            parent.OutputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
-            parent.OutputArguments.DataType = DataTypeIds.Argument;
-            parent.OutputArguments.ValueRank = ValueRanks.OneDimension;
+                parent.OutputArguments = new PropertyState<Argument[]>(parent);
+                parent.OutputArguments.NodeId = new NodeId(parent.BrowseName.Name + "OutArgs", NamespaceIndex);
+                parent.OutputArguments.BrowseName = BrowseNames.OutputArguments;
+                parent.OutputArguments.DisplayName = parent.OutputArguments.BrowseName.Name;
+                parent.OutputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
+                parent.OutputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
+                parent.OutputArguments.DataType = DataTypeIds.Argument;
+                parent.OutputArguments.ValueRank = ValueRanks.OneDimension;
+                parent.OutputArguments.Value = outputArguments;
 
-            parent.OutputArguments.Value = outputArguments;
-
-            return StatusCodes.Good;
-        }
-
-        private object GetNewValue(BaseVariableState variable)
-        {
-            if (generator_ == null)
-            {
-                generator_ = new DataGenerator(null) { BoundaryValueFrequency = 0 };
+                return StatusCodes.Good;
             }
 
+            return StatusCodes.Bad;
+        }
+        #endregion
+
+        #region Random value generator
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="seed"></param>
+        /// <param name="boundaryValueFrequency"></param>
+        protected void ResetRandomGenerator(int seed, int boundaryValueFrequency = 0)
+        {
+            randomSource_ = new RandomSource(seed);
+            generator_ = new DataGenerator(randomSource_);
+            generator_.BoundaryValueFrequency = boundaryValueFrequency;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="variable"></param>
+        /// <returns></returns>
+        protected object GetNewValue(BaseVariableState variable)
+        {
+            Debug.Assert(generator_ != null, "Need a random generator!");
+
             object value = null;
-            var retryCount = 0;
+            int retryCount = 0;
 
             while (value == null && retryCount < 10)
             {
-                try
+                value = generator_.GetRandom(variable.DataType, variable.ValueRank, new uint[] { 10 }, ServerData.TypeTree);
+                // skip Variant Null
+                if (value is Variant variant)
                 {
-                    value = generator_.GetRandom(variable.DataType, variable.ValueRank, new uint[] { 10 },
-                        ServerData.TypeTree);
-                    retryCount++;
+                    if (variant.Value == null)
+                    {
+                        value = null;
+                    }
                 }
-                catch
-                {
-                    // ignored
-                }
+                retryCount++;
             }
 
             return value;
@@ -2152,6 +2165,8 @@ namespace Technosoftware.UaBaseServer
 
         #region Private Fields
         private readonly IUaServerPlugin opcServerPlugin_;
+
+        private RandomSource randomSource_;
         private DataGenerator generator_;
         #endregion
     }

@@ -10,7 +10,6 @@
 #endregion Copyright (c) 2011-2022 Technosoftware GmbH. All rights reserved
 
 #region Using Directives
-
 using Opc.Ua;
 using Opc.Ua.Test;
 using System;
@@ -23,7 +22,6 @@ using Technosoftware.UaServer.NodeManager;
 using Technosoftware.UaServer.Server;
 using Technosoftware.UaServer.Sessions;
 using Technosoftware.UaServer.Subscriptions;
-
 #endregion
 
 namespace Technosoftware.UaBaseServer
