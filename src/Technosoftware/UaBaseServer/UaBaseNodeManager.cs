@@ -2059,7 +2059,7 @@ namespace Technosoftware.UaBaseServer
         ///     <see cref="ValueRanks" /> for all possible value ranks.
         /// </param>
         /// <returns>The created argument</returns>
-        internal Argument CreateArgument(string name, string description, BuiltInType dataType, int valueRank)
+        protected internal virtual Argument CreateArgument(string name, string description, BuiltInType dataType, int valueRank)
         {
             var argument = new Argument
                 { Name = name, Description = description, DataType = (uint)dataType, ValueRank = valueRank };
@@ -2071,7 +2071,7 @@ namespace Technosoftware.UaBaseServer
         /// <param name="parent">The method object.</param>
         /// <param name="inputArguments">The input arguments.</param>
         /// <returns>A <see cref="StatusCode" /> code with the result of the operation.</returns>
-        internal StatusCode AddInputArguments(MethodState parent, Argument[] inputArguments)
+        protected internal virtual StatusCode AddInputArguments(MethodState parent, Argument[] inputArguments)
         {
             if (parent != null)
             {
@@ -2095,7 +2095,7 @@ namespace Technosoftware.UaBaseServer
         /// <param name="parent">The method object.</param>
         /// <param name="outputArguments">The output arguments.</param>
         /// <returns>A <see cref="StatusCode" /> code with the result of the operation.</returns>
-        internal StatusCode AddOutputArguments(MethodState parent, params Argument[] outputArguments)
+        protected internal virtual StatusCode AddOutputArguments(MethodState parent, params Argument[] outputArguments)
         {
             if (parent != null)
             {
