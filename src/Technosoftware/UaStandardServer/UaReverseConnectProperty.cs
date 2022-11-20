@@ -1,16 +1,15 @@
-#region Copyright (c) 2022 Technosoftware GmbH. All rights reserved
+#region Copyright (c) 2011-2022 Technosoftware GmbH. All rights reserved
 //-----------------------------------------------------------------------------
-// Copyright (c) 2022 Technosoftware GmbH. All rights reserved
+// Copyright (c) 2011-2022 Technosoftware GmbH. All rights reserved
 // Web: https://technosoftware.com 
 //
 // The Software is based on the OPC Foundation MIT License. 
 // The complete license agreement for that can be found here:
 // http://opcfoundation.org/License/MIT/1.00/
 //-----------------------------------------------------------------------------
-#endregion Copyright (c) 2022 Technosoftware GmbH. All rights reserved
+#endregion Copyright (c) 2011-2022 Technosoftware GmbH. All rights reserved
 
 #region Using Directives
-
 using Opc.Ua;
 using Opc.Ua.Test;
 using System;
@@ -23,7 +22,6 @@ using Technosoftware.UaServer.NodeManager;
 using Technosoftware.UaServer.Server;
 using Technosoftware.UaServer.Sessions;
 using Technosoftware.UaServer.Subscriptions;
-
 #endregion
 
 namespace Technosoftware.UaStandardServer
