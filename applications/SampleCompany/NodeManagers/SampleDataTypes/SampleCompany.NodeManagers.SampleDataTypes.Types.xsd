@@ -7,7 +7,7 @@
 >
   <xs:annotation>
     <xs:appinfo>
-      <tns:Model ModelUri="http://samplecompany.com/SampleServer/NodeManagers/SampleDataTypes" Version="1.0.0" PublicationDate="2022-11-15T09:14:09.272623Z" />
+      <tns:Model ModelUri="http://samplecompany.com/SampleServer/NodeManagers/SampleDataTypes" Version="1.0.0" PublicationDate="2022-11-21T06:03:28.8142702Z" />
     </xs:appinfo>
   </xs:annotation>
   
