@@ -41,11 +41,12 @@ You can use the following documents as a starting point:
 ### Build Status
 
 [![Build Status](https://app.travis-ci.com/technosoftware-gmbh/opcua-solution-net-samples.svg?branch=master)](https://app.travis-ci.com/technosoftware-gmbh/opcua-solution-net-samples)
-[![Build status](https://ci.appveyor.com/api/projects/status/j5joansdme5525lu?svg=true)](https://ci.appveyor.com/project/technosoftware/opcua-solution-net-samples)
-[![Github Actions](https://github.com/technosoftware-gmbh/opcua-solution-net-v2/actions/workflows/buildandtest.yml/badge.svg)](https://github.com/technosoftware-gmbh/opcua-solution-net-v2/actions/workflows/buildandtest.yml)
+[![Build status](https://ci.appveyor.com/api/projects/status/j5joansdme5525lu?svg=true)](https://ci.appveyor.com/project/technosoftware-gmbh/opcua-solution-net-samples)
+[![Build and Test .NET 6.0](https://github.com/technosoftware-gmbh/opcua-solution-net-samples/actions/workflows/buildandtest.yml/badge.svg)](https://github.com/technosoftware-gmbh/opcua-solution-net-samples/actions/workflows/buildandtest.yml)
 
 ### Code Quality
-[![codecov](https://codecov.io/gh/technosoftware-gmbh/opcua-solution-net-v2/branch/main/graph/badge.svg?token=Jn297yqWya)](https://codecov.io/gh/technosoftware-gmbh/opcua-solution-net-v2)
+[![CodeQL](https://github.com/technosoftware-gmbh/opcua-solution-net-samples/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/technosoftware-gmbh/opcua-solution-net-samples/actions/workflows/codeql-analysis.yml)
+[![codecov](https://codecov.io/gh/technosoftware-gmbh/opcua-solution-net-samples/branch/master/graph/badge.svg?token=PJ39TDO2RE)](https://codecov.io/gh/technosoftware-gmbh/opcua-solution-net-samples)
 
 ## Workshop
 
@@ -90,3 +91,9 @@ The delivered license can be used to turn the contents of this repository into a
 ### Get Support for the Solution:
 
 Support for the Solution is available [here](https://github.com/technosoftware-gmbh/opcua-solution-net-samples/issues).
+
+### Contribution
+
+We strongly encourage community participation and contribution to this project. First, please fork the repository and commit your changes there. Once happy with your changes you can generate a 'pull request'.
+
+You must agree to the contributor license agreement before we can accept your changes. The CLA and "I AGREE" button is automatically displayed when you perform the pull request. You can preview CLA [here](https://cla-assistant.io/technosoftware-gmbh/opcua-solution-net-samples).

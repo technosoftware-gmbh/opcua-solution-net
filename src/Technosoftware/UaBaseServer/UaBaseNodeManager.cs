@@ -1,35 +1,18 @@
 #region Copyright (c) 2011-2022 Technosoftware GmbH. All rights reserved
 //-----------------------------------------------------------------------------
-// Copyright (c) 2021 Technosoftware GmbH. All rights reserved
+// Copyright (c) 2011-2022 Technosoftware GmbH. All rights reserved
 // Web: https://technosoftware.com 
-// 
-// License: 
-// 
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
 //
-// SPDX-License-Identifier: MIT
+// The Software is based on the OPC Foundation MIT License. 
+// The complete license agreement for that can be found here:
+// http://opcfoundation.org/License/MIT/1.00/
 //-----------------------------------------------------------------------------
 #endregion Copyright (c) 2011-2022 Technosoftware GmbH. All rights reserved
 
 #region Using Directives
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 using Opc.Ua;
 using Opc.Ua.Test;
@@ -82,7 +65,7 @@ namespace Technosoftware.UaBaseServer
             ApplicationConfiguration configuration,
             params string[] namespaceUris)
         :
-            base(uaServerData, (ApplicationConfiguration)null, namespaceUris)
+            base(uaServerData, configuration, namespaceUris)
         {
         }
         #endregion
@@ -96,6 +79,7 @@ namespace Technosoftware.UaBaseServer
         /// <returns>The new NodeId.</returns>
         public override NodeId Create(ISystemContext context, NodeState node)
         {
+            if (node == null) throw new ArgumentNullException(nameof(node));
             if (node is BaseInstanceState instance && instance.Parent != null)
             {
                 if (instance.Parent.NodeId.Identifier is string id)
@@ -149,26 +133,27 @@ namespace Technosoftware.UaBaseServer
         /// <param name="rolePermissions">The optional RolePermissions Attribute specifies the Permissions that apply to a Node for all Roles which have access to the Node.</param>
         /// <param name="userRolePermissions">The optional UserRolePermissions Attribute specifies the Permissions that apply to a Node for all Roles granted to current Session.</param>
         /// <returns>The created folder object which can be used in further calls to <see cref="CreateFolderState" />.</returns>
-
-        protected internal virtual FolderState CreateFolderState(NodeState parent, string browseName, LocalizedText displayName, LocalizedText description, AttributeWriteMask writeMask = AttributeWriteMask.None, AttributeWriteMask userWriteMask = AttributeWriteMask.None, RolePermissionTypeCollection rolePermissions = null, RolePermissionTypeCollection userRolePermissions = null)
+        protected internal virtual FolderState CreateFolderState(NodeState parent, string browseName, LocalizedText displayName,
+            LocalizedText description, AttributeWriteMask writeMask = AttributeWriteMask.None,
+            AttributeWriteMask userWriteMask = AttributeWriteMask.None,
+            RolePermissionTypeCollection rolePermissions = null,
+            RolePermissionTypeCollection userRolePermissions = null)
         {
-            if (!Opc.Ua.LicenseHandler.ValidateFeatures())
-            {
-                return null;
-            }
-
             if (displayName == null)
             {
                 displayName = new LocalizedText("");
             }
+
             if (description == null)
             {
                 description = new LocalizedText("");
             }
+
             if (rolePermissions == null)
             {
                 rolePermissions = new RolePermissionTypeCollection();
             }
+
             if (userRolePermissions == null)
             {
                 userRolePermissions = new RolePermissionTypeCollection();
@@ -189,7 +174,6 @@ namespace Technosoftware.UaBaseServer
                 UserRolePermissions = userRolePermissions,
                 EventNotifier = EventNotifiers.None
             };
-
 
             if (parent != null)
             {
@@ -238,25 +222,28 @@ namespace Technosoftware.UaBaseServer
         /// <param name="rolePermissions">The optional RolePermissions Attribute specifies the Permissions that apply to a Node for all Roles which have access to the Node.</param>
         /// <param name="userRolePermissions">The optional UserRolePermissions Attribute specifies the Permissions that apply to a Node for all Roles granted to current Session.</param>
         /// <returns>The created Object NodeClass.</returns>
-        protected internal virtual BaseObjectState CreateBaseObjectState(NodeState parent, string browseName, LocalizedText displayName, LocalizedText description, AttributeWriteMask writeMask = AttributeWriteMask.None, AttributeWriteMask userWriteMask = AttributeWriteMask.None, RolePermissionTypeCollection rolePermissions = null, RolePermissionTypeCollection userRolePermissions = null)
+        protected internal virtual BaseObjectState CreateBaseObjectState(NodeState parent, string browseName,
+            LocalizedText displayName, LocalizedText description,
+            AttributeWriteMask writeMask = AttributeWriteMask.None,
+            AttributeWriteMask userWriteMask = AttributeWriteMask.None,
+            RolePermissionTypeCollection rolePermissions = null,
+            RolePermissionTypeCollection userRolePermissions = null)
         {
-            if (!Opc.Ua.LicenseHandler.ValidateFeatures())
-            {
-                return null;
-            }
-
             if (displayName == null)
             {
                 displayName = new LocalizedText("");
             }
+
             if (description == null)
             {
                 description = new LocalizedText("");
             }
+
             if (rolePermissions == null)
             {
                 rolePermissions = new RolePermissionTypeCollection();
             }
+
             if (userRolePermissions == null)
             {
                 userRolePermissions = new RolePermissionTypeCollection();
@@ -335,25 +322,28 @@ namespace Technosoftware.UaBaseServer
         /// <param name="rolePermissions">The optional RolePermissions Attribute specifies the Permissions that apply to a Node for all Roles which have access to the Node.</param>
         /// <param name="userRolePermissions">The optional UserRolePermissions Attribute specifies the Permissions that apply to a Node for all Roles granted to current Session.</param>
         /// <returns>The created property object.</returns>
-        protected internal virtual PropertyState CreatePropertyState(NodeState parent, string browseName, LocalizedText displayName, LocalizedText description, BuiltInType dataType, int valueRank, byte accessLevel, object initialValue, AttributeWriteMask writeMask = AttributeWriteMask.None, AttributeWriteMask userWriteMask = AttributeWriteMask.None, RolePermissionTypeCollection rolePermissions = null, RolePermissionTypeCollection userRolePermissions = null)
+        protected internal virtual PropertyState CreatePropertyState(NodeState parent, string browseName,
+            LocalizedText displayName, LocalizedText description, BuiltInType dataType, int valueRank, byte accessLevel,
+            object initialValue, AttributeWriteMask writeMask = AttributeWriteMask.None,
+            AttributeWriteMask userWriteMask = AttributeWriteMask.None,
+            RolePermissionTypeCollection rolePermissions = null,
+            RolePermissionTypeCollection userRolePermissions = null)
         {
-            if (!Opc.Ua.LicenseHandler.ValidateFeatures())
-            {
-                return null;
-            }
-
             if (displayName == null)
             {
                 displayName = new LocalizedText("");
             }
+
             if (description == null)
             {
                 description = new LocalizedText("");
             }
+
             if (rolePermissions == null)
             {
                 rolePermissions = new RolePermissionTypeCollection();
             }
+
             if (userRolePermissions == null)
             {
                 userRolePermissions = new RolePermissionTypeCollection();
@@ -433,25 +423,28 @@ namespace Technosoftware.UaBaseServer
         /// <param name="rolePermissions">The optional RolePermissions Attribute specifies the Permissions that apply to a Node for all Roles which have access to the Node.</param>
         /// <param name="userRolePermissions">The optional UserRolePermissions Attribute specifies the Permissions that apply to a Node for all Roles granted to current Session.</param>
         /// <returns>The created <see cref="ViewState" /></returns>
-        protected internal virtual ViewState CreateViewState(NodeState parent, IDictionary<NodeId, IList<IReference>> externalReferences, string browseName, LocalizedText displayName, LocalizedText description, AttributeWriteMask writeMask = AttributeWriteMask.None, AttributeWriteMask userWriteMask = AttributeWriteMask.None, RolePermissionTypeCollection rolePermissions = null, RolePermissionTypeCollection userRolePermissions = null)
+        protected internal virtual ViewState CreateViewState(NodeState parent,
+            IDictionary<NodeId, IList<IReference>> externalReferences, string browseName, LocalizedText displayName,
+            LocalizedText description, AttributeWriteMask writeMask = AttributeWriteMask.None,
+            AttributeWriteMask userWriteMask = AttributeWriteMask.None,
+            RolePermissionTypeCollection rolePermissions = null,
+            RolePermissionTypeCollection userRolePermissions = null)
         {
-            if (!Opc.Ua.LicenseHandler.ValidateFeatures())
-            {
-                return null;
-            }
-
-            if (displayName == null)
+           if (displayName == null)
             {
                 displayName = new LocalizedText("");
             }
+
             if (description == null)
             {
                 description = new LocalizedText("");
             }
+
             if (rolePermissions == null)
             {
                 rolePermissions = new RolePermissionTypeCollection();
             }
+
             if (userRolePermissions == null)
             {
                 userRolePermissions = new RolePermissionTypeCollection();
@@ -471,13 +464,15 @@ namespace Technosoftware.UaBaseServer
                 ContainsNoLoops = true
             };
 
-            if (!externalReferences.TryGetValue(ObjectIds.ViewsFolder, out var references))
+            if (externalReferences != null)
             {
-                externalReferences[ObjectIds.ViewsFolder] = references = new List<IReference>();
+                if (!externalReferences.TryGetValue(ObjectIds.ViewsFolder, out var references))
+                {
+                    externalReferences[ObjectIds.ViewsFolder] = references = new List<IReference>();
+                }
+                viewState.AddReference(ReferenceTypeIds.Organizes, true, ObjectIds.ViewsFolder);
+                references.Add(new NodeStateReference(ReferenceTypeIds.Organizes, false, viewState.NodeId));
             }
-
-            viewState.AddReference(ReferenceTypeIds.Organizes, true, ObjectIds.ViewsFolder);
-            references.Add(new NodeStateReference(ReferenceTypeIds.Organizes, false, viewState.NodeId));
 
             if (parent != null)
             {
@@ -531,25 +526,28 @@ namespace Technosoftware.UaBaseServer
         /// <param name="rolePermissions">The optional RolePermissions Attribute specifies the Permissions that apply to a Node for all Roles which have access to the Node.</param>
         /// <param name="userRolePermissions">The optional UserRolePermissions Attribute specifies the Permissions that apply to a Node for all Roles granted to current Session.</param>
         /// <returns>The created <see cref="BaseDataVariableState" /></returns>
-        protected internal virtual BaseDataVariableState CreateBaseDataVariableState(NodeState parent, string browseName, LocalizedText displayName, LocalizedText description, BuiltInType dataType, int valueRank, byte accessLevel, object initialValue, AttributeWriteMask writeMask = AttributeWriteMask.None, AttributeWriteMask userWriteMask = AttributeWriteMask.None, RolePermissionTypeCollection rolePermissions = null, RolePermissionTypeCollection userRolePermissions = null)
+        protected internal virtual BaseDataVariableState CreateBaseDataVariableState(NodeState parent, string browseName,
+            LocalizedText displayName, LocalizedText description, BuiltInType dataType, int valueRank, byte accessLevel,
+            object initialValue, AttributeWriteMask writeMask = AttributeWriteMask.None,
+            AttributeWriteMask userWriteMask = AttributeWriteMask.None,
+            RolePermissionTypeCollection rolePermissions = null,
+            RolePermissionTypeCollection userRolePermissions = null)
         {
-            if (!Opc.Ua.LicenseHandler.ValidateFeatures())
-            {
-                return null;
-            }
-
-            if (displayName == null)
+           if (displayName == null)
             {
                 displayName = new LocalizedText("");
             }
+
             if (description == null)
             {
                 description = new LocalizedText("");
             }
+
             if (rolePermissions == null)
             {
                 rolePermissions = new RolePermissionTypeCollection();
             }
+
             if (userRolePermissions == null)
             {
                 userRolePermissions = new RolePermissionTypeCollection();
@@ -634,25 +632,28 @@ namespace Technosoftware.UaBaseServer
         /// <param name="rolePermissions">The optional RolePermissions Attribute specifies the Permissions that apply to a Node for all Roles which have access to the Node.</param>
         /// <param name="userRolePermissions">The optional UserRolePermissions Attribute specifies the Permissions that apply to a Node for all Roles granted to current Session.</param>
         /// <returns>The created <see cref="BaseDataVariableState" /></returns>
-        protected internal virtual BaseDataVariableState CreateBaseDataVariableState(NodeState parent, string browseName, LocalizedText displayName, LocalizedText description, NodeId dataType, int valueRank, byte accessLevel, object initialValue, AttributeWriteMask writeMask = AttributeWriteMask.None, AttributeWriteMask userWriteMask = AttributeWriteMask.None, RolePermissionTypeCollection rolePermissions = null, RolePermissionTypeCollection userRolePermissions = null)
+        protected internal virtual BaseDataVariableState CreateBaseDataVariableState(NodeState parent, string browseName,
+            LocalizedText displayName, LocalizedText description, NodeId dataType, int valueRank, byte accessLevel,
+            object initialValue, AttributeWriteMask writeMask = AttributeWriteMask.None,
+            AttributeWriteMask userWriteMask = AttributeWriteMask.None,
+            RolePermissionTypeCollection rolePermissions = null,
+            RolePermissionTypeCollection userRolePermissions = null)
         {
-            if (!Opc.Ua.LicenseHandler.ValidateFeatures())
-            {
-                return null;
-            }
-
             if (displayName == null)
             {
                 displayName = new LocalizedText("");
             }
+
             if (description == null)
             {
                 description = new LocalizedText("");
             }
+
             if (rolePermissions == null)
             {
                 rolePermissions = new RolePermissionTypeCollection();
             }
+
             if (userRolePermissions == null)
             {
                 userRolePermissions = new RolePermissionTypeCollection();
@@ -737,25 +738,28 @@ namespace Technosoftware.UaBaseServer
         /// <param name="rolePermissions">The optional RolePermissions Attribute specifies the Permissions that apply to a Node for all Roles which have access to the Node.</param>
         /// <param name="userRolePermissions">The optional UserRolePermissions Attribute specifies the Permissions that apply to a Node for all Roles granted to current Session.</param>
         /// <returns>The created <see cref="BaseDataVariableState" /></returns>
-        protected internal virtual BaseDataVariableState CreateBaseDataVariableState(NodeState parent, string browseName, LocalizedText displayName, LocalizedText description, ExpandedNodeId dataType, int valueRank, byte accessLevel, object initialValue, AttributeWriteMask writeMask = AttributeWriteMask.None, AttributeWriteMask userWriteMask = AttributeWriteMask.None, RolePermissionTypeCollection rolePermissions = null, RolePermissionTypeCollection userRolePermissions = null)
+        protected internal virtual BaseDataVariableState CreateBaseDataVariableState(NodeState parent, string browseName,
+            LocalizedText displayName, LocalizedText description, ExpandedNodeId dataType, int valueRank,
+            byte accessLevel, object initialValue, AttributeWriteMask writeMask = AttributeWriteMask.None,
+            AttributeWriteMask userWriteMask = AttributeWriteMask.None,
+            RolePermissionTypeCollection rolePermissions = null,
+            RolePermissionTypeCollection userRolePermissions = null)
         {
-            if (!Opc.Ua.LicenseHandler.ValidateFeatures())
-            {
-                return null;
-            }
-
             if (displayName == null)
             {
                 displayName = new LocalizedText("");
             }
+
             if (description == null)
             {
                 description = new LocalizedText("");
             }
+
             if (rolePermissions == null)
             {
                 rolePermissions = new RolePermissionTypeCollection();
             }
+
             if (userRolePermissions == null)
             {
                 userRolePermissions = new RolePermissionTypeCollection();
@@ -843,25 +847,29 @@ namespace Technosoftware.UaBaseServer
         /// <param name="rolePermissions">The optional RolePermissions Attribute specifies the Permissions that apply to a Node for all Roles which have access to the Node.</param>
         /// <param name="userRolePermissions">The optional UserRolePermissions Attribute specifies the Permissions that apply to a Node for all Roles granted to current Session.</param>
         /// <returns>The created <see cref="BaseVariableTypeState" /></returns>
-        protected internal virtual BaseVariableTypeState CreateBaseVariableTypeState(NodeState parent, IDictionary<NodeId, IList<IReference>> externalReferences, string browseName, LocalizedText displayName, LocalizedText description, BuiltInType dataType, int valueRank, AttributeWriteMask writeMask = AttributeWriteMask.None, AttributeWriteMask userWriteMask = AttributeWriteMask.None, RolePermissionTypeCollection rolePermissions = null, RolePermissionTypeCollection userRolePermissions = null)
+        protected internal virtual BaseVariableTypeState CreateBaseVariableTypeState(NodeState parent,
+            IDictionary<NodeId, IList<IReference>> externalReferences, string browseName, LocalizedText displayName,
+            LocalizedText description, BuiltInType dataType, int valueRank,
+            AttributeWriteMask writeMask = AttributeWriteMask.None,
+            AttributeWriteMask userWriteMask = AttributeWriteMask.None,
+            RolePermissionTypeCollection rolePermissions = null,
+            RolePermissionTypeCollection userRolePermissions = null)
         {
-            if (!Opc.Ua.LicenseHandler.ValidateFeatures())
-            {
-                return null;
-            }
-
             if (displayName == null)
             {
                 displayName = new LocalizedText("");
             }
+
             if (description == null)
             {
                 description = new LocalizedText("");
             }
+
             if (rolePermissions == null)
             {
                 rolePermissions = new RolePermissionTypeCollection();
             }
+
             if (userRolePermissions == null)
             {
                 userRolePermissions = new RolePermissionTypeCollection();
@@ -885,12 +893,14 @@ namespace Technosoftware.UaBaseServer
                 Value = null
             };
 
-            if (!externalReferences.TryGetValue(VariableTypeIds.BaseDataVariableType, out var references))
+            if (externalReferences != null)
             {
-                externalReferences[VariableTypeIds.BaseDataVariableType] = references = new List<IReference>();
+                if (!externalReferences.TryGetValue(VariableTypeIds.BaseDataVariableType, out var references))
+                {
+                    externalReferences[VariableTypeIds.BaseDataVariableType] = references = new List<IReference>();
+                }
+                references.Add(new NodeStateReference(ReferenceTypes.HasSubtype, false, baseDataVariableTypeState.NodeId));
             }
-
-            references.Add(new NodeStateReference(ReferenceTypes.HasSubtype, false, baseDataVariableTypeState.NodeId));
 
             if (parent != null)
             {
@@ -937,25 +947,28 @@ namespace Technosoftware.UaBaseServer
         /// <param name="rolePermissions">The optional RolePermissions Attribute specifies the Permissions that apply to a Node for all Roles which have access to the Node.</param>
         /// <param name="userRolePermissions">The optional UserRolePermissions Attribute specifies the Permissions that apply to a Node for all Roles granted to current Session.</param>
         /// <returns>The created <see cref="BaseObjectTypeState" /></returns>
-        protected internal virtual BaseObjectTypeState CreateBaseObjectTypeState(NodeState parent, IDictionary<NodeId, IList<IReference>> externalReferences, string browseName, LocalizedText displayName, LocalizedText description, AttributeWriteMask writeMask = AttributeWriteMask.None, AttributeWriteMask userWriteMask = AttributeWriteMask.None, RolePermissionTypeCollection rolePermissions = null, RolePermissionTypeCollection userRolePermissions = null)
+        protected internal virtual BaseObjectTypeState CreateBaseObjectTypeState(NodeState parent,
+            IDictionary<NodeId, IList<IReference>> externalReferences, string browseName, LocalizedText displayName,
+            LocalizedText description, AttributeWriteMask writeMask = AttributeWriteMask.None,
+            AttributeWriteMask userWriteMask = AttributeWriteMask.None,
+            RolePermissionTypeCollection rolePermissions = null,
+            RolePermissionTypeCollection userRolePermissions = null)
         {
-            if (!Opc.Ua.LicenseHandler.ValidateFeatures())
-            {
-                return null;
-            }
-
             if (displayName == null)
             {
                 displayName = new LocalizedText("");
             }
+
             if (description == null)
             {
                 description = new LocalizedText("");
             }
+
             if (rolePermissions == null)
             {
                 rolePermissions = new RolePermissionTypeCollection();
             }
+
             if (userRolePermissions == null)
             {
                 userRolePermissions = new RolePermissionTypeCollection();
@@ -976,12 +989,14 @@ namespace Technosoftware.UaBaseServer
                 IsAbstract = false
             };
 
-            if (!externalReferences.TryGetValue(ObjectTypeIds.BaseObjectType, out var references))
+            if (externalReferences != null)   
             {
-                externalReferences[ObjectTypeIds.BaseObjectType] = references = new List<IReference>();
+                if (!externalReferences.TryGetValue(ObjectTypeIds.BaseObjectType, out var references))
+                {
+                    externalReferences[ObjectTypeIds.BaseObjectType] = references = new List<IReference>();
+                }
+                references.Add(new NodeStateReference(ReferenceTypes.HasSubtype, false, baseObjectTypeState.NodeId));
             }
-
-            references.Add(new NodeStateReference(ReferenceTypes.HasSubtype, false, baseObjectTypeState.NodeId));
 
             if (parent != null)
             {
@@ -1025,25 +1040,28 @@ namespace Technosoftware.UaBaseServer
         /// <param name="rolePermissions">The optional RolePermissions Attribute specifies the Permissions that apply to a Node for all Roles which have access to the Node.</param>
         /// <param name="userRolePermissions">The optional UserRolePermissions Attribute specifies the Permissions that apply to a Node for all Roles granted to current Session.</param>
         /// <returns>The created data type object</returns>
-        protected internal virtual DataTypeState CreateDataTypeState(NodeState parent, IDictionary<NodeId, IList<IReference>> externalReferences, string browseName, LocalizedText displayName, LocalizedText description, AttributeWriteMask writeMask = AttributeWriteMask.None, AttributeWriteMask userWriteMask = AttributeWriteMask.None, RolePermissionTypeCollection rolePermissions = null, RolePermissionTypeCollection userRolePermissions = null)
+        protected internal virtual DataTypeState CreateDataTypeState(NodeState parent,
+            IDictionary<NodeId, IList<IReference>> externalReferences, string browseName, LocalizedText displayName,
+            LocalizedText description, AttributeWriteMask writeMask = AttributeWriteMask.None,
+            AttributeWriteMask userWriteMask = AttributeWriteMask.None,
+            RolePermissionTypeCollection rolePermissions = null,
+            RolePermissionTypeCollection userRolePermissions = null)
         {
-            if (!Opc.Ua.LicenseHandler.ValidateFeatures())
-            {
-                return null;
-            }
-
             if (displayName == null)
             {
                 displayName = new LocalizedText("");
             }
+
             if (description == null)
             {
                 description = new LocalizedText("");
             }
+
             if (rolePermissions == null)
             {
                 rolePermissions = new RolePermissionTypeCollection();
             }
+
             if (userRolePermissions == null)
             {
                 userRolePermissions = new RolePermissionTypeCollection();
@@ -1064,12 +1082,14 @@ namespace Technosoftware.UaBaseServer
                 IsAbstract = false
             };
 
-            if (!externalReferences.TryGetValue(DataTypeIds.Structure, out var references))
+            if (externalReferences != null)
             {
-                externalReferences[DataTypeIds.Structure] = references = new List<IReference>();
+                if (!externalReferences.TryGetValue(DataTypeIds.Structure, out var references))
+                {
+                    externalReferences[DataTypeIds.Structure] = references = new List<IReference>();
+                }
+                references.Add(new NodeStateReference(ReferenceTypeIds.HasSubtype, false, type.NodeId));
             }
-
-            references.Add(new NodeStateReference(ReferenceTypeIds.HasSubtype, false, type.NodeId));
 
             if (parent != null)
             {
@@ -1096,13 +1116,9 @@ namespace Technosoftware.UaBaseServer
         ///   <para>The string part of the DisplayName is restricted to 512 characters.</para>
         /// </param>
         /// <returns>The created <see cref="ReferenceTypeState" /></returns>
-        internal ReferenceTypeState CreateReferenceTypeState(NodeState parent, IDictionary<NodeId, IList<IReference>> externalReferences, string browseName, LocalizedText displayName)
+        internal ReferenceTypeState CreateReferenceTypeState(NodeState parent,
+            IDictionary<NodeId, IList<IReference>> externalReferences, string browseName, LocalizedText displayName)
         {
-            if (!Opc.Ua.LicenseHandler.ValidateFeatures())
-            {
-                return null;
-            }
-
             var type = new ReferenceTypeState
             {
                 SymbolicName = displayName.ToString(),
@@ -1133,11 +1149,9 @@ namespace Technosoftware.UaBaseServer
             AddPredefinedNode(SystemContext, type);
             return type;
         }
-
         #endregion
 
         #region DataAccess Server Facet related Methods
-
         /// <summary>Creates a new DataItem variable.</summary>
         /// <param name="parent">The parent NodeState object the new folder will be created in.</param>
         /// <param name="browseName">Nodes have a BrowseName Attribute that is used as a non-localized human-readable name when browsing the AddressSpace to create paths out of BrowseNames. The
@@ -1195,7 +1209,8 @@ namespace Technosoftware.UaBaseServer
         /// <param name="rolePermissions">The optional RolePermissions Attribute specifies the Permissions that apply to a Node for all Roles which have access to the Node.</param>
         /// <param name="userRolePermissions">The optional UserRolePermissions Attribute specifies the Permissions that apply to a Node for all Roles granted to current Session.</param>
         /// <returns>The created <see cref="DataItemState" /></returns>
-        protected internal virtual DataItemState CreateDataItemState(NodeState parent, string browseName, LocalizedText displayName,
+        protected internal virtual DataItemState CreateDataItemState(NodeState parent, string browseName,
+            LocalizedText displayName,
             LocalizedText description, BuiltInType dataType, int valueRank, byte accessLevel, object initialValue,
             AttributeWriteMask writeMask = AttributeWriteMask.None,
             AttributeWriteMask userWriteMask = AttributeWriteMask.None,
@@ -1203,23 +1218,21 @@ namespace Technosoftware.UaBaseServer
             RolePermissionTypeCollection rolePermissions = null,
             RolePermissionTypeCollection userRolePermissions = null)
         {
-            if (!Opc.Ua.LicenseHandler.ValidateFeatures(Opc.Ua.LicenseHandler.ProductFeature.DataAccess))
-            {
-                return null;
-            }
-
             if (displayName == null)
             {
                 displayName = new LocalizedText("");
             }
+
             if (description == null)
             {
                 description = new LocalizedText("");
             }
+
             if (rolePermissions == null)
             {
                 rolePermissions = new RolePermissionTypeCollection();
             }
+
             if (userRolePermissions == null)
             {
                 userRolePermissions = new RolePermissionTypeCollection();
@@ -1231,6 +1244,7 @@ namespace Technosoftware.UaBaseServer
             {
                 variable.Definition = new PropertyState<string>(variable);
             }
+
             if (valuePrecision != null)
             {
                 variable.ValuePrecision = new PropertyState<double>(variable);
@@ -1260,17 +1274,19 @@ namespace Technosoftware.UaBaseServer
             variable.UserAccessLevel = accessLevel;
             variable.Historizing = false;
 
-            variable.Value = initialValue ?? Opc.Ua.TypeInfo.GetDefaultValue((uint)dataType, valueRank, ServerData.TypeTree);
+            variable.Value = initialValue ??
+                             Opc.Ua.TypeInfo.GetDefaultValue((uint)dataType, valueRank, ServerData.TypeTree);
             variable.StatusCode = StatusCodes.Good;
             variable.Timestamp = DateTime.UtcNow;
 
-            if (valueRank == ValueRanks.OneDimension)
+            switch (valueRank)
             {
-                variable.ArrayDimensions = new ReadOnlyList<uint>(new List<uint> { 0 });
-            }
-            else if (valueRank == ValueRanks.TwoDimensions)
-            {
-                variable.ArrayDimensions = new ReadOnlyList<uint>(new List<uint> { 0, 0 });
+                case ValueRanks.OneDimension:
+                    variable.ArrayDimensions = new ReadOnlyList<uint>(new List<uint> { 0 });
+                    break;
+                case ValueRanks.TwoDimensions:
+                    variable.ArrayDimensions = new ReadOnlyList<uint>(new List<uint> { 0, 0 });
+                    break;
             }
 
             if (definition != null)
@@ -1279,6 +1295,7 @@ namespace Technosoftware.UaBaseServer
                 variable.ValuePrecision.AccessLevel = accessLevel;
                 variable.ValuePrecision.UserAccessLevel = accessLevel;
             }
+
             if (valuePrecision != null)
             {
                 variable.ValuePrecision.Value = (double)valuePrecision;
@@ -1364,7 +1381,8 @@ namespace Technosoftware.UaBaseServer
         /// <param name="rolePermissions">The optional RolePermissions Attribute specifies the Permissions that apply to a Node for all Roles which have access to the Node.</param>
         /// <param name="userRolePermissions">The optional UserRolePermissions Attribute specifies the Permissions that apply to a Node for all Roles granted to current Session.</param>
         /// <returns>The created <see cref="AnalogItemState" /></returns>
-        protected internal virtual AnalogItemState CreateAnalogItemState(NodeState parent, string browseName, LocalizedText displayName,
+        protected internal virtual AnalogItemState CreateAnalogItemState(NodeState parent, string browseName,
+            LocalizedText displayName,
             LocalizedText description, BuiltInType dataType, int valueRank, byte accessLevel, object initialValue,
             Range euRange, EUInformation engineeringUnit = null, Range instrumentRange = null,
             AttributeWriteMask writeMask = AttributeWriteMask.None,
@@ -1373,8 +1391,9 @@ namespace Technosoftware.UaBaseServer
             RolePermissionTypeCollection rolePermissions = null,
             RolePermissionTypeCollection userRolePermissions = null)
         {
-            return CreateAnalogItemState(parent, browseName, displayName, description, (uint)dataType, valueRank, accessLevel, initialValue, euRange, engineeringUnit, instrumentRange, writeMask, userWriteMask, definition, valuePrecision, rolePermissions, userRolePermissions);
-
+            return CreateAnalogItemState(parent, browseName, displayName, description, (uint)dataType, valueRank,
+                accessLevel, initialValue, euRange, engineeringUnit, instrumentRange, writeMask, userWriteMask,
+                definition, valuePrecision, rolePermissions, userRolePermissions);
         }
 
         /// <summary>Creates a new AnalogItem variable.</summary>
@@ -1449,7 +1468,8 @@ namespace Technosoftware.UaBaseServer
         /// <param name="rolePermissions">The optional RolePermissions Attribute specifies the Permissions that apply to a Node for all Roles which have access to the Node.</param>
         /// <param name="userRolePermissions">The optional UserRolePermissions Attribute specifies the Permissions that apply to a Node for all Roles granted to current Session.</param>
         /// <returns>The created <see cref="AnalogItemState" /></returns>
-        protected internal virtual AnalogItemState CreateAnalogItemState(NodeState parent, string browseName, LocalizedText displayName,
+        protected internal virtual AnalogItemState CreateAnalogItemState(NodeState parent, string browseName,
+            LocalizedText displayName,
             LocalizedText description, NodeId dataType, int valueRank, byte accessLevel, object initialValue,
             Range euRange, EUInformation engineeringUnit = null, Range instrumentRange = null,
             AttributeWriteMask writeMask = AttributeWriteMask.None,
@@ -1458,23 +1478,21 @@ namespace Technosoftware.UaBaseServer
             RolePermissionTypeCollection rolePermissions = null,
             RolePermissionTypeCollection userRolePermissions = null)
         {
-            if (!Opc.Ua.LicenseHandler.ValidateFeatures(Opc.Ua.LicenseHandler.ProductFeature.DataAccess))
-            {
-                return null;
-            }
-
             if (displayName == null)
             {
                 displayName = new LocalizedText("");
             }
+
             if (description == null)
             {
                 description = new LocalizedText("");
             }
+
             if (rolePermissions == null)
             {
                 rolePermissions = new RolePermissionTypeCollection();
             }
+
             if (userRolePermissions == null)
             {
                 userRolePermissions = new RolePermissionTypeCollection();
@@ -1499,6 +1517,7 @@ namespace Technosoftware.UaBaseServer
             {
                 variable.Definition = new PropertyState<string>(variable);
             }
+
             if (valuePrecision != null)
             {
                 variable.ValuePrecision = new PropertyState<double>(variable);
@@ -1531,6 +1550,7 @@ namespace Technosoftware.UaBaseServer
                 variable.ValuePrecision.AccessLevel = accessLevel;
                 variable.ValuePrecision.UserAccessLevel = accessLevel;
             }
+
             if (valuePrecision != null)
             {
                 variable.ValuePrecision.Value = (double)valuePrecision;
@@ -1620,30 +1640,30 @@ namespace Technosoftware.UaBaseServer
         /// <param name="rolePermissions">The optional RolePermissions Attribute specifies the Permissions that apply to a Node for all Roles which have access to the Node.</param>
         /// <param name="userRolePermissions">The optional UserRolePermissions Attribute specifies the Permissions that apply to a Node for all Roles granted to current Session.</param>
         /// <returns>The created <see cref="TwoStateDiscreteState" /></returns>
-        protected internal virtual TwoStateDiscreteState CreateTwoStateDiscreteState(NodeState parent, string browseName, LocalizedText displayName,
-            LocalizedText description, byte accessLevel, bool initialValue, string trueState, string falseState, AttributeWriteMask writeMask = AttributeWriteMask.None,
+        protected internal virtual TwoStateDiscreteState CreateTwoStateDiscreteState(NodeState parent, string browseName,
+            LocalizedText displayName,
+            LocalizedText description, byte accessLevel, bool initialValue, string trueState, string falseState,
+            AttributeWriteMask writeMask = AttributeWriteMask.None,
             AttributeWriteMask userWriteMask = AttributeWriteMask.None,
             string definition = null,
             RolePermissionTypeCollection rolePermissions = null,
             RolePermissionTypeCollection userRolePermissions = null)
         {
-            if (!Opc.Ua.LicenseHandler.ValidateFeatures(Opc.Ua.LicenseHandler.ProductFeature.DataAccess))
-            {
-                return null;
-            }
-
             if (displayName == null)
             {
                 displayName = new LocalizedText("");
             }
+
             if (description == null)
             {
                 description = new LocalizedText("");
             }
+
             if (rolePermissions == null)
             {
                 rolePermissions = new RolePermissionTypeCollection();
             }
+
             if (userRolePermissions == null)
             {
                 userRolePermissions = new RolePermissionTypeCollection();
@@ -1658,9 +1678,9 @@ namespace Technosoftware.UaBaseServer
 
             variable.Create(
                 SystemContext,
-                null,
-                variable.BrowseName,
-                null,
+                new NodeId(browseName, NamespaceIndex),
+                new QualifiedName(browseName, NamespaceIndex),
+                displayName,
                 true);
 
             if (definition != null)
@@ -1674,9 +1694,6 @@ namespace Technosoftware.UaBaseServer
             variable.ReferenceTypeId = ReferenceTypes.Organizes;
             variable.DataType = DataTypeIds.Boolean;
             variable.ValueRank = ValueRanks.Scalar;
-            variable.NodeId = new NodeId(browseName, NamespaceIndex);
-            variable.BrowseName = new QualifiedName(browseName, NamespaceIndex);
-            variable.DisplayName = displayName;
             variable.Description = description;
             variable.WriteMask = writeMask;
             variable.UserWriteMask = userWriteMask;
@@ -1739,30 +1756,30 @@ namespace Technosoftware.UaBaseServer
         /// <param name="userRolePermissions">The optional UserRolePermissions Attribute specifies the Permissions that apply to a Node for all Roles granted to current Session.</param>
         /// <param name="values">The possible values the multi-state variable can have.</param>
         /// <returns>The created <see cref="MultiStateDiscreteState" /></returns>
-        protected internal virtual MultiStateDiscreteState CreateMultiStateDiscreteState(NodeState parent, string browseName, LocalizedText displayName,
-            LocalizedText description, byte accessLevel, object initialValue, AttributeWriteMask writeMask = AttributeWriteMask.None,
+        protected internal virtual MultiStateDiscreteState CreateMultiStateDiscreteState(NodeState parent, string browseName,
+            LocalizedText displayName,
+            LocalizedText description, byte accessLevel, object initialValue,
+            AttributeWriteMask writeMask = AttributeWriteMask.None,
             AttributeWriteMask userWriteMask = AttributeWriteMask.None,
             string definition = null,
             RolePermissionTypeCollection rolePermissions = null,
             RolePermissionTypeCollection userRolePermissions = null, params LocalizedText[] values)
         {
-            if (!Opc.Ua.LicenseHandler.ValidateFeatures(Opc.Ua.LicenseHandler.ProductFeature.DataAccess))
-            {
-                return null;
-            }
-
             if (displayName == null)
             {
                 displayName = new LocalizedText("");
             }
+
             if (description == null)
             {
                 description = new LocalizedText("");
             }
+
             if (rolePermissions == null)
             {
                 rolePermissions = new RolePermissionTypeCollection();
             }
+
             if (userRolePermissions == null)
             {
                 userRolePermissions = new RolePermissionTypeCollection();
@@ -1777,9 +1794,9 @@ namespace Technosoftware.UaBaseServer
 
             variable.Create(
                 SystemContext,
-                null,
-                variable.BrowseName,
-                null,
+                new NodeId(browseName, NamespaceIndex),
+                new QualifiedName(browseName, NamespaceIndex),
+                displayName,
                 true);
 
             if (definition != null)
@@ -1793,9 +1810,6 @@ namespace Technosoftware.UaBaseServer
             variable.ReferenceTypeId = ReferenceTypes.Organizes;
             variable.DataType = DataTypeIds.UInt32;
             variable.ValueRank = ValueRanks.Scalar;
-            variable.NodeId = new NodeId(browseName, NamespaceIndex);
-            variable.BrowseName = new QualifiedName(browseName, NamespaceIndex);
-            variable.DisplayName = displayName;
             variable.Description = description;
             variable.WriteMask = writeMask;
             variable.UserWriteMask = userWriteMask;
@@ -1813,10 +1827,17 @@ namespace Technosoftware.UaBaseServer
             {
                 variable.Value = initialValue;
             }
+
             variable.StatusCode = StatusCodes.Good;
             variable.Timestamp = DateTime.UtcNow;
 
-            variable.EnumStrings.Value = values;
+            LocalizedText[] strings = new LocalizedText[values.Length];
+            for (int ii = 0; ii < strings.Length; ii++)
+            {
+                strings[ii] = values[ii];
+            }
+
+            variable.EnumStrings.Value = strings;
             variable.EnumStrings.AccessLevel = accessLevel;
             variable.EnumStrings.UserAccessLevel = accessLevel;
 
@@ -1864,30 +1885,30 @@ namespace Technosoftware.UaBaseServer
         /// <param name="userRolePermissions">The optional UserRolePermissions Attribute specifies the Permissions that apply to a Node for all Roles granted to current Session.</param>
         /// <param name="enumNames">The possible values the multi-state variable can have.</param>
         /// <returns>The created <see cref="MultiStateDiscreteState" /></returns>
-        protected internal virtual MultiStateValueDiscreteState CreateMultiStateValueDiscreteState(NodeState parent, string browseName, LocalizedText displayName,
-            LocalizedText description, NodeId dataType, byte accessLevel, object initialValue, AttributeWriteMask writeMask = AttributeWriteMask.None,
+        protected internal virtual MultiStateValueDiscreteState CreateMultiStateValueDiscreteState(NodeState parent,
+            string browseName, LocalizedText displayName,
+            LocalizedText description, NodeId dataType, byte accessLevel, object initialValue,
+            AttributeWriteMask writeMask = AttributeWriteMask.None,
             AttributeWriteMask userWriteMask = AttributeWriteMask.None,
             string definition = null,
             RolePermissionTypeCollection rolePermissions = null,
             RolePermissionTypeCollection userRolePermissions = null, params LocalizedText[] enumNames)
         {
-            if (!Opc.Ua.LicenseHandler.ValidateFeatures(Opc.Ua.LicenseHandler.ProductFeature.DataAccess))
-            {
-                return null;
-            }
-
             if (displayName == null)
             {
                 displayName = new LocalizedText("");
             }
+
             if (description == null)
             {
                 description = new LocalizedText("");
             }
+
             if (rolePermissions == null)
             {
                 rolePermissions = new RolePermissionTypeCollection();
             }
+
             if (userRolePermissions == null)
             {
                 userRolePermissions = new RolePermissionTypeCollection();
@@ -1902,9 +1923,9 @@ namespace Technosoftware.UaBaseServer
 
             variable.Create(
                 SystemContext,
-                null,
-                variable.BrowseName,
-                null,
+                new NodeId(browseName, NamespaceIndex),
+                new QualifiedName(browseName, NamespaceIndex),
+                displayName,
                 true);
 
             if (definition != null)
@@ -1917,9 +1938,7 @@ namespace Technosoftware.UaBaseServer
             variable.SymbolicName = displayName.ToString();
             variable.ReferenceTypeId = ReferenceTypes.Organizes;
             variable.DataType = dataType == null ? DataTypeIds.UInt32 : dataType;
-            variable.NodeId = new NodeId(browseName, NamespaceIndex);
-            variable.BrowseName = new QualifiedName(browseName, NamespaceIndex);
-            variable.DisplayName = displayName;
+            variable.ValueRank = ValueRanks.Scalar;
             variable.Description = description;
             variable.WriteMask = writeMask;
             variable.UserWriteMask = userWriteMask;
@@ -1937,19 +1956,38 @@ namespace Technosoftware.UaBaseServer
             {
                 variable.Value = initialValue;
             }
+
             variable.StatusCode = StatusCodes.Good;
             variable.Timestamp = DateTime.UtcNow;
 
-            // set the enumerated values
-            var values = new EnumValueType[enumNames.Length];
-            for (var ii = 0; ii < values.Length; ii++)
+            // there are two enumerations for this type:
+            // EnumStrings = the string representations for enumerated values
+            // ValueAsText = the actual enumerated value
+
+            // set the enumerated strings
+            LocalizedText[] strings = new LocalizedText[enumNames.Length];
+            for (int ii = 0; ii < strings.Length; ii++)
             {
-                values[ii] = new EnumValueType();
-                values[ii].Value = ii;
-                values[ii].Description = enumNames[ii];
-                values[ii].DisplayName = enumNames[ii];
+                strings[ii] = enumNames[ii];
             }
-            variable.EnumValues.Value = values;
+
+            // set the enumerated values
+            if (enumNames != null)
+            {
+                var values = new EnumValueType[enumNames.Length];
+                for (var ii = 0; ii < values.Length; ii++)
+                {
+                    values[ii] = new EnumValueType
+                    {
+                        Value = ii,
+                        Description = strings[ii],
+                        DisplayName = strings[ii]
+                    };
+                }
+
+                variable.EnumValues.Value = values;
+            }
+
             variable.EnumValues.AccessLevel = accessLevel;
             variable.EnumValues.UserAccessLevel = accessLevel;
             variable.ValueAsText.Value = variable.EnumValues.Value[0].DisplayName;
@@ -1958,7 +1996,6 @@ namespace Technosoftware.UaBaseServer
 
             return variable;
         }
-
         #endregion
 
         #region Method related functions
@@ -1978,13 +2015,9 @@ namespace Technosoftware.UaBaseServer
         /// </param>
         /// <param name="callingMethod">The method which will be called if the method is executed.</param>
         /// <returns>The created method object.</returns>
-        protected internal virtual MethodState CreateMethodState(NodeState parent, string path, string name, GenericMethodCalledEventHandler2 callingMethod = null)
+        protected internal virtual MethodState CreateMethodState(NodeState parent, string path, string name,
+            GenericMethodCalledEventHandler2 callingMethod = null)
         {
-            if (!Opc.Ua.LicenseHandler.ValidateFeatures())
-            {
-                return null;
-            }
-
             var method = new MethodState(parent)
             {
                 SymbolicName = name,
@@ -1997,7 +2030,6 @@ namespace Technosoftware.UaBaseServer
                 Executable = true,
                 UserExecutable = true
             };
-
 
             parent?.AddChild(method);
 
@@ -2027,132 +2059,104 @@ namespace Technosoftware.UaBaseServer
         ///     <see cref="ValueRanks" /> for all possible value ranks.
         /// </param>
         /// <returns>The created argument</returns>
-        internal Argument CreateArgument(string name, string description, BuiltInType dataType, int valueRank)
+        protected internal virtual Argument CreateArgument(string name, string description, BuiltInType dataType, int valueRank)
         {
-            if (!Opc.Ua.LicenseHandler.ValidateFeatures())
-            {
-                return null;
-            }
-
-            var argument = new Argument { Name = name, Description = description, DataType = (uint)dataType, ValueRank = valueRank };
+            var argument = new Argument
+                { Name = name, Description = description, DataType = (uint)dataType, ValueRank = valueRank };
 
             return argument;
         }
 
-
         /// <summary>Adds the input arguments to a method.</summary>
         /// <param name="parent">The method object.</param>
-        /// <param name="nodeId">
-        ///     The unique identifier for the variable in the server's address space. The NodeId can be either:
-        ///     <list type="bullet">
-        ///         <item>
-        ///             <see cref="uint" />
-        ///         </item>
-        ///         <item>
-        ///             <see cref="Guid" />
-        ///         </item>
-        ///         <item>
-        ///             <see cref="string" />
-        ///         </item>
-        ///         <item><see cref="byte" />[]</item>
-        ///     </list>
-        ///     <b>Important:</b> Keep in mind that the actual ID's of nodes should be unique such that no two nodes within an
-        ///     address-space share the same ID's.
-        /// </param>
         /// <param name="inputArguments">The input arguments.</param>
         /// <returns>A <see cref="StatusCode" /> code with the result of the operation.</returns>
-        protected internal virtual StatusCode AddInputArguments(MethodState parent, object nodeId, params Argument[] inputArguments)
+        protected internal virtual StatusCode AddInputArguments(MethodState parent, Argument[] inputArguments)
         {
-            if (!Opc.Ua.LicenseHandler.ValidateFeatures())
+            if (parent != null)
             {
-                return StatusCodes.Bad;
+                parent.InputArguments = new PropertyState<Argument[]>(parent);
+                parent.InputArguments.NodeId = new NodeId(parent.BrowseName.Name + "InArgs", NamespaceIndex);
+                parent.InputArguments.BrowseName = BrowseNames.InputArguments;
+                parent.InputArguments.DisplayName = parent.InputArguments.BrowseName.Name;
+                parent.InputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
+                parent.InputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
+                parent.InputArguments.DataType = DataTypeIds.Argument;
+                parent.InputArguments.ValueRank = ValueRanks.OneDimension;
+                parent.InputArguments.Value = inputArguments;
+
+                return StatusCodes.Good;
             }
 
-            parent.InputArguments = new PropertyState<Argument[]>(parent)
-            {
-                NodeId = new NodeId(nodeId, NamespaceIndex), BrowseName = BrowseNames.InputArguments
-            };
-            parent.InputArguments.DisplayName = parent.InputArguments.BrowseName.Name;
-            parent.InputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
-            parent.InputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
-            parent.InputArguments.DataType = DataTypeIds.Argument;
-            parent.InputArguments.ValueRank = ValueRanks.OneDimension;
-
-            parent.InputArguments.Value = inputArguments;
-
-            return StatusCodes.Good;
+            return StatusCodes.Bad;
         }
 
         /// <summary>Adds the output arguments to a method.</summary>
         /// <param name="parent">The method object.</param>
-        /// <param name="nodeId">
-        ///     The unique identifier for the variable in the server's address space. The NodeId can be either:
-        ///     <list type="bullet">
-        ///         <item>
-        ///             <see cref="uint" />
-        ///         </item>
-        ///         <item>
-        ///             <see cref="Guid" />
-        ///         </item>
-        ///         <item>
-        ///             <see cref="string" />
-        ///         </item>
-        ///         <item><see cref="byte" />[]</item>
-        ///     </list>
-        ///     <b>Important:</b> Keep in mind that the actual ID's of nodes should be unique such that no two nodes within an
-        ///     address-space share the same ID's.
-        /// </param>
         /// <param name="outputArguments">The output arguments.</param>
         /// <returns>A <see cref="StatusCode" /> code with the result of the operation.</returns>
-        internal StatusCode AddOutputArguments(MethodState parent, object nodeId, params Argument[] outputArguments)
+        protected internal virtual StatusCode AddOutputArguments(MethodState parent, params Argument[] outputArguments)
         {
-            if (!Opc.Ua.LicenseHandler.ValidateFeatures())
+            if (parent != null)
             {
-                return StatusCodes.Bad;
+                parent.OutputArguments = new PropertyState<Argument[]>(parent);
+                parent.OutputArguments.NodeId = new NodeId(parent.BrowseName.Name + "OutArgs", NamespaceIndex);
+                parent.OutputArguments.BrowseName = BrowseNames.OutputArguments;
+                parent.OutputArguments.DisplayName = parent.OutputArguments.BrowseName.Name;
+                parent.OutputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
+                parent.OutputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
+                parent.OutputArguments.DataType = DataTypeIds.Argument;
+                parent.OutputArguments.ValueRank = ValueRanks.OneDimension;
+                parent.OutputArguments.Value = outputArguments;
+
+                return StatusCodes.Good;
             }
 
-            parent.OutputArguments = new PropertyState<Argument[]>(parent)
-            {
-                NodeId = new NodeId(nodeId, NamespaceIndex), BrowseName = BrowseNames.OutputArguments
-            };
-            parent.OutputArguments.DisplayName = parent.OutputArguments.BrowseName.Name;
-            parent.OutputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
-            parent.OutputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
-            parent.OutputArguments.DataType = DataTypeIds.Argument;
-            parent.OutputArguments.ValueRank = ValueRanks.OneDimension;
+            return StatusCodes.Bad;
+        }
+        #endregion
 
-            parent.OutputArguments.Value = outputArguments;
-
-            return StatusCodes.Good;
+        #region Random value generator
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="seed"></param>
+        /// <param name="boundaryValueFrequency"></param>
+        protected void ResetRandomGenerator(int seed, int boundaryValueFrequency = 0)
+        {
+            randomSource_ = new RandomSource(seed);
+            generator_ = new DataGenerator(randomSource_);
+            generator_.BoundaryValueFrequency = boundaryValueFrequency;
         }
 
-        private object GetNewValue(BaseVariableState variable)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="variable"></param>
+        /// <returns></returns>
+        protected object GetNewValue(BaseVariableState variable)
         {
-            if (generator_ == null)
-            {
-                generator_ = new DataGenerator(null) { BoundaryValueFrequency = 0 };
-            }
+            Debug.Assert(generator_ != null, "Need a random generator!");
 
             object value = null;
-            var retryCount = 0;
+            int retryCount = 0;
 
             while (value == null && retryCount < 10)
             {
-                try
+                value = generator_.GetRandom(variable.DataType, variable.ValueRank, new uint[] { 10 }, ServerData.TypeTree);
+                // skip Variant Null
+                if (value is Variant variant)
                 {
-                    value = generator_.GetRandom(variable.DataType, variable.ValueRank, new uint[] { 10 },
-                        ServerData.TypeTree);
-                    retryCount++;
+                    if (variant.Value == null)
+                    {
+                        value = null;
+                    }
                 }
-                catch
-                {
-                    // ignored
-                }
+                retryCount++;
             }
 
             return value;
         }
-
         #endregion
 
         #region Internal properties
@@ -2161,6 +2165,8 @@ namespace Technosoftware.UaBaseServer
 
         #region Private Fields
         private readonly IUaServerPlugin opcServerPlugin_;
+
+        private RandomSource randomSource_;
         private DataGenerator generator_;
         #endregion
     }

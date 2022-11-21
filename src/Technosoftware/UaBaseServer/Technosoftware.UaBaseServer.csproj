@@ -3,14 +3,14 @@
   <PropertyGroup>
     <DefineConstants>$(DefineConstants);NET_STANDARD</DefineConstants>
     <AssemblyName>Technosoftware.UaBaseServer</AssemblyName>
-    <TargetFramework>$(AppTargetFramework)</TargetFramework>
+    <TargetFrameworks>$(LibTargetFrameworks)</TargetFrameworks>
+    <LangVersion>7.3</LangVersion>
     <PackageId>Technosoftware.UaBaseServer</PackageId>
     <RootNamespace>Technosoftware.UaBaseServer</RootNamespace>
     <Company>Technosoftware GmbH</Company>
     <Product>OPC UA Solution .NET</Product>
     <Description>OPC UA Solution .NET Base Server Library</Description>
     <Copyright>Copyright © 2018 - 2022 Technosoftware GmbH</Copyright>
-    <LangVersion>7.3</LangVersion>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
     <IsPackable>false</IsPackable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -20,10 +20,14 @@
     <PackageId>$(PackageId).Debug</PackageId>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(SignAssembly)' == 'true'">
+    <DefineConstants>$(DefineConstants);SIGNASSEMBLY</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="Technosoftware.UaSolution.UaCore" Version="2.5.0" />
-    <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.5.0" />
-    <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.5.0" />
+    <PackageReference Include="Technosoftware.UaSolution.UaCore" Version="2.5.5" />
+    <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.5.5" />
+    <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.5.5" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
@@ -37,10 +41,6 @@
   <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
     <Reference Include="System.IdentityModel" />
   </ItemGroup>
-
-  <PropertyGroup Condition="'$(SignAssembly)' == 'true'">
-    <DefineConstants>$(DefineConstants);SIGNASSEMBLY</DefineConstants>
-  </PropertyGroup>
 
   <Target Name="GetPackagingOutputs" />
 

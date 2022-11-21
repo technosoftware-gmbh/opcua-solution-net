@@ -31,13 +31,13 @@
     <PackageReference Include="Mono.Options" Version="6.12.0.148" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.5.0" />
-    <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.5.0" />
+  <ItemGroup Condition=" '$(NoHttps)' != 'true' ">
+    <PackageReference Include="Technosoftware.UaSolution.UaBindings.Https" Version="2.5.5" />
   </ItemGroup>
-
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Technosoftware\UaBaseServer\Technosoftware.UaBaseServer.csproj" />
+    <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.5.5" />
+    <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.5.5" />
+    <PackageReference Include="Technosoftware.UaSolution.UaBaseServer" Version="2.5.5" />
   </ItemGroup>
 
   <ItemGroup>

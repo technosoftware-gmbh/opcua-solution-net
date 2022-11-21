@@ -38,35 +38,25 @@ namespace SampleCompany.SampleServer.Model
 {
     #region GetMachineDataMethodState Class
     #if (!OPCUA_EXCLUDE_GetMachineDataMethodState)
-    /// <summary>
-    /// Stores an instance of the GetMachineDataMethodType Method.
-    /// </summary>
+    /// <remarks />
     /// <exclude />
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
     public partial class GetMachineDataMethodState : MethodState
     {
         #region Constructors
-        /// <summary>
-        /// Initializes the type with its default attribute values.
-        /// </summary>
+        /// <remarks />
         public GetMachineDataMethodState(NodeState parent) : base(parent)
         {
         }
 
-        /// <summary>
-        /// Constructs an instance of a node.
-        /// </summary>
-        /// <param name="parent">The parent.</param>
-        /// <returns>The new node.</returns>
+        /// <remarks />
         public new static NodeState Construct(NodeState parent)
         {
             return new GetMachineDataMethodState(parent);
         }
 
         #if (!OPCUA_EXCLUDE_InitializationStrings)
-        /// <summary>
-        /// Initializes the instance.
-        /// </summary>
+        /// <remarks />
         protected override void Initialize(ISystemContext context)
         {
             base.Initialize(context);
@@ -74,9 +64,7 @@ namespace SampleCompany.SampleServer.Model
             InitializeOptionalChildren(context);
         }
 
-        /// <summary>
-        /// Initializes the any option children defined for the instance.
-        /// </summary>
+        /// <remarks />
         protected override void InitializeOptionalChildren(ISystemContext context)
         {
             base.InitializeOptionalChildren(context);
@@ -95,9 +83,7 @@ namespace SampleCompany.SampleServer.Model
         #endregion
 
         #region Event Callbacks
-        /// <summary>
-        /// Raised when the the method is called.
-        /// </summary>
+        /// <remarks />
         public GetMachineDataMethodStateMethodCallHandler OnCall;
         #endregion
 
@@ -105,9 +91,7 @@ namespace SampleCompany.SampleServer.Model
         #endregion
 
         #region Overridden Methods
-        /// <summary>
-        /// Invokes the method, returns the result and output argument.
-        /// </summary>
+        /// <remarks />
         protected override ServiceResult Call(
             ISystemContext _context,
             NodeId _objectId,
@@ -119,7 +103,7 @@ namespace SampleCompany.SampleServer.Model
                 return base.Call(_context, _objectId, _inputArguments, _outputArguments);
             }
 
-            ServiceResult result = null;
+            ServiceResult _result = null;
 
             string machineName = (string)_inputArguments[0];
 
@@ -127,7 +111,7 @@ namespace SampleCompany.SampleServer.Model
 
             if (OnCall != null)
             {
-                result = OnCall(
+                _result = OnCall(
                     _context,
                     this,
                     _objectId,
@@ -137,7 +121,7 @@ namespace SampleCompany.SampleServer.Model
 
             _outputArguments[0] = machineData;
 
-            return result;
+            return _result;
         }
         #endregion
 
@@ -145,9 +129,7 @@ namespace SampleCompany.SampleServer.Model
         #endregion
     }
 
-    /// <summary>
-    /// Used to receive notifications when the method is called.
-    /// </summary>
+    /// <remarks />
     /// <exclude />
     public delegate ServiceResult GetMachineDataMethodStateMethodCallHandler(
         ISystemContext _context,
@@ -160,33 +142,25 @@ namespace SampleCompany.SampleServer.Model
 
     #region GenericControllerState Class
     #if (!OPCUA_EXCLUDE_GenericControllerState)
-    /// <summary>
-    /// Stores an instance of the GenericControllerType ObjectType.
-    /// </summary>
+    /// <remarks />
     /// <exclude />
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
     public partial class GenericControllerState : BaseObjectState
     {
         #region Constructors
-        /// <summary>
-        /// Initializes the type with its default attribute values.
-        /// </summary>
+        /// <remarks />
         public GenericControllerState(NodeState parent) : base(parent)
         {
         }
 
-        /// <summary>
-        /// Returns the id of the default type definition node for the instance.
-        /// </summary>
+        /// <remarks />
         protected override NodeId GetDefaultTypeDefinitionId(NamespaceTable namespaceUris)
         {
             return Opc.Ua.NodeId.Create(SampleCompany.SampleServer.Model.ObjectTypes.GenericControllerType, SampleCompany.SampleServer.Model.Namespaces.SampleServer, namespaceUris);
         }
 
         #if (!OPCUA_EXCLUDE_InitializationStrings)
-        /// <summary>
-        /// Initializes the instance.
-        /// </summary>
+        /// <remarks />
         protected override void Initialize(ISystemContext context)
         {
             base.Initialize(context);
@@ -194,18 +168,14 @@ namespace SampleCompany.SampleServer.Model
             InitializeOptionalChildren(context);
         }
 
-        /// <summary>
-        /// Initializes the instance with a node.
-        /// </summary>
+        /// <remarks />
         protected override void Initialize(ISystemContext context, NodeState source)
         {
             InitializeOptionalChildren(context);
             base.Initialize(context, source);
         }
 
-        /// <summary>
-        /// Initializes the any option children defined for the instance.
-        /// </summary>
+        /// <remarks />
         protected override void InitializeOptionalChildren(ISystemContext context)
         {
             base.InitializeOptionalChildren(context);
@@ -264,11 +234,7 @@ namespace SampleCompany.SampleServer.Model
         #endregion
 
         #region Overridden Methods
-        /// <summary>
-        /// Populates a list with the children that belong to the node.
-        /// </summary>
-        /// <param name="context">The context for the system being accessed.</param>
-        /// <param name="children">The list of children to populate.</param>
+        /// <remarks />
         public override void GetChildren(
             ISystemContext context,
             IList<BaseInstanceState> children)
@@ -285,10 +251,8 @@ namespace SampleCompany.SampleServer.Model
 
             base.GetChildren(context, children);
         }
-
-        /// <summary>
-        /// Finds the child with the specified browse name.
-        /// </summary>
+            
+        /// <remarks />
         protected override BaseInstanceState FindChild(
             ISystemContext context,
             QualifiedName browseName,
@@ -366,33 +330,25 @@ namespace SampleCompany.SampleServer.Model
 
     #region FlowControllerState Class
     #if (!OPCUA_EXCLUDE_FlowControllerState)
-    /// <summary>
-    /// Stores an instance of the FlowControllerType ObjectType.
-    /// </summary>
+    /// <remarks />
     /// <exclude />
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
     public partial class FlowControllerState : GenericControllerState
     {
         #region Constructors
-        /// <summary>
-        /// Initializes the type with its default attribute values.
-        /// </summary>
+        /// <remarks />
         public FlowControllerState(NodeState parent) : base(parent)
         {
         }
 
-        /// <summary>
-        /// Returns the id of the default type definition node for the instance.
-        /// </summary>
+        /// <remarks />
         protected override NodeId GetDefaultTypeDefinitionId(NamespaceTable namespaceUris)
         {
             return Opc.Ua.NodeId.Create(SampleCompany.SampleServer.Model.ObjectTypes.FlowControllerType, SampleCompany.SampleServer.Model.Namespaces.SampleServer, namespaceUris);
         }
 
         #if (!OPCUA_EXCLUDE_InitializationStrings)
-        /// <summary>
-        /// Initializes the instance.
-        /// </summary>
+        /// <remarks />
         protected override void Initialize(ISystemContext context)
         {
             base.Initialize(context);
@@ -400,18 +356,14 @@ namespace SampleCompany.SampleServer.Model
             InitializeOptionalChildren(context);
         }
 
-        /// <summary>
-        /// Initializes the instance with a node.
-        /// </summary>
+        /// <remarks />
         protected override void Initialize(ISystemContext context, NodeState source)
         {
             InitializeOptionalChildren(context);
             base.Initialize(context, source);
         }
 
-        /// <summary>
-        /// Initializes the any option children defined for the instance.
-        /// </summary>
+        /// <remarks />
         protected override void InitializeOptionalChildren(ISystemContext context)
         {
             base.InitializeOptionalChildren(context);
@@ -443,33 +395,25 @@ namespace SampleCompany.SampleServer.Model
 
     #region LevelControllerState Class
     #if (!OPCUA_EXCLUDE_LevelControllerState)
-    /// <summary>
-    /// Stores an instance of the LevelControllerType ObjectType.
-    /// </summary>
+    /// <remarks />
     /// <exclude />
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
     public partial class LevelControllerState : GenericControllerState
     {
         #region Constructors
-        /// <summary>
-        /// Initializes the type with its default attribute values.
-        /// </summary>
+        /// <remarks />
         public LevelControllerState(NodeState parent) : base(parent)
         {
         }
 
-        /// <summary>
-        /// Returns the id of the default type definition node for the instance.
-        /// </summary>
+        /// <remarks />
         protected override NodeId GetDefaultTypeDefinitionId(NamespaceTable namespaceUris)
         {
             return Opc.Ua.NodeId.Create(SampleCompany.SampleServer.Model.ObjectTypes.LevelControllerType, SampleCompany.SampleServer.Model.Namespaces.SampleServer, namespaceUris);
         }
 
         #if (!OPCUA_EXCLUDE_InitializationStrings)
-        /// <summary>
-        /// Initializes the instance.
-        /// </summary>
+        /// <remarks />
         protected override void Initialize(ISystemContext context)
         {
             base.Initialize(context);
@@ -477,18 +421,14 @@ namespace SampleCompany.SampleServer.Model
             InitializeOptionalChildren(context);
         }
 
-        /// <summary>
-        /// Initializes the instance with a node.
-        /// </summary>
+        /// <remarks />
         protected override void Initialize(ISystemContext context, NodeState source)
         {
             InitializeOptionalChildren(context);
             base.Initialize(context, source);
         }
 
-        /// <summary>
-        /// Initializes the any option children defined for the instance.
-        /// </summary>
+        /// <remarks />
         protected override void InitializeOptionalChildren(ISystemContext context)
         {
             base.InitializeOptionalChildren(context);
@@ -520,33 +460,25 @@ namespace SampleCompany.SampleServer.Model
 
     #region TemperatureControllerState Class
     #if (!OPCUA_EXCLUDE_TemperatureControllerState)
-    /// <summary>
-    /// Stores an instance of the TemperatureControllerType ObjectType.
-    /// </summary>
+    /// <remarks />
     /// <exclude />
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
     public partial class TemperatureControllerState : GenericControllerState
     {
         #region Constructors
-        /// <summary>
-        /// Initializes the type with its default attribute values.
-        /// </summary>
+        /// <remarks />
         public TemperatureControllerState(NodeState parent) : base(parent)
         {
         }
 
-        /// <summary>
-        /// Returns the id of the default type definition node for the instance.
-        /// </summary>
+        /// <remarks />
         protected override NodeId GetDefaultTypeDefinitionId(NamespaceTable namespaceUris)
         {
             return Opc.Ua.NodeId.Create(SampleCompany.SampleServer.Model.ObjectTypes.TemperatureControllerType, SampleCompany.SampleServer.Model.Namespaces.SampleServer, namespaceUris);
         }
 
         #if (!OPCUA_EXCLUDE_InitializationStrings)
-        /// <summary>
-        /// Initializes the instance.
-        /// </summary>
+        /// <remarks />
         protected override void Initialize(ISystemContext context)
         {
             base.Initialize(context);
@@ -554,18 +486,14 @@ namespace SampleCompany.SampleServer.Model
             InitializeOptionalChildren(context);
         }
 
-        /// <summary>
-        /// Initializes the instance with a node.
-        /// </summary>
+        /// <remarks />
         protected override void Initialize(ISystemContext context, NodeState source)
         {
             InitializeOptionalChildren(context);
             base.Initialize(context, source);
         }
 
-        /// <summary>
-        /// Initializes the any option children defined for the instance.
-        /// </summary>
+        /// <remarks />
         protected override void InitializeOptionalChildren(ISystemContext context)
         {
             base.InitializeOptionalChildren(context);
@@ -597,33 +525,25 @@ namespace SampleCompany.SampleServer.Model
 
     #region MachineState Class
     #if (!OPCUA_EXCLUDE_MachineState)
-    /// <summary>
-    /// Stores an instance of the MachineType ObjectType.
-    /// </summary>
+    /// <remarks />
     /// <exclude />
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
     public partial class MachineState : BaseObjectState
     {
         #region Constructors
-        /// <summary>
-        /// Initializes the type with its default attribute values.
-        /// </summary>
+        /// <remarks />
         public MachineState(NodeState parent) : base(parent)
         {
         }
 
-        /// <summary>
-        /// Returns the id of the default type definition node for the instance.
-        /// </summary>
+        /// <remarks />
         protected override NodeId GetDefaultTypeDefinitionId(NamespaceTable namespaceUris)
         {
             return Opc.Ua.NodeId.Create(SampleCompany.SampleServer.Model.ObjectTypes.MachineType, SampleCompany.SampleServer.Model.Namespaces.SampleServer, namespaceUris);
         }
 
         #if (!OPCUA_EXCLUDE_InitializationStrings)
-        /// <summary>
-        /// Initializes the instance.
-        /// </summary>
+        /// <remarks />
         protected override void Initialize(ISystemContext context)
         {
             base.Initialize(context);
@@ -631,18 +551,14 @@ namespace SampleCompany.SampleServer.Model
             InitializeOptionalChildren(context);
         }
 
-        /// <summary>
-        /// Initializes the instance with a node.
-        /// </summary>
+        /// <remarks />
         protected override void Initialize(ISystemContext context, NodeState source)
         {
             InitializeOptionalChildren(context);
             base.Initialize(context, source);
         }
 
-        /// <summary>
-        /// Initializes the any option children defined for the instance.
-        /// </summary>
+        /// <remarks />
         protected override void InitializeOptionalChildren(ISystemContext context)
         {
             base.InitializeOptionalChildren(context);
@@ -749,11 +665,7 @@ namespace SampleCompany.SampleServer.Model
         #endregion
 
         #region Overridden Methods
-        /// <summary>
-        /// Populates a list with the children that belong to the node.
-        /// </summary>
-        /// <param name="context">The context for the system being accessed.</param>
-        /// <param name="children">The list of children to populate.</param>
+        /// <remarks />
         public override void GetChildren(
             ISystemContext context,
             IList<BaseInstanceState> children)
@@ -780,10 +692,8 @@ namespace SampleCompany.SampleServer.Model
 
             base.GetChildren(context, children);
         }
-
-        /// <summary>
-        /// Finds the child with the specified browse name.
-        /// </summary>
+            
+        /// <remarks />
         protected override BaseInstanceState FindChild(
             ISystemContext context,
             QualifiedName browseName,

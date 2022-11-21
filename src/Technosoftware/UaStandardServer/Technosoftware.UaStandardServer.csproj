@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>Technosoftware.UaStandardServer</AssemblyName>
+    <TargetFrameworks>$(LibTargetFrameworks)</TargetFrameworks>
+    <LangVersion>7.3</LangVersion>
+    <PackageId>Technosoftware.UaStandardServer</PackageId>
+    <RootNamespace>Technosoftware.UaStandardServer</RootNamespace>
+    <Description>OPC UA Solution .NET Standard Server Library</Description>
+    <Copyright>Copyright © 2018 - 2022 Technosoftware GmbH</Copyright>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <IsPackable>false</IsPackable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <PackageId>$(PackageId).Debug</PackageId>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(SignAssembly)' == 'true'">
+    <DefineConstants>$(DefineConstants);SIGNASSEMBLY</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Technosoftware.UaSolution.UaCore" Version="2.5.5" />
+    <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.5.5" />
+    <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.5.5" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <Reference Include="System.IdentityModel" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
+    <Reference Include="System.IdentityModel" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
+    <Reference Include="System.IdentityModel" />
+  </ItemGroup>
+
+  <Target Name="GetPackagingOutputs" />
+
+</Project>

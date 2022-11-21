@@ -1,29 +1,11 @@
 #region Copyright (c) 2011-2022 Technosoftware GmbH. All rights reserved
 //-----------------------------------------------------------------------------
-// Copyright (c) 2021 Technosoftware GmbH. All rights reserved
+// Copyright (c) 2011-2022 Technosoftware GmbH. All rights reserved
 // Web: https://technosoftware.com 
-// 
-// License: 
-// 
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
 //
-// SPDX-License-Identifier: MIT
+// The Software is based on the OPC Foundation MIT License. 
+// The complete license agreement for that can be found here:
+// http://opcfoundation.org/License/MIT/1.00/
 //-----------------------------------------------------------------------------
 #endregion Copyright (c) 2011-2022 Technosoftware GmbH. All rights reserved
 
@@ -149,20 +131,17 @@ namespace Technosoftware.UaBaseServer
         /// </summary>
         public virtual void AddReverseConnection(Uri url, int timeout = 0, int maxSessionCount = 0, bool enabled = true)
         {
-            if (connections_.ContainsKey(url))
+            lock (connectionsLock_)
             {
-                throw new ArgumentException("Connection for specified clientUrl is already configured", nameof(url));
-            }
-            else
-            {
-                var reverseConnection = new UaReverseConnectProperty(url, timeout, maxSessionCount, false, enabled);
-                lock (connectionsLock_)
+                if (connections_.ContainsKey(url))
                 {
-                    connections_[url] = reverseConnection;
-                    Utils.LogInfo("Reverse Connection added for EndpointUrl: {0}.", url);
-
-                    StartTimer(false);
+                    throw new ArgumentException("Connection for specified clientUrl is already configured", nameof(url));
                 }
+
+                var reverseConnection = new UaReverseConnectProperty(url, timeout, maxSessionCount, false, enabled);
+                connections_[url] = reverseConnection;
+                Utils.LogInfo("Reverse Connection added for EndpointUrl: {0}.", url);
+                StartTimer(false);
             }
         }
 
@@ -196,7 +175,7 @@ namespace Technosoftware.UaBaseServer
         /// </summary>
         public virtual ReadOnlyDictionary<Uri, UaReverseConnectProperty> GetReverseConnections()
         {
-            lock (connections_)
+            lock (connectionsLock_)
             {
                 return new ReadOnlyDictionary<Uri, UaReverseConnectProperty>(connections_);
             }
@@ -927,54 +906,20 @@ namespace Technosoftware.UaBaseServer
 
         /// <summary>Adds the input arguments to a method.</summary>
         /// <param name="parent">The method object.</param>
-        /// <param name="nodeId">
-        ///     The unique identifier for the variable in the server's address space. The NodeId can be either:
-        ///     <list type="bullet">
-        ///         <item>
-        ///             <see cref="uint" />
-        ///         </item>
-        ///         <item>
-        ///             <see cref="Guid" />
-        ///         </item>
-        ///         <item>
-        ///             <see cref="string" />
-        ///         </item>
-        ///         <item><see cref="byte" />[]</item>
-        ///     </list>
-        ///     <b>Important:</b> Keep in mind that the actual ID's of nodes should be unique such that no two nodes within an
-        ///     address-space share the same ID's.
-        /// </param>
         /// <param name="inputArguments">The input arguments.</param>
         /// <returns>A <see cref="StatusCode" /> code with the result of the operation.</returns>
-        public StatusCode AddInputArguments(MethodState parent, object nodeId, params Argument[] inputArguments)
+        public StatusCode AddInputArguments(MethodState parent, params Argument[] inputArguments)
         {
-            return uaServerNodeManager_.AddInputArguments(parent, nodeId, inputArguments);
+            return uaServerNodeManager_.AddInputArguments(parent, inputArguments);
         }
 
         /// <summary>Adds the output arguments to a method.</summary>
         /// <param name="parent">The method object.</param>
-        /// <param name="nodeId">
-        ///     The unique identifier for the variable in the server's address space. The NodeId can be either:
-        ///     <list type="bullet">
-        ///         <item>
-        ///             <see cref="uint" />
-        ///         </item>
-        ///         <item>
-        ///             <see cref="Guid" />
-        ///         </item>
-        ///         <item>
-        ///             <see cref="string" />
-        ///         </item>
-        ///         <item><see cref="byte" />[]</item>
-        ///     </list>
-        ///     <b>Important:</b> Keep in mind that the actual ID's of nodes should be unique such that no two nodes within an
-        ///     address-space share the same ID's.
-        /// </param>
         /// <param name="outputArguments">The output arguments.</param>
         /// <returns>A <see cref="StatusCode" /> code with the result of the operation.</returns>
-        public StatusCode AddOutputArguments(MethodState parent, object nodeId, params Argument[] outputArguments)
+        public StatusCode AddOutputArguments(MethodState parent, params Argument[] outputArguments)
         {
-            return uaServerNodeManager_.AddOutputArguments(parent, nodeId, outputArguments);
+            return uaServerNodeManager_.AddOutputArguments(parent, outputArguments);
         }
 
         /// <summary>Writes to a variable.</summary>
@@ -988,7 +933,6 @@ namespace Technosoftware.UaBaseServer
         {
             try
             {
-                Opc.Ua.LicenseHandler.ValidateFeatures();
                 var variable = deviceItem;
                 variable.Value = newValue;
                 variable.StatusCode = (uint)statusCode;

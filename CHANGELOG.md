@@ -1,4 +1,27 @@
 -------------------------------------------------------------------------------------------------------------
+## OPC UA Solution .NET - 2.5.5
+
+### Changes
+- Updated OPC UA Core to 1.4.371
+- Updated model compiler
+
+-------------------------------------------------------------------------------------------------------------
+## OPC UA Solution .NET - 2.5.3
+
+### Changes
+- Only load optional bindings assemblies if needed.
+- Server: Provided UaBaseServer as nuget package.
+- Server: Fix audit event that may throw exception when server is halted.
+
+
+-------------------------------------------------------------------------------------------------------------
+## OPC UA Solution .NET - 2.5.2
+
+### Changes
+- Stack: Updated until 24-OCT-2022
+- Server: Moved several classes to Technosoftware.UaStandardServer.csproj available at src\Technosoftware\UaStandardServer. 
+
+-------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 2.5.0
 
 ### Breaking Changes

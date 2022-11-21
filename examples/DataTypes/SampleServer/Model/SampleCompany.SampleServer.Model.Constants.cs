@@ -38,623 +38,393 @@ using Opc.Ua;
 namespace SampleCompany.SampleServer.Model
 {
     #region DataType Identifiers
-    /// <summary>
-    /// A class that declares constants for all DataTypes in the Model Design.
-    /// </summary>
+    /// <remarks />
     /// <exclude />
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
     public static partial class DataTypes
     {
-        /// <summary>
-        /// The identifier for the MachineStateDataType DataType.
-        /// </summary>
+        /// <remarks />
         public const uint MachineStateDataType = 1;
 
-        /// <summary>
-        /// The identifier for the MachineDataType DataType.
-        /// </summary>
+        /// <remarks />
         public const uint MachineDataType = 3;
     }
     #endregion
 
     #region Object Identifiers
-    /// <summary>
-    /// A class that declares constants for all Objects in the Model Design.
-    /// </summary>
+    /// <remarks />
     /// <exclude />
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
     public static partial class Objects
     {
-        /// <summary>
-        /// The identifier for the MachineType_Temperature Object.
-        /// </summary>
+        /// <remarks />
         public const uint MachineType_Temperature = 60;
 
-        /// <summary>
-        /// The identifier for the MachineType_Flow Object.
-        /// </summary>
+        /// <remarks />
         public const uint MachineType_Flow = 73;
 
-        /// <summary>
-        /// The identifier for the MachineType_Level Object.
-        /// </summary>
+        /// <remarks />
         public const uint MachineType_Level = 86;
 
-        /// <summary>
-        /// The identifier for the MachineDataType_Encoding_DefaultBinary Object.
-        /// </summary>
+        /// <remarks />
         public const uint MachineDataType_Encoding_DefaultBinary = 100;
 
-        /// <summary>
-        /// The identifier for the MachineDataType_Encoding_DefaultXml Object.
-        /// </summary>
+        /// <remarks />
         public const uint MachineDataType_Encoding_DefaultXml = 108;
 
-        /// <summary>
-        /// The identifier for the MachineDataType_Encoding_DefaultJson Object.
-        /// </summary>
+        /// <remarks />
         public const uint MachineDataType_Encoding_DefaultJson = 116;
     }
     #endregion
 
     #region ObjectType Identifiers
-    /// <summary>
-    /// A class that declares constants for all ObjectTypes in the Model Design.
-    /// </summary>
+    /// <remarks />
     /// <exclude />
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
     public static partial class ObjectTypes
     {
-        /// <summary>
-        /// The identifier for the GenericControllerType ObjectType.
-        /// </summary>
+        /// <remarks />
         public const uint GenericControllerType = 7;
 
-        /// <summary>
-        /// The identifier for the FlowControllerType ObjectType.
-        /// </summary>
+        /// <remarks />
         public const uint FlowControllerType = 20;
 
-        /// <summary>
-        /// The identifier for the LevelControllerType ObjectType.
-        /// </summary>
+        /// <remarks />
         public const uint LevelControllerType = 33;
 
-        /// <summary>
-        /// The identifier for the TemperatureControllerType ObjectType.
-        /// </summary>
+        /// <remarks />
         public const uint TemperatureControllerType = 46;
 
-        /// <summary>
-        /// The identifier for the MachineType ObjectType.
-        /// </summary>
+        /// <remarks />
         public const uint MachineType = 59;
     }
     #endregion
 
     #region Variable Identifiers
-    /// <summary>
-    /// A class that declares constants for all Variables in the Model Design.
-    /// </summary>
+    /// <remarks />
     /// <exclude />
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
     public static partial class Variables
     {
-        /// <summary>
-        /// The identifier for the MachineStateDataType_EnumStrings Variable.
-        /// </summary>
+        /// <remarks />
         public const uint MachineStateDataType_EnumStrings = 2;
 
-        /// <summary>
-        /// The identifier for the GenericControllerType_SetPoint Variable.
-        /// </summary>
+        /// <remarks />
         public const uint GenericControllerType_SetPoint = 8;
 
-        /// <summary>
-        /// The identifier for the GenericControllerType_SetPoint_EURange Variable.
-        /// </summary>
+        /// <remarks />
         public const uint GenericControllerType_SetPoint_EURange = 12;
 
-        /// <summary>
-        /// The identifier for the GenericControllerType_Measurement Variable.
-        /// </summary>
+        /// <remarks />
         public const uint GenericControllerType_Measurement = 14;
 
-        /// <summary>
-        /// The identifier for the GenericControllerType_Measurement_EURange Variable.
-        /// </summary>
+        /// <remarks />
         public const uint GenericControllerType_Measurement_EURange = 18;
 
-        /// <summary>
-        /// The identifier for the FlowControllerType_SetPoint_EURange Variable.
-        /// </summary>
+        /// <remarks />
         public const uint FlowControllerType_SetPoint_EURange = 25;
 
-        /// <summary>
-        /// The identifier for the FlowControllerType_Measurement_EURange Variable.
-        /// </summary>
+        /// <remarks />
         public const uint FlowControllerType_Measurement_EURange = 31;
 
-        /// <summary>
-        /// The identifier for the LevelControllerType_SetPoint_EURange Variable.
-        /// </summary>
+        /// <remarks />
         public const uint LevelControllerType_SetPoint_EURange = 38;
 
-        /// <summary>
-        /// The identifier for the LevelControllerType_Measurement_EURange Variable.
-        /// </summary>
+        /// <remarks />
         public const uint LevelControllerType_Measurement_EURange = 44;
 
-        /// <summary>
-        /// The identifier for the TemperatureControllerType_SetPoint_EURange Variable.
-        /// </summary>
+        /// <remarks />
         public const uint TemperatureControllerType_SetPoint_EURange = 51;
 
-        /// <summary>
-        /// The identifier for the TemperatureControllerType_Measurement_EURange Variable.
-        /// </summary>
+        /// <remarks />
         public const uint TemperatureControllerType_Measurement_EURange = 57;
 
-        /// <summary>
-        /// The identifier for the MachineType_Temperature_SetPoint Variable.
-        /// </summary>
+        /// <remarks />
         public const uint MachineType_Temperature_SetPoint = 61;
 
-        /// <summary>
-        /// The identifier for the MachineType_Temperature_SetPoint_EURange Variable.
-        /// </summary>
+        /// <remarks />
         public const uint MachineType_Temperature_SetPoint_EURange = 65;
 
-        /// <summary>
-        /// The identifier for the MachineType_Temperature_Measurement Variable.
-        /// </summary>
+        /// <remarks />
         public const uint MachineType_Temperature_Measurement = 67;
 
-        /// <summary>
-        /// The identifier for the MachineType_Temperature_Measurement_EURange Variable.
-        /// </summary>
+        /// <remarks />
         public const uint MachineType_Temperature_Measurement_EURange = 71;
 
-        /// <summary>
-        /// The identifier for the MachineType_Flow_SetPoint Variable.
-        /// </summary>
+        /// <remarks />
         public const uint MachineType_Flow_SetPoint = 74;
 
-        /// <summary>
-        /// The identifier for the MachineType_Flow_SetPoint_EURange Variable.
-        /// </summary>
+        /// <remarks />
         public const uint MachineType_Flow_SetPoint_EURange = 78;
 
-        /// <summary>
-        /// The identifier for the MachineType_Flow_Measurement Variable.
-        /// </summary>
+        /// <remarks />
         public const uint MachineType_Flow_Measurement = 80;
 
-        /// <summary>
-        /// The identifier for the MachineType_Flow_Measurement_EURange Variable.
-        /// </summary>
+        /// <remarks />
         public const uint MachineType_Flow_Measurement_EURange = 84;
 
-        /// <summary>
-        /// The identifier for the MachineType_Level_SetPoint Variable.
-        /// </summary>
+        /// <remarks />
         public const uint MachineType_Level_SetPoint = 87;
 
-        /// <summary>
-        /// The identifier for the MachineType_Level_SetPoint_EURange Variable.
-        /// </summary>
+        /// <remarks />
         public const uint MachineType_Level_SetPoint_EURange = 91;
 
-        /// <summary>
-        /// The identifier for the MachineType_Level_Measurement Variable.
-        /// </summary>
+        /// <remarks />
         public const uint MachineType_Level_Measurement = 93;
 
-        /// <summary>
-        /// The identifier for the MachineType_Level_Measurement_EURange Variable.
-        /// </summary>
+        /// <remarks />
         public const uint MachineType_Level_Measurement_EURange = 97;
 
-        /// <summary>
-        /// The identifier for the MachineType_MachineData Variable.
-        /// </summary>
+        /// <remarks />
         public const uint MachineType_MachineData = 99;
 
-        /// <summary>
-        /// The identifier for the SampleServer_BinarySchema Variable.
-        /// </summary>
+        /// <remarks />
         public const uint SampleServer_BinarySchema = 101;
 
-        /// <summary>
-        /// The identifier for the SampleServer_BinarySchema_NamespaceUri Variable.
-        /// </summary>
+        /// <remarks />
         public const uint SampleServer_BinarySchema_NamespaceUri = 103;
 
-        /// <summary>
-        /// The identifier for the SampleServer_BinarySchema_Deprecated Variable.
-        /// </summary>
+        /// <remarks />
         public const uint SampleServer_BinarySchema_Deprecated = 104;
 
-        /// <summary>
-        /// The identifier for the SampleServer_BinarySchema_MachineDataType Variable.
-        /// </summary>
+        /// <remarks />
         public const uint SampleServer_BinarySchema_MachineDataType = 105;
 
-        /// <summary>
-        /// The identifier for the SampleServer_XmlSchema Variable.
-        /// </summary>
+        /// <remarks />
         public const uint SampleServer_XmlSchema = 109;
 
-        /// <summary>
-        /// The identifier for the SampleServer_XmlSchema_NamespaceUri Variable.
-        /// </summary>
+        /// <remarks />
         public const uint SampleServer_XmlSchema_NamespaceUri = 111;
 
-        /// <summary>
-        /// The identifier for the SampleServer_XmlSchema_Deprecated Variable.
-        /// </summary>
+        /// <remarks />
         public const uint SampleServer_XmlSchema_Deprecated = 112;
 
-        /// <summary>
-        /// The identifier for the SampleServer_XmlSchema_MachineDataType Variable.
-        /// </summary>
+        /// <remarks />
         public const uint SampleServer_XmlSchema_MachineDataType = 113;
     }
     #endregion
 
     #region DataType Node Identifiers
-    /// <summary>
-    /// A class that declares constants for all DataTypes in the Model Design.
-    /// </summary>
+    /// <remarks />
     /// <exclude />
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
     public static partial class DataTypeIds
     {
-        /// <summary>
-        /// The identifier for the MachineStateDataType DataType.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId MachineStateDataType = new ExpandedNodeId(SampleCompany.SampleServer.Model.DataTypes.MachineStateDataType, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the MachineDataType DataType.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId MachineDataType = new ExpandedNodeId(SampleCompany.SampleServer.Model.DataTypes.MachineDataType, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
     }
     #endregion
 
     #region Object Node Identifiers
-    /// <summary>
-    /// A class that declares constants for all Objects in the Model Design.
-    /// </summary>
+    /// <remarks />
     /// <exclude />
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
     public static partial class ObjectIds
     {
-        /// <summary>
-        /// The identifier for the MachineType_Temperature Object.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId MachineType_Temperature = new ExpandedNodeId(SampleCompany.SampleServer.Model.Objects.MachineType_Temperature, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the MachineType_Flow Object.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId MachineType_Flow = new ExpandedNodeId(SampleCompany.SampleServer.Model.Objects.MachineType_Flow, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the MachineType_Level Object.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId MachineType_Level = new ExpandedNodeId(SampleCompany.SampleServer.Model.Objects.MachineType_Level, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the MachineDataType_Encoding_DefaultBinary Object.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId MachineDataType_Encoding_DefaultBinary = new ExpandedNodeId(SampleCompany.SampleServer.Model.Objects.MachineDataType_Encoding_DefaultBinary, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the MachineDataType_Encoding_DefaultXml Object.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId MachineDataType_Encoding_DefaultXml = new ExpandedNodeId(SampleCompany.SampleServer.Model.Objects.MachineDataType_Encoding_DefaultXml, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the MachineDataType_Encoding_DefaultJson Object.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId MachineDataType_Encoding_DefaultJson = new ExpandedNodeId(SampleCompany.SampleServer.Model.Objects.MachineDataType_Encoding_DefaultJson, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
     }
     #endregion
 
     #region ObjectType Node Identifiers
-    /// <summary>
-    /// A class that declares constants for all ObjectTypes in the Model Design.
-    /// </summary>
+    /// <remarks />
     /// <exclude />
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
     public static partial class ObjectTypeIds
     {
-        /// <summary>
-        /// The identifier for the GenericControllerType ObjectType.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId GenericControllerType = new ExpandedNodeId(SampleCompany.SampleServer.Model.ObjectTypes.GenericControllerType, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the FlowControllerType ObjectType.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId FlowControllerType = new ExpandedNodeId(SampleCompany.SampleServer.Model.ObjectTypes.FlowControllerType, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the LevelControllerType ObjectType.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId LevelControllerType = new ExpandedNodeId(SampleCompany.SampleServer.Model.ObjectTypes.LevelControllerType, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the TemperatureControllerType ObjectType.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId TemperatureControllerType = new ExpandedNodeId(SampleCompany.SampleServer.Model.ObjectTypes.TemperatureControllerType, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the MachineType ObjectType.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId MachineType = new ExpandedNodeId(SampleCompany.SampleServer.Model.ObjectTypes.MachineType, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
     }
     #endregion
 
     #region Variable Node Identifiers
-    /// <summary>
-    /// A class that declares constants for all Variables in the Model Design.
-    /// </summary>
+    /// <remarks />
     /// <exclude />
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
     public static partial class VariableIds
     {
-        /// <summary>
-        /// The identifier for the MachineStateDataType_EnumStrings Variable.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId MachineStateDataType_EnumStrings = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.MachineStateDataType_EnumStrings, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the GenericControllerType_SetPoint Variable.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId GenericControllerType_SetPoint = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.GenericControllerType_SetPoint, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the GenericControllerType_SetPoint_EURange Variable.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId GenericControllerType_SetPoint_EURange = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.GenericControllerType_SetPoint_EURange, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the GenericControllerType_Measurement Variable.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId GenericControllerType_Measurement = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.GenericControllerType_Measurement, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the GenericControllerType_Measurement_EURange Variable.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId GenericControllerType_Measurement_EURange = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.GenericControllerType_Measurement_EURange, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the FlowControllerType_SetPoint_EURange Variable.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId FlowControllerType_SetPoint_EURange = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.FlowControllerType_SetPoint_EURange, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the FlowControllerType_Measurement_EURange Variable.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId FlowControllerType_Measurement_EURange = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.FlowControllerType_Measurement_EURange, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the LevelControllerType_SetPoint_EURange Variable.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId LevelControllerType_SetPoint_EURange = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.LevelControllerType_SetPoint_EURange, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the LevelControllerType_Measurement_EURange Variable.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId LevelControllerType_Measurement_EURange = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.LevelControllerType_Measurement_EURange, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the TemperatureControllerType_SetPoint_EURange Variable.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId TemperatureControllerType_SetPoint_EURange = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.TemperatureControllerType_SetPoint_EURange, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the TemperatureControllerType_Measurement_EURange Variable.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId TemperatureControllerType_Measurement_EURange = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.TemperatureControllerType_Measurement_EURange, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the MachineType_Temperature_SetPoint Variable.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId MachineType_Temperature_SetPoint = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.MachineType_Temperature_SetPoint, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the MachineType_Temperature_SetPoint_EURange Variable.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId MachineType_Temperature_SetPoint_EURange = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.MachineType_Temperature_SetPoint_EURange, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the MachineType_Temperature_Measurement Variable.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId MachineType_Temperature_Measurement = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.MachineType_Temperature_Measurement, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the MachineType_Temperature_Measurement_EURange Variable.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId MachineType_Temperature_Measurement_EURange = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.MachineType_Temperature_Measurement_EURange, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the MachineType_Flow_SetPoint Variable.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId MachineType_Flow_SetPoint = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.MachineType_Flow_SetPoint, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the MachineType_Flow_SetPoint_EURange Variable.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId MachineType_Flow_SetPoint_EURange = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.MachineType_Flow_SetPoint_EURange, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the MachineType_Flow_Measurement Variable.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId MachineType_Flow_Measurement = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.MachineType_Flow_Measurement, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the MachineType_Flow_Measurement_EURange Variable.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId MachineType_Flow_Measurement_EURange = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.MachineType_Flow_Measurement_EURange, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the MachineType_Level_SetPoint Variable.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId MachineType_Level_SetPoint = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.MachineType_Level_SetPoint, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the MachineType_Level_SetPoint_EURange Variable.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId MachineType_Level_SetPoint_EURange = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.MachineType_Level_SetPoint_EURange, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the MachineType_Level_Measurement Variable.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId MachineType_Level_Measurement = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.MachineType_Level_Measurement, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the MachineType_Level_Measurement_EURange Variable.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId MachineType_Level_Measurement_EURange = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.MachineType_Level_Measurement_EURange, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the MachineType_MachineData Variable.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId MachineType_MachineData = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.MachineType_MachineData, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the SampleServer_BinarySchema Variable.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId SampleServer_BinarySchema = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.SampleServer_BinarySchema, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the SampleServer_BinarySchema_NamespaceUri Variable.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId SampleServer_BinarySchema_NamespaceUri = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.SampleServer_BinarySchema_NamespaceUri, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the SampleServer_BinarySchema_Deprecated Variable.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId SampleServer_BinarySchema_Deprecated = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.SampleServer_BinarySchema_Deprecated, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the SampleServer_BinarySchema_MachineDataType Variable.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId SampleServer_BinarySchema_MachineDataType = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.SampleServer_BinarySchema_MachineDataType, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the SampleServer_XmlSchema Variable.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId SampleServer_XmlSchema = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.SampleServer_XmlSchema, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the SampleServer_XmlSchema_NamespaceUri Variable.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId SampleServer_XmlSchema_NamespaceUri = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.SampleServer_XmlSchema_NamespaceUri, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the SampleServer_XmlSchema_Deprecated Variable.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId SampleServer_XmlSchema_Deprecated = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.SampleServer_XmlSchema_Deprecated, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
 
-        /// <summary>
-        /// The identifier for the SampleServer_XmlSchema_MachineDataType Variable.
-        /// </summary>
+        /// <remarks />
         public static readonly ExpandedNodeId SampleServer_XmlSchema_MachineDataType = new ExpandedNodeId(SampleCompany.SampleServer.Model.Variables.SampleServer_XmlSchema_MachineDataType, SampleCompany.SampleServer.Model.Namespaces.SampleServer);
     }
     #endregion
 
     #region BrowseName Declarations
-    /// <summary>
-    /// Declares all of the BrowseNames used in the Model Design.
-    /// </summary>
+    /// <remarks />
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
     public static partial class BrowseNames
     {
-        /// <summary>
-        /// The BrowseName for the Flow component.
-        /// </summary>
+        /// <remarks />
         public const string Flow = "Flow";
 
-        /// <summary>
-        /// The BrowseName for the FlowControllerType component.
-        /// </summary>
+        /// <remarks />
         public const string FlowControllerType = "FlowControllerType";
 
-        /// <summary>
-        /// The BrowseName for the GenericControllerType component.
-        /// </summary>
+        /// <remarks />
         public const string GenericControllerType = "GenericControllerType";
 
-        /// <summary>
-        /// The BrowseName for the Level component.
-        /// </summary>
+        /// <remarks />
         public const string Level = "Level";
 
-        /// <summary>
-        /// The BrowseName for the LevelControllerType component.
-        /// </summary>
+        /// <remarks />
         public const string LevelControllerType = "LevelControllerType";
 
-        /// <summary>
-        /// The BrowseName for the MachineData component.
-        /// </summary>
+        /// <remarks />
         public const string MachineData = "MachineData";
 
-        /// <summary>
-        /// The BrowseName for the MachineDataType component.
-        /// </summary>
+        /// <remarks />
         public const string MachineDataType = "MachineDataType";
 
-        /// <summary>
-        /// The BrowseName for the MachineStateDataType component.
-        /// </summary>
+        /// <remarks />
         public const string MachineStateDataType = "MachineStateDataType";
 
-        /// <summary>
-        /// The BrowseName for the MachineType component.
-        /// </summary>
+        /// <remarks />
         public const string MachineType = "MachineType";
 
-        /// <summary>
-        /// The BrowseName for the Measurement component.
-        /// </summary>
+        /// <remarks />
         public const string Measurement = "Measurement";
 
-        /// <summary>
-        /// The BrowseName for the SampleServer_BinarySchema component.
-        /// </summary>
+        /// <remarks />
         public const string SampleServer_BinarySchema = "SampleCompany.SampleServer.Model";
 
-        /// <summary>
-        /// The BrowseName for the SampleServer_XmlSchema component.
-        /// </summary>
+        /// <remarks />
         public const string SampleServer_XmlSchema = "SampleCompany.SampleServer.Model";
 
-        /// <summary>
-        /// The BrowseName for the SetPoint component.
-        /// </summary>
+        /// <remarks />
         public const string SetPoint = "SetPoint";
 
-        /// <summary>
-        /// The BrowseName for the Temperature component.
-        /// </summary>
+        /// <remarks />
         public const string Temperature = "Temperature";
 
-        /// <summary>
-        /// The BrowseName for the TemperatureControllerType component.
-        /// </summary>
+        /// <remarks />
         public const string TemperatureControllerType = "TemperatureControllerType";
     }
     #endregion
 
     #region Namespace Declarations
-    /// <summary>
-    /// Defines constants for all namespaces referenced by the model design.
-    /// </summary>
+    /// <remarks />
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Opc.Ua.ModelCompiler", "1.0.0.0")]
     public static partial class Namespaces
     {

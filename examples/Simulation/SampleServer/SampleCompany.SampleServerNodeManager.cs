@@ -60,7 +60,6 @@ namespace SampleCompany.SampleServer
         private bool disposed_;
         private readonly object lockDisposable_ = new object();
 
-        private Opc.Ua.Test.DataGenerator generator_;
         private Timer simulationTimer_;
         private ushort simulationInterval_ = 1000;
         private bool simulationEnabled_ = true;
@@ -139,8 +138,8 @@ namespace SampleCompany.SampleServer
                     // Disposing has been done.
                     disposed_ = true;
                 }
-
             }
+            base.Dispose(disposing);
         }
         #endregion
 
@@ -213,6 +212,7 @@ namespace SampleCompany.SampleServer
                 try
                 {
                     #region Scalar_Static
+                    ResetRandomGenerator(1);
                     var scalarFolder = CreateFolderState(root, "Scalar", "Scalar", null);
                     var scalarInstructions = CreateBaseDataVariableState(scalarFolder, "Scalar_Instructions", "Scalar_Instructions", null, DataTypeIds.String, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
                     scalarInstructions.Value = "A library of Variables of different data-types.";
@@ -256,6 +256,7 @@ namespace SampleCompany.SampleServer
                     #endregion
 
                     #region Scalar_Simulation
+                    ResetRandomGenerator(6);
                     var simulationFolder = CreateFolderState(scalarFolder, "Scalar_Simulation", "Simulation", null);
                     const string scalarSimulation = "Scalar_Simulation_";
                     CreateDynamicVariable(simulationFolder, scalarSimulation + "Boolean", "Boolean", null, DataTypeIds.Boolean, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
@@ -304,34 +305,12 @@ namespace SampleCompany.SampleServer
                     #region Hello Method
                     var helloMethod = CreateMethodState(methodsFolder, methods + "Hello", "Hello", OnHelloCall);
                     // set input arguments
-                    helloMethod.InputArguments = new PropertyState<Argument[]>(helloMethod);
-                    helloMethod.InputArguments.NodeId = new NodeId(helloMethod.BrowseName.Name + "InArgs", NamespaceIndex);
-                    helloMethod.InputArguments.BrowseName = BrowseNames.InputArguments;
-                    helloMethod.InputArguments.DisplayName = helloMethod.InputArguments.BrowseName.Name;
-                    helloMethod.InputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
-                    helloMethod.InputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
-                    helloMethod.InputArguments.DataType = DataTypeIds.Argument;
-                    helloMethod.InputArguments.ValueRank = ValueRanks.OneDimension;
-
-                    helloMethod.InputArguments.Value = new Argument[]
-                    {
-                        new Argument() { Name = "String value", Description = "String value",  DataType = DataTypeIds.String, ValueRank = ValueRanks.Scalar }
-                    };
+                    var inputArgument1 = CreateArgument("String value","String value",BuiltInType.String,ValueRanks.Scalar);
+                    AddInputArguments(helloMethod, new[] { inputArgument1 });
 
                     // set output arguments
-                    helloMethod.OutputArguments = new PropertyState<Argument[]>(helloMethod);
-                    helloMethod.OutputArguments.NodeId = new NodeId(helloMethod.BrowseName.Name + "OutArgs", NamespaceIndex);
-                    helloMethod.OutputArguments.BrowseName = BrowseNames.OutputArguments;
-                    helloMethod.OutputArguments.DisplayName = helloMethod.OutputArguments.BrowseName.Name;
-                    helloMethod.OutputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
-                    helloMethod.OutputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
-                    helloMethod.OutputArguments.DataType = DataTypeIds.Argument;
-                    helloMethod.OutputArguments.ValueRank = ValueRanks.OneDimension;
-
-                    helloMethod.OutputArguments.Value = new Argument[]
-                    {
-                        new Argument() { Name = "Hello Result", Description = "Hello Result",  DataType = DataTypeIds.String, ValueRank = ValueRanks.Scalar }
-                    };
+                    var outputArgument1 = CreateArgument("Hello Result", "Hello Result", BuiltInType.String, ValueRanks.Scalar);
+                    AddOutputArguments(helloMethod, new[] { outputArgument1 });
                     #endregion
 
                     #endregion
@@ -632,24 +611,6 @@ namespace SampleCompany.SampleServer
             var variable = CreateBaseDataVariableState(parent, path, name, description, dataType, valueRank, accessLevel, initialValue);
             dynamicNodes_.Add(variable);
             return variable;
-        }
-
-        private object GetNewValue(BaseVariableState variable)
-        {
-            if (generator_ == null)
-            {
-                generator_ = new Opc.Ua.Test.DataGenerator(null) { BoundaryValueFrequency = 0 };
-            }
-
-            object value = null;
-            var retryCount = 0;
-
-            while (value == null && retryCount < 10)
-            {
-                value = generator_.GetRandom(variable.DataType, variable.ValueRank, new uint[] { 10 }, opcServer_.NodeManager.ServerData.TypeTree);
-                retryCount++;
-            }
-            return value;
         }
 
         private void DoSimulation(object state)
