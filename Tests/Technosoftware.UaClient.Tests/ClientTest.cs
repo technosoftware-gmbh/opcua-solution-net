@@ -508,7 +508,7 @@ namespace Technosoftware.UaClient.Tests
             requestHeader.TimeoutHint = MaxTimeout;
 
             // Session
-            Session session;
+            IUaSession session;
             if (securityPolicy != null)
             {
                 session = await ClientFixture.ConnectAsync(ServerUrl, securityPolicy, Endpoints).ConfigureAwait(false);
@@ -840,7 +840,7 @@ namespace Technosoftware.UaClient.Tests
         [NonParallelizable]
         public async Task TransferSubscriptionNative(bool sendInitialData)
         {
-            Session transferSession = null;
+            IUaSession transferSession = null;
             try
             {
                 var requestHeader = new RequestHeader {

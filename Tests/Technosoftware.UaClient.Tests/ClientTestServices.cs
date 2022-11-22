@@ -22,9 +22,9 @@ namespace Technosoftware.UaClient.Tests
     /// </summary>
     public class ClientTestServices : IServerTestServices
     {
-        private Session session_;
+        private IUaSession session_;
 
-        public ClientTestServices(Session session)
+        public ClientTestServices(IUaSession session)
         {
             session_ = session;
         }
