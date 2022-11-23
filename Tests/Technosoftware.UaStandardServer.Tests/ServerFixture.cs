@@ -188,7 +188,7 @@ namespace Technosoftware.UaStandardServer.Tests
 
             // start the server.
             T server = new T();
-            if (AllNodeManagers && server is UaGenericServer standardServer)
+            if (AllNodeManagers && server is UaStandardServer standardServer)
             {
                 NodeManagerUtils.AddDefaultNodeManagers(standardServer);
             }

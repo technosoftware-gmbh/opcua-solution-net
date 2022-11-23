@@ -432,7 +432,7 @@ namespace SampleCompany.SampleClient
         /// </summary>
         private class UserData
         {
-            public Session Session { get; set; }
+            public IUaSession Session { get; set; }
             public List<NodeId> NodeIds { get; set; }
         }
 
@@ -563,7 +563,7 @@ namespace SampleCompany.SampleClient
 
             if (reconnectHandler_ != null)
             {
-                Session = reconnectHandler_.Session;
+                Session = (Session)reconnectHandler_.Session;
                 reconnectHandler_.Dispose();
                 reconnectHandler_ = null;
                 Console.WriteLine("--- RECONNECTED ---");
@@ -580,7 +580,7 @@ namespace SampleCompany.SampleClient
         /// <param name="level">The level</param>
         /// <param name="references">The references to browse</param>
         /// <param name="verbose">If true the address space will be printed out to the console; otherwise not</param>
-        private static void GetElements(Session session, Browser browser, uint level, ReferenceDescriptionCollection references, bool verbose)
+        private static void GetElements(IUaSession session, Browser browser, uint level, ReferenceDescriptionCollection references, bool verbose)
         {
             var spaces = new StringBuilder();
             for (var i = 0; i <= level; i++)

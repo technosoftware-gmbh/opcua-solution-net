@@ -51,7 +51,7 @@ namespace Technosoftware.UaClient.Tests
         public ReferenceServer ReferenceServer { get; set; }
         public EndpointDescriptionCollection Endpoints { get; set; }
         public ReferenceDescriptionCollection ReferenceDescriptions { get; set; }
-        public Session Session { get; private set; }
+        public IUaSession Session { get; private set; }
         public OperationLimits OperationLimits { get; private set; }
         public string UriScheme { get; private set; }
         public string PkiRoot { get; set; }

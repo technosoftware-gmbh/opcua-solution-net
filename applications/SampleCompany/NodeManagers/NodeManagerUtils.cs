@@ -18,7 +18,7 @@ using System.Reflection;
 using Opc.Ua;
 
 using Technosoftware.UaServer;
-using Technosoftware.UaServer.Server;
+using Technosoftware.UaStandardServer;
 #endregion
 
 namespace SampleCompany.NodeManagers
@@ -32,7 +32,7 @@ namespace SampleCompany.NodeManagers
         /// <summary>
         /// Add all available node manager factories to the server.
         /// </summary>
-        public static void AddDefaultNodeManagers(UaGenericServer server)
+        public static void AddDefaultNodeManagers(UaStandardServer server)
         {
             foreach (var nodeManagerFactory in NodeManagerFactories)
             {

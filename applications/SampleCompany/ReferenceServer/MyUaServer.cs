@@ -118,7 +118,7 @@ namespace SampleCompany.SampleServer
                 }
 
                 // check the application certificate.
-                bool haveAppCertificate = await Application.CheckApplicationInstanceCertificate(false, minimumKeySize: 0).ConfigureAwait(false);
+                bool haveAppCertificate = await Application.CheckApplicationInstanceCertificateAsync(false, minimumKeySize: 0).ConfigureAwait(false);
                 if (!haveAppCertificate)
                 {
                     throw new ErrorExitException("Application instance certificate invalid!");

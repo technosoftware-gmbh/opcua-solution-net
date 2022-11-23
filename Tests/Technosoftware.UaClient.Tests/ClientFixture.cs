@@ -42,6 +42,8 @@ namespace Technosoftware.UaClient.Tests
         public int OperationTimeout { get; set; } = 10000;
         public int TraceMasks { get; set; } = Utils.TraceMasks.Error | Utils.TraceMasks.StackTrace | Utils.TraceMasks.Security | Utils.TraceMasks.Information;
 
+        public IUaSessionFactory SessionFactory { get; } = new DefaultSessionFactory();
+
         #region Public Methods
         /// <summary>
         /// Load the default client configuration.
@@ -77,7 +79,7 @@ namespace Technosoftware.UaClient.Tests
                 .CreateAsync().ConfigureAwait(false);
 
             // check the application certificate.
-            bool haveAppCertificate = await application.CheckApplicationInstanceCertificate(true, 0).ConfigureAwait(false);
+            bool haveAppCertificate = await application.CheckApplicationInstanceCertificateAsync(true, 0).ConfigureAwait(false);
             if (!haveAppCertificate)
             {
                 throw new Exception("Application instance certificate invalid!");
@@ -123,7 +125,7 @@ namespace Technosoftware.UaClient.Tests
         /// Connects the specified endpoint URL.
         /// </summary>
         /// <param name="endpointUrl">The endpoint URL.</param>
-        public async Task<Session> Connect(string endpointUrl)
+        public async Task<IUaSession> Connect(string endpointUrl)
         {
             if (String.IsNullOrEmpty(endpointUrl))
             {
@@ -167,7 +169,7 @@ namespace Technosoftware.UaClient.Tests
         /// <summary>
         /// Connects the url endpoint with specified security profile.
         /// </summary>
-        public async Task<Session> ConnectAsync(Uri url, string securityProfile, EndpointDescriptionCollection endpoints = null, IUserIdentity userIdentity = null)
+        public async Task<IUaSession> ConnectAsync(Uri url, string securityProfile, EndpointDescriptionCollection endpoints = null, IUserIdentity userIdentity = null)
         {
             return await ConnectAsync(await GetEndpointAsync(url, securityProfile, endpoints).ConfigureAwait(false), userIdentity).ConfigureAwait(false);
         }
@@ -176,7 +178,7 @@ namespace Technosoftware.UaClient.Tests
         /// Connects the specified endpoint.
         /// </summary>
         /// <param name="endpoint">The configured endpoint.</param>
-        public async Task<Session> ConnectAsync(ConfiguredEndpoint endpoint, IUserIdentity userIdentity = null)
+        public async Task<IUaSession> ConnectAsync(ConfiguredEndpoint endpoint, IUserIdentity userIdentity = null)
         {
             if (endpoint == null)
             {
@@ -187,7 +189,7 @@ namespace Technosoftware.UaClient.Tests
                 }
             }
 
-            var session = await Session.CreateAsync(
+            var session = await SessionFactory.CreateAsync(
                 Config, endpoint, false, false,
                 Config.ApplicationName, SessionTimeout, userIdentity, null).ConfigureAwait(false);
 

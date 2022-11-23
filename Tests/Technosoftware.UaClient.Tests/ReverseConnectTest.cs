@@ -220,7 +220,7 @@ namespace Technosoftware.UaClient.Tests
             Assert.NotNull(endpoint);
 
             // connect
-            var session = await Session.CreateAsync(config, connection, endpoint, false, false, "Reverse Connect Client",
+            var session = await UaClient.Session.CreateAsync(config, connection, endpoint, false, false, "Reverse Connect Client",
                 MaxTimeout, new UserIdentity(new AnonymousIdentityToken()), null).ConfigureAwait(false);
             Assert.NotNull(session);
 
@@ -259,8 +259,9 @@ namespace Technosoftware.UaClient.Tests
             Assert.NotNull(endpoint);
 
             // connect
-            var session = await Session.CreateAsync(config, ClientFixture.ReverseConnectManager, endpoint, updateBeforeConnect, checkDomain, "Reverse Connect Client",
+            var session = await UaClient.Session.CreateAsync(config, ClientFixture.ReverseConnectManager, endpoint, updateBeforeConnect, checkDomain, "Reverse Connect Client",
                 MaxTimeout, new UserIdentity(new AnonymousIdentityToken()), null).ConfigureAwait(false);
+                
             Assert.NotNull(session);
 
             // header
