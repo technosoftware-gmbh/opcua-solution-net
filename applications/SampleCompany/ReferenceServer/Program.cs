@@ -34,6 +34,12 @@ namespace SampleCompany.SampleServer
         /// <param name="args">The arguments.</param>
         public static async Task<int> Main(string[] args)
         {
+            #region License validation
+            var licenseData =
+                    @"";
+            var licensed = Technosoftware.UaServer.LicenseHandler.Validate(licenseData);
+            #endregion
+
             TextWriter output = Console.Out;
             output.WriteLine("SampleCompany {0} OPC UA Reference Server", Utils.IsRunningOnMono() ? "Mono" : ".NET Core");
 

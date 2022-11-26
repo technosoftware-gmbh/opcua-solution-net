@@ -69,6 +69,12 @@ namespace SampleCompany.SampleServer
         /// The exit code at the time the server stopped.
         /// </summary>
         public ExitCode ExitCode { get; private set; }
+
+        /// <summary>
+        /// The server object
+        /// </summary>
+        public T Server => server_;
+
         #endregion
 
         #region Public Methods
