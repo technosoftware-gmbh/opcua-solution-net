@@ -1,6 +1,6 @@
 language: csharp
 mono: latest
-dotnet: 6.0.400
+dotnet: 7.0.100
 os:
   - linux
   - osx
