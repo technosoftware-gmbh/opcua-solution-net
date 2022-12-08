@@ -3,7 +3,7 @@
   <PropertyGroup>
     <DefineConstants>$(DefineConstants);NET_STANDARD</DefineConstants>
     <AssemblyName>SampleCompany.NodeManagers</AssemblyName>
-    <TargetFrameworks>$(AppTargetFrameworks)</TargetFrameworks>
+    <TargetFrameworks>$(LibTargetFrameworks)</TargetFrameworks>
     <PackageId>SampleCompany.NodeManagers</PackageId>
     <RootNamespace>SampleCompany.NodeManagers</RootNamespace>
     <Company>SampleCompany GmbH</Company>

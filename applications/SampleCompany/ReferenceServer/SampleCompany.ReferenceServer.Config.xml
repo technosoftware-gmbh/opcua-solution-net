@@ -482,9 +482,9 @@
     <!-- Show Only Security, Service Calls, Errors and Trace -->
     <!-- <TraceMasks>523</TraceMasks> -->
     <!-- Show Only Security, ServiceResultExceptions, Errors and Trace -->
-    <TraceMasks>519</TraceMasks>
+    <!-- <TraceMasks>519</TraceMasks>  -->
     <!-- Show Error, Information, StackTrace, Service, ServiceDetail, Operation, OperationDetail, StartStop, ExternalSystem and Security. -->
-    <!-- <TraceMasks>1023</TraceMasks> -->
+    <TraceMasks>1023</TraceMasks>
   </TraceConfiguration>
 
 </ApplicationConfiguration>
