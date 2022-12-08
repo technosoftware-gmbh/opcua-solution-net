@@ -16,20 +16,24 @@ addons:
     sources:
     packages:
 script:  
-  - echo "----- Restore OPC UA Solution .NET Samples ------"
+  - echo "----- Restore OPC UA Solution .NET Samples ----------------"
   - dotnet restore "TutorialSamples.sln"
-  - echo "----- Build OPC UA Solution .NET Samples --------"
+  - dotnet restore "Applications.sln"
+  - echo "----- Build OPC UA Solution .NET Applications -------------"
+  - dotnet build -c Debug applications/SampleCompany/ReferenceServer/SampleCompany.ReferenceServer.csproj
+  - dotnet build -c Release applications/SampleCompany/ReferenceServer/SampleCompany.ReferenceServer.csproj
+  - echo "----- Build OPC UA Solution .NET Simulation Sample --------"
   - dotnet build -c Debug examples/Simulation/SampleClient/SampleCompany.SampleClient.csproj
   - dotnet build -c Release examples/Simulation/SampleClient/SampleCompany.SampleClient.csproj
   - dotnet build -c Debug examples/Simulation/SampleServer/SampleCompany.SampleServer.csproj
   - dotnet build -c Release examples/Simulation/SampleServer/SampleCompany.SampleServer.csproj 
-  - echo "----- Build OPC UA Solution .NET Tutorials ------"
+  - echo "----- Build OPC UA Solution .NET Tutorials ----------------"
   - dotnet build -c Debug examples/Empty/EmptyServer/EmptyCompany.EmptyServer.csproj
   - dotnet build -c Release examples/Empty/EmptyServer/EmptyCompany.EmptyServer.csproj
   - dotnet build -c Debug examples/Base/SampleServer/SampleCompany.SampleServer.csproj
   - dotnet build -c Release examples/Base/SampleServer/SampleCompany.SampleServer.csproj
 
-  - echo "----- Run .NET Core samples ---------------------"
+  - echo "----- Run OPC UA Solution .NET Simulation Samples ---------"
   - cd examples/Simulation/SampleServer/bin/Debug/net6.0
   - dotnet SampleCompany.SampleServer.dll -t 10 -a
   - cd $TRAVIS_BUILD_DIR

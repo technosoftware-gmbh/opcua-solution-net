@@ -35,7 +35,7 @@
       </Column>
       <Column column="1">
        <ItemData role="0" rolename="DisplayRole">
-        <Value typename="QString" type="10" data="opc.tcp://technosoftware:55555/ReferenceServer"/>
+        <Value typename="QString" type="10" data="opc.tcp://localhost:62555/ReferenceServer"/>
        </ItemData>
        <ChildRows size="0"/>
       </Column>

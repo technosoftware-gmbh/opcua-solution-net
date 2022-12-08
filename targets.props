@@ -13,7 +13,7 @@
     <!-- Visual Studio 2019, supports .NET Framework 4.6.2 and .NET Core 3.1 -->
     <When Condition="'$(VisualStudioVersion)' == '16.0'">
       <PropertyGroup>
-        <AppTargetFrameworks>netcoreapp3.1</AppTargetFrameworks>
+        <AppTargetFrameworks>net462;netcoreapp3.1</AppTargetFrameworks>
         <AppTargetFramework>netcoreapp3.1</AppTargetFramework>
         <TestsTargetFrameworks>net462;netcoreapp3.1</TestsTargetFrameworks>
         <LibTargetFrameworks>net462;netstandard2.1</LibTargetFrameworks>

@@ -15,9 +15,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+
 using Opc.Ua;
 
 using Technosoftware.UaServer;
+using Technosoftware.UaServer.Sessions;
 using Technosoftware.UaStandardServer;
 #endregion
 
