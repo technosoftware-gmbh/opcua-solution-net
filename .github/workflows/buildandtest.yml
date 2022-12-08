@@ -1,4 +1,4 @@
-name: Build and Test .NET 7.0
+name: Build and Test .NET 6.0
 
 on:
   push:
@@ -20,8 +20,8 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]    
         include:
-          - framework: 'net7.0'
-            dotnet-version: '7.0.x'
+          - framework: 'net6.0'
+            dotnet-version: '6.0.x'
             configuration: 'Release'
             
     env:
