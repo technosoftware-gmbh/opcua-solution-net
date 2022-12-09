@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleCompany.ReferenceServ
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleCompany.NodeManagers", "applications\SampleCompany\NodeManagers\SampleCompany.NodeManagers.csproj", "{3F02243B-4273-478F-9125-A064D39F405F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleCompany.ReferenceClient", "applications\SampleCompany\ReferenceClient\SampleCompany.ReferenceClient.csproj", "{56669608-BB95-4E8F-91F7-FEAA8CBEDB86}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{3F02243B-4273-478F-9125-A064D39F405F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3F02243B-4273-478F-9125-A064D39F405F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3F02243B-4273-478F-9125-A064D39F405F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56669608-BB95-4E8F-91F7-FEAA8CBEDB86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56669608-BB95-4E8F-91F7-FEAA8CBEDB86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56669608-BB95-4E8F-91F7-FEAA8CBEDB86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56669608-BB95-4E8F-91F7-FEAA8CBEDB86}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -54,7 +60,8 @@ Global
 		{255B58FB-62A7-4638-A9B8-A59E2387259B} = {DCA9B36A-8D82-495E-99FD-08E3784EFCEE}
 		{89CA7EE3-4B22-407A-B232-220749E599D4} = {DCA9B36A-8D82-495E-99FD-08E3784EFCEE}
 		{2D10F703-D8C0-440C-86DB-47A0E3DB0A04} = {F0540727-EE6D-4C56-AED0-0E70DA0DEA49}
-		{3F02243B-4273-478F-9125-A064D39F405F} = {F0540727-EE6D-4C56-AED0-0E70DA0DEA49}
+		{3F02243B-4273-478F-9125-A064D39F405F} = {3F867BB5-ED55-488D-9975-72C7A504BBC0}
+		{56669608-BB95-4E8F-91F7-FEAA8CBEDB86} = {F0540727-EE6D-4C56-AED0-0E70DA0DEA49}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {519D77B6-EA9C-4A11-8248-ABCC01FD533C}
