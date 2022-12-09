@@ -11,7 +11,8 @@ version: 2.6.1.{build}-{branch}
 branches:
   # whitelist
   only:
-    - appveyor
+    - master
+    - /release/
   # blacklist
   except:
     - gh-pages
