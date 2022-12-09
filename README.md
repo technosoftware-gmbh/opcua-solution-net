@@ -17,7 +17,7 @@ The OPC UA Client SDK .NET API defines classes which can be used to implement an
 
 The OPC UA Server .NET offers a fast and easy access to the OPC Unified Architecture (UA) technology. Develop OPC UA 1.00, 1.01, 1.02, 1.03  and 1.04 compliant Servers with C# targeting targeting the .NET 7.0, .NET 6.0 or .NET Core 3.1.
 
-.NET 7.0, .NET 6.0 and .NET Core 3.1 allows you develop applications that run on all common platforms available today, including Linux, macOS and Windows 8.1/10 (including embedded/IoT editions) without requiring platform-specific modifications.
+.NET 7.0, .NET 6.0 and .NET Core 3.1 allows you develop applications that run on all common platforms available today, including Linux, macOS and Windows 8.1/10/11 (including embedded/IoT editions) without requiring platform-specific modifications.
 
 The developer can concentrate on his application and servers can be developed fast and easily without the need to spend a lot of time learning how to implement the OPC Unified Architecture specification. The server API is easy to use and many OPC specific functions are handled by the framework.
 
@@ -41,7 +41,7 @@ You can use the following documents as a starting point:
 ### Build Status
 
 [![Build Status](https://app.travis-ci.com/technosoftware-gmbh/opcua-solution-net-samples.svg?branch=master)](https://app.travis-ci.com/technosoftware-gmbh/opcua-solution-net-samples)
-[![Build status](https://ci.appveyor.com/api/projects/status/j5joansdme5525lu?svg=true)](https://ci.appveyor.com/project/technosoftware-gmbh/opcua-solution-net-samples)
+[![Build status](https://ci.appveyor.com/api/projects/status/j5joansdme5525lu?svg=true)](https://ci.appveyor.com/project/technosoftware/opcua-solution-net-samples)
 [![Build and Test .NET 6.0](https://github.com/technosoftware-gmbh/opcua-solution-net-samples/actions/workflows/buildandtest.yml/badge.svg)](https://github.com/technosoftware-gmbh/opcua-solution-net-samples/actions/workflows/buildandtest.yml)
 
 ### Code Quality
