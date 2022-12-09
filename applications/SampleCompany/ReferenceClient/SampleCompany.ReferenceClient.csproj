@@ -3,12 +3,12 @@
   <PropertyGroup>
     <TargetFrameworks>$(AppTargetFrameworks)</TargetFrameworks>
     <LangVersion>7.3</LangVersion>
-    <AssemblyName>SampleCompany.ReferenceServer</AssemblyName>
+    <AssemblyName>SampleCompany.ReferenceClient</AssemblyName>
     <OutputType>Exe</OutputType>
-    <PackageId>SampleCompany.ReferenceServer</PackageId>
+    <PackageId>SampleCompany.ReferenceClient</PackageId>
     <Company>SampleCompany</Company>
-    <Product>SampleCompany ReferenceServer</Product>
-    <Description>SampleCompany ReferenceServer</Description>
+    <Product>SampleCompany ReferenceClient</Product>
+    <Description>SampleCompany ReferenceClient</Description>
     <Copyright>Copyright © 2022 SampleCompany</Copyright>
   </PropertyGroup>
 
@@ -16,24 +16,13 @@
     <Folder Include="Properties\" />
   </ItemGroup>
 
-  <Choose>
-    <When Condition="Exists('Model\SampleCompany.ReferenceServer.Model.PredefinedNodes.uanodes')">
-      <ItemGroup>
-        <None Remove="Model\SampleCompany.ReferenceServer.Model.PredefinedNodes.uanodes" />
-      </ItemGroup>
-      <ItemGroup>
-        <EmbeddedResource Include="Model\SampleCompany.ReferenceServer.Model.PredefinedNodes.uanodes" />
-      </ItemGroup>
-    </When>
-  </Choose>
-
   <ItemGroup Condition=" '$(NoHttps)' != 'true' ">
     <PackageReference Include="Technosoftware.UaSolution.UaBindings.Https" Version="2.6.1" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Technosoftware.UaSolution.UaCore" Version="2.6.1" />
     <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.6.1" />
-    <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.6.1" />
+    <PackageReference Include="Technosoftware.UaSolution.UaClient" Version="2.6.1" />
   </ItemGroup>
 
   <Choose>
@@ -41,12 +30,13 @@
          use latest versions only on .NET 5/6/7, otherwise 3.1.x -->
     <When Condition="'$(TargetFramework)' == 'net5.0' OR '$(TargetFramework)' == 'net6.0' OR '$(TargetFramework)' == 'net7.0'">
       <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
       </ItemGroup>
     </When>
     <Otherwise>
       <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.28" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.28" />
+        <PackageReference Include="Microsoft.Extensions.Primitives" Version="3.1.28" />
       </ItemGroup>
     </Otherwise>
   </Choose>
@@ -61,12 +51,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Technosoftware\UaStandardServer\Technosoftware.UaStandardServer.csproj" />
-    <ProjectReference Include="..\NodeManagers\SampleCompany.NodeManagers.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="SampleCompany.ReferenceServer.Config.xml">
+    <None Update="SampleCompany.ReferenceClient.Config.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

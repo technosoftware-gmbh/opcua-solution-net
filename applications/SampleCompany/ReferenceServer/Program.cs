@@ -49,7 +49,7 @@ namespace SampleCompany.SampleServer
 
             // command line options
             bool showHelp = false;
-            bool autoAccept = true;
+            bool autoAccept = false;
             bool logConsole = false;
             bool appLog = false;
             bool renewCertificate = false;
