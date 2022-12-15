@@ -471,7 +471,7 @@ namespace SampleCompany.NodeManagers.Reference
                         BuiltInType builtInType = (BuiltInType)Enum.Parse(typeof(BuiltInType), name);
                         if (IsAnalogType(builtInType))
                         {
-                            var item = CreateAnalogItemState(analogItemFolder, daAnalogItem + name, name, null, builtInType, ValueRanks.Scalar);
+                            var item = CreateAnalogItemVariable(analogItemFolder, daAnalogItem + name, name, null, builtInType, ValueRanks.Scalar);
 
                             if (builtInType == BuiltInType.Int64 ||
                                 builtInType == BuiltInType.UInt64)
@@ -500,33 +500,33 @@ namespace SampleCompany.NodeManagers.Reference
                     var analogArrayFolder = CreateFolderState(analogItemFolder, "DataAccess_AnalogType_Array", "Array", null);
                     const string daAnalogArray = "DataAccess_AnalogType_Array_";
 
-                    CreateAnalogItemState(analogArrayFolder, daAnalogArray + "Boolean", "Boolean", null, BuiltInType.Boolean, ValueRanks.OneDimension, new[] { true, false, true, false, true, false, true, false, true });
-                    CreateAnalogItemState(analogArrayFolder, daAnalogArray + "Byte", "Byte", null, BuiltInType.Byte, ValueRanks.OneDimension, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
-                    CreateAnalogItemState(analogArrayFolder, daAnalogArray + "ByteString", "ByteString", null, BuiltInType.ByteString, ValueRanks.OneDimension, new[] { new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 } });
-                    CreateAnalogItemState(analogArrayFolder, daAnalogArray + "DateTime", "DateTime", null, BuiltInType.DateTime, ValueRanks.OneDimension, new[] { DateTime.MinValue, DateTime.MaxValue, DateTime.MinValue, DateTime.MaxValue, DateTime.MinValue, DateTime.MaxValue, DateTime.MinValue, DateTime.MaxValue, DateTime.MinValue });
-                    CreateAnalogItemState(analogArrayFolder, daAnalogArray + "Double", "Double", null, BuiltInType.Double, ValueRanks.OneDimension, new[] { 9.00001d, 9.0002d, 9.003d, 9.04d, 9.5d, 9.06d, 9.007d, 9.008d, 9.0009d });
-                    CreateAnalogItemState(analogArrayFolder, daAnalogArray + "Duration", "Duration", null, DataTypeIds.Duration, ValueRanks.OneDimension, new[] { 9.00001d, 9.0002d, 9.003d, 9.04d, 9.5d, 9.06d, 9.007d, 9.008d, 9.0009d }, null);
-                    CreateAnalogItemState(analogArrayFolder, daAnalogArray + "Float", "Float", null, BuiltInType.Float, ValueRanks.OneDimension, new float[] { 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 1.1f, 2.2f, 3.3f, 4.4f, 5.5f });
-                    CreateAnalogItemState(analogArrayFolder, daAnalogArray + "Guid", "Guid", null, BuiltInType.Guid, ValueRanks.OneDimension, new Guid[] { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() });
-                    CreateAnalogItemState(analogArrayFolder, daAnalogArray + "Int16", "Int16", null, BuiltInType.Int16, ValueRanks.OneDimension, new Int16[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
-                    CreateAnalogItemState(analogArrayFolder, daAnalogArray + "Int32", "Int32", null, BuiltInType.Int32, ValueRanks.OneDimension, new Int32[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
-                    CreateAnalogItemState(analogArrayFolder, daAnalogArray + "Int64", "Int64", null, BuiltInType.Int64, ValueRanks.OneDimension, new Int64[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
-                    CreateAnalogItemState(analogArrayFolder, daAnalogArray + "Integer", "Integer", null, BuiltInType.Integer, ValueRanks.OneDimension, new Int64[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
-                    CreateAnalogItemState(analogArrayFolder, daAnalogArray + "LocaleId", "LocaleId", null, DataTypeIds.LocaleId, ValueRanks.OneDimension, new string[] { "en", "fr", "de", "en", "fr", "de", "en", "fr", "de", "en" }, null);
-                    CreateAnalogItemState(analogArrayFolder, daAnalogArray + "LocalizedText", "LocalizedText", null, BuiltInType.LocalizedText, ValueRanks.OneDimension, new LocalizedText[] { new LocalizedText("en", "Hello World1"), new LocalizedText("en", "Hello World2"), new LocalizedText("en", "Hello World3"), new LocalizedText("en", "Hello World4"), new LocalizedText("en", "Hello World5"), new LocalizedText("en", "Hello World6"), new LocalizedText("en", "Hello World7"), new LocalizedText("en", "Hello World8"), new LocalizedText("en", "Hello World9"), new LocalizedText("en", "Hello World10") });
-                    CreateAnalogItemState(analogArrayFolder, daAnalogArray + "NodeId", "NodeId", null, BuiltInType.NodeId, ValueRanks.OneDimension, new NodeId[] { new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()) });
-                    CreateAnalogItemState(analogArrayFolder, daAnalogArray + "Number", "Number", null, BuiltInType.Number, ValueRanks.OneDimension, new Int16[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
-                    CreateAnalogItemState(analogArrayFolder, daAnalogArray + "QualifiedName", "QualifiedName", null, BuiltInType.QualifiedName, ValueRanks.OneDimension, new QualifiedName[] { "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8", "q9" });
-                    CreateAnalogItemState(analogArrayFolder, daAnalogArray + "SByte", "SByte", null, BuiltInType.SByte, ValueRanks.OneDimension, new SByte[] { 10, 20, 30, 40, 50, 60, 70, 80, 90 });
-                    CreateAnalogItemState(analogArrayFolder, daAnalogArray + "String", "String", null, BuiltInType.String, ValueRanks.OneDimension, new[] { "a00", "b10", "c20", "d30", "e40", "f50", "g60", "h70", "i80", "j90" });
-                    CreateAnalogItemState(analogArrayFolder, daAnalogArray + "UInt16", "UInt16", null, BuiltInType.UInt16, ValueRanks.OneDimension, new UInt16[] { 20, 21, 22, 23, 24, 25, 26, 27, 28, 29 });
-                    CreateAnalogItemState(analogArrayFolder, daAnalogArray + "UInt32", "UInt32", null, BuiltInType.UInt32, ValueRanks.OneDimension, new UInt32[] { 30, 31, 32, 33, 34, 35, 36, 37, 38, 39 });
-                    CreateAnalogItemState(analogArrayFolder, daAnalogArray + "UInt64", "UInt64", null, BuiltInType.UInt64, ValueRanks.OneDimension, new UInt64[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
-                    CreateAnalogItemState(analogArrayFolder, daAnalogArray + "UInteger", "UInteger", null, BuiltInType.UInteger, ValueRanks.OneDimension, new UInt64[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
-                    CreateAnalogItemState(analogArrayFolder, daAnalogArray + "UtcTime", "UtcTime", null, DataTypeIds.UtcTime, ValueRanks.OneDimension, new DateTime[] { DateTime.MinValue.ToUniversalTime(), DateTime.MaxValue.ToUniversalTime(), DateTime.MinValue.ToUniversalTime(), DateTime.MaxValue.ToUniversalTime(), DateTime.MinValue.ToUniversalTime(), DateTime.MaxValue.ToUniversalTime(), DateTime.MinValue.ToUniversalTime(), DateTime.MaxValue.ToUniversalTime(), DateTime.MinValue.ToUniversalTime() }, null);
-                    CreateAnalogItemState(analogArrayFolder, daAnalogArray + "Variant", "Variant", null, BuiltInType.Variant, ValueRanks.OneDimension, new Variant[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
+                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Boolean", "Boolean", null, BuiltInType.Boolean, ValueRanks.OneDimension, new[] { true, false, true, false, true, false, true, false, true });
+                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Byte", "Byte", null, BuiltInType.Byte, ValueRanks.OneDimension, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
+                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "ByteString", "ByteString", null, BuiltInType.ByteString, ValueRanks.OneDimension, new[] { new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 } });
+                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "DateTime", "DateTime", null, BuiltInType.DateTime, ValueRanks.OneDimension, new[] { DateTime.MinValue, DateTime.MaxValue, DateTime.MinValue, DateTime.MaxValue, DateTime.MinValue, DateTime.MaxValue, DateTime.MinValue, DateTime.MaxValue, DateTime.MinValue });
+                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Double", "Double", null, BuiltInType.Double, ValueRanks.OneDimension, new[] { 9.00001d, 9.0002d, 9.003d, 9.04d, 9.5d, 9.06d, 9.007d, 9.008d, 9.0009d });
+                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Duration", "Duration", null, DataTypeIds.Duration, ValueRanks.OneDimension, new[] { 9.00001d, 9.0002d, 9.003d, 9.04d, 9.5d, 9.06d, 9.007d, 9.008d, 9.0009d }, null);
+                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Float", "Float", null, BuiltInType.Float, ValueRanks.OneDimension, new float[] { 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 1.1f, 2.2f, 3.3f, 4.4f, 5.5f });
+                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Guid", "Guid", null, BuiltInType.Guid, ValueRanks.OneDimension, new Guid[] { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() });
+                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Int16", "Int16", null, BuiltInType.Int16, ValueRanks.OneDimension, new Int16[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
+                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Int32", "Int32", null, BuiltInType.Int32, ValueRanks.OneDimension, new Int32[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
+                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Int64", "Int64", null, BuiltInType.Int64, ValueRanks.OneDimension, new Int64[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
+                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Integer", "Integer", null, BuiltInType.Integer, ValueRanks.OneDimension, new Int64[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
+                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "LocaleId", "LocaleId", null, DataTypeIds.LocaleId, ValueRanks.OneDimension, new string[] { "en", "fr", "de", "en", "fr", "de", "en", "fr", "de", "en" }, null);
+                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "LocalizedText", "LocalizedText", null, BuiltInType.LocalizedText, ValueRanks.OneDimension, new LocalizedText[] { new LocalizedText("en", "Hello World1"), new LocalizedText("en", "Hello World2"), new LocalizedText("en", "Hello World3"), new LocalizedText("en", "Hello World4"), new LocalizedText("en", "Hello World5"), new LocalizedText("en", "Hello World6"), new LocalizedText("en", "Hello World7"), new LocalizedText("en", "Hello World8"), new LocalizedText("en", "Hello World9"), new LocalizedText("en", "Hello World10") });
+                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "NodeId", "NodeId", null, BuiltInType.NodeId, ValueRanks.OneDimension, new NodeId[] { new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()) });
+                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Number", "Number", null, BuiltInType.Number, ValueRanks.OneDimension, new Int16[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "QualifiedName", "QualifiedName", null, BuiltInType.QualifiedName, ValueRanks.OneDimension, new QualifiedName[] { "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8", "q9" });
+                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "SByte", "SByte", null, BuiltInType.SByte, ValueRanks.OneDimension, new SByte[] { 10, 20, 30, 40, 50, 60, 70, 80, 90 });
+                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "String", "String", null, BuiltInType.String, ValueRanks.OneDimension, new[] { "a00", "b10", "c20", "d30", "e40", "f50", "g60", "h70", "i80", "j90" });
+                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "UInt16", "UInt16", null, BuiltInType.UInt16, ValueRanks.OneDimension, new UInt16[] { 20, 21, 22, 23, 24, 25, 26, 27, 28, 29 });
+                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "UInt32", "UInt32", null, BuiltInType.UInt32, ValueRanks.OneDimension, new UInt32[] { 30, 31, 32, 33, 34, 35, 36, 37, 38, 39 });
+                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "UInt64", "UInt64", null, BuiltInType.UInt64, ValueRanks.OneDimension, new UInt64[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
+                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "UInteger", "UInteger", null, BuiltInType.UInteger, ValueRanks.OneDimension, new UInt64[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
+                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "UtcTime", "UtcTime", null, DataTypeIds.UtcTime, ValueRanks.OneDimension, new DateTime[] { DateTime.MinValue.ToUniversalTime(), DateTime.MaxValue.ToUniversalTime(), DateTime.MinValue.ToUniversalTime(), DateTime.MaxValue.ToUniversalTime(), DateTime.MinValue.ToUniversalTime(), DateTime.MaxValue.ToUniversalTime(), DateTime.MinValue.ToUniversalTime(), DateTime.MaxValue.ToUniversalTime(), DateTime.MinValue.ToUniversalTime() }, null);
+                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Variant", "Variant", null, BuiltInType.Variant, ValueRanks.OneDimension, new Variant[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
                     var doc1 = new XmlDocument();
-                    CreateAnalogItemState(analogArrayFolder, daAnalogArray + "XmlElement", "XmlElement", null, BuiltInType.XmlElement, ValueRanks.OneDimension, new XmlElement[] { doc1.CreateElement("tag1"), doc1.CreateElement("tag2"), doc1.CreateElement("tag3"), doc1.CreateElement("tag4"), doc1.CreateElement("tag5"), doc1.CreateElement("tag6"), doc1.CreateElement("tag7"), doc1.CreateElement("tag8"), doc1.CreateElement("tag9"), doc1.CreateElement("tag10") });
+                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "XmlElement", "XmlElement", null, BuiltInType.XmlElement, ValueRanks.OneDimension, new XmlElement[] { doc1.CreateElement("tag1"), doc1.CreateElement("tag2"), doc1.CreateElement("tag3"), doc1.CreateElement("tag4"), doc1.CreateElement("tag5"), doc1.CreateElement("tag6"), doc1.CreateElement("tag7"), doc1.CreateElement("tag8"), doc1.CreateElement("tag9"), doc1.CreateElement("tag10") });
                     #endregion
 
                     #region DataAccess_DiscreteType
@@ -1276,6 +1276,39 @@ namespace SampleCompany.NodeManagers.Reference
                     myCompanyInstructions.Value = "A place for the vendor to describe their address-space.";
                     variables.Add(myCompanyInstructions);
                     #endregion
+
+                    #region StandardServerTest
+                    ResetRandomGenerator(1);
+                    var standardServerTestFolder = CreateFolderState(root, "StandardServerTest", null, null);
+                    const string standardServerTest = "StandardServerTest_";
+                    
+                    var standardServerTestInstructions = CreateBaseDataVariableState(standardServerTestFolder, "StandardServerTest_Instructions", null, null, DataTypeIds.String, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+                    standardServerTestInstructions.Value = "Several variables to increas code coverage of all supported UaStandardServer methods.";
+
+                    var baseObjectState = CreateBaseObjectState(standardServerTestFolder, standardServerTest + "BaseObjectState1", "BaseObjectState1", null);
+                    var propertyState = CreatePropertyState(baseObjectState, standardServerTest + "PropertyState", "PropertyState", null, BuiltInType.Boolean, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+
+                    baseObjectState = CreateBaseObjectState(standardServerTestFolder, standardServerTest + "BaseObjectState2", null, null);
+                    propertyState = CreatePropertyState(baseObjectState, standardServerTest + "PropertyState2", null, null, BuiltInType.Boolean, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, true);
+
+                    viewStateOperations = CreateViewState(standardServerTestFolder, externalReferences, views + "Operations 2", null, null);
+
+                    CreateBaseDataVariableState(standardServerTestFolder, standardServerTest + "Double 1", null, null, BuiltInType.Double, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+
+                    CreateDataItemState(standardServerTestFolder, standardServerTest + "Double 1", null, null, BuiltInType.Double, ValueRanks.OneDimension, AccessLevels.CurrentReadOrWrite, null, AttributeWriteMask.None, AttributeWriteMask.None, String.Empty, 2, null, null);
+                    CreateDataItemState(standardServerTestFolder, standardServerTest + "Double 2", null, null, BuiltInType.Double, ValueRanks.TwoDimensions, AccessLevels.CurrentReadOrWrite, null, AttributeWriteMask.None, AttributeWriteMask.None, String.Empty, 2, null, null);
+
+                    CreateAnalogItemState(standardServerTestFolder, standardServerTest + "Boolean 1", null, null, BuiltInType.Boolean, ValueRanks.OneDimension, AccessLevels.CurrentReadOrWrite, null, null);
+                    CreateAnalogItemState(standardServerTestFolder, standardServerTest + "Boolean 2", null, null, BuiltInType.Boolean, ValueRanks.TwoDimensions, AccessLevels.CurrentReadOrWrite, null, null);
+
+                    CreateTwoStateDiscreteState(standardServerTestFolder, standardServerTest + "005", null, null, AccessLevels.CurrentReadOrWrite, false, "circle", "cross");
+
+                    CreateMultiStateDiscreteState(standardServerTestFolder, standardServerTest + "001", null, null, AccessLevels.CurrentReadOrWrite, null, AttributeWriteMask.None, AttributeWriteMask.None, null, null, null, "open", "closed", "jammed");
+
+                    CreateMultiStateValueDiscreteState(standardServerTestFolder, daMultiStateValueDiscrete + "001", null, null, null, AccessLevels.CurrentReadOrWrite, null, AttributeWriteMask.None, AttributeWriteMask.None, null, null, null, new LocalizedText[] { "open", "closed", "jammed" });
+
+                    #endregion
+
                 }
                 catch (Exception e)
                 {
@@ -1356,12 +1389,12 @@ namespace SampleCompany.NodeManagers.Reference
         }
 
         #region DataAccess Server Facet related Methods
-        private AnalogItemState CreateAnalogItemState(NodeState parent, string browseName, string name, string description, BuiltInType dataType, int valueRank, object initialValues = null, Opc.Ua.Range customRange = null)
+        private AnalogItemState CreateAnalogItemVariable(NodeState parent, string browseName, string name, string description, BuiltInType dataType, int valueRank, object initialValues = null, Opc.Ua.Range customRange = null)
         {
-            return CreateAnalogItemState(parent, browseName, name, description, (uint)dataType, valueRank, initialValues, customRange);
+            return CreateAnalogItemVariable(parent, browseName, name, description, (uint)dataType, valueRank, initialValues, customRange);
         }
 
-        private AnalogItemState CreateAnalogItemState(NodeState parent, string browseName, string name, string description, NodeId dataType, int valueRank, object initialValues = null, Opc.Ua.Range customRange = null)
+        private AnalogItemState CreateAnalogItemVariable(NodeState parent, string browseName, string name, string description, NodeId dataType, int valueRank, object initialValues = null, Opc.Ua.Range customRange = null)
         {
             var displayName = new LocalizedText("", name);
 
