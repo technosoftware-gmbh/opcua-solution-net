@@ -82,6 +82,8 @@ namespace SampleCompany.NodeManagers
             return nodeManagerFactories.ToList();
         }
 
+        #region Private Fields
         private static IList<IUaNodeManagerFactory> nodeManagerFactories_;
+        #endregion
     }
 }
