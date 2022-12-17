@@ -3,7 +3,7 @@ echo Test .NET 6.0 Reference Server and Refererence Client
 workdir=$(pwd)
 referenceclientresult=0
 referenceserverresult=0
-cd applications/SampleCompany/ReferenceServer
+cd examples/SampleCompany/ReferenceServer
 echo build ReferenceServer
 rm -r obj
 dotnet build SampleCompany.ReferenceServer.csproj -f net6.0
@@ -13,7 +13,7 @@ rm -r obj
 dotnet build SampleCompany.ReferenceClient.csproj -f net6.0
 cd "$workdir"
 
-cd applications/SampleCompany/ReferenceServer
+cd examples/SampleCompany/ReferenceServer
 echo start ReferenceServer
 touch ./ReferenceServer.log
 dotnet run --framework net6.0 --no-restore --no-build --project SampleCompany.ReferenceServer.csproj -- -t 120 -a >./ReferenceServer.log &
@@ -23,7 +23,7 @@ grep -m 1 "start" <(tail -f ./ReferenceServer.log --pid=$referenceserverpid)
 tail -f ./ReferenceServer.log --pid=$referenceserverpid &
 cd "$workdir"
 
-cd applications/SampleCompany/ReferenceClient
+cd examples/SampleCompany/ReferenceClient
 echo start ReferenceClient for tcp connection
 dotnet run --framework net6.0 --no-restore --no-build --project SampleCompany.ReferenceClient.csproj -- -t 20 -a &
 referenceclientpid="$!"

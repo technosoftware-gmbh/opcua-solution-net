@@ -37,7 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\applications\SampleCompany\NodeManagers\SampleCompany.NodeManagers.csproj" />
+    <ProjectReference Include="..\..\examples\SampleCompany\NodeManagers\SampleCompany.NodeManagers.csproj" />
   </ItemGroup>
 
 </Project>

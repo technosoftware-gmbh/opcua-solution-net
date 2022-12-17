@@ -9,17 +9,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Technosoftware.UaStandardSe
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{DCA9B36A-8D82-495E-99FD-08E3784EFCEE}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Applications", "Applications", "{F0540727-EE6D-4C56-AED0-0E70DA0DEA49}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{F0540727-EE6D-4C56-AED0-0E70DA0DEA49}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Technosoftware.UaStandardServer.Tests", "Tests\Technosoftware.UaStandardServer.Tests\Technosoftware.UaStandardServer.Tests.csproj", "{255B58FB-62A7-4638-A9B8-A59E2387259B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Technosoftware.UaClient.Tests", "Tests\Technosoftware.UaClient.Tests\Technosoftware.UaClient.Tests.csproj", "{89CA7EE3-4B22-407A-B232-220749E599D4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleCompany.ReferenceServer", "applications\SampleCompany\ReferenceServer\SampleCompany.ReferenceServer.csproj", "{2D10F703-D8C0-440C-86DB-47A0E3DB0A04}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleCompany.ReferenceServer", "examples\SampleCompany\ReferenceServer\SampleCompany.ReferenceServer.csproj", "{2D10F703-D8C0-440C-86DB-47A0E3DB0A04}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleCompany.NodeManagers", "applications\SampleCompany\NodeManagers\SampleCompany.NodeManagers.csproj", "{3F02243B-4273-478F-9125-A064D39F405F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleCompany.NodeManagers", "examples\SampleCompany\NodeManagers\SampleCompany.NodeManagers.csproj", "{3F02243B-4273-478F-9125-A064D39F405F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleCompany.ReferenceClient", "applications\SampleCompany\ReferenceClient\SampleCompany.ReferenceClient.csproj", "{56669608-BB95-4E8F-91F7-FEAA8CBEDB86}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleCompany.ReferenceClient", "examples\SampleCompany\ReferenceClient\SampleCompany.ReferenceClient.csproj", "{56669608-BB95-4E8F-91F7-FEAA8CBEDB86}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
