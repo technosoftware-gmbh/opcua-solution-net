@@ -17,13 +17,13 @@ addons:
     packages:
 script:  
   - echo "----- Build OPC UA Solution .NET Applications ---------------"
-  - dotnet build applications/SampleCompany/ReferenceServer/SampleCompany.ReferenceServer.csproj -f net6.0 -c Debug 
-  - dotnet build applications/SampleCompany/ReferenceServer/SampleCompany.ReferenceServer.csproj -f net6.0 -c Release
-  - dotnet build applications/SampleCompany/ReferenceClient/SampleCompany.ReferenceClient.csproj -f net6.0 -c Debug
-  - dotnet build applications/SampleCompany/ReferenceClient/SampleCompany.ReferenceClient.csproj -f net6.0 -c Release
+  - dotnet build examples/SampleCompany/ReferenceServer/SampleCompany.ReferenceServer.csproj -f net6.0 -c Debug 
+  - dotnet build examples/SampleCompany/ReferenceServer/SampleCompany.ReferenceServer.csproj -f net6.0 -c Release
+  - dotnet build examples/SampleCompany/ReferenceClient/SampleCompany.ReferenceClient.csproj -f net6.0 -c Debug
+  - dotnet build examples/SampleCompany/ReferenceClient/SampleCompany.ReferenceClient.csproj -f net6.0 -c Release
 
   - echo "----- Run OPC UA Solution .NET Reference --------------------"
-  - cd applications/SampleCompany/ReferenceServer/bin/Debug/net6.0
+  - cd examples/SampleCompany/ReferenceServer/bin/Debug/net6.0
   - dotnet SampleCompany.ReferenceServer.dll -t 10 -a
   - cd $TRAVIS_BUILD_DIR
   - ./testclientserversamples.sh
