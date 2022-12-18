@@ -28,12 +28,3 @@
 
 # OPC UA
 *.uanodes binary
-
-testclientserversamples.sh linguist-vendored
-.azurepipelines/* linguist-vendored
-bin/* linguist-vendored
-examples/* linguist-vendored=false
-documentation/* linguist-documentation
-licenses/* linguist-documentation
-schema/* linguist-documentation
-Workshop/* linguist-documentation
