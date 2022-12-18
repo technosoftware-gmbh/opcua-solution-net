@@ -50,7 +50,7 @@ You can use the following documents as a starting point:
 
 ### Build Status
 
-[![Build status](https://ci.appveyor.com/api/projects/status/j5joansdme5525lu?svg=true)](https://ci.appveyor.com/project/technosoftware/opcua-solution-net-samples)
+[![Build status](https://ci.appveyor.com/api/projects/status/mvxf32hkg7r6404p?svg=true)](https://ci.appveyor.com/project/technosoftware/opcua-solution-net-samples)
 [![Build and Test .NET 6.0](https://github.com/technosoftware-gmbh/opcua-solution-net-samples/actions/workflows/buildandtest.yml/badge.svg)](https://github.com/technosoftware-gmbh/opcua-solution-net-samples/actions/workflows/buildandtest.yml)
 
 ### Code Quality
