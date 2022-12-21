@@ -21,8 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.6.2" />
-    <PackageReference Include="Technosoftware.UaSolution.UaClient" Version="2.6.2" />
+    <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.6.3" />
+    <PackageReference Include="Technosoftware.UaSolution.UaClient" Version="2.6.3" />
   </ItemGroup>
 
   <ItemGroup>
