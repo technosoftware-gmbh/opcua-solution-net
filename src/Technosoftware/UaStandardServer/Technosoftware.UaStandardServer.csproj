@@ -22,9 +22,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Technosoftware.UaSolution.UaCore" Version="2.6.0" />
-    <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.6.0" />
-    <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.6.0" />
+    <PackageReference Include="Technosoftware.UaSolution.UaCore" Version="2.6.3" />
+    <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="2.6.3" />
+    <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="2.6.3" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net48'">

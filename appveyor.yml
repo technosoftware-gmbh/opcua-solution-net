@@ -4,14 +4,15 @@
 #---------------------------------#
 
 # version format
-version: 2.6.0.{build}-{branch}
+version: 2.6.3.{build}-{branch}
 
 
 # branches to build
 branches:
   # whitelist
   only:
-    - appveyor
+    - master
+    - /release/
   # blacklist
   except:
     - gh-pages
@@ -32,7 +33,10 @@ clone_folder: c:\projects\opcua-solution-net
 
 environment:
   matrix:
-  - solution_name: "Applications.sln"
+  - solution_name: "Examples.sln"
+    test_name: "void"
+    param: ""
+  - solution_name: "UaBaseServer.sln"
     test_name: "void"
     param: ""
   - solution_name: "TutorialSamples.sln"

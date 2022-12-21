@@ -6,7 +6,7 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v6.0": {
-      "Opc.Ua.ModelCompiler/2.0.2211.1445": {
+      "Opc.Ua.ModelCompiler/2.0.2212.1851": {
         "dependencies": {
           "CsvHelper": "30.0.0",
           "McMaster.Extensions.CommandLineUtils": "4.0.1",
@@ -80,7 +80,7 @@
     }
   },
   "libraries": {
-    "Opc.Ua.ModelCompiler/2.0.2211.1445": {
+    "Opc.Ua.ModelCompiler/2.0.2212.1851": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

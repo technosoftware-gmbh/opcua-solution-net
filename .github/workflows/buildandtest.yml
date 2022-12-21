@@ -1,4 +1,4 @@
-name: Build and Test .NET 6.0
+name: Build and Test .NET 7.0
 
 on:
   push:
@@ -20,8 +20,8 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]    
         include:
-          - framework: 'net6.0'
-            dotnet-version: '6.0.x'
+          - framework: 'net7.0'
+            dotnet-version: '7.0.x'
             configuration: 'Release'
             
     env:
@@ -40,11 +40,11 @@ jobs:
         dotnet-version: ${{ matrix.dotnet-version }}
         
     - name: Build
-      run: dotnet build --force --framework ${{ matrix.framework }} --configuration ${{ matrix.configuration }} "Applications.sln"
+      run: dotnet build  "Examples.sln" --force --framework ${{ matrix.framework }} --configuration ${{ matrix.configuration }}
       
     - name: Test
       # note: /p:CollectCoverage=true is only used to disable deterministc builds
-      run: dotnet test --no-build --framework ${{ matrix.framework }} --logger trx --configuration ${{ matrix.configuration }} /p:CollectCoverage=true --collect:"XPlat Code Coverage" --settings ./Tests/coverlet.runsettings.xml --results-directory "TestResults-${{matrix.os}}-${{matrix.framework}}-${{matrix.configuration}}" "Applications.sln"
+      run: dotnet test  "Examples.sln" --no-build --framework ${{ matrix.framework }} --logger trx --configuration ${{ matrix.configuration }} /p:CollectCoverage=true --collect:"XPlat Code Coverage" --settings ./Tests/coverlet.runsettings.xml --results-directory "TestResults-${{matrix.os}}-${{matrix.framework}}-${{matrix.configuration}}"
 
     - name: Upload test results
       uses: actions/upload-artifact@v3

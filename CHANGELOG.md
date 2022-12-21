@@ -1,4 +1,22 @@
 -------------------------------------------------------------------------------------------------------------
+## OPC UA Solution .NET - 2.6.3
+
+### Fixed issues
+- License handling optimized
+
+-------------------------------------------------------------------------------------------------------------
+## OPC UA Solution .NET - 2.6.2
+
+# Changes
+Includes all changes and fixed from the [OPC UA 1.04 Maintenance Update 1.4.371.41](https://github.com/OPCFoundation/UA-.NETStandard/releases/tag/1.4.371.41).
+
+-------------------------------------------------------------------------------------------------------------
+## OPC UA Solution .NET - 2.6.1
+
+### Enhancements
+- Support of .NET 7.0
+
+-------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 2.6.0
 
 ### Breaking Changes

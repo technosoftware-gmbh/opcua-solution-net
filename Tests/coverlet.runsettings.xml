@@ -5,7 +5,7 @@
       <DataCollector friendlyName="XPlat Code Coverage">
         <Configuration>
           <Format>cobertura</Format>          
-          <Exclude>[coverlet.*.tests?]*,[*]Coverlet.Core*,[Technosoftware.Ua*.Tests]*,[Technosoftware.Servers]*</Exclude> <!-- [Assembly-Filter]Type-Filter -->
+          <Exclude>[coverlet.*.tests?]*,[*]Coverlet.Core*,[Technosoftware.Ua*.Tests]*,[SampleCompany.NodeManagers]*</Exclude> <!-- [Assembly-Filter]Type-Filter -->
           <Include></Include> <!-- [Assembly-Filter]Type-Filter -->
           <ExcludeByAttribute>Obsolete</ExcludeByAttribute>
           <ExcludeByFile>**/Generated/*.cs,**/Model/*.cs</ExcludeByFile> <!-- Globbing filter -->
