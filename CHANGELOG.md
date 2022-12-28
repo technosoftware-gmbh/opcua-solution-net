@@ -1,4 +1,10 @@
 -------------------------------------------------------------------------------------------------------------
+## OPC UA Solution .NET - 2.6.4
+
+### Changes
+- Includes all changes and fixes from the [OPC UA 1.04 Maintenance Update 1.4.371.50](https://github.com/OPCFoundation/UA-.NETStandard/releases/tag/1.4.371.50).
+
+-------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 2.6.3
 
 ### Fixed issues
