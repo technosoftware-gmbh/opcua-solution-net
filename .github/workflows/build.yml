@@ -43,7 +43,7 @@ jobs:
       run: dotnet build  "TutorialSamples.sln" --force --framework ${{ matrix.framework }} --configuration ${{ matrix.configuration }}
      
   build-net7:
-    name: build-and-test-${{matrix.os}}
+    name: build-net7-${{matrix.os}}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false    
