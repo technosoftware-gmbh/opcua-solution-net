@@ -51,11 +51,11 @@ You can use the following documents as a starting point:
 ### Build Status
 
 [![Build status](https://ci.appveyor.com/api/projects/status/mvxf32hkg7r6404p?svg=true)](https://ci.appveyor.com/project/technosoftware/opcua-solution-net-samples)
-[![Build .NET 6.0 and .NET 7.0](https://github.com/technosoftware-gmbh/opcua-solution-net-samples/actions/workflows/buildandtest.yml/badge.svg)](https://github.com/technosoftware-gmbh/opcua-solution-net-samples/actions/workflows/buildandtest.yml)
+[![Build .NET 6.0 and .NET 7.0](https://github.com/technosoftware-gmbh/opcua-solution-net-samples/actions/workflows/build.yml/badge.svg)](https://github.com/technosoftware-gmbh/opcua-solution-net-samples/actions/workflows/build.yml)
 
 ### Source Code
 
-The source code of the UaConfiguration, UaClient, UaServer, UaBaseServer and UaStandardServer is now available [here](https://github.com/technosoftware-gmbh/opcua-solution-net/) 
+The source code of the UaConfiguration, UaClient, UaServer, UaBaseServer and UaStandardServer libraries are now available [here](https://github.com/technosoftware-gmbh/opcua-solution-net/). 
 
 ## Workshop
 
