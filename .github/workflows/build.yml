@@ -12,7 +12,7 @@ env:
   ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
 
 jobs:
-  build-net6:  
+  build-net6:
     name: build-net6-${{matrix.os}}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -70,4 +70,4 @@ jobs:
         dotnet-version: ${{ matrix.dotnet-version }}
         
     - name: Build
-      run: dotnet build  "TutorialSamples.sln" --force --framework ${{ matrix.framework }} --configuration ${{ matrix.configuration }}    
+      run: dotnet build  "TutorialSamples.sln" --force --framework ${{ matrix.framework }} --configuration ${{ matrix.configuration }}
