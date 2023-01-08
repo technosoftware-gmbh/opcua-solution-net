@@ -1,4 +1,20 @@
 -------------------------------------------------------------------------------------------------------------
+## OPC UA Solution .NET Core - 3.0.0 (RC)
+
+### Breaking Changes
+- License
+  - A new license ist needed. Old licenses from 2.3 or earlier will no longer work with 3.0 and above.
+  - Product puchases from 2021 and 2022 can get a new license free of charge. Either through their online account or by sending us an Email.
+  - All others can order an OPC UA Support subscription incl. Update [here](https://technosoftware.com/product/opc-support-subscription-update/). Be aware that you need the original invoice as proof of your license.
+- removed support of .NET Core 3.1 because of end of life (see [here](https://dotnet.microsoft.com/en-us/platform/support/policy/dotnet-core))
+
+### Changes
+- Includes all changes and fixes from the [OPC UA 1.04 Maintenance Update 1.4.371.50](https://github.com/OPCFoundation/UA-.NETStandard/releases/tag/1.4.371.50).
+
+### Now Included
+- Source Code of UaConfiguration, UaClient, UaServer, UaBaseServer and UaStandardServer. License mechanism is in UaCore, so you still need a valid license!
+
+-------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 2.6.4
 
 ### Changes
@@ -14,7 +30,7 @@
 ## OPC UA Solution .NET - 2.6.2
 
 # Changes
-Includes all changes and fixed from the [OPC UA 1.04 Maintenance Update 1.4.371.41](https://github.com/OPCFoundation/UA-.NETStandard/releases/tag/1.4.371.41).
+Includes all changes and fixes from the [OPC UA 1.04 Maintenance Update 1.4.371.41](https://github.com/OPCFoundation/UA-.NETStandard/releases/tag/1.4.371.41).
 
 -------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 2.6.1
