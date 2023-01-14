@@ -92,6 +92,14 @@ The OPC UA Bundle .NET includes the OPC UA Client .NET and OPC UA Server .NET an
 
 The delivered license can be used to turn the contents of this repository into a product version.
 
+### Source Edition
+
+The OPC UA Solution .NET Source includes the source code of this repository as well as the source of UaCore and is available at
+
+ * [OPC UA Solution .NET Source](https://technosoftware.com/product/opc-ua-solution-net/)
+ 
+The delivered license can be used to turn the contents of this repository into a product version.
+
 ### Get Support for the Solution:
 
 Support for the Solution is available [here](https://github.com/technosoftware-gmbh/opcua-solution-net-samples/issues).
