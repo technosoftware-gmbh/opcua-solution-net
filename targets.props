@@ -14,6 +14,7 @@
         <AppTargetFramework>net6.0</AppTargetFramework>
         <TestsTargetFrameworks>net6.0;net7.0</TestsTargetFrameworks>
         <LibTargetFrameworks>net462;net472;net48;netstandard2.1;net6.0;net7.0</LibTargetFrameworks>
+        <HttpsTargetFrameworks>net462;net472;net48;net6.0;net7.0</HttpsTargetFrameworks>
       </PropertyGroup>
     </When>
     <!-- Visual Studio 2019, supports .NET Framework 4.6.2 and .NET Core 3.1 -->
@@ -23,6 +24,7 @@
         <AppTargetFramework>netcoreapp3.1</AppTargetFramework>
         <TestsTargetFrameworks>net462;netcoreapp3.1</TestsTargetFrameworks>
         <LibTargetFrameworks>net462;netstandard2.1</LibTargetFrameworks>
+        <HttpsTargetFrameworks>net462;netcoreapp3.1</HttpsTargetFrameworks>
       </PropertyGroup>
     </When>
     <!-- Visual Studio 2017 and earlier, support only .NET Framework 4.6.2. -->
@@ -32,6 +34,7 @@
         <AppTargetFramework>net462</AppTargetFramework>
         <TestsTargetFrameworks>net462</TestsTargetFrameworks>
         <LibTargetFrameworks>net462</LibTargetFrameworks>
+        <HttpsTargetFrameworks>net462</HttpsTargetFrameworks>
       </PropertyGroup>
     </Otherwise>
   </Choose>
