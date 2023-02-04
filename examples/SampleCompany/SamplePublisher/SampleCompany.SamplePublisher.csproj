@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>$(AppTargetFrameworks)</TargetFrameworks>
+    <LangVersion>7.3</LangVersion>
+    <AssemblyName>SampleCompany.SamplePublisher</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <PackageId>SampleCompany.SamplePublisher</PackageId>
+    <Company>SampleCompany</Company>
+    <Product>SampleCompany SamplePublisher</Product>
+    <Description>SampleCompany SamplePublisher</Description>
+    <Copyright>Copyright © 2022 - 2023 SampleCompany</Copyright>
+    <RootNamespace>SampleCompany.SamplePublisher</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Mono.Options" Version="6.12.0.148" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Technosoftware.UaSolution.UaCore" Version="3.0.3" />
+    <PackageReference Include="Technosoftware.UaSolution.UaPubSub" Version="0.0.1" />
+  </ItemGroup>
+
+</Project>
