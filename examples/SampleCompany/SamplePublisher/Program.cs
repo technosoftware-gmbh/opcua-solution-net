@@ -66,7 +66,7 @@ namespace SampleCompany.SamplePublisher
 
             if (showHelp)
             {
-                Console.WriteLine("Usage: dotnet ConsoleReferencePublisher.dll/exe [OPTIONS]");
+                Console.WriteLine("Usage: dotnet SampleCompany.SamplePublisher.dll/exe [OPTIONS]");
                 Console.WriteLine();
 
                 Console.WriteLine("Options:");
@@ -744,7 +744,7 @@ namespace SampleCompany.SamplePublisher
         private static void InitializeLog()
         {
             // Initialize logger
-            Utils.SetTraceLog("./logs/SampleCompany.ReferencePublisher.log.txt", true);
+            Utils.SetTraceLog("./logs/SampleCompany.SamplePublisher.log", true);
             Utils.SetTraceMask(Utils.TraceMasks.All);
             Utils.SetTraceOutput(Utils.TraceOutput.DebugAndFile);
         }
