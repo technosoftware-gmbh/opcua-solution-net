@@ -36,7 +36,7 @@ namespace SampleCompany.SampleSubscriber
 
         public static void Main(string[] args)
         {
-            Console.WriteLine("OPC UA Console Reference Subscriber");
+            Console.WriteLine("OPC UA Sample Subscriber");
 
             // command line options
             bool showHelp = false;
@@ -74,7 +74,7 @@ namespace SampleCompany.SampleSubscriber
 
             if (showHelp)
             {
-                Console.WriteLine("Usage: dotnet ConsoleReferenceSubscriber.dll [OPTIONS]");
+                Console.WriteLine("Usage: dotnet SampleCompany.SampleSubscriber.dll/.exe [OPTIONS]");
                 Console.WriteLine();
 
                 Console.WriteLine("Options:");
@@ -924,7 +924,7 @@ namespace SampleCompany.SampleSubscriber
         private static void InitializeLog()
         {
             // Initialize logger
-            Utils.SetTraceLog("./logs/SampleCompany.ReferenceSubscriber.log.txt", true);
+            Utils.SetTraceLog("./logs/SampleCompany.SampleSubscriber.log", true);
             Utils.SetTraceMask(Utils.TraceMasks.All);
             Utils.SetTraceOutput(Utils.TraceOutput.DebugAndFile);
         }
