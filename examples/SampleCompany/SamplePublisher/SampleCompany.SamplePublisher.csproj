@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Technosoftware.UaSolution.UaCore" Version="3.0.4" />
+    <PackageReference Include="Technosoftware.UaSolution.UaCore" Version="3.0.5" />
     <PackageReference Include="Technosoftware.UaSolution.UaPubSub" Version="0.2.0" />
   </ItemGroup>
 
