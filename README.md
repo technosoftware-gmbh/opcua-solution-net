@@ -28,11 +28,11 @@ Documentation of the Mode Compiler can be found [here](https://github.com/OPCFou
 ## Supported Frameworks
 
  * .NET 7.0, .NET 6.0
- * .NET 4.8, .NET 4.7.2, .NET 4.6.2
+ * .NET 4.8
 
 ## Online Help
 
-We provide an online help for the current version: [OPC UA Solution NET Online Help](https://technosoftware.com/help/OPCUaSolutionNet/30/)
+We provide an online help for the current version: [OPC UA Solution NET Online Help](https://technosoftware.com/help/OPCUaSolutionNet/31/)
 
 ## Getting started
 
