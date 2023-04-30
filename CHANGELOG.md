@@ -1,14 +1,30 @@
 -------------------------------------------------------------------------------------------------------------
+## OPC UA Solution .NET - 3.1.0
+
+### Breaking Changes
+- Removed support of .NET 4.6.2 and .NET 4.7.2
+- SendCertificateChain default is now true
+
+### Fixed issues
+- Fixed issue in macOS, when cert chains are used the X509Certificate2 constructor throws exception
+- Do not dispose the stream if the BinaryEncoder leaveopen flag is set in the constructor + ported tests from JSON
+- Improve hashcode calculation for some built in types
+- Fixes to support structures with allowsubtypes
+- Close socket if a client stops processing responses.
+
+-------------------------------------------------------------------------------------------------------------
+## OPC UA Solution .NET - 3.0.6
+
+### Changes
+
+-------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 3.0.5
 
 ### Changes
-- Updated to 3.0.5 of the UaCore.
+- Updated to 3.0.5 of the UaCore
 
 -------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 3.0.4
-
-### Changes
-- Updated to 3.0.4 of the UaCore.
 
 ### Fixed Issues
 - Server: Eliminate duplicate event monitored items.
@@ -17,7 +33,7 @@
 ## OPC UA Solution .NET - 3.0.3
 
 ### Changes
-- Updated to 3.0.3 of the UaCore.
+- Updated to 3.0.3 of the UaCore
 
 -------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 3.0.2
