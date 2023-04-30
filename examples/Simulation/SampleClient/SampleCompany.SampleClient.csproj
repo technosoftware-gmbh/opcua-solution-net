@@ -25,7 +25,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="3.1.0" />
-    <PackageReference Include="Technosoftware.UaSolution.UaClient" Version="3.0.5" />
+    <PackageReference Include="Technosoftware.UaSolution.UaClient" Version="3.1.0" />
   </ItemGroup>
 
   <ItemGroup>
