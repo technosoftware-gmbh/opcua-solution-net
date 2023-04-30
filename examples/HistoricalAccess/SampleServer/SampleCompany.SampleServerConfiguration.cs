@@ -28,13 +28,7 @@
 #endregion Copyright (c) 2011-2022 Technosoftware GmbH. All rights reserved
 
 #region Using Directives
-using System;
-using System.ServiceModel;
 using System.Runtime.Serialization;
-using System.Collections.Generic;
-
-using Opc.Ua;
-using Technosoftware.UaServer;
 #endregion
 
 namespace SampleCompany.SampleServer
