@@ -1,16 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>$(AppTargetFrameworks)</TargetFrameworks>
     <LangVersion>7.3</LangVersion>
-    <AssemblyName>SampleCompany.SamplePublisher</AssemblyName>
+    <AssemblyName>SampleCompany.SampleSubscriber</AssemblyName>
     <OutputType>Exe</OutputType>
-    <PackageId>SampleCompany.SamplePublisher</PackageId>
+    <PackageId>SampleCompany.SampleSubscriber</PackageId>
     <Company>SampleCompany</Company>
-    <Product>SampleCompany SamplePublisher</Product>
-    <Description>SampleCompany SamplePublisher</Description>
+    <Product>SampleCompany SampleSubscriber</Product>
+    <Description>SampleCompany SampleSubscriber</Description>
     <Copyright>Copyright © 2022 - 2023 SampleCompany</Copyright>
-    <RootNamespace>SampleCompany.SamplePublisher</RootNamespace>
+    <RootNamespace>SampleCompany.SampleSubscriber</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,7 +19,10 @@
 
   <ItemGroup>
     <PackageReference Include="Technosoftware.UaSolution.UaCore" Version="3.1.1" />
-    <PackageReference Include="Technosoftware.UaSolution.UaPubSub" Version="0.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Technosoftware\UaPubSub\Technosoftware.UaPubSub.csproj" />
   </ItemGroup>
 
 </Project>
