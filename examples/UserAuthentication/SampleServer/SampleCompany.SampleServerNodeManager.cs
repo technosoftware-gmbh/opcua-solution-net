@@ -53,7 +53,6 @@ namespace SampleCompany.SampleServer
         private bool disposed_;
         private readonly object lockDisposable_ = new object();
 
-        private Opc.Ua.Test.DataGenerator generator_;
         private Timer simulationTimer_;
         private ushort simulationInterval_ = 1000;
         private bool simulationEnabled_ = true;
@@ -452,24 +451,6 @@ namespace SampleCompany.SampleServer
             var variable = CreateBaseDataVariableState(parent, path, name, description, dataType, valueRank, accessLevel, initialValue);
             dynamicNodes_.Add(variable);
             return variable;
-        }
-
-        private object GetNewValue(BaseVariableState variable)
-        {
-            if (generator_ == null)
-            {
-                generator_ = new Opc.Ua.Test.DataGenerator(null) { BoundaryValueFrequency = 0 };
-            }
-
-            object value = null;
-            var retryCount = 0;
-
-            while (value == null && retryCount < 10)
-            {
-                value = generator_.GetRandom(variable.DataType, variable.ValueRank, new uint[] { 10 }, opcServer_.NodeManager.ServerData.TypeTree);
-                retryCount++;
-            }
-            return value;
         }
 
         private void DoSimulation(object state)
