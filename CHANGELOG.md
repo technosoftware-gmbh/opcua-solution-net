@@ -1,5 +1,11 @@
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solution .NET Core - 3.1.1
+## OPC UA Solution .NET - 3.1.3
+
+# Changes
+- Removed unused System.Security.Cryptography.Pkcs
+
+-------------------------------------------------------------------------------------------------------------
+## OPC UA Solution .NET - 3.1.1
 
 # Changes
 - Includes all changes and fixes from the [OPC UA 1.04 Maintenance Update 1.4.371.91](https://github.com/OPCFoundation/UA-.NETStandard/releases/tag/1.4.371.91).
