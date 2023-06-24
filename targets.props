@@ -14,7 +14,7 @@
         <AppTargetFrameworks>net48;net6.0;net7.0</AppTargetFrameworks>
         <AppTargetFramework>net6.0</AppTargetFramework>
         <TestsTargetFrameworks>net48;net6.0;net7.0</TestsTargetFrameworks>
-        <LibTargetFrameworks>net48;netstandard2.1;net6.0;net7.0</LibTargetFrameworks>
+        <LibTargetFrameworks>net48;net6.0;net7.0</LibTargetFrameworks>
         <HttpsTargetFrameworks>net48;net6.0;net7.0</HttpsTargetFrameworks>
       </PropertyGroup>
     </When>
@@ -24,7 +24,7 @@
         <AppTargetFrameworks>net48</AppTargetFrameworks>
         <AppTargetFramework>net48</AppTargetFramework>
         <TestsTargetFrameworks>net48</TestsTargetFrameworks>
-        <LibTargetFrameworks>net48;netstandard2.1</LibTargetFrameworks>
+        <LibTargetFrameworks>net48</LibTargetFrameworks>
         <HttpsTargetFrameworks>net48</HttpsTargetFrameworks>
       </PropertyGroup>
     </When>
