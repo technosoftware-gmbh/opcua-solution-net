@@ -1,4 +1,11 @@
 -------------------------------------------------------------------------------------------------------------
+## OPC UA Solution .NET - 3.1.5
+
+# Changes
+- Support use of opc.https endpoint url for client and server.
+- Support custom cert store with flat directory structure
+
+-------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 3.1.3
 
 # Changes
