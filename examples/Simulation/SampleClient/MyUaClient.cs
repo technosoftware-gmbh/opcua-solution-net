@@ -353,7 +353,7 @@ namespace SampleCompany.SampleClient
         {
             var variableIds = new List<NodeId>();
 
-            Console.WriteLine("Read multiple values asynchronous."); 
+            Console.WriteLine("Read multiple values asynchronous.");
             foreach (var nodeNames in nodeIds)
             {
                 NodeId nodeId = new NodeId(nodeNames);
@@ -396,7 +396,7 @@ namespace SampleCompany.SampleClient
                 ReferenceTypeId = ReferenceTypeIds.HierarchicalReferences,
                 IncludeSubtypes = true,
                 NodeClassMask = 0,
-                ContinueUntilDone = false
+                ContinueUntilDone = false,
             };
 
             // Browse from the RootFolder
@@ -607,7 +607,43 @@ namespace SampleCompany.SampleClient
                     default:
                         if (verbose)
                         {
-                            Console.WriteLine(spaces + "- " + reference.DisplayName);
+                            #region Read a node by calling the Read Service
+
+                            // build a list of nodes to be read
+                            ReadValueIdCollection nodesToRead = new ReadValueIdCollection()
+                            {
+                                // DataType of Node
+                                new ReadValueId() { NodeId = (NodeId)reference.NodeId, AttributeId = Attributes.DataType },
+                            };
+
+                            // Call Read Service
+                            session.Read(
+                                null,
+                                0,
+                                TimestampsToReturn.Both,
+                                nodesToRead,
+                                out DataValueCollection resultsValues,
+                                out DiagnosticInfoCollection diagnosticInfos);
+
+                            // Validate the results
+                            ClientBase.ValidateResponse(resultsValues, nodesToRead);
+
+                            if (resultsValues.Count > 0)
+                            {
+                                // Display the results.
+                                Console.Write(spaces + "- " + reference.DisplayName);
+                                foreach (DataValue result in resultsValues)
+                                {
+                                    Console.Write(" ({0})", result.Value);
+                                }
+                                Console.WriteLine();
+                            }
+                            else
+                            {
+                                Console.WriteLine(spaces + "- " + reference.DisplayName);
+                            }
+                            #endregion
+
                         }
                         break;
                 }
