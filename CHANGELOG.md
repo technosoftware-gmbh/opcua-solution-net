@@ -1,4 +1,16 @@
 -------------------------------------------------------------------------------------------------------------
+## OPC UA Solution .NET - 3.1.9
+
+### Fixed issues
+- Fix for 'BadTooManyOperations' in session.publish / 'BadServerHalted' when server is stopped.
+- Fixed status code when server is shutdown
+- Add latest statuscodes from 1.05.03 to support new BadServerTooBusy error code
+- Added default throttle delay in case an unknown error is returned on a publish request service call
+- Removed extra unnecessary code and fixed use of userWriteMask
+- Removed extra unnecessary code in  CompareArray<T>
+- Fixed userWriteMask
+
+-------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 3.1.8
 
 # Changes
