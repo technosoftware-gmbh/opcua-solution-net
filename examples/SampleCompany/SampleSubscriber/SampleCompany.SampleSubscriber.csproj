@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <PackageReference Include="Technosoftware.UaSolution.UaCore" Version="3.2.2" />
-    <PackageReference Include="Technosoftware.UaSolution.UaPubSub" Version="1.0.1" />
+    <PackageReference Include="Technosoftware.UaSolution.UaPubSub" Version="3.2.2" />
   </ItemGroup>
 
 </Project>
