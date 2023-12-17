@@ -9,7 +9,7 @@ The OPC UA Solution .NET is the implementation for the
 
 The OPC UA Client .NET offers a fast and easy access to the OPC UA Client technology. Develop OPC UA 1.00, 1.01, 1.02, 1.03, 1.04 and 1.05 compliant UA Clients with C# targeting the .NET 7.0 or .NET 6.0.
 
-.NET 7.0 and .NET 6.0 allows you develop applications that run on all common platforms available today, including Linux, macOS and Windows 8.1/10 (including embedded/IoT editions) without requiring platform-specific modifications.
+.NET 8.0, .NET 7.0 and .NET 6.0 allows allows you develop applications that run on all common platforms available today, including Linux, macOS and Windows 8.1/10 (including embedded/IoT editions) without requiring platform-specific modifications.
 
 The OPC UA Client SDK .NET API defines classes which can be used to implement an OPC client capable to access OPC servers supporting different profiles with the same API. These classes manage client side state information; provide higher level abstractions for OPC tasks such as managing sessions and subscriptions or saving and restoring connection information for later use.
 
@@ -17,17 +17,17 @@ The OPC UA Client SDK .NET API defines classes which can be used to implement an
 
 The OPC UA Server .NET offers a fast and easy access to the OPC Unified Architecture (UA) technology. Develop OPC UA 1.00, 1.01, 1.02, 1.03, 1.04 and 1.05 compliant Servers with C# targeting targeting the .NET 7.0 or .NET 6.0.
 
-.NET 7.0 and .NET 6.0 allows you develop applications that run on all common platforms available today, including Linux, macOS and Windows 8.1/10 (including embedded/IoT editions) without requiring platform-specific modifications.
+.NET 8.0, .NET 7.0 and .NET 6.0 allows you develop applications that run on all common platforms available today, including Linux, macOS and Windows 8.1/10 (including embedded/IoT editions) without requiring platform-specific modifications.
 
 The developer can concentrate on his application and servers can be developed fast and easily without the need to spend a lot of time learning how to implement the OPC Unified Architecture specification. The server API is easy to use and many OPC specific functions are handled by the framework.
 
 The included OPC Foundation Model Compiler can be used to create the necessary C# classes of Information Model’s specified in XML and CSV based files. At the moment the XML files must be edited by a text editor. 
 
-Documentation of the Mode Compiler can be found [here](https://github.com/OPCFoundation/UA-ModelCompiler).
+Documentation of the Model Compiler can be found [here](https://github.com/OPCFoundation/UA-ModelCompiler).
 
 ## Supported Frameworks
 
- * .NET 7.0, .NET 6.0
+ * .NET 8.0, .NET 7.0, .NET 6.0
  * .NET 4.8
 
 ## Online Help
