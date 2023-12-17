@@ -17,22 +17,26 @@ env:
 
 jobs:
   build-net8:
-    name: build-net8-${{matrix.os}}
+    name: test-${{matrix.os}}-${{matrix.customtesttarget}}-${{matrix.csproj}}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false    
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]    
+        csproj: [TutorialSamples]
         include:
           - framework: 'net8.0'
             dotnet-version: '8.0.x'
             configuration: 'Release'
+            customtesttarget: net8.0
             
     env:
       OS: ${{ matrix.os }}
       DOTNET_VERSION: ${{ matrix.dotnet-version }}
       CONFIGURATION:  ${{ matrix.configuration }}
-      
+      CSPROJ: ${{ matrix.csproj }}
+      CSPROJECT: "./${{ matrix.csproj }}.sln"
+
     steps:
     - uses: actions/checkout@v4
       with:
@@ -42,9 +46,13 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ matrix.dotnet-version }}
-        
+
+    - name: Set Cloud Version
+      shell: pwsh
+      run: ./.azurepipelines/set-version.ps1
+
     - name: Build
-      run: dotnet build  "TutorialSamples.sln" --force --framework ${{ matrix.framework }} --configuration ${{ matrix.configuration }}
+      run: dotnet build ${{ env.CSPROJECT }} --force --framework ${{ matrix.framework }} --configuration ${{ matrix.configuration }} /p:CustomTestTarget=${{ matrix.customtesttarget }}
 
   build-net7:
     name: build-net7-${{matrix.os}}
@@ -52,7 +60,7 @@ jobs:
     strategy:
       fail-fast: false    
       matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]    
+        os: [ubuntu-latest, windows-latest]    
         include:
           - framework: 'net7.0'
             dotnet-version: '7.0.x'
@@ -82,7 +90,7 @@ jobs:
     strategy:
       fail-fast: false    
       matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]    
+        os: [ubuntu-latest, windows-latest]    
         include:
           - framework: 'net6.0'
             dotnet-version: '6.0.x'
