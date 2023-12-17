@@ -1,4 +1,4 @@
-name: Build .NET 6.0 and .NET 7.0
+name: Build .NET 8.0, .NET 7.0 and .NET 6.0
 
 on:
   push:
@@ -8,20 +8,62 @@ on:
     - '**.cs'
     - '**.csproj'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 env:
   ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
 
 jobs:
-  build-net6:
-    name: build-net6-${{matrix.os}}
+  build-net8:
+    name: test-${{matrix.os}}-${{matrix.customtesttarget}}-${{matrix.csproj}}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false    
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]    
+        csproj: [TutorialSamples]
         include:
-          - framework: 'net6.0'
-            dotnet-version: '6.0.x'
+          - framework: 'net8.0'
+            dotnet-version: '8.0.x'
+            configuration: 'Release'
+            customtesttarget: net8.0
+            
+    env:
+      OS: ${{ matrix.os }}
+      DOTNET_VERSION: ${{ matrix.dotnet-version }}
+      CONFIGURATION:  ${{ matrix.configuration }}
+      CSPROJ: ${{ matrix.csproj }}
+      CSPROJECT: "./${{ matrix.csproj }}.sln"
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Setup .NET ${{ matrix.dotnet-version }}
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ matrix.dotnet-version }}
+
+    - name: Set Cloud Version
+      shell: pwsh
+      run: ./.azurepipelines/set-version.ps1
+
+    - name: Build
+      run: dotnet build ${{ env.CSPROJECT }} --force --framework ${{ matrix.framework }} --configuration ${{ matrix.configuration }} /p:CustomTestTarget=${{ matrix.customtesttarget }}
+
+  build-net7:
+    name: build-net7-${{matrix.os}}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false    
+      matrix:
+        os: [ubuntu-latest, windows-latest]    
+        include:
+          - framework: 'net7.0'
+            dotnet-version: '7.0.x'
             configuration: 'Release'
             
     env:
@@ -41,17 +83,17 @@ jobs:
         
     - name: Build
       run: dotnet build  "TutorialSamples.sln" --force --framework ${{ matrix.framework }} --configuration ${{ matrix.configuration }}
-     
-  build-net7:
-    name: build-net7-${{matrix.os}}
+
+  build-net6:
+    name: build-net6-${{matrix.os}}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false    
       matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]    
+        os: [ubuntu-latest, windows-latest]    
         include:
-          - framework: 'net7.0'
-            dotnet-version: '7.0.x'
+          - framework: 'net6.0'
+            dotnet-version: '6.0.x'
             configuration: 'Release'
             
     env:
