@@ -5,17 +5,16 @@
 
 version: 2
 updates:
-
-# Set update schedule for GitHub Actions
-- package-ecosystem: "github-actions"
+  - package-ecosystem: "nuget"
+    labels:
+      - "nuget"
   directory: "/"
   schedule:
-    # Check for updates to GitHub Actions every weekday
-    interval: "daily"
+      interval: "weekly"
 
-- package-ecosystem: nuget
-  directory: "/"
+  - package-ecosystem: github-actions
+    labels:
+      - "actions"
+    directory: "./"
   schedule:
-    interval: daily
-    time: "04:00"
-  open-pull-requests-limit: 10
+      interval: "weekly"

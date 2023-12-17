@@ -1,8 +1,24 @@
 -------------------------------------------------------------------------------------------------------------
+## OPC UA Solution .NET - 3.2.3
+
+### Changes
+- NuGet packages are now only distributed locally in the repositories
+- Added support of .NET 8.0
+
+### Fixed issues
+- Fix for references that may cause a memory leak
+- GDS: add ArgumentException to Method CreateCACertificateAsync
+- Array xmlns encoding/decoding always uses UA namespace
+- Implement the close async codepath
+- Implement the reconnect and republish with async service calls
+- Make CertStoreIdentifier.GetCertificateStoreTypeByName and RegisteredStoreTypeNames public
+
+-------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 3.2.2
 
-# Changes
+### Changes
 - Includes all changes and fixes from the [OPC UA 1.04 Maintenance Update 1.4.372.76](https://github.com/OPCFoundation/UA-.NETStandard/releases/tag/1.4.372.76).
+- Integrated PubSub
 
 -------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 3.1.9
@@ -19,28 +35,27 @@
 -------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 3.1.8
 
-# Changes
+### Changes
 - Updated to OPC UA Solution .NET 3.1.8
 
 -------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 3.1.5
 
-# Changes
+### Changes
 - Support use of opc.https endpoint url for client and server.
 - Support custom cert store with flat directory structure
 
 -------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 3.1.3
 
-# Changes
+### Changes
 - Removed unused System.Security.Cryptography.Pkcs
 
 -------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 3.1.1
 
-# Changes
+### Changes
 - Includes all changes and fixes from the [OPC UA 1.04 Maintenance Update 1.4.371.91](https://github.com/OPCFoundation/UA-.NETStandard/releases/tag/1.4.371.91).
-- Added PubSub samples
 
 -------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 3.1.0
@@ -110,7 +125,7 @@
 -------------------------------------------------------------------------------------------------------------
 ## OPC UA Solution .NET - 2.6.2
 
-# Changes
+### Changes
 Includes all changes and fixes from the [OPC UA 1.04 Maintenance Update 1.4.371.41](https://github.com/OPCFoundation/UA-.NETStandard/releases/tag/1.4.371.41).
 
 -------------------------------------------------------------------------------------------------------------
