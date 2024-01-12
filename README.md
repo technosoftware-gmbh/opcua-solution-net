@@ -59,7 +59,7 @@ You can also use the PDFs provided from our Workshop available [here](./Workshop
 
 ### Get Support:
 
- * Priority Support via [GitHub](https://github.com/technosoftware-gmbh/opcua-solution-net-samples/issues), eMail, Phone or Remote session is available after purchasing a [Support Subscrption](https://technosoftware.com/opc-ua-support/).
+ * Priority Support via [GitHub](https://github.com/technosoftware-gmbh/opcua-solution-net-samples/issues), eMail, Phone or Remote session is available after purchasing an [OPC UA Support Subscription](https://technosoftware.com/opc-ua-support/).
  * Free of charge support for the Solution is available [here](https://github.com/technosoftware-gmbh/opcua-solution-net-samples/issues). 
 
 ### Contribution
