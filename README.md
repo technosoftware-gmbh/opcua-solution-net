@@ -36,7 +36,7 @@ We provide an online help for the current version: [OPC UA Solution NET Online H
 
 ## Getting started
 
-You can use the following documents as a starting point:
+You can use the following documents as a starting point (be aware that they are a bit outdated and will be updated in the near future):
 
 1. [OPC UA Solution NET Installation Guide](./documentation/OPC_UA_Solution_NET_Installation_Guide.pdf)
 2. [OPC UA Solution NET Introduction](./documentation/OPC_UA_Solution_NET_Introduction.pdf)
@@ -48,10 +48,6 @@ You can use the following documents as a starting point:
 [![Build status](https://ci.appveyor.com/api/projects/status/mvxf32hkg7r6404p?svg=true)](https://ci.appveyor.com/project/technosoftware/opcua-solution-net-samples)
 [![Build .NET 6.0 and .NET 7.0](https://github.com/technosoftware-gmbh/opcua-solution-net-samples/actions/workflows/build.yml/badge.svg)](https://github.com/technosoftware-gmbh/opcua-solution-net-samples/actions/workflows/build.yml)
 
-### Source Code
-
-The source code of the UaConfiguration, UaClient, UaServer, UaBaseServer and UaStandardServer libraries are now available [here](https://github.com/technosoftware-gmbh/opcua-solution-net/). 
-
 ## Workshop
 
 You can also use the PDFs provided from our Workshop available [here](./Workshop).
@@ -61,48 +57,10 @@ You can also use the PDFs provided from our Workshop available [here](./Workshop
 - The Redistributable of the OPC UA Local Discovery Server are available [here](https://opcfoundation.org/developer-tools/samples-and-tools-unified-architecture/local-discovery-server-lds/).
 - We used the version 1.04.405 for our tests
 
-## Evaluation Usage
+### Get Support:
 
-Evaluation versions are NOT intended to be used for product development! They may differ in features from the product versions and might need some time to get integrated. They are intended for evaluation purposes only.
-
-Product development should always be done on product versions of the Solution! 
-
-Without a Product License (see below) the contents of this repository is used as an evaluation version.
-
-Evaluation Editions comes with the following restrictions:
-
- * Evaluation time limited to 30 days and limited to 90 minutes run-time per application start.
-
-## Available Solution
-
-### Binary Edition
-
-If you purchased a Binary Edition of one of the following products
-
- * [OPC UA Client .NET](https://technosoftware.com/product/opc-ua-client-net/)
- * [OPC UA Server .NET](https://technosoftware.com/product/opc-ua-server-net/)
-
-you can use the delivered license to turn the contents of this repository into a product version.
-
-### Bundle Edition
-
-The OPC UA Bundle .NET includes the OPC UA Client .NET and OPC UA Server .NET and is available at
-
- * [OPC UA Bundle .NET](https://technosoftware.com/product/opc-ua-bundle-net/)
-
-The delivered license can be used to turn the contents of this repository into a product version.
-
-### Source Edition
-
-The OPC UA Solution .NET Source includes the source code of this repository as well as the source of UaCore and is available at
-
- * [OPC UA Solution .NET Source](https://technosoftware.com/product/opc-ua-solution-net/)
- 
-The delivered license can be used to turn the contents of this repository into a product version.
-
-### Get Support for the Solution:
-
-Support for the Solution is available [here](https://github.com/technosoftware-gmbh/opcua-solution-net-samples/issues).
+ * Priority Support via [GitHub](https://github.com/technosoftware-gmbh/opcua-solution-net-samples/issues), eMail, Phone or Remote session is available after purchasing an [OPC UA Support Subscription](https://technosoftware.com/opc-ua-support/).
+ * Free of charge support for the Solution is available [here](https://github.com/technosoftware-gmbh/opcua-solution-net-samples/issues). 
 
 ### Contribution
 
