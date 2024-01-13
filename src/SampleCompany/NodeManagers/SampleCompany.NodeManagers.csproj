@@ -1,0 +1,53 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <DefineConstants>$(DefineConstants)</DefineConstants>
+    <AssemblyName>SampleCompany.NodeManagers</AssemblyName>
+    <TargetFrameworks>$(LibTargetFrameworks)</TargetFrameworks>
+    <PackageId>SampleCompany.NodeManagers</PackageId>
+    <RootNamespace>SampleCompany.NodeManagers</RootNamespace>
+    <Company>SampleCompany</Company>
+    <Product>OPC UA Solution .NET</Product>
+    <Description>OPC UA Solution .NET NodeManagers Library</Description>
+    <Copyright>Copyright © 2022 - 2023 SampleCompany</Copyright>
+    <LangVersion>7.3</LangVersion>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <NoWarn>CS1591;CS1573;RCS1139</NoWarn>
+    <IsPackable>false</IsPackable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <PackageId>$(PackageId).Debug</PackageId>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(SignAssembly)' == 'true'">
+    <DefineConstants>$(DefineConstants);SIGNASSEMBLY</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Technosoftware.UaSolution.UaCore" Version="3.2.3" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Technosoftware\UaConfiguration\Technosoftware.UaConfiguration.csproj" />
+    <ProjectReference Include="..\..\..\src\Technosoftware\UaServer\Technosoftware.UaServer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="SampleDataTypes\SampleCompany.NodeManagers.SampleDataTypes.PredefinedNodes.uanodes;TestData\SampleCompany.NodeManagers.TestData.PredefinedNodes.uanodes;MemoryBuffer\SampleCompany.NodeManagers.MemoryBuffer.PredefinedNodes.uanodes;" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Properties\**" />
+    <EmbeddedResource Remove="Properties\**" />
+    <None Remove="Properties\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Technosoftware\UaStandardServer\Technosoftware.UaStandardServer.csproj" />
+  </ItemGroup>
+
+  <Target Name="GetPackagingOutputs" />
+
+</Project>

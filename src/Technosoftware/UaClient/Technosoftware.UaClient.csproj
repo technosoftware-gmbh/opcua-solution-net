@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <DefineConstants>$(DefineConstants)</DefineConstants>
+    <AssemblyName>Technosoftware.UaClient</AssemblyName>
+    <TargetFrameworks>$(LibTargetFrameworks)</TargetFrameworks>
+    <LangVersion>7.3</LangVersion>
+    <PackageId>Technosoftware.UaSolution.UaClient</PackageId>
+    <RootNamespace>Technosoftware.UaClient</RootNamespace>
+    <Description>OPC UA Solution .NET Client Library</Description>
+    <IsPackable>true</IsPackable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(SignAssembly)' == 'true'">
+    <DefineConstants>$(DefineConstants);SIGNASSEMBLY</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <PackageId>$(PackageId).Debug</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' != 'net6.0' AND '$(TargetFramework)' != 'net7.0' AND '$(TargetFramework)' != 'net8.0'">
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="6.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Technosoftware.UaSolution.UaCore" Version="3.2.3" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\UaConfiguration\Technosoftware.UaConfiguration.csproj" />
+  </ItemGroup>
+
+  <Target Name="GetPackagingOutputs" />
+
+</Project>

@@ -33,6 +33,12 @@ clone_folder: c:\projects\opcua-solution-net
 
 environment:
   matrix:
+  - solution_name: "OpcUaSolutionNet.sln"
+    test_name: "void"
+    param: ""
+  - solution_name: "OpcUaSolutionReference.sln"
+    test_name: "void"
+    param: ""
   - solution_name: "TutorialSamples.sln"
     test_name: "void"
     param: ""

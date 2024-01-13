@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>Technosoftware.UaConfiguration</AssemblyName>
+    <TargetFrameworks>$(LibTargetFrameworks)</TargetFrameworks>
+    <LangVersion>7.3</LangVersion>
+    <PackageId>Technosoftware.UaSolution.UaConfiguration</PackageId>
+    <RootNamespace>Technosoftware.UaConfiguration</RootNamespace>
+    <Description>OPC UA Solution .NET Configuration Library</Description>
+    <IsPackable>true</IsPackable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <PackageId>$(PackageId).Debug</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Properties\**" />
+    <EmbeddedResource Remove="Properties\**" />
+    <None Remove="Properties\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="NuGet.Config" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Technosoftware.UaSolution.UaCore" Version="3.2.3" />
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(SignAssembly)' == 'true'">
+    <DefineConstants>$(DefineConstants);SIGNASSEMBLY</DefineConstants>
+  </PropertyGroup>
+
+  <Target Name="GetPackagingOutputs" />
+
+</Project>

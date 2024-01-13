@@ -24,6 +24,7 @@ _Put an `x` in the boxes that apply. You can also fill these out after creating 
 - [ ] I have read the [CONTRIBUTING](https://github.com/technosoftware-gmbh/opcua-solution-net/blob/master/CONTRIBUTING.md) documentation.
 - [ ] I have signed the [CLA](https://cla-assistant.io/technosoftware-gmbh/opcua-solution-net).
 - [ ] I ran tests locally with my changes, all passed.
+- [ ] I have added tests that prove my fix is effective or that my feature works and increased code coverage.
 - [ ] I have added necessary documentation (if appropriate).
 - [ ] Any dependent changes have been merged and published in downstream modules.
 

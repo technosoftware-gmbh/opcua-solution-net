@@ -45,8 +45,13 @@ You can use the following documents as a starting point (be aware that they are 
 
 ### Build Status
 
-[![Build status](https://ci.appveyor.com/api/projects/status/mvxf32hkg7r6404p?svg=true)](https://ci.appveyor.com/project/technosoftware/opcua-solution-net-samples)
-[![Build .NET 6.0 and .NET 7.0](https://github.com/technosoftware-gmbh/opcua-solution-net-samples/actions/workflows/build.yml/badge.svg)](https://github.com/technosoftware-gmbh/opcua-solution-net-samples/actions/workflows/build.yml)
+[![Build status](https://ci.appveyor.com/api/projects/status/mvxf32hkg7r6404p?svg=true)](https://ci.appveyor.com/project/technosoftware/opcua-solution-net)
+[![Build and Test .NET 8.0, .NET 7.0 and .NET 6.0](https://github.com/technosoftware-gmbh/opcua-solution-net/actions/workflows/buildandtest.yml/badge.svg)](https://github.com/technosoftware-gmbh/opcua-solution-net/actions/workflows/buildandtest.yml)
+[![Build Tutorial Sampless .NET 8.0, .NET 7.0 and .NET 6.0](https://github.com/technosoftware-gmbh/opcua-solution-net/actions/workflows/build.yml/badge.svg)](https://github.com/technosoftware-gmbh/opcua-solution-net/actions/workflows/build.yml)
+
+### Code Quality
+
+[![codecov](https://codecov.io/gh/technosoftware-gmbh/opcua-solution-net/branch/main/graph/badge.svg?token=ZC0HDXNsVU)](https://codecov.io/gh/technosoftware-gmbh/opcua-solution-net)
 
 ## Workshop
 
@@ -57,13 +62,24 @@ You can also use the PDFs provided from our Workshop available [here](./Workshop
 - The Redistributable of the OPC UA Local Discovery Server are available [here](https://opcfoundation.org/developer-tools/samples-and-tools-unified-architecture/local-discovery-server-lds/).
 - We used the version 1.04.405 for our tests
 
-### Get Support:
+## Available Support Subscriptions
 
- * Priority Support via [GitHub](https://github.com/technosoftware-gmbh/opcua-solution-net-samples/issues), eMail, Phone or Remote session is available after purchasing an [OPC UA Support Subscription](https://technosoftware.com/opc-ua-support/).
- * Free of charge support for the Solution is available [here](https://github.com/technosoftware-gmbh/opcua-solution-net-samples/issues). 
+Ideal for a corporation and a user of Technosoftware GmbH’s solutions on productive systems for which you want to get support for. 
+A Support subscriptions includes
+
+- Technical support for OPC UA related products.
+- Can be used for specification related questions or product related support.
+
+By purchasing support, you agree to our [Support Services Agreement](https://technosoftware.com/documents/Support_Services_Agreement.pdf).
+
+The Support Subscription is avalable [here](https://technosoftware.com/opc-ua-support/)
+
+### Get Support for the Solution without a Support Subscription:
+
+Free of charge support for the Solution is available [here](https://github.com/technosoftware-gmbh/opcua-solution-net/issues).
 
 ### Contribution
 
 We strongly encourage community participation and contribution to this project. First, please fork the repository and commit your changes there. Once happy with your changes you can generate a 'pull request'.
 
-You must agree to the contributor license agreement before we can accept your changes. The CLA and "I AGREE" button is automatically displayed when you perform the pull request. You can preview CLA [here](https://cla-assistant.io/technosoftware-gmbh/opcua-solution-net-samples).
+You must agree to the contributor license agreement before we can accept your changes. The CLA and "I AGREE" button is automatically displayed when you perform the pull request. You can preview CLA [here](https://cla-assistant.io/technosoftware-gmbh/opcua-solution-net).

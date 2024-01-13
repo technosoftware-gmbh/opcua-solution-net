@@ -1,0 +1,5 @@
+MemoryTagType,1,VariableType
+MemoryBufferType,2,ObjectType
+MemoryBufferType_StartAddress,3,Variable
+MemoryBufferType_SizeInBytes,4,Variable
+MemoryBuffers,5,Object

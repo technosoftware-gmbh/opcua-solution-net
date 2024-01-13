@@ -1,0 +1,242 @@
+/*
+ * Copyright (c) 2023 Technosoftware GmbH. All rights reserved
+ * Web: https://technosoftware.com 
+ * 
+ * The source code in this file is covered under a dual-license scenario:
+ *   - Owner of a purchased license: SCLA 1.0
+ *   - GPL V3: everybody else
+ *
+ * SCLA license terms accompanied with this source code.
+ * See https://technosoftware.com/license/Source_Code_License_Agreement.pdf
+ *
+ * GNU General Public License as published by the Free Software Foundation;
+ * version 3 of the License are accompanied with this source code.
+ * See https://technosoftware.com/license/GPLv3License.txt
+ *
+ * This source code is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
+/*! \page licenseagreement License Agreement
+
+\addindex licenseagreement
+\tableofcontents
+
+<h1>SOFTWARE LICENSE AGREEMENT</h1>
+
+<h2>Version History</h2>
+
+<ul>
+    <li>19-NOV-2018 Initial version</li>
+
+    <li>30-JUN-2019 <a href="https://technosoftware.com/support-service-agreement/">Support Service Agreement</a> is now part of the license agreement. Updated supported operating
+    systems and support handling</li>
+
+    <li>13-AUG-2019 Added Upgrade Protection</li>
+
+    <li>09-NOV-2019 Removed Professional Edition</li>
+
+    <li>24-NOV-2019 Fixed support links</li>
+
+    <li>07-DEC-2019 Renamed Ultimate Edition to Binaries</li>
+
+    <li>05-JAN-2020 Updated framework support</li>
+
+    <li>12-APR-2020 Updated Product Editions</li>
+
+    <li>03-OCT-2020 Simplified license model</li>
+
+    <li>22-MAR-2021 Fixed links and made some clarifications</li>
+	
+    <li>28-OCT-2023 Simplified license and made some clarifications regarding site license</li>
+</ul>
+
+<p>TECHNOSOFTWARE (THE "LICENSOR") IS WILLING TO LICENSE THE ACCOMPANYING SOFTWARE AND ASSOCIATED DOCUMENTATION INCLUDING AUTHORIZED COPIES OF EACH (THE
+"SOFTWARE") TO YOU ("LICENSEE") ONLY ON THE CONDITION THAT LICENSEE ACCEPTS ALL OF THE TERMS IN THIS AGREEMENT.</p>
+
+<p>The licensed Software is protected by copyright laws and international copyright treaties, as well as other intellectual property laws and treaties. The
+licensed Software is licensed, not sold. Technosoftware shall own all right, title and interest including the intellectual property rights in and to the
+information on bug fixes or error corrections relating to the licensed Software that are submitted by Licensee to Technosoftware as well as any intellectual
+property rights to the correction of any errors, if any.</p>
+
+<p>PLEASE READ THE TERMS CAREFULLY BEFORE INSTALLING THE SOFTWARE. BY INSTALLING THE SOFTWARE, LICENSEE ACKNOWLEDGES THAT LICENSEE HAS READ AND UNDERSTANDS
+THIS AGREEMENT AND AGREES TO BE BOUND BY ITS TERMS AND CONDITIONS. THE EFFECTIVE DATE OF THIS AGREEMENT SHALL BE THE DATE UPON THE SOFTWARE WAS FIRST DELIVERED
+TO YOU OR FIRST DOWNLOADED BY YOU.<br />
+IF LICENSEE DOES NOT ACCEPT THESE LICENSE TERMS, THEN TECHNOSOFTWARE DOES NOT GRANT ANY LICENSE TO THE SOFTWARE, AND LICENSEE MUST NOT DOWNLOAD OR INSTALL THE
+SOFTWARE.&nbsp;</p>
+
+<h3>License Model</h3>
+
+<p>Technosoftware licenses on a simple per-developer or per-company basis and charges <strong>no royalties, runtimes, or server deployment fees unless otherwise
+specified</strong> which maximizes cost savings at application distribution and installations.</p>
+
+<h4>Single Developer License</h4>
+
+<ul>
+    <li>Software may be used by one single developer who is registered by name as a developer.</li>
+	<li>Any application developed with the solutions can be delivered to an unlimited number of customers (no royalties).</li>
+    <li>Reporting of issues is included free of charge via GitHub <a href="https://github.com/technosoftware-gmbh/">here</a>.</li>
+	<li>Updates and fixes are delivered here free of charge, if/when they are made available.</li>
+    <li>Hotfixes for customer specific issues requires the purchase of an <a href="https://technosoftware.com/product/opc-support/">OPC Support Subsciption</a> first.</li>
+	<li>For technical support, direct Email contact or remote sessions you need to purchase an <a href="https://technosoftware.com/product/opc-support/">OPC Support Subsciption</a> first.</li>
+</ul>
+
+<h4>Company Site License</h4>
+
+<ul>
+    <li>Software may be used within Licensee’s organization at a single physical facility only.</li>
+    <li>Software may be used by multiple developers at the location specified.</li>
+    <li>Any application developed with the solutions can be delivered to an unlimited number of customers (<strong>no royalties)</strong></li>
+    <li>Reporting of issues is included free of charge via GitHub <a href="https://github.com/technosoftware-gmbh/">here</a>.</li>
+    <li>Updates and fixes are delivered <a href="https://github.com/technosoftware-gmbh">here</a> free of charge, if/when they are made available.</li>
+    <li>Hotfixes for customer specific issues requires the purchase of an <a href="https://technosoftware.com/product/opc-support/">OPC Support Subsciption</a> first.</li>
+    <li>For technical support, direct Email contact or remote sessions you need to purchase an <a href="https://technosoftware.com/product/opc-support/">OPC Support Subsciption</a> first.</li>
+</ul>
+
+<h4>Support</h4>
+
+<p>Support is not included in the license. For this you need to purchase a support subscription. See also the <a href="https://technosoftware.com/support-service-agreement/">Support Service Agreement</a> which applies to all licenses.</p>
+
+<h3>Grant of License</h3>
+
+<p>The following general conditions apply:</p>
+
+<ul>
+    <li>You may not make accessible the Software to third parties, and you must make sure that no one except your authorized employees has access to the
+    computer where the Software is installed.</li>
+
+    <li>The Software might be used by being compiled into, linked or bind to your application. All use of the Software shall be solely in accordance with the
+    documentation.</li>
+
+    <li><strong>You are not allowed to resell, rent, lease or sublicense an unmodified or modified version of this Software as standalone product, nor to build
+    toolkit or developer tools from it. This means that the company the developer is working for must own a separate license.</strong></li>
+
+    <li>Redistributable's, if any, shall be licensed to Licensee's customer "as is".</li>
+
+    <li>Licensee's software product(s) are not an OPC Server and/or Client development tool; licensee may not use the Software in such a way that results in
+    development of product(s) that are directly or indirectly (i.e. simplified version or platform/language adoption) competitive with the licensed Software
+    itself or other Technosoftware developer products family</li>
+
+    <li>Licensee's applications must add primary and substantial functionality to the licensed Software; applications may not pass on functionality which in a
+    simple way makes it possible for others to create software with the licensed Software (e.g. you may not distribute libraries and corresponding header files
+    of the Software together with your application)</li>
+
+    <li>Licensee shall indemnify and hold Technosoftware, its affiliates, contractors, and its suppliers, harmless from and against any claims or liabilities
+    arising out of the use, reproduction or distribution of applications</li>
+
+    <li>Licensee may not use Technosoftware's name, logo or trademark to market your application without explicit written agreement with Technosoftware</li>
+</ul>
+
+<h3>Limitation of Liability</h3>
+
+<p>The Software and components are not intended to replace the professional skills and judgment of Licensee and its employees, agents and consultants. Licensee
+alone shall be responsible for the accuracy and adequacy of information and data furnished for processing and any use made by Licensee of the output of the
+Software or any reliance thereon.</p>
+
+<p>TECHNOSOFTWARE SHALL NOT BE LIABLE FOR ANY DAMAGES WHATSOEVER ARISING OUT OF THE USE OF OR INABILITY TO USE THIS SOFTWARE, EVEN IF TECHNOSOFTWARE HAS BEEN
+ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL LICENSOR BE LIABLE FOR ANY INDIRECT,
+INCIDENTAL, SPECIAL OR CONSEQUENTIAL DAMAGES, INCLUDING WITHOUT LIMITATION DAMAGES FOR LOSS OF PROFITS, REVENUE, DATA OR USE, INCURRED BY LICENSEE OR ANY THIRD
+PARTY, WHETHER IN AN ACTION IN CONTRACT OR TORT, EVEN IF THE LICENSOR HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES AND LICENSOR'S LIABILITY FOR DAMAGES
+HEREUNDER SHALL NOT EXCEED THE AMOUNT OF FEES PAID BY LICENSEE FOR THE RELEVANT PROGRAM OR SERVICES GIVING RISE TO THE LIABILITY.</p>
+
+<h3>Use Definition</h3>
+
+<h4>Authorization of Usage</h4>
+
+<p>Licensee acknowledges that Technosoftware is the sole owner of all rights in the Software and in all the know-how pertaining to this Software. It shall forbear 
+to attack the rights of Technosoftware. It will adequately inform third parties of Technosoftware’s ownership of those rights. Licensee shall only be granted 
+a limited right of usage to the extent to which it is necessary for the purposes of this agreement. The provisions following here-under are characterizations 
+of this principle and shall be narrowly construed in cases of doubt. Technosoftware’s copyright of the Software shall not be exhausted by this agreement.</p>
+
+<h4>Scope of Usage</h4>
+
+<p>The Software is "in use" on a computer when it is loaded into temporary memory (i.e. RAM) or installed into permanent memory (e.g. hard disk, CD-ROM, or 
+other storage device) of that computer, except that a copy installed on a network server for the sole purpose of distribution to other computers is not "in use".</p>
+
+<h3>Restrictions</h3>
+
+<p>Software is confidential copyrighted information of Technosoftware and Technosoftware and/or its licensors 
+retain title to all copies. Licensee shall not decompile, disassemble, decrypt, extract, or otherwise reverse engineer Software. Software may not be leased, 
+assigned, or sublicensed, in whole or in part. Software is not designed or intended for use in on-line control of aircraft, air traffic, aircraft navigation 
+or aircraft communications; or in the design, construction, operation or maintenance of any nuclear facility. Licensee warrants that it will not use or redistribute 
+the Software for such purposes.</p>
+
+
+<h3>Trademarks and Logos</h3>
+<p>This Agreement does not authorize Licensee to use any Technosoftware name, trademark or logo.</p>
+
+<h3>Warranty Limitation</h3>
+<p>The parties agree that it is not possible to develop software thus that it meets all the requirements of the application without error. Technosoftware shall 
+make available a user documentation explaining the intended use and the using conditions of the Software, which shall always be kept up to date. 
+Technosoftware does not warrant that the Programs will meet Licensee's requirements, that the Programs will operate in the combinations, which Licensee may 
+select for use, that the operation of the Programs will be uninterrupted or error-free, or that all Program errors will be corrected.
+PRE-PRODUCTION AND EVALUATION RELEASES OF PROGRAMS AND COMPUTER BASED TRAINING PRODUCTS ARE DISTRIBUTED "AS IS". THE WARRANTIES ABOVE ARE EXCLUSIVE AND IN LIEU OF ALL 
+OTHER WARRANTIES, WHETHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.</p>
+
+<h3>7. Limitation of Liability</h3>
+<p>The Software and components are not intended to replace the professional skills and judgment of Licensee and its employees, agents and consultants. Licensee alone shall be 
+responsible for the accuracy and adequacy of information and data furnished for processing and any use made by Licensee of the output of the Software or any reliance thereon.</p>
+
+<p>TECHNOSOFTWARE SHALL NOT BE LIABLE FOR ANY DAMAGES WHATSOEVER ARISING OUT OF THE USE OF OR INABILITY TO USE THIS SOFTWARE, EVEN IF TECHNOSOFTWARE HAS BEEN ADVISED OF 
+THE POSSIBILITY OF SUCH DAMAGE. TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL LICENSOR BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL OR 
+CONSEQUENTIAL DAMAGES, INCLUDING WITHOUT LIMITATION DAMAGES FOR LOSS OF PROFITS, REVENUE, DATA OR USE, INCURRED BY LICENSEE OR ANY THIRD PARTY, WHETHER IN AN ACTION IN CONTRACT OR 
+TORT, EVEN IF THE LICENSOR HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES AND LICENSOR'S LIABILITY FOR DAMAGES HEREUNDER SHALL NOT EXCEED THE AMOUNT OF FEES PAID BY 
+LICENSEE FOR THE RELEVANT PROGRAM OR SERVICES GIVING RISE TO THE LIABILITY.</p>
+
+<h3>8. Termination</h3>
+<p>The license shall be for a period commencing upon the date of initial download or delivery of the Software and continuing until such time as Licensee discontinues 
+use of the Software or this agreement is terminated in accordance with this agreement, but otherwise without limitation as to duration. Technosoftware shall have the right to 
+terminate this agreement if Licensee fails to pay any required license fee(s) or otherwise fails to comply with the license terms and conditions set forth herein. Technosoftware shall 
+give written notice to Licensee of such fault, and if such fault has not been remedied within thirty (30) days after, the license granted hereunder shall 
+terminate. If requested, License will certify in writing as to the destruction or return of the Software and all copies in its possession. Each party’s right to terminate the 
+agreement for due cause according to the statutory provisions remains unaffected. </p>
+
+<h3>9. Publicity</h3>
+<p>In the event that licensee has obtained a developer license, runtime license or source code license, Technosoftware reserves the right to reference Licensee as one of 
+Technosoftware's customers by mentioning Licensee's company name in documents such as, but not limited to, web pages of Technosoftware's website, emails originating from 
+Technosoftware’s employees, publicity brochures and fact sheets, unless explicitly stated otherwise by Licensee. In no event, shall Technosoftware publish any other information 
+about Licensee other than the single fact that Licensee is a customer of Technosoftware.</p>
+
+<h3>Entire Agreement</h3>
+<p>This Agreement and each purchase order placed hereunder shall be subject to the substantive law in force in 
+Switzerland without reference to its conflicts of law provisions. The application of the United Nations Convention on Contracts for the International Sale of Goods of 
+April 11, 1980 shall be excluded. The parties agree that sole jurisdiction and venue for any dispute relating to the agreement shall be in a court at Technosoftware’s 
+company location in Rüfenach, Switzerland.</p>
+
+<p>This Agreement is the parties' entire agreement relating to the Software. It supersedes all prior or contemporaneous oral or written communications, proposals, 
+warranties, and representations with respect to its subject matter, and following Licensee's acceptance of this license by clicking on the "Accept" Button or by installing 
+and using the Software, will prevail over any conflicting or additional terms of any quote, order, acknowledgment, or any other communications by or between the parties. 
+No modification to this Agreement will be binding, unless in writing and signed by an authorized representative of each party</p>
+
+<h3>Export Control</h3>
+
+<p>Licensee acknowledges that the licensed Software may be subject to export control restrictions of various countries. Licensee shall fully comply with all
+applicable export license restrictions and requirements as well as with all laws and regulations relating to the importation of the licensed Software and/or
+modified Software and/or applications and shall procure all necessary governmental authorizations, including without limitation, all necessary licenses,
+approvals, permissions or consents, where necessary for the reexportation of the licensed Software, modified Software or applications.</p>
+
+<h3>No Implied License</h3>
+<p>There are no implied licenses or other implied rights granted under this Agreement, and all rights, save for those expressly granted hereunder, shall remain with 
+Technosoftware and its licensors. In addition, no licenses or immunities are granted to the combination of the licensed Software and/or modified Software, as applicable, 
+with any other software or hardware not delivered by Technosoftware under this Agreement.</p>
+
+<h3>Surviving Sections</h3>
+<p>Any terms and conditions that by their nature or otherwise reasonably should survive a cancellation or termination of this Agreement shall also be deemed to survive. 
+Such terms and conditions include, but are not limited to the following Sections: 4, 5, 6, 7, 9, 10, 11, 12 and 13 of this Agreement. Notwithstanding the foregoing, 
+Section 3 shall not survive if the Agreement is terminated for material breach.</p>
+
+<h3>Severability</h3>
+<p>If any of the above provisions are held to be in violation of applicable law, void, or unenforceable in any jurisdiction, then such provisions are herewith waived or 
+amended to the extent necessary for the Agreement to be otherwise enforceable in such jurisdiction. However, if in Technosoftware’s opinion deletion or amendment of 
+any provisions of the Agreement by operation of this paragraph unreasonably compromises the rights or increase the liabilities of Technosoftware or its licensors, 
+Technosoftware reserves the right to terminate the Agreement</p>
+
+
+\htmlonly
+
+Return to the <a href="index.html">index</a>.
+\endhtmlonly
+
+
+*/ 
