@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ApplicationConfiguration
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:ua="http://opcfoundation.org/UA/2008/02/Types.xsd"
+  xmlns="http://opcfoundation.org/UA/SDK/Configuration.xsd"
+>
+
+  <!-- A human readable but not necessarily unique name for the application instance -->
+
+  <ApplicationName>OPC UA Configuration Test</ApplicationName>
+
+  <!-- A globally unique identifier for the application instance.
+       This is overridden with the value contained in the application certificate. -->
+  <ApplicationUri>urn:localhost:technosoftware.com:ConfigurationTest</ApplicationUri>
+
+  <!-- A globally unique URI for the product (usually assigned by the product vendor) -->
+  <ProductUri>https://technosoftware.com/ConfigurationTest</ProductUri>
+
+  <!-- Indicates the type of application (Server_0, Client_1, ClientAndServer_2 or DiscoveryServer_3). -->
+  <ApplicationType>Server_0</ApplicationType>
+
+  <!-- Specifies security related configuration information -->
+  <SecurityConfiguration>
+
+    <!-- Where the application instance certificate is stored (MachineDefault) -->
+    <ApplicationCertificate>
+
+      <!-- The type of store. -->
+      <StoreType>Directory</StoreType>
+
+      <!-- The location of the store. 
+           Windows store must start with LocalMachine, CurrentUser or CurrentService
+           The name of the store is appended.
+           Note that the names used in code are difference from what appears in the control panel.
+           e.g. My == "Personal", Root == "Trusted Root Certification Authorities" -->
+      <StorePath>%LocalApplicationData%/OPCFoundation/own</StorePath>
+
+      <!-- The subject for the certificate 
+           Note that subject names are complex structures. Only text that appears here is treated as the CommonName component.
+           The first certificate found is used if multiple certificates with the same CommonName and a matching hostname exist.
+           Also a complete distinguished name can be specified here: 'CN=EmptyCompany OPC UA Empty Client, DC=localhost'.
+           In this case the first certificate matching the complete distinguished name is used. localhost is replaced with the hostname.
+           If no certificate is found, a new self signed application certificate is created.
+           The Thumbprint should be specified if the CN or DN does not uniquely identify a certificate. -->
+      <SubjectName>CN=OPC UA Configuration Test, O=Technosoftware GmbH, C=CH, S=Aargau</SubjectName>
+
+      <!-- The SHA1 thumbprint for the certificate.
+           The thumbprint uniquely identifies a certificate.
+           It should be specified in this file, however, the samples rely on quick and 
+           dirty scripts to create new certificate on each machine. A commercial application 
+           would generate the initial certificate itself and update the thumbprint accordingly -->
+      <!--<Thumbprint>3a35fb798fc6dee8a7e7e4652b0e28fc14c6ee0f</Thumbprint>-->
+
+    </ApplicationCertificate>
+
+
+    <!-- Where the issuer certificate are stored (certificate authorities) 
+    
+         Typical web browsing applications trust any certificate issued by a CA in the 
+         "Trusted Root Certification Authorities" certificate store. However, this approach is 
+         not appropriate for UA because Administrators have no control over the CAs that get
+         placed in that Root store to facilitate web browsing. This means Administrators must
+         specify a different store that is used only for UA related CAs and/or they must explicitly
+         specify the certificate for each trusted certification authority. -->
+
+    <TrustedIssuerCertificates>
+      <StoreType>Directory</StoreType>
+      <StorePath>%LocalApplicationData%/OPCFoundation/issuers</StorePath>
+    </TrustedIssuerCertificates>
+
+
+    <!-- Where the trust list is stored (UA Applications)
+    
+         Some UA applications will use self-signed certificates (certificates without a CA)
+         which means that every application which communicates with it must be configured to 
+         trust it.
+         
+         Administrators may designate a certificate store that contains trusted UA application 
+         instance certificates (this store should not be the same as the store used for CAs 
+         certificates). Alternately, Administrators may enter the certificates explicitly in
+         this list.
+         
+         Note that entries in this list may either reference a certificate in the store or
+         may contained the entire certificate encoded as base64 data.
+         -->
+
+    <TrustedPeerCertificates>
+      <StoreType>Directory</StoreType>
+      <StorePath>%LocalApplicationData%/OPCFoundation/trusted</StorePath>
+    </TrustedPeerCertificates>
+
+
+    <!-- The directory used to store invalid certificates for later review by the administrator. -->
+
+    <RejectedCertificateStore>
+      <StoreType>Directory</StoreType>
+      <StorePath>%LocalApplicationData%/OPCFoundation/rejected</StorePath>
+    </RejectedCertificateStore>
+
+  </SecurityConfiguration>
+
+  <ServerConfiguration/>
+
+</ApplicationConfiguration>

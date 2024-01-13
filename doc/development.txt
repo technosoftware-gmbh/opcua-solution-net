@@ -1,0 +1,60 @@
+/*
+ * Copyright (c) 2023 Technosoftware GmbH. All rights reserved
+ * Web: https://technosoftware.com 
+ * 
+ * The source code in this file is covered under a dual-license scenario:
+ *   - Owner of a purchased license: SCLA 1.0
+ *   - GPL V3: everybody else
+ *
+ * SCLA license terms accompanied with this source code.
+ * See https://technosoftware.com/license/Source_Code_License_Agreement.pdf
+ *
+ * GNU General Public License as published by the Free Software Foundation;
+ * version 3 of the License are accompanied with this source code.
+ * See https://technosoftware.com/license/GPLv3License.txt
+ *
+ * This source code is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+ 
+/*! \page development Development
+
+\addindex development
+\tableofcontents
+
+## OPC UA Development
+
+<p>For a detailed introduction into OPC UA Client Development we highly recommend to read the following document:</p>
+
+<ol>
+    <li><a href="https://technosoftware.com/documentation/31/OPC_UA_Solution_NET_Introduction.pdf">OPC UA Solution .NET Introduction</a><br />
+    Develop OPC UA Clients and OPC UA Servers with C# for .NET.</li>
+
+    <li><a href="https://technosoftware.com/documentation/31/OPC_UA_Solution_NET_Installation_Guide.pdf">OPC UA Solution .NET Installation Guide</a><br />
+    Installation and Administration of .NET&nbsp;based OPC UA Applications.</li>
+
+    <li><a href="https://technosoftware.com/documentation/31/OPC_UA_Client_Development_with_NET.pdf">OPC UA Client Development with .NET</a><br />
+    Develop OPC UA Clients with C# for of .NET.</li>
+</ol>
+
+## OPC UA Server Development
+
+<p>For a detailed introduction into OPC UA Server Development we highly recommend to read the following document:</p>
+
+<ol>
+    <li><a href="https://technosoftware.com/documentation/31/OPC_UA_Solution_NET_Introduction.pdf">OPC UA Solution .NET Introduction</a><br />
+    Develop OPC UA Clients and OPC UA Servers with C# for .NET.</li>
+
+    <li><a href="https://technosoftware.com/documentation/31/OPC_UA_Solution_NET_Installation_Guide.pdf">OPC UA Solution .NET Installation Guide</a><br />
+    Installation and Administration of .NET&nbsp;based OPC UA Applications.</li>
+
+    <li><a href="https://technosoftware.com/documentation/31/OPC_UA_Server_Development_with_NET.pdf">OPC UA Server Development with .NET</a><br />
+    Develop OPC UA Servers with C# for of .NET.</li>
+</ol>
+
+\htmlonly
+Go to the <a href="deployment.html">next</a> section or return to the <a href="index.html">index</a>.
+\endhtmlonly
+
+*/ 
