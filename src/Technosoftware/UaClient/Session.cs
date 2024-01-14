@@ -16,6 +16,7 @@
 #region Using Directives
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -36,6 +37,13 @@ namespace Technosoftware.UaClient
     /// </summary>
     public partial class Session : SessionClientBatched, IUaSession
     {
+        #region Constants
+        private const int ReconnectTimeout = 15000;
+        private const int MinPublishRequestCountMax = 100;
+        private const int DefaultPublishRequestCount = 1;
+        private const int KeepAliveGuardBand = 1000;
+        #endregion
+
         #region Constructors, Destructor, Initialization
         /// <summary>
         /// Constructs a new instance of the <see cref="Session"/> class.
@@ -254,7 +262,10 @@ namespace Technosoftware.UaClient
             subscriptions_ = new List<Subscription>();
             dictionaries_ = new Dictionary<NodeId, DataDictionary>();
             acknowledgementsToSend_ = new SubscriptionAcknowledgementCollection();
+            acknowledgementsToSendLock_ = new object();
+#if DEBUG_SEQUENTIALPUBLISHING
             latestAcknowledgementsSent_ = new Dictionary<uint, uint>();
+#endif
             identityHistory_ = new List<IUserIdentity>();
             outstandingRequests_ = new LinkedList<AsyncRequestState>();
             keepAliveInterval_ = 5000;
@@ -415,18 +426,12 @@ namespace Technosoftware.UaClient
         {
             add
             {
-                lock (eventLock_)
-                {
-                    KeepAliveEventHandler += value;
-                }
+                KeepAliveEventHandler += value;
             }
 
             remove
             {
-                lock (eventLock_)
-                {
-                    KeepAliveEventHandler -= value;
-                }
+                KeepAliveEventHandler -= value;
             }
         }
 
@@ -441,18 +446,12 @@ namespace Technosoftware.UaClient
         {
             add
             {
-                lock (eventLock_)
-                {
-                    PublishEventHandler += value;
-                }
+                PublishEventHandler += value;
             }
 
             remove
             {
-                lock (eventLock_)
-                {
-                    PublishEventHandler -= value;
-                }
+                PublishEventHandler -= value;
             }
         }
 
@@ -471,18 +470,12 @@ namespace Technosoftware.UaClient
         {
             add
             {
-                lock (eventLock_)
-                {
-                    PublishErrorEventHandler += value;
-                }
+                PublishErrorEventHandler += value;
             }
 
             remove
             {
-                lock (eventLock_)
-                {
-                    PublishErrorEventHandler -= value;
-                }
+                PublishErrorEventHandler -= value;
             }
         }
 
@@ -491,18 +484,12 @@ namespace Technosoftware.UaClient
         {
             add
             {
-                lock (eventLock_)
-                {
-                    PublishSequenceNumbersToAcknowledgeEventHandler += value;
-                }
+                PublishSequenceNumbersToAcknowledgeEventHandler += value;
             }
 
             remove
             {
-                lock (eventLock_)
-                {
-                    PublishSequenceNumbersToAcknowledgeEventHandler -= value;
-                }
+                PublishSequenceNumbersToAcknowledgeEventHandler -= value;
             }
         }
 
@@ -711,20 +698,24 @@ namespace Technosoftware.UaClient
         {
             get
             {
-                lock (eventLock_)
-                {
-                    var delta = DateTime.UtcNow.Ticks - LastKeepAliveTime.Ticks;
+                TimeSpan delta = TimeSpan.FromTicks(DateTime.UtcNow.Ticks - Interlocked.Read(ref lastKeepAliveTime_));
 
-                    // add a 1000ms guard band to allow for network lag.
-                    return (keepAliveInterval_ * 2) * TimeSpan.TicksPerMillisecond <= delta;
-                }
+                // add a guard band to allow for network lag.
+                return (keepAliveInterval_ + KeepAliveGuardBand) <= delta.TotalMilliseconds;
             }
         }
 
         /// <summary>
         /// Gets the time of the last keep alive.
         /// </summary>
-        public DateTime LastKeepAliveTime { get; private set; }
+        public DateTime LastKeepAliveTime
+        {
+            get
+            {
+                var ticks = Interlocked.Read(ref lastKeepAliveTime_);
+                return new DateTime(ticks, DateTimeKind.Utc);
+            }
+        }
 
         /// <summary>
         /// Gets the number of outstanding publish or keep alive requests.
@@ -1362,8 +1353,6 @@ namespace Technosoftware.UaClient
             bool resetReconnect = false;
             try
             {
-                Utils.LogInfo("Session RECONNECT {0} starting.", SessionId);
-
                 reconnectLock_.Wait();
                 bool reconnecting = reconnecting_;
                 reconnecting_ = true;
@@ -1379,6 +1368,8 @@ namespace Technosoftware.UaClient
                         StatusCodes.BadInvalidState,
                         "Session is already attempting to reconnect.");
                 }
+
+                StopKeepAliveTimer();
 
                 IAsyncResult result = PrepareReconnectBeginActivate(
                             connection,
@@ -1400,15 +1391,12 @@ namespace Technosoftware.UaClient
                     out certificateResults,
                     out certificateDiagnosticInfos);
 
-                int publishCount = 0;
-
                 Utils.LogInfo("Session RECONNECT {0} completed successfully.", SessionId);
 
                 lock (SyncRoot)
                 {
                     previousServerNonce_ = serverNonce_;
                     serverNonce_ = serverNonce;
-                    publishCount = GetMinPublishRequestCount(true);
                 }
 
                 reconnectLock_.Wait();
@@ -1416,11 +1404,7 @@ namespace Technosoftware.UaClient
                 resetReconnect = false;
                 reconnectLock_.Release();
 
-                // refill pipeline.
-                for (int ii = 0; ii < publishCount; ii++)
-                {
-                    BeginPublish(OperationTimeout);
-                }
+                StartPublishing(OperationTimeout, true);
 
                 StartKeepAliveTimer();
 
@@ -2473,7 +2457,7 @@ namespace Technosoftware.UaClient
             // save session id.
             lock (SyncRoot)
             {
-                base.SessionCreated(sessionId, sessionCookie);
+                SessionCreated(sessionId, sessionCookie);
             }
 
             Utils.LogInfo("Revised session timeout value: {0}. ", sessionTimeout_);
@@ -2504,12 +2488,8 @@ namespace Technosoftware.UaClient
                     securityPolicyUri = ConfiguredEndpoint.Description.SecurityPolicyUri;
                 }
 
-                byte[] previousServerNonce = null;
-
-                if (TransportChannel.CurrentToken != null)
-                {
-                    previousServerNonce = TransportChannel.CurrentToken.ServerNonce;
-                }
+                // save previous nonce
+                byte[] previousServerNonce = GetCurrentTokenServerNonce();
 
                 // validate server nonce and security parameters for user identity.
                 ValidateServerNonce(
@@ -3094,42 +3074,36 @@ namespace Technosoftware.UaClient
                         Utils.LogError(e, "Session: Unexpected eror raising SessionClosing event.");
                     }
                 }
-            }
 
-            // close the session with the server.
-            if (connected && !KeepAliveStopped)
-            {
-                var existingTimeout = OperationTimeout;
-
-                try
+                // close the session with the server.
+                if (!KeepAliveStopped)
                 {
-                    // close the session and delete all subscriptions if specified.
-                    OperationTimeout = timeout;
-                    CloseSession(null, DeleteSubscriptionsOnClose);
-                    OperationTimeout = existingTimeout;
-
-                    if (closeChannel)
+                    try
                     {
-                        CloseChannel();
-                    }
+                        // close the session and delete all subscriptions if specified.
+                        var requestHeader = new RequestHeader() {
+                            TimeoutHint = timeout > 0 ? (uint)timeout : (uint)(this.OperationTimeout > 0 ? this.OperationTimeout : 0),
+                        };
+                        CloseSession(requestHeader, DeleteSubscriptionsOnClose);
 
-                    // raised notification indicating the session is closed.
-                    SessionCreated(null, null);
-                }
-                catch (Exception e)
-                {
-                    // don't throw errors on disconnect, but return them
+                        if (closeChannel)
+                        {
+                            CloseChannel();
+                        }
+
+                        // raised notification indicating the session is closed.
+                        SessionCreated(null, null);
+                    }
+                    // dont throw errors on disconnect, but return them
                     // so the caller can log the error.
-                    if (e is ServiceResultException sre)
+                    catch (ServiceResultException sre)
                     {
                         result = sre.StatusCode;
                     }
-                    else
+                    catch (Exception)
                     {
                         result = StatusCodes.Bad;
                     }
-
-                    Utils.LogError("Session close error: " + result);
                 }
             }
 
@@ -3160,10 +3134,7 @@ namespace Technosoftware.UaClient
                 subscriptions_.Add(subscription);
             }
 
-            if (SubscriptionsChangedEventHandler != null)
-            {
-                SubscriptionsChangedEventHandler(this, null);
-            }
+            SubscriptionsChangedEventHandler?.Invoke(this, null);
 
             return true;
         }
@@ -3188,10 +3159,7 @@ namespace Technosoftware.UaClient
                 subscription.Session = null;
             }
 
-            if (SubscriptionsChangedEventHandler != null)
-            {
-                SubscriptionsChangedEventHandler(this, null);
-            }
+            SubscriptionsChangedEventHandler?.Invoke(this, null);
 
             return true;
         }
@@ -3211,10 +3179,7 @@ namespace Technosoftware.UaClient
 
             if (removed)
             {
-                if (SubscriptionsChangedEventHandler != null)
-                {
-                    SubscriptionsChangedEventHandler(this, null);
-                }
+                SubscriptionsChangedEventHandler?.Invoke(this, null);
             }
 
             return removed;
@@ -3240,10 +3205,7 @@ namespace Technosoftware.UaClient
                 subscription.Session = null;
             }
 
-            if (SubscriptionsChangedEventHandler != null)
-            {
-                SubscriptionsChangedEventHandler(this, null);
-            }
+            SubscriptionsChangedEventHandler?.Invoke(this, null);
 
             return true;
         }
@@ -3299,7 +3261,7 @@ namespace Technosoftware.UaClient
                     reconnectLock_.Release();
                 }
 
-                RestartPublishing();
+                StartPublishing(OperationTimeout, false);
             }
             else
             {
@@ -3346,16 +3308,12 @@ namespace Technosoftware.UaClient
                         {
                             if (subscriptions[ii].Transfer(this, subscriptionIds[ii], results[ii].AvailableSequenceNumbers))
                             {
-                                lock (SyncRoot)
+                                lock (acknowledgementsToSendLock_)
                                 {
                                     // create ack for available sequence numbers
                                     foreach (var sequenceNumber in results[ii].AvailableSequenceNumbers)
                                     {
-                                        var ack = new SubscriptionAcknowledgement() {
-                                            SubscriptionId = subscriptionIds[ii],
-                                            SequenceNumber = sequenceNumber
-                                        };
-                                        acknowledgementsToSend_.Add(ack);
+                                        AddAcknowledgementToSend(acknowledgementsToSend_, subscriptionIds[ii], sequenceNumber);
                                     }
                                 }
                             }
@@ -3380,7 +3338,7 @@ namespace Technosoftware.UaClient
                     reconnectLock_.Release();
                 }
 
-                RestartPublishing();
+                StartPublishing(OperationTimeout, false);
             }
             else
             {
@@ -3777,11 +3735,9 @@ namespace Technosoftware.UaClient
         {
             var keepAliveInterval = keepAliveInterval_;
 
-            lock (eventLock_)
-            {
-                serverState_ = ServerState.Unknown;
-                LastKeepAliveTime = DateTime.UtcNow;
-            }
+            Interlocked.Exchange(ref lastKeepAliveTime_, DateTime.UtcNow.Ticks);
+
+            serverState_ = ServerState.Unknown;
 
             var nodesToRead = new ReadValueIdCollection() {
                 // read the server state.
@@ -3798,12 +3754,20 @@ namespace Technosoftware.UaClient
             {
                 StopKeepAliveTimer();
 
-                // start timer.
+#if NET6_0_OR_GREATER
+                // start periodic timer loop
+                var keepAliveTimer = new PeriodicTimer(TimeSpan.FromMilliseconds(keepAliveInterval));
+                _ = Task.Run(() => OnKeepAliveAsync(keepAliveTimer, nodesToRead));
+                keepAliveTimer_ = keepAliveTimer;
+            }
+#else
+                // start timer
                 keepAliveTimer_ = new Timer(OnKeepAlive, nodesToRead, keepAliveInterval, keepAliveInterval);
             }
 
             // send initial keep alive.
             OnKeepAlive(nodesToRead);
+#endif
         }
 
         /// <summary>
@@ -3904,18 +3868,50 @@ namespace Technosoftware.UaClient
             }
         }
 
+#if NET6_0_OR_GREATER
+        /// <summary>
+        /// Sends a keep alive by reading from the server.
+        /// </summary>
+        private async Task OnKeepAliveAsync(PeriodicTimer keepAliveTimer, ReadValueIdCollection nodesToRead)
+        {
+            // trigger first keep alive
+            OnSendKeepAlive(nodesToRead);
+
+            while (await keepAliveTimer.WaitForNextTickAsync().ConfigureAwait(false))
+            {
+                OnSendKeepAlive(nodesToRead);
+        }
+
+            Utils.LogTrace("Session {0}: KeepAlive PeriodicTimer exit.", SessionId);
+        }
+#else
         /// <summary>
         /// Sends a keep alive by reading from the server.
         /// </summary>
         private void OnKeepAlive(object state)
         {
-            var nodesToRead = (ReadValueIdCollection)state;
+            ReadValueIdCollection nodesToRead = (ReadValueIdCollection)state;
+            OnSendKeepAlive(nodesToRead);
+        }
+#endif
 
+        /// <summary>
+        /// Sends a keep alive by reading from the server.
+        /// </summary>
+        private void OnSendKeepAlive(ReadValueIdCollection nodesToRead)
+        {
             try
             {
                 // check if session has been closed.
                 if (!Connected || keepAliveTimer_ == null)
                 {
+                    return;
+                }
+
+                // check if session has been closed.
+                if (reconnecting_)
+                {
+                    Utils.LogWarning("Session {0}: KeepAlive ignored while reconnecting.", SessionId);
                     return;
                 }
 
@@ -3928,8 +3924,7 @@ namespace Technosoftware.UaClient
                     }
                 }
 
-                var requestHeader = new RequestHeader
-                {
+                var requestHeader = new RequestHeader {
                     RequestHandle = Utils.IncrementIdentifier(ref keepAliveCounter_),
                     TimeoutHint = (uint)(KeepAliveInterval * 2),
                     ReturnDiagnostics = 0
@@ -3981,6 +3976,13 @@ namespace Technosoftware.UaClient
 
                 // send notification that keep alive completed.
                 OnKeepAlive((ServerState)(int)values[0].Value, responseHeader.Timestamp);
+
+                return;
+            }
+            catch (ServiceResultException sre) when (sre.StatusCode == StatusCodes.BadSessionIdInvalid)
+            {
+                // recover from error condition when secure channel is still alive
+                OnKeepAliveError(ServiceResult.Create(StatusCodes.BadSessionIdInvalid, "Session unavailable for keep alive requests."));
             }
             catch (Exception e)
             {
@@ -4002,7 +4004,7 @@ namespace Technosoftware.UaClient
                     return;
                 }
 
-                int count;
+                Interlocked.Exchange(ref lastKeepAliveTime_, DateTime.UtcNow.Ticks);
 
                 lock (outstandingRequests_)
                 {
@@ -4015,23 +4017,17 @@ namespace Technosoftware.UaClient
                     }
                 }
 
-                count = GetMinPublishRequestCount(false);
-                while (count-- > 0)
-                {
-                    BeginPublish(OperationTimeout);
-                }
+                StartPublishing(OperationTimeout, false);
             }
-
-            EventHandler<SessionKeepAliveEventArgs> callback;
-
-            lock (eventLock_)
+            else
             {
-                callback = KeepAliveEventHandler;
-
-                // save server state.
-                serverState_ = currentState;
-                LastKeepAliveTime = DateTime.UtcNow;
+                Interlocked.Exchange(ref lastKeepAliveTime_, DateTime.UtcNow.Ticks);
             }
+
+            // save server state.
+            serverState_ = currentState;
+
+            EventHandler<SessionKeepAliveEventArgs> callback = KeepAliveEventHandler;
 
             if (callback != null)
             {
@@ -4051,26 +4047,16 @@ namespace Technosoftware.UaClient
         /// </summary>
         protected virtual bool OnKeepAliveError(ServiceResult result)
         {
-            long delta;
-
-            lock (eventLock_)
-            {
-                delta = DateTime.UtcNow.Ticks - LastKeepAliveTime.Ticks;
-            }
+            long delta = DateTime.UtcNow.Ticks - Interlocked.Read(ref lastKeepAliveTime_);
 
             Utils.LogInfo(
                 "KEEP ALIVE LATE: {0}s, EndpointUrl={1}, RequestCount={2}/{3}",
                 ((double)delta) / TimeSpan.TicksPerSecond,
-                Endpoint.EndpointUrl,
+                Endpoint?.EndpointUrl,
                 GoodPublishRequestCount,
                 OutstandingRequestCount);
 
-            EventHandler<SessionKeepAliveEventArgs> callback;
-
-            lock (eventLock_)
-            {
-                callback = KeepAliveEventHandler;
-            }
+            EventHandler<SessionKeepAliveEventArgs> callback = KeepAliveEventHandler;
 
             if (callback != null)
             {
@@ -4889,15 +4875,11 @@ namespace Technosoftware.UaClient
             }
 
             // get event handler to modify ack list
-            EventHandler<PublishSequenceNumbersToAcknowledgeEventArgs> callback = null;
-            lock (eventLock_)
-            {
-                callback = PublishSequenceNumbersToAcknowledgeEventHandler;
-            }
+            EventHandler<PublishSequenceNumbersToAcknowledgeEventArgs> callback = PublishSequenceNumbersToAcknowledgeEventHandler;
 
             // collect the current set if acknowledgements.
             SubscriptionAcknowledgementCollection acknowledgementsToSend = null;
-            lock (SyncRoot)
+            lock (acknowledgementsToSendLock_)
             {
                 if (callback != null)
                 {
@@ -4920,26 +4902,30 @@ namespace Technosoftware.UaClient
                     acknowledgementsToSend = acknowledgementsToSend_;
                     acknowledgementsToSend_ = new SubscriptionAcknowledgementCollection();
                 }
-
+#if DEBUG_SEQUENTIALPUBLISHING
                 foreach (var toSend in acknowledgementsToSend)
                 {
                     latestAcknowledgementsSent_[toSend.SubscriptionId] = toSend.SequenceNumber;
                 }
+#endif
             }
 
+            uint timeoutHint = (uint)((timeout > 0) ? timeout : 0);
+            timeoutHint = Math.Min((uint)OperationTimeout / 2, timeoutHint);
+
             // send publish request.
-            RequestHeader requestHeader = new RequestHeader();
-
+            var requestHeader = new RequestHeader {
             // ensure the publish request is discarded before the timeout occurs to ensure the channel is dropped.
-            requestHeader.TimeoutHint = (uint)OperationTimeout / 2;
-            requestHeader.ReturnDiagnostics = (uint)(int)ReturnDiagnostics;
-            requestHeader.RequestHandle = Utils.IncrementIdentifier(ref publishCounter_);
+                TimeoutHint = timeoutHint,
+                ReturnDiagnostics = (uint)(int)ReturnDiagnostics,
+                RequestHandle = Utils.IncrementIdentifier(ref publishCounter_)
+            };
 
-            AsyncRequestState state = new AsyncRequestState();
-
-            state.RequestTypeId = DataTypes.PublishRequest;
-            state.RequestId = requestHeader.RequestHandle;
-            state.Timestamp = DateTime.UtcNow;
+            var state = new AsyncRequestState {
+                RequestTypeId = DataTypes.PublishRequest,
+                RequestId = requestHeader.RequestHandle,
+                Timestamp = DateTime.UtcNow
+            };
 
             UaClientUtils.EventLog.PublishStart((int)requestHeader.RequestHandle);
 
@@ -4963,6 +4949,32 @@ namespace Technosoftware.UaClient
         }
 
         /// <summary>
+        /// Create the publish requests for the active subscriptions.
+        /// </summary>
+        public void StartPublishing(int timeout, bool fullQueue)
+        {
+            int publishCount = GetMinPublishRequestCount(true);
+
+            if (tooManyPublishRequests_ > 0 && publishCount > tooManyPublishRequests_)
+            {
+                publishCount = Math.Max(tooManyPublishRequests_, minPublishRequestCount_);
+            }
+
+            // refill pipeline. Send at least one publish request if subscriptions are active.
+            if (publishCount > 0 && BeginPublish(timeout) != null)
+            {
+                int startCount = fullQueue ? 1 : GoodPublishRequestCount + 1;
+                for (int ii = startCount; ii < publishCount; ii++)
+                {
+                    if (BeginPublish(timeout) == null)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Completes an asynchronous publish operation.
         /// </summary>
         private void OnPublishComplete(IAsyncResult result)
@@ -4972,6 +4984,7 @@ namespace Technosoftware.UaClient
             var sessionId = (NodeId)state[0];
             var acknowledgementsToSend = (SubscriptionAcknowledgementCollection)state[1];
             var requestHeader = (RequestHeader)state[2];
+            uint subscriptionId = 0;
             bool moreNotifications;
 
             AsyncRequestCompleted(result, requestHeader.RequestHandle, DataTypes.PublishRequest);
@@ -4988,7 +5001,7 @@ namespace Technosoftware.UaClient
                 // complete publish.
                 var responseHeader = EndPublish(
                     result,
-                    out var subscriptionId,
+                    out subscriptionId,
                     out var availableSequenceNumbers,
                     out moreNotifications,
                     out var notificationMessage,
@@ -5039,7 +5052,25 @@ namespace Technosoftware.UaClient
                     Utils.LogError("Publish #{0}, Reconnecting={1}, Error: {2}", requestHeader.RequestHandle, reconnecting_, e.Message);
                 }
 
-                moreNotifications = false;
+                // raise an error event.
+                ServiceResult error = new ServiceResult(e);
+
+                if (error.Code != StatusCodes.BadNoSubscription)
+                {
+                    EventHandler<SessionPublishErrorEventArgs> callback = PublishErrorEventHandler;
+
+                    if (callback != null)
+                    {
+                        try
+                        {
+                            callback(this, new SessionPublishErrorEventArgs(error, subscriptionId, 0));
+                        }
+                        catch (Exception e2)
+                        {
+                            Utils.LogError(e2, "Session: Unexpected error invoking PublishErrorCallback.");
+                        }
+                    }
+                }
 
                 // ignore errors if reconnecting.
                 if (reconnecting_)
@@ -5058,34 +5089,9 @@ namespace Technosoftware.UaClient
                 // try to acknowledge the notifications again in the next publish.
                 if (acknowledgementsToSend != null)
                 {
-                    lock (SyncRoot)
+                    lock (acknowledgementsToSendLock_)
                     {
                         acknowledgementsToSend_.AddRange(acknowledgementsToSend);
-                    }
-                }
-
-                // raise an error event.     
-                var error = new ServiceResult(e);
-
-                if (error.Code != StatusCodes.BadNoSubscription)
-                {
-                    EventHandler<SessionPublishErrorEventArgs> callback;
-
-                    lock (eventLock_)
-                    {
-                        callback = PublishErrorEventHandler;
-                    }
-
-                    if (callback != null)
-                    {
-                        try
-                        {
-                            callback(this, new SessionPublishErrorEventArgs(error));
-                        }
-                        catch (Exception e2)
-                        {
-                            Utils.LogError(e2, "Session: Unexpected error invoking PublishErrorCallback.");
-                        }
                     }
                 }
 
@@ -5116,17 +5122,23 @@ namespace Technosoftware.UaClient
                     case StatusCodes.BadTooManyOperations:
                     case StatusCodes.BadTcpServerTooBusy:
                     case StatusCodes.BadServerTooBusy:
-                    default:
-                        // throttle the resend to reduce server load
-                        Thread.Sleep(100);
-                        break;
-                        }
+                        // throttle the next publish to reduce server load
+                        _ = Task.Run(async () => {
+                            await Task.Delay(100).ConfigureAwait(false);
+                            BeginPublish(OperationTimeout);
+                        });
+                        return;
 
-                Utils.LogError(e, "PUBLISH #{0} - Unhandled error {1} during Publish.", requestHeader.RequestHandle, error.StatusCode);
+                    default:
+                        Utils.LogError(e, "PUBLISH #{0} - Unhandled error {1} during Publish.", requestHeader.RequestHandle, error.StatusCode);
+                        goto case StatusCodes.BadServerTooBusy;
+
+                        }
             }
 
             var requestCount = GoodPublishRequestCount;
             var minPublishRequestCount = GetMinPublishRequestCount(false);
+
             if (requestCount < minPublishRequestCount)
             {
                 BeginPublish(OperationTimeout);
@@ -5502,12 +5514,6 @@ namespace Technosoftware.UaClient
         {
             Utils.LogInfo("Session RECONNECT {0} starting.", SessionId);
 
-            lock (SyncRoot)
-            {
-                // stop keep alives.
-                StopKeepAliveTimer();
-            }
-
             // create the client signature.
             byte[] dataToSign = Utils.Append(serverCertificate_ != null ? serverCertificate_.RawData : null, serverNonce_);
             EndpointDescription endpoint = ConfiguredEndpoint.Description;
@@ -5563,15 +5569,17 @@ namespace Technosoftware.UaClient
 
             if (connection != null)
             {
+                ITransportChannel channel = NullableTransportChannel;
+
                 // check if the channel supports reconnect.
-                if ((TransportChannel.SupportedFeatures & TransportChannelFeatures.Reconnect) != 0)
+                if (channel != null && (channel.SupportedFeatures & TransportChannelFeatures.Reconnect) != 0)
                 {
-                    TransportChannel.Reconnect(connection);
+                    channel.Reconnect(connection);
                 }
                 else
                 {
                     // initialize the channel which will be created with the server.
-                    ITransportChannel channel = SessionChannel.Create(
+                    channel = SessionChannel.Create(
                         configuration_,
                         connection,
                         ConfiguredEndpoint.Description,
@@ -5590,15 +5598,17 @@ namespace Technosoftware.UaClient
             }
             else
             {
+                ITransportChannel channel = NullableTransportChannel;
+
                 // check if the channel supports reconnect.
-                if (TransportChannel != null && (TransportChannel.SupportedFeatures & TransportChannelFeatures.Reconnect) != 0)
+                if (channel != null && (channel.SupportedFeatures & TransportChannelFeatures.Reconnect) != 0)
                 {
-                    TransportChannel.Reconnect();
+                    channel.Reconnect();
                 }
                 else
                 {
                     // initialize the channel which will be created with the server.
-                    ITransportChannel channel = SessionChannel.Create(
+                    channel = SessionChannel.Create(
                         configuration_,
                         ConfiguredEndpoint.Description,
                         ConfiguredEndpoint.Configuration,
@@ -5647,27 +5657,19 @@ namespace Technosoftware.UaClient
                 // the published data is acknowledged to prevent the endless republish loop.
                 case StatusCodes.BadEncodingLimitsExceeded:
                     Utils.LogError(e, "Message {0}-{1} exceeded size limits, ignored.", subscriptionId, sequenceNumber);
-                    var ack = new SubscriptionAcknowledgement {
-                        SubscriptionId = subscriptionId,
-                        SequenceNumber = sequenceNumber
-                    };
-                    lock (SyncRoot)
+                    lock (acknowledgementsToSendLock_)
                     {
-                        acknowledgementsToSend_.Add(ack);
+                        AddAcknowledgementToSend(acknowledgementsToSend_, subscriptionId, sequenceNumber);
                     }
                     break;
+
                 default:
                     result = false;
                     Utils.LogError(e, "Unexpected error sending republish request.");
                     break;
             }
 
-            EventHandler<SessionPublishErrorEventArgs> callback = null;
-
-            lock (eventLock_)
-            {
-                callback = PublishErrorEventHandler;
-            }
+            EventHandler<SessionPublishErrorEventArgs> callback = PublishErrorEventHandler;
 
             // raise an error event.
             if (callback != null)
@@ -5688,6 +5690,15 @@ namespace Technosoftware.UaClient
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// If available, returns the current nonce or null.
+        /// </summary>
+        private byte[] GetCurrentTokenServerNonce()
+        {
+            var currentToken = NullableTransportChannel?.CurrentToken;
+            return currentToken?.ServerNonce;
         }
 
         /// <summary>
@@ -5737,41 +5748,56 @@ namespace Technosoftware.UaClient
             // send notification that the server is alive.
             OnKeepAlive(serverState_, responseHeader.Timestamp);
 
-            // collect the current set if acknowledgments.
-            lock (SyncRoot)
+            // collect the current set of acknowledgements.
+            lock (acknowledgementsToSendLock_)
             {
                 // clear out acknowledgements for messages that the server does not have any more.
                 var acknowledgementsToSend = new SubscriptionAcknowledgementCollection();
 
-                foreach (var acknowledgement in acknowledgementsToSend_)
-                {
-                    if (acknowledgement.SubscriptionId != subscriptionId)
-                    {
-                        acknowledgementsToSend.Add(acknowledgement);
-                    }
-                    else
-                    {
-                        if (availableSequenceNumbers == null || availableSequenceNumbers.Contains(acknowledgement.SequenceNumber))
-                        {
-                            acknowledgementsToSend.Add(acknowledgement);
-                        }
-                    }
-                }
+                uint latestSequenceNumberToSend = 0;
 
                 // create an acknowledgement to be sent back to the server.
                 if (notificationMessage.NotificationData.Count > 0)
                 {
-                    var acknowledgement = new SubscriptionAcknowledgement
-                    {
-                        SubscriptionId = subscriptionId,
-                        SequenceNumber = notificationMessage.SequenceNumber
-                    };
+                    AddAcknowledgementToSend(acknowledgementsToSend, subscriptionId, notificationMessage.SequenceNumber);
+                    UpdateLatestSequenceNumberToSend(ref latestSequenceNumberToSend, notificationMessage.SequenceNumber);
+                    _ = availableSequenceNumbers?.Remove(notificationMessage.SequenceNumber);
+                }
 
-                    acknowledgementsToSend.Add(acknowledgement);
+                for (int ii = 0; ii < acknowledgementsToSend_.Count; ii++)
+                {
+                    SubscriptionAcknowledgement acknowledgement = acknowledgementsToSend_[ii];
+
+                    if (acknowledgement.SubscriptionId != subscriptionId)
+                    {
+                        acknowledgementsToSend.Add(acknowledgement);
+                    }
+                    else if (availableSequenceNumbers == null || availableSequenceNumbers.Remove(acknowledgement.SequenceNumber))
+                    {
+                        acknowledgementsToSend.Add(acknowledgement);
+                        UpdateLatestSequenceNumberToSend(ref latestSequenceNumberToSend, acknowledgement.SequenceNumber);
+                    }
+                    else
+                    {
+                        Utils.LogWarning("SessionId {0}, SubscriptionId {1}, Sequence number={2} was not received in the available sequence numbers.", SessionId, subscriptionId, acknowledgement.SequenceNumber);
+                    }
+                }
+
+                // Check for sleeping sequence numbers. May have been not acked due to a network glitch. 
+                if (latestSequenceNumberToSend != 0 && availableSequenceNumbers?.Count > 0)
+                {
+                    foreach (var sequenceNumber in availableSequenceNumbers)
+                    {
+                        if ((int)(latestSequenceNumberToSend - sequenceNumber) > 100)
+                        {
+                            AddAcknowledgementToSend(acknowledgementsToSend, subscriptionId, sequenceNumber);
+                            Utils.LogWarning("SessionId {0}, SubscriptionId {1}, Sequence number={2} was sleeping, acknowledged.", SessionId, subscriptionId, sequenceNumber);
+                        }
+                    }
                 }
 
 #if DEBUG_SEQUENTIALPUBLISHING
-                // Checks for debug info only. 
+                // Checks for debug info only.
                 // Once more than a single publish request is queued, the checks are invalid
                 // because a publish response may not include the latest ack information yet.
 
@@ -5810,24 +5836,16 @@ namespace Technosoftware.UaClient
                 }
 #endif
 
-                if (availableSequenceNumbers != null)
-                {
-                    foreach (var acknowledgement in acknowledgementsToSend)
-                    {
-                        if (acknowledgement.SubscriptionId == subscriptionId && !availableSequenceNumbers.Contains(acknowledgement.SequenceNumber))
-                        {
-                            Utils.LogWarning("Sequence number={0} was not received in the available sequence numbers.", acknowledgement.SequenceNumber);
-                        }
-                    }
-                }
-
                 acknowledgementsToSend_ = acknowledgementsToSend;
 
                 if (notificationMessage.IsEmpty)
                 {
                     Utils.LogTrace("Empty notification message received for SessionId {0} with PublishTime {1}", SessionId, notificationMessage.PublishTime.ToLocalTime());
                 }
+            }
 
+            lock (SyncRoot)
+            {
                 // find the subscription.
                 foreach (var current in subscriptions_)
                 {
@@ -5861,16 +5879,14 @@ namespace Technosoftware.UaClient
                     responseHeader.StringTable);
 
                 // raise the notification.
-                lock (eventLock_)
+                EventHandler<SessionNotificationEventArgs> publishEventHandler = PublishEventHandler;
+                if (publishEventHandler != null)
                 {
                     var args = new SessionNotificationEventArgs(subscription, notificationMessage, responseHeader.StringTable);
 
-                    if (PublishEventHandler != null)
-                    {
-                        Task.Run(() => {
-                            OnRaisePublishNotification(args);
-                        });
-                    }
+                    Task.Run(() => {
+                        OnRaisePublishNotification(publishEventHandler, args);
+                    });
                 }
             }
             else
@@ -5940,13 +5956,10 @@ namespace Technosoftware.UaClient
         /// <summary>
         /// Raises an event indicating that publish has returned a notification.
         /// </summary>
-        private void OnRaisePublishNotification(object state)
+        private void OnRaisePublishNotification(EventHandler<SessionNotificationEventArgs> callback, SessionNotificationEventArgs args)
         {
             try
             {
-                var args = (SessionNotificationEventArgs)state;
-                var callback = PublishEventHandler;
-
                 if (callback != null && args.Subscription.Id != 0)
                 {
                     callback(this, args);
@@ -6046,6 +6059,20 @@ namespace Technosoftware.UaClient
             return false;
         }
 
+        private void AddAcknowledgementToSend(SubscriptionAcknowledgementCollection acknowledgementsToSend, uint subscriptionId, uint sequenceNumber)
+        {
+            if (acknowledgementsToSend == null) throw new ArgumentNullException(nameof(acknowledgementsToSend));
+
+            Debug.Assert(Monitor.IsEntered(acknowledgementsToSendLock_));
+
+            SubscriptionAcknowledgement acknowledgement = new SubscriptionAcknowledgement {
+                SubscriptionId = subscriptionId,
+                SequenceNumber = sequenceNumber
+            };
+
+            acknowledgementsToSend.Add(acknowledgement);
+        }
+
         /// <summary>
         /// Returns true if the Bad_TooManyPublishRequests limit
         /// has not been reached.
@@ -6122,24 +6149,6 @@ namespace Technosoftware.UaClient
         }
 
         /// <summary>
-        /// Create the publish requests for the active subscriptions.
-        /// </summary>
-        private void RestartPublishing()
-        {
-            int publishCount = 0;
-            lock (SyncRoot)
-            {
-                publishCount = GetMinPublishRequestCount(true);
-            }
-
-            // refill pipeline.
-            for (int ii = 0; ii < publishCount; ii++)
-            {
-                BeginPublish(OperationTimeout);
-            }
-        }
-
-        /// <summary>
         /// Creates and validates the subscription ids for a transfer.
         /// </summary>
         /// <param name="subscriptions">The subscriptions to transfer.</param>
@@ -6171,16 +6180,27 @@ namespace Technosoftware.UaClient
         /// </summary>
         private void IndicateSessionConfigurationChanged()
         {
-            if (SessionConfigurationChangedEventHandler != null)
+            try
             {
-                try
-                {
-                    SessionConfigurationChangedEventHandler(this, EventArgs.Empty);
-                }
-                catch (Exception e)
-                {
-                    Utils.Trace(e, "Unexpected error calling SessionConfigurationChanged event handler.");
-                }
+                SessionConfigurationChangedEventHandler?.Invoke(this, EventArgs.Empty);
+            }
+            catch (Exception e)
+            {
+                Utils.Trace(e, "Unexpected error calling SessionConfigurationChangedEventHandler.");
+            }
+        }
+
+        /// <summary>
+        /// Helper to update the latest sequence number to send.
+        /// Handles wrap around of sequence numbers.
+        /// </summary>
+        private static void UpdateLatestSequenceNumberToSend(ref uint latestSequenceNumberToSend, uint sequenceNumber)
+        {
+            // Handle wrap around with subtraction and test result is int.
+            // Assume sequence numbers to ack do not differ by more than uint.Max / 2
+            if (latestSequenceNumberToSend == 0 || ((int)(sequenceNumber - latestSequenceNumberToSend)) > 0)
+            {
+                latestSequenceNumberToSend = sequenceNumber;
             }
         }
         #endregion
@@ -6217,7 +6237,10 @@ namespace Technosoftware.UaClient
         private ApplicationConfiguration configuration_;
 
         private SubscriptionAcknowledgementCollection acknowledgementsToSend_;
+        private object acknowledgementsToSendLock_;
+#if DEBUG_SEQUENTIALPUBLISHING
         private Dictionary<uint, uint> latestAcknowledgementsSent_;
+#endif
         private List<Subscription> subscriptions_;
         private Dictionary<NodeId, DataDictionary> dictionaries_;
         private bool transferSubscriptionsOnReconnect_;
@@ -6230,15 +6253,17 @@ namespace Technosoftware.UaClient
         private X509Certificate2 serverCertificate_;
         private long publishCounter_;
         private int tooManyPublishRequests_;
+        private long lastKeepAliveTime_;
         private ServerState serverState_;
         private int keepAliveInterval_;
+#if NET6_0_OR_GREATER
+        private PeriodicTimer keepAliveTimer_;
+#else
         private Timer keepAliveTimer_;
+#endif
         private long keepAliveCounter_;
         private bool reconnecting_;
         private SemaphoreSlim reconnectLock_;
-        private const int ReconnectTimeout = 15000;
-        private const int MinPublishRequestCountMax = 100;
-        private const int DefaultPublishRequestCount = 1;
         private int minPublishRequestCount_;
         private LinkedList<AsyncRequestState> outstandingRequests_;
         private readonly EndpointDescriptionCollection discoveryServerEndpoints_;

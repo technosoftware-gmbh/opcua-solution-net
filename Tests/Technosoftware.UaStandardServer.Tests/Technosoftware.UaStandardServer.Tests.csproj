@@ -24,8 +24,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Technosoftware.UaSolution.UaCore" Version="3.2.3" />
-    <PackageReference Include="Technosoftware.UaSolution.UaBindings.Https" Version="3.2.3" />
+    <PackageReference Include="Technosoftware.UaSolution.UaCore" Version="3.3.0" />
+    <PackageReference Include="Technosoftware.UaSolution.UaBindings.Https" Version="3.3.0" />
   </ItemGroup>
 
   <ItemGroup>
