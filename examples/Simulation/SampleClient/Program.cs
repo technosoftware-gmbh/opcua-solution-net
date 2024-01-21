@@ -118,7 +118,7 @@ namespace SampleCompany.SampleClient
             if (extraArgs == null || extraArgs.Count == 0)
             {
                 // use OPC UA Sample Server
-                endpointUrl = "opc.tcp://localhost:55555/SampleServer";
+                endpointUrl = "opc.tcp://localhost:62555/SampleServer";
             }
             else
             {
