@@ -3,7 +3,7 @@
 ## Installation .NET
 
 Please follow instructions in this [article](https://dotnet.microsoft.com/en-us/learn/dotnet/hello-world-tutorial/intro) to setup the dotnet command line environment for your platform.
-As of today, .ENT 8.0, .NET 7.0 or .NET 8.0 is required. The article describes the installation of .NET 8.0.101 for
+As of today, .NET 8.0, .NET 7.0 or .NET 6.0 is required. The article describes the installation of .NET 8.0.101 for
 Windows, Linux and macOS. This version also works with the OPC UA Client and Server Solutions we
 provide in this GitHub repositories.
 
@@ -114,7 +114,7 @@ Depending on which features server applications uses you also need to use one of
   
   Advanced server Applications with more than one node manager require this DLL. Used from the reference applications.
 
-These DLLs are delivered via NuGet Packages available [here](../nuget/packages):
+These DLLs are delivered via NuGet Packages available [here](/nuget/packages):
 
 - Technosoftware.UaSolution.UaCore
 - Technosoftware.UaSolution.UaConfiguration

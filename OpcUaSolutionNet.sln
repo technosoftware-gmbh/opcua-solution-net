@@ -54,6 +54,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Technosoftware.UaPubSub.Tes
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "documentation", "documentation", "{217FC2CF-B876-47D8-AA89-C568DF3189E3}"
 	ProjectSection(SolutionItems) = preProject
+		documentation\index.md = documentation\index.md
 		documentation\Installation.md = documentation\Installation.md
 	EndProjectSection
 EndProject
