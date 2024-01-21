@@ -1,0 +1,16 @@
+<xs:schema
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:ua="http://opcfoundation.org/UA/2008/02/Types.xsd"
+  xmlns:tns="http://samplecompany.com/SampleServer/NodeManagers/MemoryBuffer"
+  targetNamespace="http://samplecompany.com/SampleServer/NodeManagers/MemoryBuffer"
+  elementFormDefault="qualified"
+>
+  <xs:annotation>
+    <xs:appinfo>
+      <tns:Model ModelUri="http://samplecompany.com/SampleServer/NodeManagers/MemoryBuffer" Version="1.0.0" PublicationDate="2024-01-19T09:47:46.7272566Z" />
+    </xs:appinfo>
+  </xs:annotation>
+  
+  <xs:import namespace="http://opcfoundation.org/UA/2008/02/Types.xsd" />
+
+</xs:schema>

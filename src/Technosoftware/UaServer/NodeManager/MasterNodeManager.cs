@@ -650,8 +650,7 @@ namespace Technosoftware.UaServer.NodeManager
                 var reference = referencesToRemove[ii];
 
                 // find source node.
-                IUaBaseNodeManager nodeManager = null;
-                var sourceHandle = GetManagerHandle(reference.SourceId, out nodeManager);
+                var sourceHandle = GetManagerHandle(reference.SourceId, out IUaBaseNodeManager nodeManager);
 
                 if (sourceHandle == null)
                 {

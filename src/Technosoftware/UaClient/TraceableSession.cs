@@ -18,6 +18,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -45,7 +47,7 @@ namespace Technosoftware.UaClient
         /// <summary>
         /// Activity Source Name.
         /// </summary>
-        public static readonly string ActivitySourceName = "Opc.Ua.Client-TraceableSession-ActivitySource";
+        public static readonly string ActivitySourceName = "Technosoftware.UaClient-TraceableSession-ActivitySource";
 
         /// <summary>
         /// Activity Source static instance.
@@ -54,9 +56,9 @@ namespace Technosoftware.UaClient
         private static readonly Lazy<ActivitySource> activitySource_ = new Lazy<ActivitySource>(() => new ActivitySource(ActivitySourceName, "1.0.0"));
 
         /// <summary>
-        /// The ISession which is being traced.
+        /// The IUaSession which is being traced.
         /// </summary>
-        private IUaSession session_;
+        private readonly IUaSession session_;
 
         /// <inheritdoc/>
         public IUaSession Session => session_;
@@ -239,6 +241,9 @@ namespace Technosoftware.UaClient
 
         /// <inheritdoc/>
         public IServiceMessageContext MessageContext => session_.MessageContext;
+
+        /// <inheritdoc/>
+        public ITransportChannel NullableTransportChannel => session_.NullableTransportChannel;
 
         /// <inheritdoc/>
         public ITransportChannel TransportChannel => session_.TransportChannel;
@@ -911,6 +916,15 @@ namespace Technosoftware.UaClient
         public IAsyncResult BeginPublish(int timeout)
         {
             return session_.BeginPublish(timeout);
+        }
+
+        /// <inheritdoc/>
+        public void StartPublishing(int timeout, bool fullQueue)
+        {
+            using (Activity activity = ActivitySource.StartActivity())
+            {
+                session_.StartPublishing(timeout, fullQueue);
+            }
         }
 
         /// <inheritdoc/>

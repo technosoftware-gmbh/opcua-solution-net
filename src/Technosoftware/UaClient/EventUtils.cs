@@ -108,7 +108,7 @@ namespace Technosoftware.UaClient
         /// <returns>
         /// The references found. Null if an error occurred.
         /// </returns>
-        public static ReferenceDescriptionCollection Browse(Session session, BrowseDescription nodeToBrowse, bool throwOnError)
+        public static ReferenceDescriptionCollection Browse(IUaSession session, BrowseDescription nodeToBrowse, bool throwOnError)
         {
             try
             {
@@ -193,7 +193,7 @@ namespace Technosoftware.UaClient
         /// <returns>
         /// The references found. Null if an error occurred.
         /// </returns>
-        public static ReferenceDescriptionCollection BrowseSuperTypes(Session session, NodeId typeId, bool throwOnError)
+        public static ReferenceDescriptionCollection BrowseSuperTypes(IUaSession session, NodeId typeId, bool throwOnError)
         {
             var supertypes = new ReferenceDescriptionCollection();
 
@@ -253,7 +253,7 @@ namespace Technosoftware.UaClient
         /// The event object. Null if the notification is not a valid event type.
         /// </returns>
         public static BaseEventState ConstructEvent(
-            Session session,
+            IUaSession session,
             MonitoredItem monitoredItem,
             EventFieldList notification,
             Dictionary<NodeId,NodeId> eventTypeMappings)

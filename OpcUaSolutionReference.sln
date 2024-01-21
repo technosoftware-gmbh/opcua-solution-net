@@ -32,13 +32,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget", "nuget", "{F69ABCC3
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Technosoftware.UaStandardServer", "src\Technosoftware\UaStandardServer\Technosoftware.UaStandardServer.csproj", "{C31BAA31-A81C-4368-8C79-734D5F849A2C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{CB41982D-1BA1-4290-B8CE-0BD5B1AD1A3C}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Reference Applications", "Reference Applications", "{CB41982D-1BA1-4290-B8CE-0BD5B1AD1A3C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleCompany.NodeManagers", "src\SampleCompany\NodeManagers\SampleCompany.NodeManagers.csproj", "{FAC6B78C-E62C-4565-851E-3250FC780EE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleCompany.NodeManagers", "reference\SampleCompany\NodeManagers\SampleCompany.NodeManagers.csproj", "{FAC6B78C-E62C-4565-851E-3250FC780EE8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleCompany.ReferenceServer", "src\SampleCompany\ReferenceServer\SampleCompany.ReferenceServer.csproj", "{F76FDFE7-317C-448C-AEFC-CC8D8FB8EA50}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleCompany.ReferenceServer", "reference\SampleCompany\ReferenceServer\SampleCompany.ReferenceServer.csproj", "{F76FDFE7-317C-448C-AEFC-CC8D8FB8EA50}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleCompany.ReferenceClient", "src\SampleCompany\ReferenceClient\SampleCompany.ReferenceClient.csproj", "{412C3207-C15D-444A-BE57-59F1DE0F2724}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleCompany.ReferenceClient", "reference\SampleCompany\ReferenceClient\SampleCompany.ReferenceClient.csproj", "{412C3207-C15D-444A-BE57-59F1DE0F2724}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Technosoftware.UaPubSub", "src\Technosoftware\UaPubSub\Technosoftware.UaPubSub.csproj", "{EE622758-CC00-471B-AD30-9C21864D3C9F}"
 EndProject

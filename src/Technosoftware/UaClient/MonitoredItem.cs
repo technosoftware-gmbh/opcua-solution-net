@@ -636,16 +636,13 @@ namespace Technosoftware.UaClient
                 {
                     EventFieldList eventchange = newValue as EventFieldList;
 
-                    if (eventCache_ != null)
+                    if (eventchange != null)
                     {
-                        eventCache_.OnNotification(eventchange);
+                        eventCache_?.OnNotification(eventchange);
                     }
                 }
 
-                if (NotificationEventHandler != null)
-                {
-                    NotificationEventHandler(this, new MonitoredItemNotificationEventArgs(newValue));
-                }
+                NotificationEventHandler?.Invoke(this, new MonitoredItemNotificationEventArgs(newValue));
             }
         }
         #endregion
@@ -762,7 +759,7 @@ namespace Technosoftware.UaClient
         {
             // ensure the global counter is not duplicating future handle ids
             Utils.LowerLimitIdentifier(ref globalClientHandle_, clientHandle);
-            clientHandle_ = clientHandle;  
+            clientHandle_ = clientHandle;
             status_.SetTransferResult(this);
             attributesModified_ = false;
         }

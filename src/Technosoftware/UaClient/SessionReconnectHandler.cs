@@ -305,10 +305,14 @@ namespace Technosoftware.UaClient
                     // breaking change, the callback must only assign the new
                     // session if the property is != null
                     session_ = null;
-                    Utils.LogInfo("Reconnect aborted, KeepAlive recovered.");
+                    Utils.LogInfo("Reconnect {0} aborted, KeepAlive recovered.", session_?.SessionId);
+                }
+                else
+                {
+                    Utils.LogInfo("Reconnect {0}.", session_?.SessionId);
                 }
 
-                // do the reconnect.
+                // do the reconnect or recover state.
                 if (keepaliveRecovered ||
                     await DoReconnectAsync().ConfigureAwait(false))
                 {

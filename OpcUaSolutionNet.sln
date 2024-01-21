@@ -41,9 +41,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Technosoftware.UaStandardSe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Technosoftware.UaStandardServer.Tests", "Tests\Technosoftware.UaStandardServer.Tests\Technosoftware.UaStandardServer.Tests.csproj", "{875A4EAC-7720-4038-8552-1B879AF7B361}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{B1EA6EF8-8EFC-4D5C-A4B2-0C3F027F20F3}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Reference Applications", "Reference Applications", "{B1EA6EF8-8EFC-4D5C-A4B2-0C3F027F20F3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleCompany.NodeManagers", "src\SampleCompany\NodeManagers\SampleCompany.NodeManagers.csproj", "{F9836459-07FD-4700-AC18-A9FD9EA6F669}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleCompany.NodeManagers", "reference\SampleCompany\NodeManagers\SampleCompany.NodeManagers.csproj", "{F9836459-07FD-4700-AC18-A9FD9EA6F669}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Technosoftware.UaBaseServer", "src\Technosoftware\UaBaseServer\Technosoftware.UaBaseServer.csproj", "{8A0128C9-8C88-450D-B756-A2AB1F0825D1}"
 EndProject

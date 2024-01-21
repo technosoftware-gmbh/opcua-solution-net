@@ -98,7 +98,7 @@ namespace Technosoftware.UaClient
         /// This method browses the type model and 
         /// </remarks>
         public SimpleAttributeOperandCollection ConstructSelectClauses(
-            Session session,
+            IUaSession session,
             params NodeId[] eventTypeIds)
         {
             // browse the type model in the server address space to find the fields available for the event type.
@@ -222,7 +222,7 @@ namespace Technosoftware.UaClient
         /// <param name="session">The session.</param>
         /// <param name="eventTypeId">The event type id.</param>
         /// <param name="eventFields">The event fields.</param>
-        private void CollectFields(Session session, NodeId eventTypeId, SimpleAttributeOperandCollection eventFields)
+        private void CollectFields(IUaSession session, NodeId eventTypeId, SimpleAttributeOperandCollection eventFields)
         {
             // get the supertypes.
             var supertypes = EventUtils.BrowseSuperTypes(session, eventTypeId, false);
@@ -254,7 +254,7 @@ namespace Technosoftware.UaClient
         /// <param name="eventFields">The event fields.</param>
         /// <param name="foundNodes">The table of found nodes.</param>
         private void CollectFields(
-            Session session,
+            IUaSession session,
             NodeId nodeId,
             QualifiedNameCollection parentPath,
             SimpleAttributeOperandCollection eventFields,

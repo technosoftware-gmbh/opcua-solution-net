@@ -15,7 +15,6 @@
 
 #region Using Directives
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -34,6 +33,11 @@ namespace Technosoftware.UaClient
     [DataContract(Namespace = Namespaces.OpcUaXsd)]
     public partial class Subscription : IDisposable, ICloneable
     {
+        #region Constants
+        const int MinKeepAliveTimerInterval = 1000;
+        const int KeepAliveTimerMargin = 1000;
+        #endregion
+
         #region Constructors, Destructor, Initialization
         /// <summary>
         /// Creates a empty object.
@@ -129,8 +133,9 @@ namespace Technosoftware.UaClient
             // stop the publish timer.
             Utils.SilentDispose(publishTimer_);
             publishTimer_ = null;
-            messageWorkerShutdownEvent_.Set();
+            Utils.SilentDispose(m_messageWorkerCts);
             messageWorkerEvent_.Set();
+            m_messageWorkerCts = null;
             messageWorkerTask_ = null;
         }
 
@@ -153,6 +158,7 @@ namespace Technosoftware.UaClient
             DisplayName = "Subscription";
             PublishingInterval = 0;
             KeepAliveCount = 0;
+            m_keepAliveInterval = 0;
             LifetimeCount = 0;
             MaxNotificationsPerPublish = 0;
             PublishingEnabled = false;
@@ -166,7 +172,7 @@ namespace Technosoftware.UaClient
             monitoredItems_ = new SortedDictionary<uint, MonitoredItem>();
             deletedItems_ = new List<MonitoredItem>();
             messageWorkerEvent_ = new AsyncAutoResetEvent();
-            messageWorkerShutdownEvent_ = new ManualResetEvent(false);
+            m_messageWorkerCts = null;
             resyncLastSequenceNumberProcessed_ = false;
 
             DefaultItem = new MonitoredItem {
@@ -241,18 +247,12 @@ namespace Technosoftware.UaClient
         {
             add
             {
-                lock (cache_)
-                {
-                    PublishStatusChangedEventHandler += value;
-                }
+                PublishStatusChangedEventHandler += value;
             }
 
             remove
             {
-                lock (cache_)
-                {
-                    PublishStatusChangedEventHandler -= value;
-                }
+                PublishStatusChangedEventHandler -= value;
             }
         }
         #endregion
@@ -316,14 +316,12 @@ namespace Technosoftware.UaClient
         {
             get
             {
-                lock (cache_)
-                {
-                    return maxMessageCount_;
-                }
+                return maxMessageCount_;
             }
 
             set
             {
+                // lock needed to synchronize with message list processing
                 lock (cache_)
                 {
                     maxMessageCount_ = value;
@@ -370,13 +368,11 @@ namespace Technosoftware.UaClient
         {
             get
             {
-                lock (cache_)
-                {
-                    return sequentialPublishing_;
-                }
+                return sequentialPublishing_;
             }
             set
             {
+                // synchronize with message list processing
                 lock (cache_)
                 {
                     sequentialPublishing_ = value;
@@ -494,25 +490,28 @@ namespace Technosoftware.UaClient
         {
             get
             {
-                if (deletedItems_.Count > 0)
+                lock (cache_)
                 {
-                    return true;
-                }
-
-                foreach (var monitoredItem in monitoredItems_.Values)
-                {
-                    if (Created && !monitoredItem.Status.Created)
+                    if (deletedItems_.Count > 0)
                     {
                         return true;
                     }
 
-                    if (monitoredItem.AttributesModified)
+                    foreach (MonitoredItem monitoredItem in monitoredItems_.Values)
                     {
-                        return true;
-                    }
-                }
+                        if (Created && !monitoredItem.Status.Created)
+                        {
+                            return true;
+                        }
 
-                return false;
+                        if (monitoredItem.AttributesModified)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
             }
         }
 
@@ -604,10 +603,8 @@ namespace Technosoftware.UaClient
         {
             get
             {
-                lock (cache_)
-                {
-                    return lastNotificationTime_;
-                }
+                var ticks = Interlocked.Read(ref lastNotificationTime_);
+                return new DateTime(ticks, DateTimeKind.Utc);
             }
         }
 
@@ -692,7 +689,9 @@ namespace Technosoftware.UaClient
             {
                 lock (cache_)
                 {
-                    return availableSequenceNumbers_;
+                    return availableSequenceNumbers_ != null ?
+                        (IEnumerable<uint>)new ReadOnlyList<uint>(availableSequenceNumbers_) :
+                        Enumerable.Empty<uint>();
                 }
             }
         }
@@ -714,18 +713,13 @@ namespace Technosoftware.UaClient
         {
             get
             {
-                lock (cache_)
+                TimeSpan timeSinceLastNotification = TimeSpan.FromTicks(DateTime.UtcNow.Ticks - Interlocked.Read(ref lastNotificationTime_));
+                if (timeSinceLastNotification.TotalMilliseconds > m_keepAliveInterval + KeepAliveTimerMargin)
                 {
-                    var keepAliveInterval = (int)(Math.Min(CurrentPublishingInterval * CurrentKeepAliveCount, Int32.MaxValue - 500));
-                    TimeSpan timeSinceLastNotification = DateTime.UtcNow - lastNotificationTime_;
-
-                    if (timeSinceLastNotification.TotalMilliseconds > keepAliveInterval + 500)
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return true;
                 }
+
+                return false;
             }
         }
         #endregion
@@ -1322,7 +1316,8 @@ namespace Technosoftware.UaClient
                     TraceState("PUBLISHING RECOVERED");
                 }
 
-                DateTime now = lastNotificationTime_ = DateTime.UtcNow;
+                DateTime now = DateTime.UtcNow;
+                Interlocked.Exchange(ref lastNotificationTime_, now.Ticks);
 
                 // save the string table that came with notification.
                 message.StringTable = new List<string>(stringTable);
@@ -1395,9 +1390,6 @@ namespace Technosoftware.UaClient
 
                     node = next;
                 }
-
-                // process messages.
-                messageWorkerEvent_.Set();
             }
 
             // send notification that publishing received a keep alive or has to republish.
@@ -1412,6 +1404,9 @@ namespace Technosoftware.UaClient
                     Utils.LogError(e, "Error while raising PublishStateChanged event.");
                 }
             }
+
+                // process messages.
+                messageWorkerEvent_.Set();
         }
 
         /// <summary>
@@ -1630,18 +1625,42 @@ namespace Technosoftware.UaClient
                         }
                     }
 
-                    Utils.LogInfo("SubscriptionId {0}: Republishing {1} messages, next sequencenumber {2} after transfer.",
-                        Id, availableSequenceNumbers.Count, lastSequenceNumberProcessed_);
-
+                    // only republish consecutive sequence numbers
                     // triggers the republish mechanism immediately,
                     // if event is in the past
                     var now = DateTime.UtcNow.AddSeconds(-5);
-                    foreach (var sequenceNumber in availableSequenceNumbers)
+                    uint lastSequenceNumberToRepublish = lastSequenceNumberProcessed_ - 1;
+                    int availableNumbers = availableSequenceNumbers.Count;
+                    int republishMessages = 0;
+                    for (int i = 0; i < availableNumbers; i++)
                     {
-                        FindOrCreateEntry(now, sequenceNumber);
+                        bool found = false;
+                        foreach (var sequenceNumber in availableSequenceNumbers)
+                        {
+                            if (lastSequenceNumberToRepublish == sequenceNumber)
+                            {
+                                FindOrCreateEntry(now, sequenceNumber);
+                                found = true;
+                                break;
+                            }
+                        }
+
+                        if (found)
+                        {
+                            // remove sequence number handled for republish
+                            availableSequenceNumbers.Remove(lastSequenceNumberToRepublish);
+                            lastSequenceNumberToRepublish--;
+                            republishMessages++;
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
 
-                    // sequence numbers handled for republish, clear for caller so no ack
+                    Utils.LogInfo("SubscriptionId {0}: Republishing {1} messages, next sequencenumber {2} after transfer.",
+                        Id, republishMessages, lastSequenceNumberProcessed_);
+
                     availableSequenceNumbers.Clear();
                 }
             }
@@ -1701,45 +1720,81 @@ namespace Technosoftware.UaClient
         private void StartKeepAliveTimer()
         {
             // stop the publish timer.
-            int keepAliveInterval;
             lock (cache_)
             {
                 Utils.SilentDispose(publishTimer_);
                 publishTimer_ = null;
 
-                lastNotificationTime_ = DateTime.UtcNow;
-                keepAliveInterval = (int)(Math.Min(CurrentPublishingInterval * CurrentKeepAliveCount, Int32.MaxValue));
-                publishTimer_ = new Timer(OnKeepAlive, keepAliveInterval, keepAliveInterval, keepAliveInterval);
+                Interlocked.Exchange(ref lastNotificationTime_, DateTime.UtcNow.Ticks);
+                m_keepAliveInterval = (int)(Math.Min(CurrentPublishingInterval * (CurrentKeepAliveCount + 1), Int32.MaxValue));
+                if (m_keepAliveInterval < MinKeepAliveTimerInterval)
+                {
+                    m_keepAliveInterval = (int)(Math.Min(PublishingInterval * (KeepAliveCount + 1), Int32.MaxValue));
+                    m_keepAliveInterval = Math.Min(MinKeepAliveTimerInterval, m_keepAliveInterval);
+                }
+#if NET6_0_OR_GREATER
+                var publishTimer = new PeriodicTimer(TimeSpan.FromMilliseconds(m_keepAliveInterval));
+                _ = Task.Run(() => OnKeepAliveAsync(publishTimer));
+                publishTimer_ = publishTimer;
+#else
+                publishTimer_ = new Timer(OnKeepAlive, KeepAliveCount, KeepAliveCount, m_keepAliveInterval);
+#endif
 
                 if (messageWorkerTask_ == null || messageWorkerTask_.IsCompleted)
                 {
-                    messageWorkerShutdownEvent_.Reset();
-                    messageWorkerTask_ = Task.Run(() => PublishResponseMessageWorkerAsync());
+                    Utils.SilentDispose(m_messageWorkerCts);
+                    m_messageWorkerCts = new CancellationTokenSource();
+                    var ct = m_messageWorkerCts.Token;
+                    messageWorkerTask_ = Task.Run(() => {
+                        return PublishResponseMessageWorkerAsync(ct);
+                    });
                 }
             }
 
-            // send initial publish.
-            Session.BeginPublish(Math.Min(keepAliveInterval, Int32.MaxValue / 3) * 3);
+            // start publishing. Fill the queue.
+            Session.StartPublishing(BeginPublishTimeout(), false);
         }
 
+#if NET6_0_OR_GREATER
+        /// <summary>
+        /// Checks if a notification has arrived. Sends a publish if it has not.
+        /// </summary>
+        private async Task OnKeepAliveAsync(PeriodicTimer publishTimer)
+        {
+            while (await publishTimer.WaitForNextTickAsync().ConfigureAwait(false))
+            {
+                if (!PublishingStopped)
+                {
+                    continue;
+                }
+
+                HandleOnKeepAliveStopped();
+            }
+        }
+#else
         /// <summary>
         /// Checks if a notification has arrived. Sends a publish if it has not.
         /// </summary>
         private void OnKeepAlive(object state)
         {
-            // check if a publish has arrived.
-            EventHandler<PublishStateChangedEventArgs> callback = null;
-
-            lock (cache_)
+            if (!PublishingStopped)
             {
-                if (!PublishingStopped)
-                {
-                    return;
-                }
-
-                callback = PublishStatusChangedEventHandler;
-                publishLateCount_++;
+                return;
             }
+
+            HandleOnKeepAliveStopped();
+        }
+#endif
+
+        /// <summary>
+        /// Handles callback if publishing stopped. Sends a publish.
+        /// </summary>
+        private void HandleOnKeepAliveStopped()
+        {
+            // check if a publish has arrived.
+            EventHandler<PublishStateChangedEventArgs> callback = PublishStatusChangedEventHandler;
+
+            Interlocked.Increment(ref publishLateCount_);
 
             TraceState("PUBLISHING STOPPED");
 
@@ -1756,37 +1811,43 @@ namespace Technosoftware.UaClient
             }
 
             // try to send a publish to recover stopped publishing.
-            int keepAliveInterval = (int)(Math.Min(CurrentPublishingInterval * CurrentKeepAliveCount, Int32.MaxValue));
-            Session?.BeginPublish(Math.Min(keepAliveInterval, Int32.MaxValue / 3) * 3);
+            Session?.BeginPublish(BeginPublishTimeout());
         }
 
         /// <summary>
         /// Publish response worker task for the subscriptions.
         /// </summary>
-        private async Task PublishResponseMessageWorkerAsync()
+        private async Task PublishResponseMessageWorkerAsync(CancellationToken ct)
         {
+            Utils.LogTrace("SubscriptionId {0} - Publish Thread {1:X8} Started.", Id, Environment.CurrentManagedThreadId);
+
+            bool cancelled;
             try
             {
-                Utils.LogTrace("SubscriptionId {0} - Publish Thread {1:X8} Started.", Id, Environment.CurrentManagedThreadId);
-
                 do
                 {
                     await messageWorkerEvent_.WaitAsync().ConfigureAwait(false);
 
-                    if (messageWorkerShutdownEvent_.WaitOne(0))
+                    cancelled = ct.IsCancellationRequested;
+                    if (!cancelled)
                     {
-                        Utils.LogTrace("SubscriptionId {0} - Publish Thread {1:X8} Exited Normally.", Id, Environment.CurrentManagedThreadId);
-                        break;
+                        await OnMessageReceivedAsync(ct).ConfigureAwait(false);
+                        cancelled = ct.IsCancellationRequested;
                     }
-
-                    await OnMessageReceivedAsync(CancellationToken.None).ConfigureAwait(false);
                 }
-                while (true);
+                while (!cancelled);
+            }
+            catch (OperationCanceledException)
+            {
+                // intentionally fall through
             }
             catch (Exception e)
             {
                 Utils.LogError(e, "SubscriptionId {0} - Publish Worker Thread {1:X8} Exited Unexpectedly.", Id, Environment.CurrentManagedThreadId);
+                return;
             }
+
+            Utils.LogTrace("SubscriptionId {0} - Publish Thread {1:X8} Exited Normally.", Id, Environment.CurrentManagedThreadId);
         }
 
         /// <summary>
@@ -1794,8 +1855,16 @@ namespace Technosoftware.UaClient
         /// </summary>
         internal void TraceState(string context)
         {
-            UaClientUtils.EventLog.SubscriptionState(context, Id, lastNotificationTime_, Session?.GoodPublishRequestCount ?? 0,
+            UaClientUtils.EventLog.SubscriptionState(context, Id, new DateTime(lastNotificationTime_), Session?.GoodPublishRequestCount ?? 0,
                 CurrentPublishingInterval, CurrentKeepAliveCount, CurrentPublishingEnabled, MonitoredItemCount);
+        }
+
+        /// <summary>
+        /// Calculate the timeout of a publish request.
+        /// </summary>
+        private int BeginPublishTimeout()
+        {
+            return Math.Max(Math.Min(m_keepAliveInterval * 3, Int32.MaxValue), MinKeepAliveTimerInterval); ;
         }
 
         /// <summary>
@@ -2000,6 +2069,11 @@ namespace Technosoftware.UaClient
 
                 lock (cache_)
                 {
+                    if (incomingMessages_ == null)
+                    {
+                        return;
+                    }
+
                     for (LinkedListNode<IncomingMessage> ii = incomingMessages_.First; ii != null; ii = ii.Next)
                     {
                         // update monitored items with unprocessed messages.
@@ -2558,9 +2632,14 @@ namespace Technosoftware.UaClient
         private event EventHandler<SubscriptionStatusChangedEventArgs> StateChanged;
 
         private SubscriptionChangeMask changeMask_;
+#if NET6_0_OR_GREATER
+        private PeriodicTimer publishTimer_;
+#else
         private Timer publishTimer_;
+#endif
         private uint transferId_;
-        private DateTime lastNotificationTime_;
+        private long lastNotificationTime_;
+        private int m_keepAliveInterval;
         private int publishLateCount_;
         private event EventHandler<PublishStateChangedEventArgs> PublishStatusChangedEventHandler;
 
@@ -2572,7 +2651,7 @@ namespace Technosoftware.UaClient
         private SortedDictionary<uint, MonitoredItem> monitoredItems_;
         private int outstandingMessageWorkers_;
         private AsyncAutoResetEvent messageWorkerEvent_;
-        private ManualResetEvent messageWorkerShutdownEvent_;
+        private CancellationTokenSource m_messageWorkerCts;
         private Task messageWorkerTask_;
         private bool sequentialPublishing_;
         private uint lastSequenceNumberProcessed_;
@@ -2600,7 +2679,7 @@ namespace Technosoftware.UaClient
     /// <summary>
     /// Flags indicating what has changed in a subscription.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1714:FlagsEnumsShouldHavePluralNames"), Flags]
+    [Flags]
     public enum SubscriptionChangeMask
     {
         /// <summary>

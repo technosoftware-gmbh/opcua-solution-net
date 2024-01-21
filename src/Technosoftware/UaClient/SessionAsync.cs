@@ -172,7 +172,7 @@ namespace Technosoftware.UaClient
             // save session id.
             lock (SyncRoot)
             {
-                base.SessionCreated(sessionId, sessionCookie);
+                SessionCreated(sessionId, sessionCookie);
             }
 
             Utils.LogInfo("Revised session timeout value: {0}. ", sessionTimeout_);
@@ -203,12 +203,8 @@ namespace Technosoftware.UaClient
                     securityPolicyUri = ConfiguredEndpoint.Description.SecurityPolicyUri;
                 }
 
-                byte[] previousServerNonce = null;
-
-                if (TransportChannel.CurrentToken != null)
-                {
-                    previousServerNonce = TransportChannel.CurrentToken.ServerNonce;
-                }
+                // save previous nonce
+                byte[] previousServerNonce = GetCurrentTokenServerNonce();
 
                 // validate server nonce and security parameters for user identity.
                 ValidateServerNonce(
@@ -255,7 +251,7 @@ namespace Technosoftware.UaClient
                     }
                 }
 
-                if (certificateResults == null || certificateResults.Count == 0)
+                if (clientSoftwareCertificates?.Count > 0 && (certificateResults == null || certificateResults.Count == 0))
                 {
                     Utils.LogInfo("Empty results were received for the ActivateSession call.");
                 }
@@ -291,12 +287,12 @@ namespace Technosoftware.UaClient
             {
                 try
                 {
-                    await base.CloseSessionAsync(null, false, ct).ConfigureAwait(false);
-                    CloseChannel();
+                    await base.CloseSessionAsync(null, false, CancellationToken.None).ConfigureAwait(false);
+                    await CloseChannelAsync(CancellationToken.None).ConfigureAwait(false);
                 }
                 catch (Exception e)
                 {
-                    Utils.LogError("Cleanup: CloseSession() or CloseChannel() raised exception. " + e.Message);
+                    Utils.LogError("Cleanup: CloseSessionAsync() or CloseChannelAsync() raised exception. " + e.Message);
                 }
                 finally
                 {
@@ -329,10 +325,7 @@ namespace Technosoftware.UaClient
                 subscription.Session = null;
             }
 
-            if (SubscriptionsChangedEventHandler != null)
-            {
-                SubscriptionsChangedEventHandler(this, null);
-            }
+            SubscriptionsChangedEventHandler?.Invoke(this, null);
 
             return true;
         }
@@ -353,10 +346,7 @@ namespace Technosoftware.UaClient
 
             if (removed)
             {
-                if (SubscriptionsChangedEventHandler != null)
-                {
-                    SubscriptionsChangedEventHandler(this, null);
-                }
+                SubscriptionsChangedEventHandler ?.Invoke(this, null);
             }
 
             return removed;
@@ -373,9 +363,11 @@ namespace Technosoftware.UaClient
 
             if (subscriptionIds.Count > 0)
             {
+                bool reconnecting = false;
                 await reconnectLock_.WaitAsync(ct).ConfigureAwait(false);
                 try
                 {
+                    reconnecting = reconnecting_;
                     reconnecting_ = true;
 
                     for (int ii = 0; ii < subscriptions.Count; ii++)
@@ -411,11 +403,11 @@ namespace Technosoftware.UaClient
                 }
                 finally
                 {
-                    reconnecting_ = false;
+                    reconnecting_ = reconnecting;
                     reconnectLock_.Release();
                 }
 
-                RestartPublishing();
+                StartPublishing(OperationTimeout, true);
             }
             else
             {
@@ -473,9 +465,11 @@ namespace Technosoftware.UaClient
 
             if (subscriptionIds.Count > 0)
             {
+                bool reconnecting = false;
                 await reconnectLock_.WaitAsync(ct).ConfigureAwait(false);
                 try
                 {
+                    reconnecting = reconnecting_;
                     reconnecting_ = true;
 
                     TransferSubscriptionsResponse response = await base.TransferSubscriptionsAsync(null, subscriptionIds, sendInitialValues, ct).ConfigureAwait(false);
@@ -498,16 +492,12 @@ namespace Technosoftware.UaClient
                         {
                             if (await subscriptions[ii].TransferAsync(this, subscriptionIds[ii], results[ii].AvailableSequenceNumbers, ct).ConfigureAwait(false))
                             {
-                                lock (SyncRoot)
+                                lock (acknowledgementsToSendLock_)
                                 {
                                     // create ack for available sequence numbers
                                     foreach (var sequenceNumber in results[ii].AvailableSequenceNumbers)
                                     {
-                                        var ack = new SubscriptionAcknowledgement() {
-                                            SubscriptionId = subscriptionIds[ii],
-                                            SequenceNumber = sequenceNumber
-                                        };
-                                        acknowledgementsToSend_.Add(ack);
+                                        AddAcknowledgementToSend(acknowledgementsToSend_, subscriptionIds[ii], sequenceNumber);
                                     }
                                 }
                             }
@@ -528,11 +518,11 @@ namespace Technosoftware.UaClient
                 }
                 finally
                 {
-                    reconnecting_ = false;
+                    reconnecting_ = reconnecting;
                     reconnectLock_.Release();
                 }
 
-                RestartPublishing();
+                StartPublishing(OperationTimeout, false);
             }
             else
             {
@@ -1387,8 +1377,7 @@ namespace Technosoftware.UaClient
             StatusCode result = StatusCodes.Good;
 
             // stop the keep alive timer.
-            Utils.SilentDispose(keepAliveTimer_);
-            keepAliveTimer_ = null;
+            StopKeepAliveTimer();
 
             // check if currectly connected.
             bool connected = Connected;
@@ -1412,41 +1401,31 @@ namespace Technosoftware.UaClient
             // close the session with the server.
             if (connected && !KeepAliveStopped)
             {
-                int existingTimeout = this.OperationTimeout;
-
                 try
                 {
                     // close the session and delete all subscriptions if specified.
-                    this.OperationTimeout = timeout;
-                    var response = await base.CloseSessionAsync(null, DeleteSubscriptionsOnClose, ct).ConfigureAwait(false);
-                    this.OperationTimeout = existingTimeout;
+                    var requestHeader = new RequestHeader() {
+                        TimeoutHint = timeout > 0 ? (uint)timeout : (uint)(this.OperationTimeout > 0 ? this.OperationTimeout : 0),
+                    };
+                    var response = await base.CloseSessionAsync(requestHeader, DeleteSubscriptionsOnClose, ct).ConfigureAwait(false);
 
                     if (closeChannel)
                     {
-                        CloseChannel();
+                        await CloseChannelAsync(ct).ConfigureAwait(false);
                     }
 
                     // raised notification indicating the session is closed.
                     SessionCreated(null, null);
                 }
-                catch (Exception e)
+                // dont throw errors on disconnect, but return them
+                // so the caller can log the error.
+                catch (ServiceResultException sre)
                 {
-                    // dont throw errors on disconnect, but return them
-                    // so the caller can log the error.
-                    if (e is ServiceResultException)
-                    {
-                        result = ((ServiceResultException)e).StatusCode;
-                    }
-                    else
-                    {
-                        result = StatusCodes.Bad;
-                    }
-
-                    Utils.LogError("Session close error: " + result);
+                    result = sre.StatusCode;
                 }
-                finally
+                catch (Exception)
                 {
-                    this.OperationTimeout = existingTimeout;
+                    result = StatusCodes.Bad;
                 }
             }
 
@@ -1497,6 +1476,8 @@ namespace Technosoftware.UaClient
                         "Session is already attempting to reconnect.");
                 }
 
+                StopKeepAliveTimer();
+
                 IAsyncResult result = PrepareReconnectBeginActivate(
                     connection,
                     transportChannel);
@@ -1523,15 +1504,12 @@ namespace Technosoftware.UaClient
                     out certificateResults,
                     out certificateDiagnosticInfos);
 
-                int publishCount = 0;
-
                 Utils.LogInfo("Session RECONNECT {0} completed successfully.", SessionId);
 
                 lock (SyncRoot)
                 {
                     previousServerNonce_ = serverNonce_;
                     serverNonce_ = serverNonce;
-                    publishCount = GetMinPublishRequestCount(true);
                 }
 
                 await reconnectLock_.WaitAsync(ct).ConfigureAwait(false);
@@ -1539,11 +1517,7 @@ namespace Technosoftware.UaClient
                 resetReconnect = false;
                 reconnectLock_.Release();
 
-                // refill pipeline.
-                for (int ii = 0; ii < publishCount; ii++)
-                {
-                    BeginPublish(OperationTimeout);
-                }
+                StartPublishing(OperationTimeout, true);
 
                 StartKeepAliveTimer();
 
