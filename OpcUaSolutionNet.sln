@@ -16,6 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		common.props = common.props
 		Directory.Build.props = Directory.Build.props
+		README.md = README.md
 		targets.props = targets.props
 		version.json = version.json
 		version.props = version.props
@@ -50,6 +51,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Technosoftware.UaPubSub", "src\Technosoftware\UaPubSub\Technosoftware.UaPubSub.csproj", "{6B0095B1-783F-405A-BA9E-99813A084D47}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Technosoftware.UaPubSub.Tests", "Tests\Technosoftware.UaPubSub.Tests\Technosoftware.UaPubSub.Tests.csproj", "{9D084AA9-D430-4491-9D6D-3B736AAABE45}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "documentation", "documentation", "{217FC2CF-B876-47D8-AA89-C568DF3189E3}"
+	ProjectSection(SolutionItems) = preProject
+		documentation\Installation.md = documentation\Installation.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

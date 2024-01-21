@@ -7,17 +7,17 @@ The OPC UA Solution .NET is the implementation for the
 
 ## OPC UA Client .NET
 
-The OPC UA Client .NET offers a fast and easy access to the OPC UA Client technology. Develop OPC UA 1.00, 1.01, 1.02, 1.03, 1.04 and 1.05 compliant UA Clients with C# targeting the .NET 7.0 or .NET 6.0.
+The OPC UA Client .NET offers a fast and easy access to the OPC Unified Architecture (UA) technology. Develop OPC UA compliant Clients with C# targeting .NET 8.0, .NET 7.0 or .NET 6.0. For backward compatibility we also provide .NET 4.8 support.
 
-.NET 8.0, .NET 7.0 and .NET 6.0 allows allows you develop applications that run on all common platforms available today, including Linux, macOS and Windows 8.1/10 (including embedded/IoT editions) without requiring platform-specific modifications.
+.NET 8.0, .NET 7.0 or .NET 6.0 allows you develop applications that run on all common platforms available today, including Linux, macOS and Windows 8.1/10/11 (including embedded/IoT editions) without requiring platform-specific modifications.
 
-The OPC UA Client SDK .NET API defines classes which can be used to implement an OPC client capable to access OPC servers supporting different profiles with the same API. These classes manage client side state information; provide higher level abstractions for OPC tasks such as managing sessions and subscriptions or saving and restoring connection information for later use.
+The **OPC UA Client .NET API** defines classes which can be used to implement an OPC client capable to access OPC servers supporting different profiles with the same API. These classes manage client side state information; provide higher level abstractions for OPC tasks such as managing sessions and subscriptions or saving and restoring connection information for later use.
 
 ## OPC UA Server .NET
 
-The OPC UA Server .NET offers a fast and easy access to the OPC Unified Architecture (UA) technology. Develop OPC UA 1.00, 1.01, 1.02, 1.03, 1.04 and 1.05 compliant Servers with C# targeting targeting the .NET 7.0 or .NET 6.0.
+The OPC UA Server NET offers a fast and easy access to the OPC Unified Architecture (UA) technology. Develop OPC UA compliant Servers with C# targeting .NET 8.0, .NET 7.0 or .NET 6.0. For backward compatibility we also provide .NET 4.8 support.
 
-.NET 8.0, .NET 7.0 and .NET 6.0 allows you develop applications that run on all common platforms available today, including Linux, macOS and Windows 8.1/10 (including embedded/IoT editions) without requiring platform-specific modifications.
+.NET 8.0, .NET 7.0 or .NET 6.0 allows you develop applications that run on all common platforms available today, including Linux, macOS and Windows 8.1/10/11 (including embedded/IoT editions) without requiring platform-specific modifications.
 
 The developer can concentrate on his application and servers can be developed fast and easily without the need to spend a lot of time learning how to implement the OPC Unified Architecture specification. The server API is easy to use and many OPC specific functions are handled by the framework.
 
@@ -30,18 +30,7 @@ Documentation of the Model Compiler can be found [here](https://github.com/OPCFo
  * .NET 8.0, .NET 7.0, .NET 6.0
  * .NET 4.8
 
-## Online Help
-
-We provide an online help for the current version: [OPC UA Solution NET Online Help](https://technosoftware.com/help/OPCUaSolutionNet/32/)
-
-## Getting started
-
-You can use the following documents as a starting point (be aware that they are a bit outdated and will be updated in the near future):
-
-1. [OPC UA Solution NET Installation Guide](./documentation/OPC_UA_Solution_NET_Installation_Guide.pdf)
-2. [OPC UA Solution NET Introduction](./documentation/OPC_UA_Solution_NET_Introduction.pdf)
-3. [OPC UA Client Development with NET](./documentation/OPC_UA_Client_Development_with_NET.pdf)
-4. [OPC UA Server Development with NET](./documentation/OPC_UA_Server_Development_with_NET.pdf)
+##  General Info
 
 ### Build Status
 
@@ -53,7 +42,13 @@ You can use the following documents as a starting point (be aware that they are 
 
 [![codecov](https://codecov.io/gh/technosoftware-gmbh/opcua-solution-net/graph/badge.svg?token=PJ39TDO2RE)](https://codecov.io/gh/technosoftware-gmbh/opcua-solution-net)
 
-## Workshop
+## Getting started
+
+### Online Help
+
+We provide an online help for the current version: [OPC UA Solution NET Online Help](https://technosoftware.com/help/OPCUaSolutionNet/32/)
+
+### Workshop
 
 You can also use the PDFs provided from our Workshop available [here](./Workshop).
 
@@ -72,13 +67,13 @@ A Support subscriptions includes
 
 By purchasing support, you agree to our [Support Services Agreement](https://technosoftware.com/documents/Support_Services_Agreement.pdf).
 
-The Support Subscription is avalable [here](https://technosoftware.com/opc-ua-support/)
+The Support Subscription is available [here](https://technosoftware.com/opc-ua-support/)
 
 ### Get Support for the Solution without a Support Subscription:
 
 Free of charge support for the Solution is available [here](https://github.com/technosoftware-gmbh/opcua-solution-net/issues).
 
-### Contribution
+## Contribution
 
 We strongly encourage community participation and contribution to this project. First, please fork the repository and commit your changes there. Once happy with your changes you can generate a 'pull request'.
 
