@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Product>OPC UA Solution .NET</Product>
     <RepositoryUrl>https://github.com/technosoftware-gmbh/opcua-solution-net</RepositoryUrl>
-    <VersionPrefix>3.2.3</VersionPrefix>
+    <VersionPrefix>3.2.4</VersionPrefix>
     <VersionSuffix>rc-$([System.DateTime]::Now.ToString("yyyyMMdd"))</VersionSuffix>
     <Copyright>Copyright © 2018 - 2023 Technosoftware GmbH</Copyright>
     <Company>Technosoftware GmbH</Company>
@@ -17,7 +17,7 @@
     <!--TODO <GenerateDocumentationFile>true</GenerateDocumentationFile>-->
     <EnablePackageValidation>true</EnablePackageValidation>
     <!-- to check the package validation on a release build, uncomment here -->
-    <!--<PackageValidationBaselineVersion>3.2.3/PackageValidationBaselineVersion>-->
+    <!--<PackageValidationBaselineVersion>3.2.4/PackageValidationBaselineVersion>-->
   </PropertyGroup>
 
   <PropertyGroup>

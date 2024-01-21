@@ -47,12 +47,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleCompany.SampleServer"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleCompany.SampleClient", "examples\Simulation\SampleClient\SampleCompany.SampleClient.csproj", "{EDA299F8-AB14-4C9A-9C6B-919EBCBBC2A4}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PubSub", "PubSub", "{5FC31A9B-AAC2-4497-83B9-D7AFD08F0BE6}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleCompany.SamplePublisher", "examples\SampleCompany\SamplePublisher\SampleCompany.SamplePublisher.csproj", "{EED0E797-207D-4DB8-86D8-7E0DA97172FE}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleCompany.SampleSubscriber", "examples\SampleCompany\SampleSubscriber\SampleCompany.SampleSubscriber.csproj", "{AC31B133-FE94-4ED7-8AD2-1850475A7731}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -107,14 +101,6 @@ Global
 		{EDA299F8-AB14-4C9A-9C6B-919EBCBBC2A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDA299F8-AB14-4C9A-9C6B-919EBCBBC2A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EDA299F8-AB14-4C9A-9C6B-919EBCBBC2A4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EED0E797-207D-4DB8-86D8-7E0DA97172FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EED0E797-207D-4DB8-86D8-7E0DA97172FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EED0E797-207D-4DB8-86D8-7E0DA97172FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EED0E797-207D-4DB8-86D8-7E0DA97172FE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AC31B133-FE94-4ED7-8AD2-1850475A7731}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AC31B133-FE94-4ED7-8AD2-1850475A7731}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AC31B133-FE94-4ED7-8AD2-1850475A7731}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AC31B133-FE94-4ED7-8AD2-1850475A7731}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -135,8 +121,6 @@ Global
 		{F58DCE66-D341-479A-ADA4-C4C845B7F404} = {EEC12B13-41D8-48A2-B428-866E0F4CE96A}
 		{011D3CC8-BB96-456F-973A-F7BF5CE82637} = {69BE4B40-E6D2-4A20-9B6E-C74F661990CD}
 		{EDA299F8-AB14-4C9A-9C6B-919EBCBBC2A4} = {69BE4B40-E6D2-4A20-9B6E-C74F661990CD}
-		{EED0E797-207D-4DB8-86D8-7E0DA97172FE} = {5FC31A9B-AAC2-4497-83B9-D7AFD08F0BE6}
-		{AC31B133-FE94-4ED7-8AD2-1850475A7731} = {5FC31A9B-AAC2-4497-83B9-D7AFD08F0BE6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {519D77B6-EA9C-4A11-8248-ABCC01FD533C}

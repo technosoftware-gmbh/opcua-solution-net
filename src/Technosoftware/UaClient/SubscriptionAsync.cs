@@ -85,11 +85,7 @@ namespace Technosoftware.UaClient
             {
                 lock (cache_)
                 {
-                    // stop the publish timer.
-                    Utils.SilentDispose(publishTimer_);
-                    publishTimer_ = null;
-                    messageWorkerEvent_.Set();
-                    messageWorkerTask_ = null;
+                    ResetPublishTimerAndWorkerState();
                 }
 
                 // delete the subscription.

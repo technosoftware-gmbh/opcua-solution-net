@@ -60,8 +60,8 @@ namespace Technosoftware.UaStandardServer.Tests
         /// Test NodeSet2 import.
         /// </summary>
         [Test]
-        [TestCase("src/SampleCompany/NodeManagers/TestData/SampleCompany.NodeManagers.TestData.NodeSet2.xml")]
-        [TestCase("src/SampleCompany/NodeManagers/MemoryBuffer/SampleCompany.NodeManagers.MemoryBuffer.NodeSet2.xml")]
+        [TestCase("samples/SampleCompany/NodeManagers/TestData/SampleCompany.NodeManagers.TestData.NodeSet2.xml")]
+        [TestCase("samples/SampleCompany/NodeManagers/MemoryBuffer/SampleCompany.NodeManagers.MemoryBuffer.NodeSet2.xml")]
         public void NodeSet2ValidationTest(string nodeset2File)
         {
             var assetPath = Utils.GetAbsoluteFilePath("../../../../../" + nodeset2File, true, false, false);

@@ -165,9 +165,10 @@ namespace Technosoftware.UaClient
         /// <summary>
         /// Recreates a session based on a specified template.
         /// </summary>
-        /// <param name="sessionTemplate">The ISession object to use as template</param>
+        /// <param name="sessionTemplate">The IUaSession object to use as template</param>
         /// <param name="ct">The cancellation token.</param>
         /// <returns>The new session object.</returns>
+        /// <remarks>The template session must be disposed by the owner.</remarks>
         Task<IUaSession> RecreateAsync(IUaSession sessionTemplate, CancellationToken ct = default);
 
         /// <summary>
@@ -177,6 +178,7 @@ namespace Technosoftware.UaClient
         /// <param name="connection">The waiting reverse connection.</param>
         /// <param name="ct">The cancellation token.</param>
         /// <returns>The new session object.</returns>
+        /// <remarks>The template session must be disposed by the owner.</remarks>
         Task<IUaSession> RecreateAsync(IUaSession sessionTemplate, ITransportWaitingConnection connection, CancellationToken ct = default);
 
         /// <summary>
@@ -186,6 +188,7 @@ namespace Technosoftware.UaClient
         /// <param name="transportChannel">The channel to use to recreate the session.</param>
         /// <param name="ct">The cancellation token.</param>
         /// <returns>The new session object.</returns>
+        /// <remarks>The template session must be disposed by the owner.</remarks>
         Task<IUaSession> RecreateAsync(IUaSession sessionTemplate, ITransportChannel transportChannel, CancellationToken ct = default);
     }
 }
