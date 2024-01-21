@@ -32,6 +32,8 @@ Documentation of the Model Compiler can be found [here](https://github.com/OPCFo
 
 ##  General Info
 
+ * [Installation Guide](./documentation/Installation.md)
+
 ### Build Status
 
 [![Build status](https://ci.appveyor.com/api/projects/status/8rkeekyht2pvs8v5?svg=true)](https://ci.appveyor.com/project/technosoftware/opcua-solution-net)
