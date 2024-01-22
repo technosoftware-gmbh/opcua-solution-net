@@ -48,7 +48,7 @@ PROJECT_NAME           = "OPC UA Solution .NET"
 # could be handy for archiving the generated documentation or if some version
 # control system is used.
 
-PROJECT_NUMBER         = 3.1.9
+PROJECT_NUMBER         = 3.2.4
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
@@ -943,12 +943,11 @@ WARN_LOGFILE           =
 # spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = index.txt \
-                         starting.txt \
-                         important.txt \
-                         development.txt \
-                         deployment.txt \				 
-                         license.txt \
+INPUT                  = index.md \
+                         ../documentation/Installation.md \
+                         ../documentation/Distribution.md \
+                         ../documentation/Development.md \
+                         ../LICENSE.md \
                          ..\src\Technosoftware\UaCore\Common \
                          ..\src\Technosoftware\UaCore\Documentation \
                          ..\src\Technosoftware\UaCore\Extensions \
