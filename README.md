@@ -58,7 +58,7 @@ You can also use the PDFs provided from our Workshop available [here](./Workshop
 
 ##	Redistributable
 
-- The Redistributable of the OPC UA Local Discovery Server are available [here](https://opcfoundation.org/developer-tools/samples-and-tools-unified-architecture/local-discovery-server-lds/):target="_blank"}.
+- The Redistributable of the OPC UA Local Discovery Server are available [here](https://opcfoundation.org/developer-tools/samples-and-tools-unified-architecture/local-discovery-server-lds/).
 - We used the version 1.04.405 for our tests
 
 ## Available Support Subscriptions
@@ -71,7 +71,7 @@ A Support subscriptions includes
 
 By purchasing support, you agree to our [Support Services Agreement](https://technosoftware.com/documents/Support_Services_Agreement.pdf).
 
-The Support Subscription is available [here](https://technosoftware.com/opc-ua-support/):target="_blank"}
+The Support Subscription is available [here](https://technosoftware.com/opc-ua-support/).
 
 ### Get Support for the Solution without a Support Subscription:
 
