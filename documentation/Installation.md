@@ -2,7 +2,7 @@
 
 ## Installation .NET
 
-Please follow instructions in this [article](https://dotnet.microsoft.com/en-us/learn/dotnet/hello-world-tutorial/intro){:target="_blank"} to setup the dotnet command line environment for your platform.
+Please follow instructions in this [article](https://dotnet.microsoft.com/en-us/learn/dotnet/hello-world-tutorial/intro) to setup the dotnet command line environment for your platform.
 As of today, .NET 8.0, .NET 7.0 or .NET 6.0 is required. The article describes the installation of .NET 8.0.101 for
 Windows, Linux and macOS. This version also works with the OPC UA Client and Server Solutions we
 provide in this GitHub repositories.
@@ -12,7 +12,7 @@ Please follow at least the sections:
 * Intro
 * Download and Install
 
-to install the .NET SDK. You find the different .NET versions also [here](https://dotnet.microsoft.com/en-us/download/dotnet){:target="_blank"}.
+to install the .NET SDK. You find the different .NET versions also [here](https://dotnet.microsoft.com/en-us/download/dotnet).
 
 ## Environments used for testing
 
