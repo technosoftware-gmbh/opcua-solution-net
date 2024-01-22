@@ -50,7 +50,7 @@ Documentation of the Model Compiler can be found [here](https://github.com/OPCFo
 
 ### Online Help
 
-We provide an online help for the current version: [OPC UA Solution NET Online Help](https://technosoftware.com/help/OPCUaSolutionNet/32/){:target="_blank"}
+We provide an online help for the current version: [OPC UA Solution NET Online Help](https://technosoftware.com/help/OPCUaSolutionNet/32/)
 
 ### Workshop
 
@@ -58,7 +58,7 @@ You can also use the PDFs provided from our Workshop available [here](./Workshop
 
 ##	Redistributable
 
-- The Redistributable of the OPC UA Local Discovery Server are available [here](https://opcfoundation.org/developer-tools/samples-and-tools-unified-architecture/local-discovery-server-lds/){:target="_blank"}.
+- The Redistributable of the OPC UA Local Discovery Server are available [here](https://opcfoundation.org/developer-tools/samples-and-tools-unified-architecture/local-discovery-server-lds/):target="_blank"}.
 - We used the version 1.04.405 for our tests
 
 ## Available Support Subscriptions
@@ -69,16 +69,16 @@ A Support subscriptions includes
 - Technical support for OPC UA related products.
 - Can be used for specification related questions or product related support.
 
-By purchasing support, you agree to our [Support Services Agreement](https://technosoftware.com/documents/Support_Services_Agreement.pdf){:target="_blank"}.
+By purchasing support, you agree to our [Support Services Agreement](https://technosoftware.com/documents/Support_Services_Agreement.pdf).
 
-The Support Subscription is available [here](https://technosoftware.com/opc-ua-support/){:target="_blank"}
+The Support Subscription is available [here](https://technosoftware.com/opc-ua-support/):target="_blank"}
 
 ### Get Support for the Solution without a Support Subscription:
 
-Free of charge support for the Solution is available [here](https://github.com/technosoftware-gmbh/opcua-solution-net/issues){:target="_blank"}.
+Free of charge support for the Solution is available [here](https://github.com/technosoftware-gmbh/opcua-solution-net/issues).
 
 ## Contribution
 
 We strongly encourage community participation and contribution to this project. First, please fork the repository and commit your changes there. Once happy with your changes you can generate a 'pull request'.
 
-You must agree to the contributor license agreement before we can accept your changes. The CLA and "I AGREE" button is automatically displayed when you perform the pull request. You can preview CLA [here](https://cla-assistant.io/technosoftware-gmbh/opcua-solution-net){:target="_blank"}.
+You must agree to the contributor license agreement before we can accept your changes. The CLA and "I AGREE" button is automatically displayed when you perform the pull request. You can preview CLA [here](https://cla-assistant.io/technosoftware-gmbh/opcua-solution-net).
