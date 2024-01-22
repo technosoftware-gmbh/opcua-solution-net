@@ -32,8 +32,6 @@ Documentation of the Model Compiler can be found [here](https://github.com/OPCFo
 
 ##  General Info
 
- * [Installation Guide](./documentation/Installation.md)
-
 ### Build Status
 
 [![Build status](https://ci.appveyor.com/api/projects/status/8rkeekyht2pvs8v5?svg=true)](https://ci.appveyor.com/project/technosoftware/opcua-solution-net)
@@ -45,6 +43,10 @@ Documentation of the Model Compiler can be found [here](https://github.com/OPCFo
 [![codecov](https://codecov.io/gh/technosoftware-gmbh/opcua-solution-net/graph/badge.svg?token=PJ39TDO2RE)](https://codecov.io/gh/technosoftware-gmbh/opcua-solution-net)
 
 ## Getting started
+
+ * [Installation and Administration of .NET based OPC UA Applications](./documentation/Installation.md)
+ * [Distribution Guide](./documentation/Distribution.md)
+ * [OPC UA Development](./documentation/Development.md)
 
 ### Online Help
 
