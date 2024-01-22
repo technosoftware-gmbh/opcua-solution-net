@@ -4,11 +4,11 @@
 
 For a detailed introduction into OPC UA Client Development we highly recommend to read the following document:
 
-- [OPC UA Solution .NET Introduction](/documentation/OPC_UA_Solution_NET_Introduction.pdf)
+- [OPC UA Solution .NET Introduction](/documentation/OPC_UA_Solution_NET_Introduction.pdf){:target="_blank"}
 
   Introduction into OPC UA Client and OPC UA Server development with C#.
 
-- [OPC UA Client Development with .NET](/documentation/OPC_UA_Client_Development_with_NET.pdf)
+- [OPC UA Client Development with .NET](/documentation/OPC_UA_Client_Development_with_NET.pdf){:target="_blank"}
 
   Develop OPC UA Clients with C# for of .NET.
 
@@ -16,10 +16,10 @@ For a detailed introduction into OPC UA Client Development we highly recommend t
 
 For a detailed introduction into OPC UA Server Development we highly recommend to read the following document:
 
-- [OPC UA Solution .NET Introduction](/documentation/OPC_UA_Solution_NET_Introduction.pdf)
+- [OPC UA Solution .NET Introduction](/documentation/OPC_UA_Solution_NET_Introduction.pdf){:target="_blank"}
 
   Introduction into OPC UA Client and OPC UA Server development with C#.
 
-- [OPC UA Server Development with .NET](/documentation/OPC_UA_Server_Development_with_NET.pdf)
+- [OPC UA Server Development with .NET](/documentation/OPC_UA_Server_Development_with_NET.pdf){:target="_blank"}
 
   Develop OPC UA Servers with C# for of .NET.
