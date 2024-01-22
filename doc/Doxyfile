@@ -947,7 +947,9 @@ INPUT                  = index.md \
                          ../documentation/Installation.md \
                          ../documentation/Distribution.md \
                          ../documentation/Development.md \
+						 ../CHANGELOG.md \						 
                          ../LICENSE.md \
+						 ../CONTRIBUTING.md \
                          ..\src\Technosoftware\UaCore\Common \
                          ..\src\Technosoftware\UaCore\Documentation \
                          ..\src\Technosoftware\UaCore\Extensions \
