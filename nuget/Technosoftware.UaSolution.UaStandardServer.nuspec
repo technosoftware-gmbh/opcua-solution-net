@@ -2,39 +2,39 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>Technosoftware.UaSolution.UaStandardServer</id>
-    <version>3.2.4</version>
+    <version>3.3.0</version>
     <title>OPC UA Solution .NET Base Server Library</title>
     <description>OPC UA Solution .NET Base Server Library</description>
     <readme>README.md</readme>
     <authors>Technosoftware GmbH</authors>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <license type="file">licenses/LICENSE.txt</license>
+    <license type="file">licenses/LICENSE.md</license>
     <projectUrl>https://github.com/technosoftware-gmbh/opcua-solution-net-samples</projectUrl>
     <icon>images/TechnosoftwareGmbH.png</icon>
     <releaseNotes>https://github.com/technosoftware-gmbh/opcua-solution-net-samples/releases</releaseNotes>
-    <copyright>Copyright © 2011 - 2023 Technosoftware GmbH</copyright>
+    <copyright>Copyright © 2011 - 2024 Technosoftware GmbH</copyright>
     <tags>Technosoftware OPC UA .NET 8.0 .NET 7.0 .NET 6.0 .NET 4.8 macOS linux dotnet netcore</tags>
     <repository type="git" url="https://github.com/technosoftware-gmbh/opcua-solution-net-samples" />
     <dependencies>
       <group targetFramework="net8.0">
         <dependency id="Technosoftware.UaSolution.UaCore" version="3.3.0" exclude="Build,Analyzers" />
-        <dependency id="Technosoftware.UaSolution.UaConfiguration" version="3.2.4" exclude="Build,Analyzers" />
-        <dependency id="Technosoftware.UaSolution.UaServer" version="3.2.4" exclude="Build,Analyzers" />
+        <dependency id="Technosoftware.UaSolution.UaConfiguration" version="3.3.0" exclude="Build,Analyzers" />
+        <dependency id="Technosoftware.UaSolution.UaServer" version="3.3.0" exclude="Build,Analyzers" />
       </group>
       <group targetFramework="net7.0">
         <dependency id="Technosoftware.UaSolution.UaCore" version="3.3.0" exclude="Build,Analyzers" />
-        <dependency id="Technosoftware.UaSolution.UaConfiguration" version="3.2.4" exclude="Build,Analyzers" />
-        <dependency id="Technosoftware.UaSolution.UaServer" version="3.2.4" exclude="Build,Analyzers" />
+        <dependency id="Technosoftware.UaSolution.UaConfiguration" version="3.3.0" exclude="Build,Analyzers" />
+        <dependency id="Technosoftware.UaSolution.UaServer" version="3.3.0" exclude="Build,Analyzers" />
       </group>
       <group targetFramework="net6.0">
         <dependency id="Technosoftware.UaSolution.UaCore" version="3.3.0" exclude="Build,Analyzers" />
-        <dependency id="Technosoftware.UaSolution.UaConfiguration" version="3.2.4" exclude="Build,Analyzers" />
-        <dependency id="Technosoftware.UaSolution.UaServer" version="3.2.4" exclude="Build,Analyzers" />
+        <dependency id="Technosoftware.UaSolution.UaConfiguration" version="3.3.0" exclude="Build,Analyzers" />
+        <dependency id="Technosoftware.UaSolution.UaServer" version="3.3.0" exclude="Build,Analyzers" />
       </group>
       <group targetFramework="net48">
         <dependency id="Technosoftware.UaSolution.UaCore" version="3.3.0" exclude="Build,Analyzers" />
-        <dependency id="Technosoftware.UaSolution.UaConfiguration" version="3.2.4" exclude="Build,Analyzers" />
-        <dependency id="Technosoftware.UaSolution.UaServer" version="3.2.4" exclude="Build,Analyzers" />
+        <dependency id="Technosoftware.UaSolution.UaConfiguration" version="3.3.0" exclude="Build,Analyzers" />
+        <dependency id="Technosoftware.UaSolution.UaServer" version="3.3.0" exclude="Build,Analyzers" />
       </group>
     </dependencies>
   </metadata>
@@ -42,7 +42,7 @@
     <file src="../README.md" target="/" />
     <file src="../CHANGELOG.md" target="/" />
     <file src="../nuget/TechnosoftwareGmbH.png" target="images/" />
-    <file src="../licenses/LICENSE.txt" target="licenses/LICENSE.txt"/>
+    <file src="../LICENSE.md" target="licenses/LICENSE.md"/>
     <file src="../licenses/OPC Foundation RCL License.txt" target="licenses/OPC Foundation RCL License.txt"/>
     <file src="../lib/net8.0/Technosoftware.UaStandardServer.dll" target="lib/net8.0/" />
     <file src="../lib/net8.0/Technosoftware.UaStandardServer.xml" target="lib/net8.0/" />

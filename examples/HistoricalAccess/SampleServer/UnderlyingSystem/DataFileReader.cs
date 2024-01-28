@@ -675,8 +675,11 @@ namespace SampleCompany.SampleServer.UnderlyingSystem
             builder.AppendFormat("</{0}>", valueType);
             builder.Append("</Value>");
 
-            XmlDocument document = new XmlDocument();
-            document.InnerXml = builder.ToString();
+#pragma warning disable CA3075
+            XmlDocument document = new XmlDocument {
+                InnerXml = builder.ToString()
+            };
+#pragma warning restore CA3075
 
             try
             {

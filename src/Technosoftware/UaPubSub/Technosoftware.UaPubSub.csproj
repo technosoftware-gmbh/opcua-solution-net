@@ -3,15 +3,17 @@
   <PropertyGroup>
     <AssemblyName>Technosoftware.UaPubSub</AssemblyName>
     <TargetFrameworks>$(LibTargetFrameworks)</TargetFrameworks>
-    <PackageId>OPCFoundation.NetStandard.Technosoftware.UaPubSub</PackageId>
+    <LangVersion>7.3</LangVersion>
+    <PackageId>Technosoftware.UaPubSub</PackageId>
     <RootNamespace>Technosoftware.UaPubSub</RootNamespace>
-    <Description>OPC UA PubSub .NET</Description>
-    <Copyright>Copyright © 2023 Technosoftware GmbH</Copyright>
-    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
-    <IsPackable>false</IsPackable>
+    <Company>Technosoftware GmbH</Company>
+    <Product>OPC UA Solution .NET</Product>
+    <Description>OPC UA Solution .NET PubSub Library</Description>
+    <Copyright>Copyright © 2022 - 2024 Technosoftware GmbH</Copyright>
+    <IsPackable>true</IsPackable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
-  
+
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <PackageId>$(PackageId).Debug</PackageId>
   </PropertyGroup>
@@ -21,16 +23,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Technosoftware.UaSolution.UaCore" Version="3.3.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
-    <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" />
-  </ItemGroup>
-  
-  <ItemGroup>
     <PackageReference Include="MQTTnet" Version="4.3.3.952" />
     <PackageReference Include="System.Net.NetworkInformation" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Technosoftware.UaSolution.UaCore" Version="3.3.0" />
   </ItemGroup>
 
   <Target Name="GetPackagingOutputs" />

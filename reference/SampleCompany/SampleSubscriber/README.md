@@ -4,7 +4,7 @@
 This OPC application was created to provide the sample code for creating Subscriber applications using the OPC UA PubSub .NET. The Sample Subscriber is configured to run in parallel with the [Sample Subscriber](../SamplePublisher/README.md)
 
 ## How to build and run the sample publisher from Visual Studio
-1. Open the solution **TutorialSamples.sln** with Visual Studio 2022.
+1. Open the solution **Tutorials.sln** with Visual Studio 2022.
 2. Choose the project `SampleSubscriber` in the Solution Explorer and set it with a right click as `Startup Project`.
 3. Hit `F5` to build and execute the sample.
 

@@ -1,9 +1,12 @@
 # Changelog
 
 -------------------------------------------------------------------------------------------------------------
-## OPC UA Solution .NET - 3.2.4
+## OPC UA Solution .NET - 3.3.0
 
 ### Changes
+- Improve client for sessions and subscriptions (#167)
+- Moved reference applications to the **reference** directoy
+- New tutorial examples can be found now in the **tutorials** directory
 
 ### Fixed issues
 

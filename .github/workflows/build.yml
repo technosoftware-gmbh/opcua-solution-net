@@ -23,7 +23,7 @@ jobs:
       fail-fast: false    
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]    
-        csproj: [TutorialSamples]
+        csproj: [Tutorials]
         include:
           - framework: 'net8.0'
             dotnet-version: '8.0.x'
@@ -61,7 +61,7 @@ jobs:
       fail-fast: false    
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]    
-        csproj: [TutorialSamples]
+        csproj: [Tutorials]
         include:
           - framework: 'net7.0'
             dotnet-version: '7.0.x'
@@ -99,7 +99,7 @@ jobs:
       fail-fast: false    
       matrix:
         os: [ubuntu-latest, windows-latest]    
-        csproj: [TutorialSamples]
+        csproj: [Tutorials]
         include:
           - framework: 'net6.0'
             dotnet-version: '6.0.x'

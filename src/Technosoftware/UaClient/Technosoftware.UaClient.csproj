@@ -20,10 +20,19 @@
     <PackageId>$(PackageId).Debug</PackageId>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' != 'net6.0' AND '$(TargetFramework)' != 'net7.0' AND '$(TargetFramework)' != 'net8.0'">
-    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="6.0.1" />
-  </ItemGroup>
-
+  <Choose>
+    <When Condition="'$(TargetFramework)' == 'net462' OR '$(TargetFramework)' == 'net472' OR '$(TargetFramework)' == 'net48'">
+      <ItemGroup>
+        <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="6.0.1" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="6.0.1" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+  
   <ItemGroup>
     <PackageReference Include="Technosoftware.UaSolution.UaCore" Version="3.3.0" />
   </ItemGroup>

@@ -1,15 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <AssemblyName>SampleCompany.ReferenceClient</AssemblyName>
     <TargetFrameworks>$(AppTargetFrameworks)</TargetFrameworks>
     <LangVersion>7.3</LangVersion>
-    <AssemblyName>SampleCompany.ReferenceClient</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>SampleCompany.ReferenceClient</PackageId>
+    <RootNamespace>SampleCompany.ReferenceClient</RootNamespace>
     <Company>SampleCompany</Company>
     <Product>SampleCompany ReferenceClient</Product>
     <Description>SampleCompany ReferenceClient</Description>
-    <Copyright>Copyright © 2022 - 2023 SampleCompany</Copyright>
+    <Copyright>Copyright © 2018 - 2024 SampleCompany</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
