@@ -1,19 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ApplicationConfiguration
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:ua="http://opcfoundation.org/UA/2008/02/Types.xsd"
-  xmlns="http://opcfoundation.org/UA/SDK/Configuration.xsd"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:ua="http://opcfoundation.org/UA/2008/02/Types.xsd"
+xmlns="http://opcfoundation.org/UA/SDK/Configuration.xsd"
 >
   <!-- A human readable but not necessarily unique name for the application instance -->
-  <ApplicationName>EmptyCompany OPC UA Empty Client</ApplicationName>
-
+  <ApplicationName>SampleCompany OPC UA Sample Client</ApplicationName>
   <!-- A globally unique identifier for the application instance.
        This is overridden with the value contained in the application certificate. -->
-  <ApplicationUri>urn:localhost:EmptyCompany:EmptyClient</ApplicationUri>
-
+  <ApplicationUri>urn:localhost:SampleCompany:SampleClient</ApplicationUri>
   <!-- A globally unique URI for the product (usually assigned by the product vendor) -->
-  <ProductUri>uri:emptycompany.com:EmptyClient</ProductUri>
-
+  <ProductUri>uri:SampleCompany.com:SampleClient</ProductUri>
   <!-- Indicates the type of application (Server_0, Client_1, ClientAndServer_2 or DiscoveryServer_3). -->
   <ApplicationType>Client_1</ApplicationType>
   <!-- Specifies security related configuration information -->
@@ -21,33 +18,28 @@
 
     <!-- Where the application instance certificate is stored (MachineDefault) -->
     <ApplicationCertificate>
-
       <!-- The type of store. -->
       <StoreType>Directory</StoreType>
-
       <!-- The location of the store. 
            Windows store must start with LocalMachine, CurrentUser or CurrentService
            The name of the store is appended.
            Note that the names used in code are difference from what appears in the control panel.
            e.g. My == "Personal", Root == "Trusted Root Certification Authorities" -->
       <StorePath>%LocalApplicationData%/OPC Foundation/pki/own</StorePath>
-
       <!-- The subject for the certificate 
            Note that subject names are complex structures. Only text that appears here is treated as the CommonName component.
            The first certificate found is used if multiple certificates with the same CommonName and a matching hostname exist.
-           Also a complete distinguished name can be specified here: 'CN=EmptyCompany OPC UA Empty Client, DC=localhost'.
+           Also a complete distinguished name can be specified here: 'CN=SampleCompany OPC UA Sample Client, DC=localhost'.
            In this case the first certificate matching the complete distinguished name is used. localhost is replaced with the hostname.
            If no certificate is found, a new self signed application certificate is created.
            The Thumbprint should be specified if the CN or DN does not uniquely identify a certificate. -->
-      <SubjectName>CN=EmptyCompany OPC UA Empty Client, C=CH, S=Aargau, O=EmptyCompany, DC=localhost</SubjectName>
-
+      <SubjectName>CN=SampleCompany OPC UA Sample Client, C=CH, S=Aargau, O=SampleCompany, DC=localhost</SubjectName>
       <!-- The SHA1 thumbprint for the certificate.
            The thumbprint uniquely identifies a certificate.
            It should be specified in this file, however, the samples rely on quick and 
            dirty scripts to create new certificate on each machine. A commercial application 
            would generate the initial certificate itself and update the thumbprint accordingly -->
       <!--<Thumbprint>3a35fb798fc6dee8a7e7e4652b0e28fc14c6ee0f</Thumbprint>-->
-
     </ApplicationCertificate>
 
     <!-- Where the issuer certificate are stored (certificate authorities) 
@@ -120,7 +112,7 @@
       <StorePath>%LocalApplicationData%/OPC Foundation/pki/trustedUser</StorePath>
     </TrustedUserCertificates>
   </SecurityConfiguration>
-  
+
   <!-- Maps different transports onto a .NET implementation of a WCF Binding
        WCF bindings are very complex and have many parameters that can be tweaked. To ensure
        interoperability the SDK has defined 3 standard bindings which can be selected with this
@@ -130,39 +122,30 @@
        Note protocols other than HTTP or UA-TCP are not considered to be interoperable -->
   <TransportConfigurations>
   </TransportConfigurations>
-
   <!-- Specifies quotas used to by the transport layer -->
   <TransportQuotas>
-
     <!-- The default timeout in milliseconds for operations (used by clients) -->
-    <OperationTimeout>600000</OperationTimeout>
-
+    <OperationTimeout>120000</OperationTimeout>
     <!-- The maximum length for a string value in any message -->
-    <MaxStringLength>1048576</MaxStringLength>
-
+    <MaxStringLength>4194304</MaxStringLength>
     <!-- The maximum length for a byte string value in any message -->
-    <MaxByteStringLength>1048576</MaxByteStringLength>
-
+    <MaxByteStringLength>4194304</MaxByteStringLength>
     <!-- The maximum length for any array in a message. 
          Note that some protocols do not distinguish between bytes and arrays. 
          In these cases the binding will choose the larger of 
          MaxByteStringLength or MaxArrayLength-->
     <MaxArrayLength>65535</MaxArrayLength>
-
     <!-- The maximum size of any message -->
     <MaxMessageSize>4194304</MaxMessageSize>
-
     <!-- The maximum buffer size 
          This value controls how big a block of memory the transport layer allocates.
          Setting this value to a large value will reduce performance and use a lot of RAM -->
     <MaxBufferSize>65535</MaxBufferSize>
-
     <!-- The lifetime of a SecureChannel in milliseconds.
          This specifies how long the server will keep a broken channel around while waiting 
          for a client to reconnect.
          Not used by HTTP or .NET TCP bindings -->
     <ChannelLifetime>300000</ChannelLifetime>
-
     <!-- The lifetime of a SecurityToken in milliseconds.
          This specifies how long a security token can be used without renewal. -->
     <SecurityTokenLifetime>3600000</SecurityTokenLifetime>
@@ -172,7 +155,6 @@
   <ClientConfiguration>
     <!-- The default timeout for new sessions -->
     <DefaultSessionTimeout>60000</DefaultSessionTimeout>
-
     <!-- The well-known URLs for the local discovery servers
          URLs are tested in the order they appear in this list. -->
     <WellKnownDiscoveryUrls>
@@ -180,17 +162,28 @@
       <ua:String>http://{0}:52601/UADiscovery</ua:String>
       <ua:String>http://{0}/UADiscovery/Default.svc</ua:String>
     </WellKnownDiscoveryUrls>
-
     <!-- EndpointDescriptions for system wide discovery servers -->
     <DiscoveryServers></DiscoveryServers>
 
-    <!-- The file used to save the EndpointDescriptions for servers known to the Client -->
-    <EndpointCacheFilePath>EmptyCompany.EmptyClient.Nodes.xml</EndpointCacheFilePath>
-
-    <!-- The minimum lifetime for a subscription. -->
+<!-- The minimum lifetime for a subscription. -->
     <MinSubscriptionLifetime>10000</MinSubscriptionLifetime>
 
-    <ReverseConnect>
+    <OperationLimits>
+      <MaxNodesPerRead>2500</MaxNodesPerRead>
+      <MaxNodesPerHistoryReadData>1000</MaxNodesPerHistoryReadData>
+      <MaxNodesPerHistoryReadEvents>1000</MaxNodesPerHistoryReadEvents>
+      <MaxNodesPerWrite>2500</MaxNodesPerWrite>
+      <MaxNodesPerHistoryUpdateData>1000</MaxNodesPerHistoryUpdateData>
+      <MaxNodesPerHistoryUpdateEvents>1000</MaxNodesPerHistoryUpdateEvents>
+      <MaxNodesPerMethodCall>2500</MaxNodesPerMethodCall>
+      <MaxNodesPerBrowse>2500</MaxNodesPerBrowse>
+      <MaxNodesPerRegisterNodes>2500</MaxNodesPerRegisterNodes>
+      <MaxNodesPerTranslateBrowsePathsToNodeIds>2500</MaxNodesPerTranslateBrowsePathsToNodeIds>
+      <MaxNodesPerNodeManagement>2500</MaxNodesPerNodeManagement>
+      <MaxMonitoredItemsPerCall>2500</MaxMonitoredItemsPerCall>
+    </OperationLimits>
+    
+<ReverseConnect>
       <ClientEndpoints>
         <ClientEndpoint>
           <!--<EndpointUrl>opc.tcp://localhost:55555</EndpointUrl>-->
@@ -207,37 +200,26 @@
   <!--
   Masks supported by the trace feature. 
   Servers will detect changes within 5 seconds.
-  
   Do not output any messages.
   None = 0x0;
-
   Output error messages.
   Error = 0x1;
-
   Output informational messages.
   Information = 0x2;
-
   Output stack traces.
   StackTrace = 0x4;
-
   Output basic messages for service calls.
   Service = 0x8;
-
   Output detailed messages for service calls.
   ServiceDetail = 0x10;
-
   Output basic messages for each operation.
   Operation = 0x20;
-
   Output detailed messages for each operation.
   OperationDetail = 0x40;
-
   Output messages related to application initialization or shutdown
   StartStop = 0x80;
-
   Output messages related to a call to an external system.
   ExternalSystem = 0x100;
-
   Output messages related to security
   Security = 0x200;
   
@@ -245,7 +227,7 @@
   AllAbove = 0x3FF;
   -->
   <TraceConfiguration>
-    <OutputFilePath>./Logs/EmptyCompany.EmptyClient.log</OutputFilePath>
+    <OutputFilePath>./Logs/SampleCompany.SampleClient.log</OutputFilePath>
     <DeleteOnLoad>true</DeleteOnLoad>
     <!-- Show Only Errors -->
     <!-- <TraceMasks>1</TraceMasks> -->

@@ -1,6 +1,6 @@
-﻿#region Copyright (c) 2011-2022 Technosoftware GmbH. All rights reserved
+﻿#region Copyright (c) 2011-2024 Technosoftware GmbH. All rights reserved
 //-----------------------------------------------------------------------------
-// Copyright (c) 2021 Technosoftware GmbH. All rights reserved
+// Copyright (c) 2011-2024 Technosoftware GmbH. All rights reserved
 // Web: https://technosoftware.com 
 // 
 // License: 
@@ -25,7 +25,7 @@
 //
 // SPDX-License-Identifier: MIT
 //-----------------------------------------------------------------------------
-#endregion Copyright (c) 2011-2022 Technosoftware GmbH. All rights reserved
+#endregion Copyright (c) 2011-2024 Technosoftware GmbH. All rights reserved
 
 #region Using Directives
 using System;
@@ -137,8 +137,8 @@ namespace SampleCompany.SampleServer
                     // Disposing has been done.
                     disposed_ = true;
                 }
-
             }
+            base.Dispose(disposing);
         }
         #endregion
 

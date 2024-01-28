@@ -1,32 +1,35 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <AssemblyName>SampleCompany.SampleServer</AssemblyName>
     <TargetFrameworks>$(AppTargetFrameworks)</TargetFrameworks>
     <LangVersion>7.3</LangVersion>
     <AssemblyName>SampleCompany.SampleServer</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>SampleCompany.SampleServer</PackageId>
+    <RootNamespace>SampleCompany.SampleServer</RootNamespace>
     <Company>SampleCompany</Company>
     <Product>SampleCompany SampleServer</Product>
     <Description>SampleCompany SampleServer</Description>
-    <Copyright>Copyright © 2021 SampleCompany</Copyright>
+    <Copyright>Copyright © 2011 - 2024 SampleCompany</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
 
+  <ItemGroup Condition=" '$(NoHttps)' != 'true' ">
+    <PackageReference Include="Technosoftware.UaSolution.UaBindings.Https" Version="3.3.0" />
+  </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Mono.Options" Version="6.12.0.148" />
+    <PackageReference Include="Technosoftware.UaSolution.UaCore" Version="3.3.0" />
+    <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="3.3.0" />
+    <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="3.3.0" />
+    <PackageReference Include="Technosoftware.UaSolution.UaBaseServer" Version="3.3.0" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(NoHttps)' != 'true' ">
-    <PackageReference Include="Technosoftware.UaSolution.UaBindings.Https" Version="3.2.3" />
-  </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="3.2.3" />
-    <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="3.2.3" />
-    <PackageReference Include="Technosoftware.UaSolution.UaBaseServer" Version="3.2.3" />
+    <PackageReference Include="Mono.Options" Version="6.12.0.148" />
   </ItemGroup>
 
   <ItemGroup>

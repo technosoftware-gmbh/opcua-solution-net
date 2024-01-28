@@ -2,12 +2,12 @@
   <PropertyGroup>
     <Product>OPC UA Solution .NET</Product>
     <RepositoryUrl>https://github.com/technosoftware-gmbh/opcua-solution-net</RepositoryUrl>
-    <VersionPrefix>3.2.4</VersionPrefix>
+    <VersionPrefix>3.3.0</VersionPrefix>
     <VersionSuffix>rc-$([System.DateTime]::Now.ToString("yyyyMMdd"))</VersionSuffix>
-    <Copyright>Copyright © 2018 - 2023 Technosoftware GmbH</Copyright>
+    <Copyright>Copyright © 2018 - 2024 Technosoftware GmbH</Copyright>
     <Company>Technosoftware GmbH</Company>
     <Authors>Technosoftware GmbH</Authors>
-    <NoWarn>NU5125;CA2254</NoWarn>
+    <NoWarn>NU5125;CA2254;CA1307</NoWarn>
     <NeutralLanguage>en-US</NeutralLanguage>
     <HighEntropyVA>true</HighEntropyVA>
     <IsPackable>false</IsPackable>
@@ -17,14 +17,11 @@
     <!--TODO <GenerateDocumentationFile>true</GenerateDocumentationFile>-->
     <EnablePackageValidation>true</EnablePackageValidation>
     <!-- to check the package validation on a release build, uncomment here -->
-    <!--<PackageValidationBaselineVersion>3.2.4/PackageValidationBaselineVersion>-->
+    <!--<PackageValidationBaselineVersion>3.3.0/PackageValidationBaselineVersion>-->
   </PropertyGroup>
 
   <PropertyGroup>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
-    <AnalysisMode>Recommended</AnalysisMode>
-    <AnalysisLevel>latest</AnalysisLevel>
-    <AnalysisModeSecurity>preview-all</AnalysisModeSecurity>
     <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
   </PropertyGroup>
 
@@ -32,15 +29,15 @@
     <PackageIcon>images/TechnosoftwareGmbH.png</PackageIcon>
     <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
     <!--<PackageLicenseUrl>https://technosoftware.com/license-agreement/</PackageLicenseUrl>-->
-    <PackageLicenseFile>licenses/LICENSE.txt</PackageLicenseFile>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   	<Documentation>README.md</Documentation>
     <PackageReleaseNotes>https://github.com/technosoftware-gmbh/opcua-solution-net/releases</PackageReleaseNotes>
-    <PackageTags>Technosoftware OPC UA .NET 7.0 .NET 6.0 .NET 4.8 macOS linux dotnet</PackageTags>
+    <PackageTags>Technosoftware OPC UA .NET 8.0 .NET 7.0 .NET 6.0 .NET 4.8 macOS linux dotnet</PackageTags>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(IsPackable)' != 'false'">
-    <None Include="$(MSBuildThisFileDirectory)/licenses/LICENSE.txt" Pack="true" PackagePath="$(PackageLicenseFile)"/>
+    <None Include="$(MSBuildThisFileDirectory)/LICENSE.md" Pack="true" PackagePath="$(PackageLicenseFile)"/>
     <None Include="$(MSBuildThisFileDirectory)/licenses/OPC Foundation REDISTRIBUTABLES Agreement of Use.txt" Pack="true" PackagePath="licenses/"/>
     <None Include="$(MSBuildThisFileDirectory)/nuget/TechnosoftwareGmbH.png" Pack="true" PackagePath="$(PackageIcon)"/>
     <None Include="$(MSBuildThisFileDirectory)/nuget/README.md" Pack="true" PackagePath="$(Documentation)"/>

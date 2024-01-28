@@ -4,17 +4,16 @@
     <DefineConstants>$(DefineConstants)</DefineConstants>
     <AssemblyName>SampleCompany.NodeManagers</AssemblyName>
     <TargetFrameworks>$(LibTargetFrameworks)</TargetFrameworks>
+    <LangVersion>7.3</LangVersion>
     <PackageId>SampleCompany.NodeManagers</PackageId>
     <RootNamespace>SampleCompany.NodeManagers</RootNamespace>
     <Company>SampleCompany</Company>
     <Product>OPC UA Solution .NET</Product>
-    <Description>OPC UA Solution .NET NodeManagers Library</Description>
-    <Copyright>Copyright © 2022 - 2023 SampleCompany</Copyright>
-    <LangVersion>7.3</LangVersion>
-    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
-    <NoWarn>CS1591;CS1573;RCS1139</NoWarn>
-    <IsPackable>false</IsPackable>
+    <Description>SampleCompany NodeManagers Library</Description>
+    <Copyright>Copyright © 2018 - 2024 SampleCompany</Copyright>
+    <IsPackable>true</IsPackable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>CS1591;CS1573;RCS1139</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">

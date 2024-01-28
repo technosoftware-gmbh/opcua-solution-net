@@ -50,7 +50,7 @@ Documentation of the Model Compiler can be found [here](https://github.com/OPCFo
 
 ### Online Help
 
-We provide an online help for the current version: [OPC UA Solution NET Online Help](https://technosoftware.com/help/OPCUaSolutionNet/32/)
+We provide an online help for the current version: [OPC UA Solution NET Online Help](https://technosoftware.com/help/OPCUaSolutionNet/33/)
 
 ### Workshop
 

@@ -1,0 +1,71 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>SampleCompany.SampleServer</AssemblyName>
+    <TargetFrameworks>$(AppTargetFrameworks)</TargetFrameworks>
+    <LangVersion>7.3</LangVersion>
+    <OutputType>Exe</OutputType>
+    <PackageId>SampleCompany.SampleServer</PackageId>
+    <RootNamespace>SampleCompany.SampleServer</RootNamespace>
+    <Company>SampleCompany</Company>
+    <Product>SampleCompany SampleServer</Product>
+    <Description>SampleCompany SampleServer</Description>
+    <Copyright>Copyright © 2023 - 2024 SampleCompany</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <Choose>
+    <When Condition="Exists('Model\SampleCompany.SampleServer.Model.PredefinedNodes.uanodes')">
+      <ItemGroup>
+        <None Remove="Model\SampleCompany.SampleServer.Model.PredefinedNodes.uanodes" />
+      </ItemGroup>
+      <ItemGroup>
+        <EmbeddedResource Include="Model\SampleCompany.SampleServer.Model.PredefinedNodes.uanodes" />
+      </ItemGroup>
+    </When>
+  </Choose>
+
+  <ItemGroup Condition=" '$(NoHttps)' != 'true' ">
+    <PackageReference Include="Technosoftware.UaSolution.UaBindings.Https" Version="3.3.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Technosoftware.UaSolution.UaCore" Version="3.3.0" />
+    <PackageReference Include="Technosoftware.UaSolution.UaConfiguration" Version="3.3.0" />
+    <PackageReference Include="Technosoftware.UaSolution.UaServer" Version="3.3.0" />
+    <PackageReference Include="Technosoftware.UaSolution.UaStandardServer" Version="3.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0" />
+    <PackageReference Include="Mono.Options" Version="6.12.0.148" />
+    <PackageReference Include="Serilog" Version="3.1.1" />
+    <PackageReference Include="Serilog.Expressions" Version="4.0.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="5.0.0" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+    <PackageReference Include="Serilog.Sinks.Debug" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\Common\ApplicationMessageDlg.cs" />
+    <Compile Include="..\..\Common\ConsoleUtils.cs" />
+    <Compile Include="..\..\Common\ErrorExitException.cs" />
+    <Compile Include="..\..\Common\LogWriter.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\NodeManagers\SampleCompany.NodeManagers.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="SampleCompany.SampleServer.Config.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

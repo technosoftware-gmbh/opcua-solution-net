@@ -6,8 +6,10 @@
     <LangVersion>7.3</LangVersion>
     <PackageId>Technosoftware.UaSolution.UaServer</PackageId>
     <RootNamespace>Technosoftware.UaServer</RootNamespace>
+    <Company>Technosoftware GmbH</Company>
+    <Product>OPC UA Solution .NET</Product>
     <Description>OPC UA Solution .NET Server Library</Description>
-    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <Copyright>Copyright © 2018 - 2024 Technosoftware GmbH</Copyright>
     <IsPackable>true</IsPackable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
@@ -20,24 +22,16 @@
     <DefineConstants>$(DefineConstants);SIGNASSEMBLY</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Technosoftware.UaSolution.UaCore" Version="3.3.0" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <ProjectReference Include="..\UaConfiguration\Technosoftware.UaConfiguration.csproj" />
-  </ItemGroup>
-
   <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
     <Reference Include="System.IdentityModel" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
-    <Reference Include="System.IdentityModel" />
+  <ItemGroup>
+    <PackageReference Include="Technosoftware.UaSolution.UaCore" Version="3.3.0" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
-    <Reference Include="System.IdentityModel" />
+  <ItemGroup>
+    <ProjectReference Include="..\UaConfiguration\Technosoftware.UaConfiguration.csproj" />
   </ItemGroup>
 
   <Target Name="GetPackagingOutputs" />

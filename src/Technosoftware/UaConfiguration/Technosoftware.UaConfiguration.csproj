@@ -6,13 +6,20 @@
     <LangVersion>7.3</LangVersion>
     <PackageId>Technosoftware.UaSolution.UaConfiguration</PackageId>
     <RootNamespace>Technosoftware.UaConfiguration</RootNamespace>
+    <Company>Technosoftware GmbH</Company>
+    <Product>OPC UA Solution .NET</Product>
     <Description>OPC UA Solution .NET Configuration Library</Description>
+    <Copyright>Copyright © 2018 - 2024 Technosoftware GmbH</Copyright>
     <IsPackable>true</IsPackable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <PackageId>$(PackageId).Debug</PackageId>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(SignAssembly)' == 'true'">
+    <DefineConstants>$(DefineConstants);SIGNASSEMBLY</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,10 +34,6 @@
   <ItemGroup>
     <PackageReference Include="Technosoftware.UaSolution.UaCore" Version="3.3.0" />
   </ItemGroup>
-
-  <PropertyGroup Condition="'$(SignAssembly)' == 'true'">
-    <DefineConstants>$(DefineConstants);SIGNASSEMBLY</DefineConstants>
-  </PropertyGroup>
 
   <Target Name="GetPackagingOutputs" />
 

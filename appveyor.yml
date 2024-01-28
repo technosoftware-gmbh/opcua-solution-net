@@ -4,7 +4,7 @@
 #---------------------------------#
 
 # version format
-version: 3.2.4.{build}-{branch}
+version: 3.3.0.{build}-{branch}
 
 
 # branches to build
@@ -39,7 +39,7 @@ environment:
   - solution_name: "OpcUaSolutionReference.sln"
     test_name: "void"
     param: ""
-  - solution_name: "TutorialSamples.sln"
+  - solution_name: "Tutorials.sln"
     test_name: "void"
     param: ""
 

@@ -58,13 +58,13 @@ jobs:
       run: |
         nuget restore "OpcUaSolutionNet.sln"
         nuget restore "OpcUaSolutionReference.sln"
-        nuget restore "TutorialSamples.sln"
+        nuget restore "Tutorials.sln"
         
     - name: Build Solution
       run: |
         msbuild.exe "OpcUaSolutionNet.sln" /p:configuration="Release" /p:UseSharedCompilation=false
         msbuild.exe "OpcUaSolutionReference.sln" /p:configuration="Release" /p:UseSharedCompilation=false
-        msbuild.exe "TutorialSamples.sln" /p:configuration="Release" /p:UseSharedCompilation=false
+        msbuild.exe "Tutorials.sln" /p:configuration="Release" /p:UseSharedCompilation=false
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
