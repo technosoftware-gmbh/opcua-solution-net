@@ -138,7 +138,7 @@ namespace SampleCompany.SampleClient
                 string extraArg = ConsoleUtils.ProcessCommandLine(output, args, options, ref showHelp, "SAMPLECLIENT");
 
                 // connect Url?
-                Uri serverUrl = !string.IsNullOrEmpty(extraArg) ? new Uri(extraArg) : new Uri("opc.tcp://localhost:62555/SampleServer");
+                Uri serverUrl = !string.IsNullOrEmpty(extraArg) ? new Uri(extraArg) : new Uri("opc.tcp://localhost:62541/Quickstarts/ReferenceServer");
 
                 // log console output to logger
                 if (logConsole && appLog)
@@ -318,6 +318,7 @@ namespace SampleCompany.SampleClient
                                 clientFunctions.Browse(uaClient.Session);
                                 clientFunctions.CallMethod(uaClient.Session);
                                 clientFunctions.SubscribeToDataChanges(uaClient.Session, 120_000);
+                                clientFunctions.SubscribeToEventChanges(uaClient.Session, 120_000);
 
                                 await output.WriteLineAsync("Waiting...").ConfigureAwait(false);
 

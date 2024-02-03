@@ -31,7 +31,7 @@ using Technosoftware.UaClient;
 namespace SampleCompany.SampleClient
 {
     /// <summary>
-    /// Sample Session calls based on the reference server node model.
+    /// Sample Session calls based on the samples server node model.
     /// </summary>
     public class ClientFunctions
     {
@@ -50,7 +50,7 @@ namespace SampleCompany.SampleClient
         }
         #endregion
 
-        #region Public Sample Methods
+        #region Public Sample Client FunctionsMethods
         /// <summary>
         /// Read a list of nodes from Server
         /// </summary>
@@ -1222,10 +1222,7 @@ namespace SampleCompany.SampleClient
                     message = Utils.Format("{0}", baseEvent.Message.Value);
                 }
 
-                if (verbose_)
-                {
-                    output_.WriteLine("Base Event {0}: Time = {1}, Severity = {2}, SourceName {3}, Message = {4}, EventType = {5}.", notification.Message.SequenceNumber, time, severity, sourceName, message, typeText);
-                }
+                output_.WriteLine("Base Event {0}: Time = {1}, Severity = {2}, SourceName {3}, Message = {4}, EventType = {5}.", notification.Message.SequenceNumber, time, severity, sourceName, message, typeText);
             }
             catch (Exception ex)
             {
@@ -1312,7 +1309,7 @@ namespace SampleCompany.SampleClient
 
                 if (verbose_)
                 {
-                    output_.WriteLine("Condition {0}: Time = {1}, Severity = {2}, SourceName {3}, Message = {4}, EventType = {5}, BranchId = {6}, EnabledState = {7}, Comment = {7}.", notification.Message.SequenceNumber, time, severity, sourceName, message, typeText, branchId, enabledState, comment);
+                    output_.WriteLine("Condition {0}: Time = {1}, Severity = {2}, SourceName {3}, Message = {4}, EventType = {5}, BranchId = {6}, EnabledState = {7}, Comment = {8}.", notification.Message.SequenceNumber, time, severity, sourceName, message, typeText, branchId, enabledState, comment);
                 }
             }
             catch (Exception ex)
@@ -1400,10 +1397,7 @@ namespace SampleCompany.SampleClient
                     comment = Utils.Format("{0}", alarm.Comment.Value);
                 }
 
-                if (verbose_)
-                {
-                    output_.WriteLine("Alarm {0}: Time = {1}, Severity = {2}, SourceName {3}, Message = {4}, EventType = {5}, BranchId = {6}, EnabledState = {7}, Comment = {7}.", notification.Message.SequenceNumber, time, severity, sourceName, message, typeText, branchId, enabledState, comment);
-                }
+                output_.WriteLine("Alarm {0}: Time = {1}, Severity = {2}, SourceName {3}, Message = {4}, EventType = {5}, BranchId = {6}, EnabledState = {7}, Comment = {8}.", notification.Message.SequenceNumber, time, severity, sourceName, message, typeText, branchId, enabledState, comment);
             }
             catch (Exception ex)
             {
