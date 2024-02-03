@@ -22,7 +22,7 @@ namespace SampleCompany.Common
     /// </summary>
     public class LogWriter : TextWriter
     {
-        private StringBuilder builder_ = new StringBuilder();
+        private readonly StringBuilder builder_ = new StringBuilder();
 
         public override void Write(char value)
         {

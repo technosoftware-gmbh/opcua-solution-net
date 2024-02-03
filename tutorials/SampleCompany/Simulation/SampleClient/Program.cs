@@ -104,11 +104,11 @@ namespace SampleCompany.SampleClient
                 { "r|renew", "Renew application certificate", r => renewCertificate = r != null },
                 { "t|timeout=", "Timeout in seconds to exit application", (int t) => timeout = t * 1000 },
                 { "logfile=", "Custom file name for log output", l => { if (l != null) { logFile = l; } } },
-                { "b|browseall", "Browse all references", b => { if (b != null) browseall = true; } },
-                { "f|fetchall", "Fetch all nodes", f => { if (f != null) fetchall = true; } },
-                { "j|json", "Output all Values as JSON", j => { if (j != null) jsonvalues = true; } },
+                { "b|browseall", "Browse all references", b => { if (b != null) { browseall = true; } } },
+                { "f|fetchall", "Fetch all nodes", f => { if (f != null) { fetchall = true; } } },
+                { "j|json", "Output all Values as JSON", j => { if (j != null) { jsonvalues = true; } } },
                 { "v|verbose", "Verbose output", v => { if (v != null) { verbose = true; } } },
-                { "s|subscribe", "Subscribe", s => { if (s != null) subscribe = true; } },
+                { "s|subscribe", "Subscribe", s => { if (s != null) { subscribe = true; } } },
                 { "rc|reverseconnect=", "Connect using the reverse connect endpoint. (e.g. rc=opc.tcp://localhost:65300)", (string url) => reverseConnectUrlString = url},
             };
 
@@ -128,15 +128,7 @@ namespace SampleCompany.SampleClient
                 string extraArg = ConsoleUtils.ProcessCommandLine(output, args, options, ref showHelp, "SAMPLECLIENT", false);
 
                 // connect Url?
-                Uri serverUrl = null;
-                if (!string.IsNullOrEmpty(extraArg))
-                {
-                    serverUrl = new Uri(extraArg);
-                }
-                else
-                {
-                    serverUrl = new Uri("opc.tcp://localhost:62555/SampleServer");
-                }
+                Uri serverUrl = !string.IsNullOrEmpty(extraArg) ? new Uri(extraArg) : new Uri("opc.tcp://localhost:62555/SampleServer");
 
                 // log console output to logger
                 if (logConsole && appLog)
@@ -255,7 +247,7 @@ namespace SampleCompany.SampleClient
                                 {
                                     allNodes = await samples.FetchAllNodesNodeCacheAsync((IMyClient)uaClient, Objects.RootFolder, true, true, false).ConfigureAwait(false);
                                     variableIds = new NodeIdCollection(allNodes
-                                        .Where(r => r.NodeClass == NodeClass.Variable && r is VariableNode && ((VariableNode)r).DataType.NamespaceIndex != 0)
+                                        .Where(r => r.NodeClass == NodeClass.Variable && r is VariableNode node && node.DataType.NamespaceIndex != 0)
                                         .Select(r => ExpandedNodeId.ToNodeId(r.NodeId, uaClient.Session.NamespaceUris)));
                                 }
 
@@ -274,7 +266,7 @@ namespace SampleCompany.SampleClient
                                     {
                                         variables.AddRange(allNodes
                                             .Where(r => r.NodeClass == NodeClass.Variable && r.NodeId.NamespaceIndex > 1)
-                                            .Select(r => ((VariableNode)r))
+                                            .Select(r => (VariableNode)r)
                                             .OrderBy(o => random.Next())
                                             .Take(MaxVariables));
                                     }
@@ -314,7 +306,7 @@ namespace SampleCompany.SampleClient
                                 samples.Browse(uaClient.Session);
                                 samples.CallMethod(uaClient.Session);
                                 samples.SubscribeToDataChanges(uaClient.Session, 120_000);
-                                
+
                                 output.WriteLine("Waiting...");
 
                                 // Wait for some DataChange notifications from MonitoredItems

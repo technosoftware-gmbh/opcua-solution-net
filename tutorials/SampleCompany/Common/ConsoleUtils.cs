@@ -16,7 +16,9 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+#if NET5_0_OR_GREATER
 using Microsoft.Extensions.Configuration;
+#endif
 using Microsoft.Extensions.Logging;
 using Mono.Options;
 
@@ -243,12 +245,12 @@ namespace SampleCompany.Common
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs args)
         {
-            Utils.LogCritical("Unhandled Exception: {0} IsTerminating: {1}", args.ExceptionObject, args.IsTerminating);
+            LogCritical("Unhandled Exception: {0} IsTerminating: {1}", args.ExceptionObject, args.IsTerminating);
         }
 
         private static void Unobserved_TaskException(object sender, UnobservedTaskExceptionEventArgs args)
         {
-            Utils.LogCritical("Unobserved Exception: {0} Observed: {1}", args.Exception, args.Observed);
+            LogCritical("Unobserved Exception: {0} Observed: {1}", args.Exception, args.Observed);
         }
 
     }

@@ -119,7 +119,10 @@ namespace SampleCompany.SampleClient
         /// </summary>
         public async Task<bool> ConnectAsync(string serverUrl, bool useSecurity = true, CancellationToken ct = default)
         {
-            if (serverUrl == null) throw new ArgumentNullException(nameof(serverUrl));
+            if (serverUrl == null)
+            {
+                throw new ArgumentNullException(nameof(serverUrl));
+            }
 
             try
             {
@@ -369,8 +372,8 @@ namespace SampleCompany.SampleClient
 
         #region Private Fields
         private readonly object lock_ = new object();
-        private ReverseConnectManager reverseConnectManager_;
-        private ApplicationConfiguration configuration_;        
+        private readonly ReverseConnectManager reverseConnectManager_;
+        private readonly ApplicationConfiguration configuration_;
         private SessionReconnectHandler reconnectHandler_;
         private IUaSession session_;
         private readonly TextWriter output_;

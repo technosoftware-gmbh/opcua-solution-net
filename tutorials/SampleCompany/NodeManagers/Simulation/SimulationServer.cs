@@ -237,9 +237,8 @@ namespace SampleCompany.NodeManagers.Simulation
             }
 
             // check for x509 user token.
-            X509IdentityToken x509Token = args.NewIdentity as X509IdentityToken;
 
-            if (x509Token != null)
+            if (args.NewIdentity is X509IdentityToken x509Token)
             {
                 VerifyUserTokenCertificate(x509Token.Certificate);
                 args.Identity = new UserIdentity(x509Token);

@@ -144,51 +144,43 @@ namespace SampleCompany.SampleClient
                 WriteValueCollection nodesToWrite = new WriteValueCollection();
 
                 // Int32 Node - Objects\CTT\Scalar\Scalar_Static\Int32
-                WriteValue intWriteVal = new WriteValue
-                {
+                WriteValue intWriteVal = new WriteValue {
                     NodeId = new NodeId("ns=2;s=Scalar_Static_Int32"),
                     AttributeId = Attributes.Value,
-                    Value = new DataValue
-                    {
-                        Value = (int)100
+                    Value = new DataValue {
+                        Value = 100
                     }
                 };
                 nodesToWrite.Add(intWriteVal);
 
                 // Float Node - Objects\CTT\Scalar\Scalar_Static\Float
-                WriteValue floatWriteVal = new WriteValue
-                {
+                WriteValue floatWriteVal = new WriteValue {
                     NodeId = new NodeId("ns=2;s=Scalar_Static_Float"),
                     AttributeId = Attributes.Value,
-                    Value = new DataValue
-                    {
+                    Value = new DataValue {
                         Value = (float)100.5
                     }
                 };
                 nodesToWrite.Add(floatWriteVal);
 
                 // String Node - Objects\CTT\Scalar\Scalar_Static\String
-                WriteValue stringWriteVal = new WriteValue
-                {
+                WriteValue stringWriteVal = new WriteValue {
                     NodeId = new NodeId("ns=2;s=Scalar_Static_String"),
                     AttributeId = Attributes.Value,
-                    Value = new DataValue
-                    {
+                    Value = new DataValue {
                         Value = "String Test"
                     }
                 };
                 nodesToWrite.Add(stringWriteVal);
 
                 // Write the node attributes
-                StatusCodeCollection results = null;
-                DiagnosticInfoCollection diagnosticInfos;
                 output_.WriteLine("Writing nodes...");
 
                 // Call Write Service
                 session.Write(null,
                                 nodesToWrite,
-                                out results,
-                                out diagnosticInfos);
+                                out StatusCodeCollection results,
+                                out DiagnosticInfoCollection diagnosticInfos);
 
                 // Validate the response
                 validateResponse_(results, nodesToWrite);
@@ -222,8 +214,7 @@ namespace SampleCompany.SampleClient
             try
             {
                 // Create a Browser object
-                Browser browser = new Browser(session)
-                {
+                Browser browser = new Browser(session) {
                     // Set browse parameters
                     BrowseDirection = BrowseDirection.Forward,
                     NodeClassMask = (int)NodeClass.Object | (int)NodeClass.Variable,
@@ -328,8 +319,7 @@ namespace SampleCompany.SampleClient
 
                 // Create MonitoredItems for data changes (Reference Server)
 
-                MonitoredItem intMonitoredItem = new MonitoredItem(subscription.DefaultItem)
-                {
+                MonitoredItem intMonitoredItem = new MonitoredItem(subscription.DefaultItem) {
                     // Int32 Node - Objects\CTT\Scalar\Simulation\Int32
                     StartNodeId = new NodeId("ns=2;s=Scalar_Simulation_Int32"),
                     AttributeId = Attributes.Value,
@@ -342,8 +332,7 @@ namespace SampleCompany.SampleClient
 
                 subscription.AddItem(intMonitoredItem);
 
-                MonitoredItem floatMonitoredItem = new MonitoredItem(subscription.DefaultItem)
-                {
+                MonitoredItem floatMonitoredItem = new MonitoredItem(subscription.DefaultItem) {
                     // Float Node - Objects\CTT\Scalar\Simulation\Float
                     StartNodeId = new NodeId("ns=2;s=Scalar_Simulation_Float"),
                     AttributeId = Attributes.Value,
@@ -355,8 +344,7 @@ namespace SampleCompany.SampleClient
 
                 subscription.AddItem(floatMonitoredItem);
 
-                MonitoredItem stringMonitoredItem = new MonitoredItem(subscription.DefaultItem)
-                {
+                MonitoredItem stringMonitoredItem = new MonitoredItem(subscription.DefaultItem) {
                     // String Node - Objects\CTT\Scalar\Simulation\String
                     StartNodeId = new NodeId("ns=2;s=Scalar_Simulation_String"),
                     AttributeId = Attributes.Value,
@@ -398,8 +386,7 @@ namespace SampleCompany.SampleClient
                 // Create a subscription for receiving event change notifications
 
                 // Define Subscription parameters
-                Subscription subscription = new Subscription(session.DefaultSubscription)
-                {
+                Subscription subscription = new Subscription(session.DefaultSubscription) {
                     DisplayName = "Console ReferenceClient Event Subscription",
                     PublishingEnabled = true,
                     PublishingInterval = 1000,
@@ -500,7 +487,7 @@ namespace SampleCompany.SampleClient
             int searchDepth = 0;
             while (nodesToBrowse.Count > 0 && searchDepth < MaxSearchDepth)
             {
-                if (quitEvent_.WaitOne(0) == true)
+                if (quitEvent_.WaitOne(0))
                 {
                     output_.WriteLine("Browse aborted.");
                     break;
@@ -531,7 +518,7 @@ namespace SampleCompany.SampleClient
                                 IReference hasTypeDefinition = variableNode.ReferenceTable.FirstOrDefault(r => r.ReferenceTypeId.Equals(ReferenceTypeIds.HasTypeDefinition));
                                 if (hasTypeDefinition != null)
                                 {
-                                    leafNode = (hasTypeDefinition.TargetId == VariableTypeIds.PropertyType);
+                                    leafNode = hasTypeDefinition.TargetId == VariableTypeIds.PropertyType;
                                 }
                             }
 
@@ -579,7 +566,7 @@ namespace SampleCompany.SampleClient
             output_.WriteLine("FetchAllNodesNodeCache found {0} nodes in {1}ms", nodeDictionary.Count, stopwatch.ElapsedMilliseconds);
 
             List<INode> result = nodeDictionary.Values.ToList();
-            result.Sort((x, y) => (x.NodeId.CompareTo(y.NodeId)));
+            result.Sort((x, y) => x.NodeId.CompareTo(y.NodeId));
 
             if (verbose_)
             {
@@ -641,7 +628,7 @@ namespace SampleCompany.SampleClient
                 DiagnosticInfoCollection diagnosticsInfoCollection;
                 do
                 {
-                    if (quitEvent_.WaitOne(0) == true)
+                    if (quitEvent_.WaitOne(0))
                     {
                         output_.WriteLine("Browse aborted.");
                         break;
@@ -714,7 +701,7 @@ namespace SampleCompany.SampleClient
                 ByteStringCollection continuationPoints = PrepareBrowseNext(browseResultCollection);
                 while (continuationPoints.Any())
                 {
-                    if (quitEvent_.WaitOne(0) == true)
+                    if (quitEvent_.WaitOne(0))
                     {
                         output_.WriteLine("Browse aborted.");
                     }
@@ -763,7 +750,7 @@ namespace SampleCompany.SampleClient
             stopWatch.Stop();
 
             ReferenceDescriptionCollection result = new ReferenceDescriptionCollection(referenceDescriptions.Values);
-            result.Sort((x, y) => (x.NodeId.CompareTo(y.NodeId)));
+            result.Sort((x, y) => x.NodeId.CompareTo(y.NodeId));
 
             output_.WriteLine("BrowseFullAddressSpace found {0} references on server in {1}ms.",
                 referenceDescriptions.Count, stopWatch.ElapsedMilliseconds);
@@ -790,7 +777,7 @@ namespace SampleCompany.SampleClient
         /// The NodeCache needs this information to function properly with subtypes of hierarchical calls.
         /// </remarks>
         /// <param name="session">The session to use</param>
-        Task FetchReferenceIdTypesAsync(IUaSession session)
+        private Task FetchReferenceIdTypesAsync(IUaSession session)
         {
             // fetch the reference types first, otherwise browse for e.g. hierarchical references with subtypes won't work
             BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public;
@@ -836,7 +823,7 @@ namespace SampleCompany.SampleClient
 
                                 if (ServiceResult.IsNotBad(value.StatusCode))
                                 {
-                                    string valueString = ClientFunctions.FormatValueAsJson(uaClient.Session.MessageContext, variableId.ToString(), value, true);
+                                    string valueString = FormatValueAsJson(uaClient.Session.MessageContext, variableId.ToString(), value, true);
                                     output_.WriteLine(valueString);
                                 }
                                 else
@@ -861,7 +848,7 @@ namespace SampleCompany.SampleClient
                         {
                             if (ServiceResult.IsNotBad(errors[ii]))
                             {
-                                string valueString = ClientFunctions.FormatValueAsJson(uaClient.Session.MessageContext, variableIds[ii].ToString(), value, true);
+                                string valueString = FormatValueAsJson(uaClient.Session.MessageContext, variableIds[ii].ToString(), value, true);
                                 output_.WriteLine(valueString);
                             }
                             else
@@ -951,7 +938,10 @@ namespace SampleCompany.SampleClient
                         MonitoringMode = MonitoringMode.Reporting,
                     };
                     subscription.AddItem(monitoredItem);
-                    if (subscription.CurrentKeepAliveCount > 1000) break;
+                    if (subscription.CurrentKeepAliveCount > 1000)
+                    {
+                        break;
+                    }
                 }
 
                 // Create the monitored items on Server side
@@ -1095,9 +1085,8 @@ namespace SampleCompany.SampleClient
             try
             {
                 MonitoredItem monitoredItem = (MonitoredItem)sender;
-                EventFieldList notification = e.NotificationValue as EventFieldList;
 
-                if (notification == null)
+                if (!(e.NotificationValue is EventFieldList notification))
                 {
                     return;
                 }
@@ -1124,26 +1113,24 @@ namespace SampleCompany.SampleClient
                 }
 
                 // construct the condition object.
-                AlarmConditionState alarmConditionState = EventUtils.ConstructEvent(
+
+                if (EventUtils.ConstructEvent(
                     currentSession_,
                     monitoredItem,
                     notification,
-                    eventTypeMappings_) as AlarmConditionState;
-
-                if (alarmConditionState != null)
+                    eventTypeMappings_) is AlarmConditionState alarmConditionState)
                 {
                     ShowAlarm(notification, alarmConditionState);
                     return;
                 }
 
                 // construct the condition object.
-                ConditionState condition = EventUtils.ConstructEvent(
+
+                if (EventUtils.ConstructEvent(
                     currentSession_,
                     monitoredItem,
                     notification,
-                    eventTypeMappings_) as ConditionState;
-
-                if (condition != null)
+                    eventTypeMappings_) is ConditionState condition)
                 {
                     ShowCondition(notification, condition);
                     return;
@@ -1153,7 +1140,7 @@ namespace SampleCompany.SampleClient
                     currentSession_,
                     monitoredItem,
                     notification,
-                    eventTypeMappings_) as BaseEventState;
+                    eventTypeMappings_);
                 if (baseEvent != null)
                 {
                     ShowEvent(notification, baseEvent);
@@ -1164,7 +1151,7 @@ namespace SampleCompany.SampleClient
                 output_.WriteLine("OnMonitoredItemNotification error: {0}", ex.Message);
             }
         }
-        
+
         /// <summary>
         /// Create a browse description from a node id collection.
         /// </summary>
@@ -1320,7 +1307,7 @@ namespace SampleCompany.SampleClient
                 // State
                 if (condition.EnabledState != null && condition.EnabledState.EffectiveDisplayName != null)
                 {
-                    
+
                     enabledState = Utils.Format("{0}", condition.EnabledState.EffectiveDisplayName.Value);
                 }
 
@@ -1452,8 +1439,7 @@ namespace SampleCompany.SampleClient
             // build list of methods to call.
             CallMethodRequestCollection methodsToCall = new CallMethodRequestCollection();
 
-            CallMethodRequest request = new CallMethodRequest
-            {
+            CallMethodRequest request = new CallMethodRequest {
                 ObjectId = condition.NodeId,
                 MethodId = MethodIds.AcknowledgeableConditionType_Acknowledge,
                 Handle = condition.Handle
@@ -1473,14 +1459,12 @@ namespace SampleCompany.SampleClient
             }
 
             // call the methods.
-            CallMethodResultCollection results;
-            DiagnosticInfoCollection diagnosticInfos;
 
             currentSession_.Call(
                 null,
                 methodsToCall,
-                out results,
-                out diagnosticInfos);
+                out CallMethodResultCollection results,
+                out DiagnosticInfoCollection diagnosticInfos);
 
             ClientBase.ValidateResponse(results, methodsToCall);
             ClientBase.ValidateDiagnosticInfos(diagnosticInfos, methodsToCall);
@@ -1488,13 +1472,13 @@ namespace SampleCompany.SampleClient
         #endregion
 
         #region Private Fieds
-        private Action<IList, IList> validateResponse_;
+        private readonly Action<IList, IList> validateResponse_;
         private readonly TextWriter output_;
         private readonly ManualResetEvent quitEvent_;
         private readonly bool verbose_;
 
         private IUaSession currentSession_;
-        private Dictionary<NodeId, NodeId> eventTypeMappings_;
+        private readonly Dictionary<NodeId, NodeId> eventTypeMappings_;
         #endregion
     }
 }

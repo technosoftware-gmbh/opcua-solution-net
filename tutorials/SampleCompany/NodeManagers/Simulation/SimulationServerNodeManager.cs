@@ -871,7 +871,7 @@ namespace SampleCompany.NodeManagers.Simulation
                     #region Multiply Method
                     MethodState multiplyMethod = CreateMethodState(methodsFolder, methods + "Multiply", "Multiply", OnMultiplyCall);
                     // set input arguments
-                    inputArgument1 = CreateArgument("Int16 value","Int16 value",BuiltInType.Int16,ValueRanks.Scalar);
+                    inputArgument1 = CreateArgument("Int16 value", "Int16 value", BuiltInType.Int16, ValueRanks.Scalar);
                     inputArgument2 = CreateArgument("UInt16 value", "UInt16 value", BuiltInType.UInt16, ValueRanks.Scalar);
                     AddInputArguments(multiplyMethod, new[] { inputArgument1, inputArgument2 });
 
@@ -916,7 +916,7 @@ namespace SampleCompany.NodeManagers.Simulation
                     #region Hello Method
                     MethodState helloMethod = CreateMethodState(methodsFolder, methods + "Hello", "Hello", new GenericMethodCalledEventHandler2(OnHelloCall));
                     // set input arguments
-                    inputArgument1 = CreateArgument("String value","String value",BuiltInType.String,ValueRanks.Scalar);
+                    inputArgument1 = CreateArgument("String value", "String value", BuiltInType.String, ValueRanks.Scalar);
                     AddInputArguments(helloMethod, new[] { inputArgument1 });
 
                     // set output arguments
@@ -927,7 +927,7 @@ namespace SampleCompany.NodeManagers.Simulation
                     #region Input Method
                     MethodState inputMethod = CreateMethodState(methodsFolder, methods + "Input", "Input", new GenericMethodCalledEventHandler2(OnInputCall));
                     // set input arguments
-                    inputArgument1 = CreateArgument("String value","String value",BuiltInType.String,ValueRanks.Scalar);
+                    inputArgument1 = CreateArgument("String value", "String value", BuiltInType.String, ValueRanks.Scalar);
                     AddInputArguments(inputMethod, new[] { inputArgument1 });
                     #endregion
 
@@ -935,7 +935,7 @@ namespace SampleCompany.NodeManagers.Simulation
                     MethodState outputMethod = CreateMethodState(methodsFolder, methods + "Output", "Output", new GenericMethodCalledEventHandler2(OnOutputCall));
 
                     // set output arguments
-                    outputArgument1 = CreateArgument("Output Result","Output Result",BuiltInType.String,ValueRanks.Scalar);
+                    outputArgument1 = CreateArgument("Output Result", "Output Result", BuiltInType.String, ValueRanks.Scalar);
                     AddOutputArguments(outputMethod, new[] { outputArgument1 });
                     #endregion
                     #endregion
@@ -1477,11 +1477,9 @@ namespace SampleCompany.NodeManagers.Simulation
             ref StatusCode statusCode,
             ref DateTime timestamp)
         {
-            MultiStateValueDiscreteState variable = node as MultiStateValueDiscreteState;
-
             TypeInfo typeInfo = Opc.Ua.TypeInfo.Construct(value);
 
-            if (variable == null ||
+            if (!(node is MultiStateValueDiscreteState variable) ||
                 typeInfo == null ||
                 typeInfo == Opc.Ua.TypeInfo.Unknown ||
                 !Opc.Ua.TypeInfo.IsNumericType(typeInfo.BuiltInType))
@@ -1579,23 +1577,17 @@ namespace SampleCompany.NodeManagers.Simulation
             ref StatusCode statusCode,
             ref DateTime timestamp)
         {
-
-            PropertyState<Opc.Ua.Range> variable = node as PropertyState<Opc.Ua.Range>;
-            ExtensionObject extensionObject = value as ExtensionObject;
             TypeInfo typeInfo = Opc.Ua.TypeInfo.Construct(value);
 
-            if (variable == null ||
-                extensionObject == null ||
+            if (!(node is PropertyState<Opc.Ua.Range> variable) ||
+                !(value is ExtensionObject extensionObject) ||
                 typeInfo == null ||
                 typeInfo == Opc.Ua.TypeInfo.Unknown)
             {
                 return StatusCodes.BadTypeMismatch;
             }
-
-            Opc.Ua.Range newRange = extensionObject.Body as Opc.Ua.Range;
-            AnalogItemState parent = variable.Parent as AnalogItemState;
-            if (newRange == null ||
-                parent == null)
+            if (!(extensionObject.Body is Opc.Ua.Range newRange) ||
+                !(variable.Parent is AnalogItemState parent))
             {
                 return StatusCodes.BadTypeMismatch;
             }
@@ -1637,7 +1629,7 @@ namespace SampleCompany.NodeManagers.Simulation
                 string newPath = string.Format("{0}_{1}", path, newName);
                 itemsCreated.Add(CreateBaseDataVariableState(newParentFolder, newPath, newName, null, dataType, valueRank, AccessLevels.CurrentReadOrWrite, null));
             }
-            return (itemsCreated.ToArray());
+            return itemsCreated.ToArray();
         }
 
         /// <summary>
@@ -1677,7 +1669,7 @@ namespace SampleCompany.NodeManagers.Simulation
                 string newPath = string.Format("{0}_{1}", path, newName);
                 itemsCreated.Add(CreateDynamicVariable(newParentFolder, newPath, newName, description, dataType, valueRank));
             }//for i
-            return (itemsCreated.ToArray());
+            return itemsCreated.ToArray();
         }
 
         private ServiceResult OnVoidCall(
@@ -1710,7 +1702,7 @@ namespace SampleCompany.NodeManagers.Simulation
                 uint uintValue = (UInt32)inputArguments[1];
 
                 // set output parameter
-                outputArguments[0] = (float)(floatValue + uintValue);
+                outputArguments[0] = floatValue + uintValue;
                 return ServiceResult.Good;
             }
             catch
@@ -1739,7 +1731,7 @@ namespace SampleCompany.NodeManagers.Simulation
                 ushort op2 = (UInt16)inputArguments[1];
 
                 // set output parameter
-                outputArguments[0] = (Int32)(op1 * op2);
+                outputArguments[0] = op1 * op2;
                 return ServiceResult.Good;
             }
             catch
@@ -1767,7 +1759,7 @@ namespace SampleCompany.NodeManagers.Simulation
                 ushort op2 = (UInt16)inputArguments[1];
 
                 // set output parameter
-                outputArguments[0] = (float)((float)op1 / (float)op2);
+                outputArguments[0] = op1 / (float)op2;
                 return ServiceResult.Good;
             }
             catch
@@ -1822,7 +1814,7 @@ namespace SampleCompany.NodeManagers.Simulation
                 string op1 = (string)inputArguments[0];
 
                 // set output parameter
-                outputArguments[0] = (string)("hello " + op1);
+                outputArguments[0] = "hello " + op1;
                 return ServiceResult.Good;
             }
             catch
@@ -1857,7 +1849,7 @@ namespace SampleCompany.NodeManagers.Simulation
             try
             {
                 // set output parameter
-                outputArguments[0] = (string)("Output");
+                outputArguments[0] = "Output";
                 return ServiceResult.Good;
             }
             catch
@@ -2000,12 +1992,12 @@ namespace SampleCompany.NodeManagers.Simulation
         private bool disposed_;
         private readonly object lockDisposable_ = new object();
 
-        private SimulationServerConfiguration configuration_;
+        private readonly SimulationServerConfiguration configuration_;
 
         private Timer simulationTimer_;
         private UInt16 simulationInterval_ = 1000;
         private bool simulationEnabled_ = true;
-        private List<BaseDataVariableState> dynamicNodes_;
+        private readonly List<BaseDataVariableState> dynamicNodes_;
         #endregion
     }
 }
