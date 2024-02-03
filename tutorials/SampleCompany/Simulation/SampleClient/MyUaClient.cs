@@ -24,7 +24,7 @@ using Technosoftware.UaClient;
 namespace SampleCompany.SampleClient
 {
     /// <summary>The UA client sample functionality.</summary>
-    public class MyUaClient : IDisposable
+    public class MyUaClient : IMyUaClient, IDisposable
     {
         #region Constructors
         /// <summary>

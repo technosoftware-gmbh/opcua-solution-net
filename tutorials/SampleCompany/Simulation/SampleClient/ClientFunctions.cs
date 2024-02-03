@@ -31,19 +31,6 @@ using Technosoftware.UaClient;
 namespace SampleCompany.SampleClient
 {
     /// <summary>
-    /// A client interface which holds an active session.
-    /// The client handler may reconnect and the Session
-    /// property may be updated during operation.
-    /// </summary>
-    public interface IMyClient
-    {
-        /// <summary>
-        /// The session to use.
-        /// </summary>
-        IUaSession Session { get; }
-    };
-
-    /// <summary>
     /// Sample Session calls based on the reference server node model.
     /// </summary>
     public class ClientFunctions
@@ -453,7 +440,7 @@ namespace SampleCompany.SampleClient
         /// <param name="filterUATypes">Filters nodes from namespace 0 from the result.</param>
         /// <returns>The list of nodes on the server.</returns>
         public async Task<IList<INode>> FetchAllNodesNodeCacheAsync(
-            IMyClient uaClient,
+            IMyUaClient uaClient,
             NodeId startingNode,
             bool fetchTree = false,
             bool addRootNode = false,
@@ -588,7 +575,7 @@ namespace SampleCompany.SampleClient
         /// <param name="startingNode">The node where the browse operation starts.</param>
         /// <param name="browseDescription">An optional BrowseDescription to use.</param>
         public async Task<ReferenceDescriptionCollection> BrowseFullAddressSpaceAsync(
-            IMyClient uaClient,
+            IMyUaClient uaClient,
             NodeId startingNode = null,
             BrowseDescription browseDescription = null,
             CancellationToken ct = default)
@@ -793,10 +780,10 @@ namespace SampleCompany.SampleClient
         /// <summary>
         /// Output all values as JSON.
         /// </summary>
-        /// <param name="uaClient">The IMyClient with a session to use.</param>
+        /// <param name="uaClient">The IMyUaClient with a session to use.</param>
         /// <param name="variableIds">The variables to output.</param>
         public async Task<(DataValueCollection, IList<ServiceResult>)> ReadAllValuesAsync(
-            IMyClient uaClient,
+            IMyUaClient uaClient,
             NodeIdCollection variableIds)
         {
             bool retrySingleRead = false;
@@ -879,7 +866,7 @@ namespace SampleCompany.SampleClient
         /// <param name="uaClient">The UAClient with a session to use.</param>
         /// <param name="variableIds">The variables to subscribe.</param>
         public async Task SubscribeAllValuesAsync(
-            IMyClient uaClient,
+            IMyUaClient uaClient,
             NodeCollection variableIds,
             int samplingInterval,
             int publishingInterval,
