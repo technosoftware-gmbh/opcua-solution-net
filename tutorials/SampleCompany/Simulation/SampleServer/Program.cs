@@ -54,18 +54,23 @@ namespace SampleCompany.SampleServer
         /// <param name="args">The arguments.</param>
         public static async Task<int> Main(string[] args)
         {
+            TextWriter output = Console.Out;
+            await output.WriteLineAsync("OPC UA Console Sample Server").ConfigureAwait(false);
+
             #region License validation
-            string licenseData =
+            var licenseData =
                     @"";
-            bool licensed = Technosoftware.UaServer.LicenseHandler.Validate(licenseData);
+            var licensed = Technosoftware.UaServer.LicenseHandler.Validate(licenseData);
+            if (!licensed)
+            {
+                await output.WriteLineAsync("WARNING: No valid license applied.").ConfigureAwait(false);
+            }
             #endregion
 
-            TextWriter output = Console.Out;
-            output.WriteLine("SampleCompany {0} OPC UA Sample Server", Utils.IsRunningOnMono() ? "Mono" : ".NET Core");
 
             // The application name and config file names
-            string applicationName = "SampleCompany.SampleServer";
-            string configSectionName = "SampleCompany.SampleServer";
+            var applicationName = "SampleCompany.SampleServer";
+            var configSectionName = "SampleCompany.SampleServer";
 
             // command line options
             bool showHelp = false;
@@ -77,7 +82,7 @@ namespace SampleCompany.SampleServer
             string password = null;
             int timeout = -1;
 
-            string usage = Utils.IsRunningOnMono() ? $"Usage: mono {applicationName}.exe [OPTIONS]" : $"Usage: dotnet {applicationName}.dll [OPTIONS]";
+            var usage = Utils.IsRunningOnMono() ? $"Usage: mono {applicationName}.exe [OPTIONS]" : $"Usage: dotnet {applicationName}.dll [OPTIONS]";
             Mono.Options.OptionSet options = new Mono.Options.OptionSet {
                 usage,
                 { "h|help", "show this message and exit", h => showHelp = h != null },
@@ -93,7 +98,7 @@ namespace SampleCompany.SampleServer
             try
             {
                 // parse command line and set options
-                ConsoleUtils.ProcessCommandLine(output, args, options, ref showHelp, "REFSERVER");
+                _ = ConsoleUtils.ProcessCommandLine(output, args, options, ref showHelp, "REFSERVER");
 
                 if (logConsole && appLog)
                 {
@@ -101,7 +106,7 @@ namespace SampleCompany.SampleServer
                 }
 
                 // create the UA server
-                MyUaServer<NodeManagers.Simulation.SimulationServer> server = new MyUaServer<NodeManagers.Simulation.SimulationServer>(output) {
+                var server = new MyUaServer<NodeManagers.Simulation.SimulationServer>(output) {
                     AutoAccept = autoAccept,
                     Password = password
                 };
@@ -114,9 +119,9 @@ namespace SampleCompany.SampleServer
                 if (shadowConfig)
                 {
                     output.WriteLine("Using shadow configuration.");
-                    string shadowPath = Directory.GetParent(Path.GetDirectoryName(
+                    var shadowPath = Directory.GetParent(Path.GetDirectoryName(
                         Utils.ReplaceSpecialFolderNames(server.Configuration.TraceConfiguration.OutputFilePath))).FullName;
-                    string shadowFilePath = Path.Combine(shadowPath, Path.GetFileName(server.Configuration.SourceFilePath));
+                    var shadowFilePath = Path.Combine(shadowPath, Path.GetFileName(server.Configuration.SourceFilePath));
                     if (!File.Exists(shadowFilePath))
                     {
                         output.WriteLine("Create a copy of the config in the shadow location.");
@@ -143,8 +148,8 @@ namespace SampleCompany.SampleServer
                 await output.WriteLineAsync("Server started. Press Ctrl-C to exit...").ConfigureAwait(false);
 
                 // wait for timeout or Ctrl-C
-                CancellationTokenSource quitCTS = new CancellationTokenSource();
-                ManualResetEvent quitEvent = ConsoleUtils.CtrlCHandler(quitCTS);
+                var quitCts = new CancellationTokenSource();
+                ManualResetEvent quitEvent = ConsoleUtils.CtrlCHandler(quitCts);
                 bool ctrlc = quitEvent.WaitOne(timeout);
 
                 // stop server. May have to wait for clients to disconnect.

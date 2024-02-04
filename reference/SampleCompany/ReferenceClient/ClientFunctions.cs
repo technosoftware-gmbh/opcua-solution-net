@@ -31,19 +31,6 @@ using Technosoftware.UaClient;
 namespace SampleCompany.ReferenceClient
 {
     /// <summary>
-    /// A client interface which holds an active session.
-    /// The client handler may reconnect and the Session
-    /// property may be updated during operation.
-    /// </summary>
-    public interface IMyClient
-    {
-        /// <summary>
-        /// The session to use.
-        /// </summary>
-        IUaSession Session { get; }
-    };
-
-    /// <summary>
     /// Sample Session calls based on the reference server node model.
     /// </summary>
     public class ClientFunctions
@@ -63,7 +50,7 @@ namespace SampleCompany.ReferenceClient
         }
         #endregion
 
-        #region Public Sample Methods
+        #region Public Sample Client Methods
         /// <summary>
         /// Read a list of nodes from Server
         /// </summary>
@@ -144,51 +131,43 @@ namespace SampleCompany.ReferenceClient
                 var nodesToWrite = new WriteValueCollection();
 
                 // Int32 Node - Objects\CTT\Scalar\Scalar_Static\Int32
-                var intWriteVal = new WriteValue
-                {
+                WriteValue intWriteVal = new WriteValue {
                     NodeId = new NodeId("ns=2;s=Scalar_Static_Int32"),
                     AttributeId = Attributes.Value,
-                    Value = new DataValue
-                    {
-                        Value = (int)100
+                    Value = new DataValue {
+                        Value = 100
                     }
                 };
                 nodesToWrite.Add(intWriteVal);
 
                 // Float Node - Objects\CTT\Scalar\Scalar_Static\Float
-                var floatWriteVal = new WriteValue
-                {
+                var floatWriteVal = new WriteValue {
                     NodeId = new NodeId("ns=2;s=Scalar_Static_Float"),
                     AttributeId = Attributes.Value,
-                    Value = new DataValue
-                    {
+                    Value = new DataValue {
                         Value = (float)100.5
                     }
                 };
                 nodesToWrite.Add(floatWriteVal);
 
                 // String Node - Objects\CTT\Scalar\Scalar_Static\String
-                var stringWriteVal = new WriteValue
-                {
+                var stringWriteVal = new WriteValue {
                     NodeId = new NodeId("ns=2;s=Scalar_Static_String"),
                     AttributeId = Attributes.Value,
-                    Value = new DataValue
-                    {
+                    Value = new DataValue {
                         Value = "String Test"
                     }
                 };
                 nodesToWrite.Add(stringWriteVal);
 
                 // Write the node attributes
-                StatusCodeCollection results = null;
-                DiagnosticInfoCollection diagnosticInfos;
                 output_.WriteLine("Writing nodes...");
 
                 // Call Write Service
                 session.Write(null,
                                 nodesToWrite,
-                                out results,
-                                out diagnosticInfos);
+                                out StatusCodeCollection results,
+                                out DiagnosticInfoCollection diagnosticInfos);
 
                 // Validate the response
                 validateResponse_(results, nodesToWrite);
@@ -222,8 +201,7 @@ namespace SampleCompany.ReferenceClient
             try
             {
                 // Create a Browser object
-                var browser = new Browser(session)
-                {
+                var browser = new Browser(session) {
                     // Set browse parameters
                     BrowseDirection = BrowseDirection.Forward,
                     NodeClassMask = (int)NodeClass.Object | (int)NodeClass.Variable,
@@ -328,8 +306,7 @@ namespace SampleCompany.ReferenceClient
 
                 // Create MonitoredItems for data changes (Reference Server)
 
-                var intMonitoredItem = new MonitoredItem(subscription.DefaultItem)
-                {
+                var intMonitoredItem = new MonitoredItem(subscription.DefaultItem) {
                     // Int32 Node - Objects\CTT\Scalar\Simulation\Int32
                     StartNodeId = new NodeId("ns=2;s=Scalar_Simulation_Int32"),
                     AttributeId = Attributes.Value,
@@ -342,8 +319,7 @@ namespace SampleCompany.ReferenceClient
 
                 subscription.AddItem(intMonitoredItem);
 
-                var floatMonitoredItem = new MonitoredItem(subscription.DefaultItem)
-                {
+                var floatMonitoredItem = new MonitoredItem(subscription.DefaultItem) {
                     // Float Node - Objects\CTT\Scalar\Simulation\Float
                     StartNodeId = new NodeId("ns=2;s=Scalar_Simulation_Float"),
                     AttributeId = Attributes.Value,
@@ -355,8 +331,7 @@ namespace SampleCompany.ReferenceClient
 
                 subscription.AddItem(floatMonitoredItem);
 
-                var stringMonitoredItem = new MonitoredItem(subscription.DefaultItem)
-                {
+                var stringMonitoredItem = new MonitoredItem(subscription.DefaultItem) {
                     // String Node - Objects\CTT\Scalar\Simulation\String
                     StartNodeId = new NodeId("ns=2;s=Scalar_Simulation_String"),
                     AttributeId = Attributes.Value,
@@ -398,8 +373,7 @@ namespace SampleCompany.ReferenceClient
                 // Create a subscription for receiving event change notifications
 
                 // Define Subscription parameters
-                var subscription = new Subscription(session.DefaultSubscription)
-                {
+                var subscription = new Subscription(session.DefaultSubscription) {
                     DisplayName = "Console ReferenceClient Event Subscription",
                     PublishingEnabled = true,
                     PublishingInterval = 1000,
@@ -466,7 +440,7 @@ namespace SampleCompany.ReferenceClient
         /// <param name="filterUATypes">Filters nodes from namespace 0 from the result.</param>
         /// <returns>The list of nodes on the server.</returns>
         public async Task<IList<INode>> FetchAllNodesNodeCacheAsync(
-            IMyClient uaClient,
+            IMyUaClient uaClient,
             NodeId startingNode,
             bool fetchTree = false,
             bool addRootNode = false,
@@ -500,7 +474,7 @@ namespace SampleCompany.ReferenceClient
             var searchDepth = 0;
             while (nodesToBrowse.Count > 0 && searchDepth < MaxSearchDepth)
             {
-                if (quitEvent_.WaitOne(0) == true)
+                if (quitEvent_.WaitOne(0))
                 {
                     output_.WriteLine("Browse aborted.");
                     break;
@@ -601,7 +575,7 @@ namespace SampleCompany.ReferenceClient
         /// <param name="startingNode">The node where the browse operation starts.</param>
         /// <param name="browseDescription">An optional BrowseDescription to use.</param>
         public async Task<ReferenceDescriptionCollection> BrowseFullAddressSpaceAsync(
-            IMyClient uaClient,
+            IMyUaClient uaClient,
             NodeId startingNode = null,
             BrowseDescription browseDescription = null,
             CancellationToken ct = default)
@@ -714,7 +688,7 @@ namespace SampleCompany.ReferenceClient
                 var continuationPoints = PrepareBrowseNext(browseResultCollection);
                 while (continuationPoints.Any())
                 {
-                    if (quitEvent_.WaitOne(0) == true)
+                    if (quitEvent_.WaitOne(0))
                     {
                         output_.WriteLine("Browse aborted.");
                     }
@@ -790,7 +764,7 @@ namespace SampleCompany.ReferenceClient
         /// The NodeCache needs this information to function properly with subtypes of hierarchical calls.
         /// </remarks>
         /// <param name="session">The session to use</param>
-        Task FetchReferenceIdTypesAsync(IUaSession session)
+        private Task FetchReferenceIdTypesAsync(IUaSession session)
         {
             // fetch the reference types first, otherwise browse for e.g. hierarchical references with subtypes won't work
             var bindingFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public;
@@ -806,10 +780,10 @@ namespace SampleCompany.ReferenceClient
         /// <summary>
         /// Output all values as JSON.
         /// </summary>
-        /// <param name="uaClient">The IMyClient with a session to use.</param>
+        /// <param name="uaClient">The IMyUaClient with a session to use.</param>
         /// <param name="variableIds">The variables to output.</param>
         public async Task<(DataValueCollection, IList<ServiceResult>)> ReadAllValuesAsync(
-            IMyClient uaClient,
+            IMyUaClient uaClient,
             NodeIdCollection variableIds)
         {
             var retrySingleRead = false;
@@ -836,7 +810,7 @@ namespace SampleCompany.ReferenceClient
 
                                 if (ServiceResult.IsNotBad(value.StatusCode))
                                 {
-                                    var valueString = ClientFunctions.FormatValueAsJson(uaClient.Session.MessageContext, variableId.ToString(), value, true);
+                                    var valueString = FormatValueAsJson(uaClient.Session.MessageContext, variableId.ToString(), value, true);
                                     output_.WriteLine(valueString);
                                 }
                                 else
@@ -861,7 +835,7 @@ namespace SampleCompany.ReferenceClient
                         {
                             if (ServiceResult.IsNotBad(errors[ii]))
                             {
-                                var valueString = ClientFunctions.FormatValueAsJson(uaClient.Session.MessageContext, variableIds[ii].ToString(), value, true);
+                                var valueString = FormatValueAsJson(uaClient.Session.MessageContext, variableIds[ii].ToString(), value, true);
                                 output_.WriteLine(valueString);
                             }
                             else
@@ -892,7 +866,7 @@ namespace SampleCompany.ReferenceClient
         /// <param name="uaClient">The UAClient with a session to use.</param>
         /// <param name="variableIds">The variables to subscribe.</param>
         public async Task SubscribeAllValuesAsync(
-            IMyClient uaClient,
+            IMyUaClient uaClient,
             NodeCollection variableIds,
             int samplingInterval,
             int publishingInterval,
@@ -951,7 +925,10 @@ namespace SampleCompany.ReferenceClient
                         MonitoringMode = MonitoringMode.Reporting,
                     };
                     subscription.AddItem(monitoredItem);
-                    if (subscription.CurrentKeepAliveCount > 1000) break;
+                    if (subscription.CurrentKeepAliveCount > 1000)
+                    {
+                        break;
+                    }
                 }
 
                 // Create the monitored items on Server side
@@ -1094,10 +1071,9 @@ namespace SampleCompany.ReferenceClient
         {
             try
             {
-                var monitoredItem = (MonitoredItem)sender;
-                var notification = e.NotificationValue as EventFieldList;
+                MonitoredItem monitoredItem = (MonitoredItem)sender;
 
-                if (notification == null)
+                if (!(e.NotificationValue is EventFieldList notification))
                 {
                     return;
                 }
@@ -1124,26 +1100,24 @@ namespace SampleCompany.ReferenceClient
                 }
 
                 // construct the condition object.
-                var alarmConditionState = EventUtils.ConstructEvent(
+
+                if (EventUtils.ConstructEvent(
                     currentSession_,
                     monitoredItem,
                     notification,
-                    eventTypeMappings_) as AlarmConditionState;
-
-                if (alarmConditionState != null)
+                    eventTypeMappings_) is AlarmConditionState alarmConditionState)
                 {
                     ShowAlarm(notification, alarmConditionState);
                     return;
                 }
 
                 // construct the condition object.
-                var condition = EventUtils.ConstructEvent(
+
+                if (EventUtils.ConstructEvent(
                     currentSession_,
                     monitoredItem,
                     notification,
-                    eventTypeMappings_) as ConditionState;
-
-                if (condition != null)
+                    eventTypeMappings_) is ConditionState condition)
                 {
                     ShowCondition(notification, condition);
                     return;
@@ -1153,7 +1127,7 @@ namespace SampleCompany.ReferenceClient
                     currentSession_,
                     monitoredItem,
                     notification,
-                    eventTypeMappings_) as BaseEventState;
+                    eventTypeMappings_);
                 if (baseEvent != null)
                 {
                     ShowEvent(notification, baseEvent);
@@ -1164,7 +1138,7 @@ namespace SampleCompany.ReferenceClient
                 output_.WriteLine("OnMonitoredItemNotification error: {0}", ex.Message);
             }
         }
-        
+
         /// <summary>
         /// Create a browse description from a node id collection.
         /// </summary>
@@ -1248,10 +1222,7 @@ namespace SampleCompany.ReferenceClient
                     message = Utils.Format("{0}", baseEvent.Message.Value);
                 }
 
-                if (verbose_)
-                {
                     output_.WriteLine("Base Event {0}: Time = {1}, Severity = {2}, SourceName {3}, Message = {4}, EventType = {5}.", notification.Message.SequenceNumber, time, severity, sourceName, message, typeText);
-                }
             }
             catch (Exception ex)
             {
@@ -1320,7 +1291,6 @@ namespace SampleCompany.ReferenceClient
                 // State
                 if (condition.EnabledState != null && condition.EnabledState.EffectiveDisplayName != null)
                 {
-                    
                     enabledState = Utils.Format("{0}", condition.EnabledState.EffectiveDisplayName.Value);
                 }
 
@@ -1338,7 +1308,7 @@ namespace SampleCompany.ReferenceClient
 
                 if (verbose_)
                 {
-                    output_.WriteLine("Condition {0}: Time = {1}, Severity = {2}, SourceName {3}, Message = {4}, EventType = {5}, BranchId = {6}, EnabledState = {7}, Comment = {7}.", notification.Message.SequenceNumber, time, severity, sourceName, message, typeText, branchId, enabledState, comment);
+                    output_.WriteLine("Condition {0}: Time = {1}, Severity = {2}, SourceName {3}, Message = {4}, EventType = {5}, BranchId = {6}, EnabledState = {7}, Comment = {8}.", notification.Message.SequenceNumber, time, severity, sourceName, message, typeText, branchId, enabledState, comment);
                 }
             }
             catch (Exception ex)
@@ -1426,10 +1396,7 @@ namespace SampleCompany.ReferenceClient
                     comment = Utils.Format("{0}", alarm.Comment.Value);
                 }
 
-                if (verbose_)
-                {
-                    output_.WriteLine("Alarm {0}: Time = {1}, Severity = {2}, SourceName {3}, Message = {4}, EventType = {5}, BranchId = {6}, EnabledState = {7}, Comment = {7}.", notification.Message.SequenceNumber, time, severity, sourceName, message, typeText, branchId, enabledState, comment);
-                }
+                output_.WriteLine("Alarm {0}: Time = {1}, Severity = {2}, SourceName {3}, Message = {4}, EventType = {5}, BranchId = {6}, EnabledState = {7}, Comment = {8}.", notification.Message.SequenceNumber, time, severity, sourceName, message, typeText, branchId, enabledState, comment);
             }
             catch (Exception ex)
             {
@@ -1452,8 +1419,7 @@ namespace SampleCompany.ReferenceClient
             // build list of methods to call.
             var methodsToCall = new CallMethodRequestCollection();
 
-            var request = new CallMethodRequest
-            {
+            var request = new CallMethodRequest {
                 ObjectId = condition.NodeId,
                 MethodId = MethodIds.AcknowledgeableConditionType_Acknowledge,
                 Handle = condition.Handle
@@ -1473,14 +1439,12 @@ namespace SampleCompany.ReferenceClient
             }
 
             // call the methods.
-            CallMethodResultCollection results;
-            DiagnosticInfoCollection diagnosticInfos;
 
             currentSession_.Call(
                 null,
                 methodsToCall,
-                out results,
-                out diagnosticInfos);
+                out CallMethodResultCollection results,
+                out DiagnosticInfoCollection diagnosticInfos);
 
             ClientBase.ValidateResponse(results, methodsToCall);
             ClientBase.ValidateDiagnosticInfos(diagnosticInfos, methodsToCall);
@@ -1488,13 +1452,13 @@ namespace SampleCompany.ReferenceClient
         #endregion
 
         #region Private Fieds
-        private Action<IList, IList> validateResponse_;
+        private readonly Action<IList, IList> validateResponse_;
         private readonly TextWriter output_;
         private readonly ManualResetEvent quitEvent_;
         private readonly bool verbose_;
 
         private IUaSession currentSession_;
-        private Dictionary<NodeId, NodeId> eventTypeMappings_;
+        private readonly Dictionary<NodeId, NodeId> eventTypeMappings_;
         #endregion
     }
 }

@@ -126,7 +126,7 @@ namespace SampleCompany.SampleClient
 
             try
             {
-                if (session_ != null && session_.Connected == true)
+                if (session_ != null && session_.Connected)
                 {
                     output_.WriteLine("Session already connected!");
                 }
@@ -233,7 +233,7 @@ namespace SampleCompany.SampleClient
                         reconnectHandler_ = null;
                     }
 
-                    session_.Close();
+                    _ = session_.Close();
                     session_.Dispose();
                     session_ = null;
 
@@ -304,7 +304,7 @@ namespace SampleCompany.SampleClient
         private void OnReconnectComplete(object sender, EventArgs e)
         {
             // ignore callbacks from discarded objects.
-            if (!Object.ReferenceEquals(sender, reconnectHandler_))
+            if (!ReferenceEquals(sender, reconnectHandler_))
             {
                 return;
             }
@@ -316,7 +316,7 @@ namespace SampleCompany.SampleClient
                 {
                     // ensure only a new instance is disposed
                     // after reactivate, the same session instance may be returned
-                    if (!Object.ReferenceEquals(session_, reconnectHandler_.Session))
+                    if (!ReferenceEquals(session_, reconnectHandler_.Session))
                     {
                         output_.WriteLine("--- RECONNECTED TO NEW SESSION --- {0}", reconnectHandler_.Session.SessionId);
                         IUaSession session = session_;

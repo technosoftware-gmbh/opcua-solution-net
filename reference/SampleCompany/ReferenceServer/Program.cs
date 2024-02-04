@@ -36,14 +36,19 @@ namespace SampleCompany.ReferenceServer
         /// <param name="args">The arguments.</param>
         public static async Task<int> Main(string[] args)
         {
+            TextWriter output = Console.Out;
+            await output.WriteLineAsync("OPC UA Console Reference Server").ConfigureAwait(false);
+
             #region License validation
             var licenseData =
                     @"";
             var licensed = Technosoftware.UaServer.LicenseHandler.Validate(licenseData);
+            if (!licensed)
+            {
+                await output.WriteLineAsync("WARNING: No valid license applied.").ConfigureAwait(false);
+            }
             #endregion
 
-            TextWriter output = Console.Out;
-            output.WriteLine("SampleCompany {0} OPC UA Reference Server", Utils.IsRunningOnMono() ? "Mono" : ".NET Core");
 
             // The application name and config file names
             var applicationName = "SampleCompany.ReferenceServer";
@@ -114,14 +119,14 @@ namespace SampleCompany.ReferenceServer
                 ConsoleUtils.ConfigureLogging(server.Configuration, applicationName, logConsole, LogLevel.Information);
 
                 // check or renew the certificate
-                await output.WriteLineAsync("Check the certificate.");
+                await output.WriteLineAsync("Check the certificate.").ConfigureAwait(false);
                 await server.CheckCertificateAsync(renewCertificate).ConfigureAwait(false);
 
                 // Create and add the node managers
                 server.Create(NodeManagerUtils.NodeManagerFactories);
 
                 // start the server
-                await output.WriteLineAsync("Start the server.");
+                await output.WriteLineAsync("Start the server.").ConfigureAwait(false);
                 await server.StartAsync().ConfigureAwait(false);
 
                 // Apply custom settings for CTT testing
@@ -132,15 +137,15 @@ namespace SampleCompany.ReferenceServer
                     NodeManagerUtils.ApplyCTTMode(output, server.Server);
                 }
 
-                await output.WriteLineAsync("Server started. Press Ctrl-C to exit...");
+                await output.WriteLineAsync("Server started. Press Ctrl-C to exit...").ConfigureAwait(false);
 
                 // wait for timeout or Ctrl-C
-                var quitCTS = new CancellationTokenSource();
-                var quitEvent = ConsoleUtils.CtrlCHandler(quitCTS);
+                var quitCts = new CancellationTokenSource();
+                var quitEvent = ConsoleUtils.CtrlCHandler(quitCts);
                 bool ctrlc = quitEvent.WaitOne(timeout);
 
                 // stop server. May have to wait for clients to disconnect.
-                await output.WriteLineAsync("Server stopped. Waiting for exit...");
+                await output.WriteLineAsync("Server stopped. Waiting for exit...").ConfigureAwait(false);
                 await server.StopAsync().ConfigureAwait(false);
 
                 return (int)ExitCode.Ok;

@@ -62,9 +62,9 @@ namespace SampleCompany.SampleClient
             await output.WriteLineAsync("OPC UA Console Sample Client").ConfigureAwait(false);
 
             #region License validation
-            string licenseData =
+            var licenseData =
                     @"";
-            bool licensed = Technosoftware.UaClient.LicenseHandler.Validate(licenseData);
+            var licensed = Technosoftware.UaClient.LicenseHandler.Validate(licenseData);
             if (!licensed)
             {
                 await output.WriteLineAsync("WARNING: No valid license applied.").ConfigureAwait(false);
@@ -72,9 +72,9 @@ namespace SampleCompany.SampleClient
             #endregion
 
             // The application name and config file names
-            string applicationName = "SampleCompany.SampleClient";
-            string configSectionName = "SampleCompany.SampleClient";
-            string usage = $"Usage: dotnet {applicationName}.dll [OPTIONS] [ENDPOINTURL]";
+            var applicationName = "SampleCompany.SampleClient";
+            var configSectionName = "SampleCompany.SampleClient";
+            var usage = $"Usage: dotnet {applicationName}.dll [OPTIONS] [ENDPOINTURL]";
 
             // command line options
             bool showHelp = false;
@@ -138,7 +138,7 @@ namespace SampleCompany.SampleClient
                 string extraArg = ConsoleUtils.ProcessCommandLine(output, args, options, ref showHelp, "SAMPLECLIENT");
 
                 // connect Url?
-                Uri serverUrl = !string.IsNullOrEmpty(extraArg) ? new Uri(extraArg) : new Uri("opc.tcp://localhost:62541/Quickstarts/ReferenceServer");
+                Uri serverUrl = !string.IsNullOrEmpty(extraArg) ? new Uri(extraArg) : new Uri("opc.tcp://localhost:62555/SampleServer");
 
                 // log console output to logger
                 if (logConsole && appLog)
@@ -162,10 +162,10 @@ namespace SampleCompany.SampleClient
                 // override logfile
                 if (logFile != null)
                 {
-                    string logFilePath = config.TraceConfiguration.OutputFilePath;
+                    var logFilePath = config.TraceConfiguration.OutputFilePath;
                     if (logFilePath != null)
                     {
-                        string filename = Path.GetFileNameWithoutExtension(logFilePath);
+                        var filename = Path.GetFileNameWithoutExtension(logFilePath);
                         config.TraceConfiguration.OutputFilePath = logFilePath.Replace(filename, logFile);
                     }
                     config.TraceConfiguration.DeleteOnLoad = true;
@@ -239,7 +239,7 @@ namespace SampleCompany.SampleClient
                             uaClient.Session.MinPublishRequestCount = 3;
                             uaClient.Session.TransferSubscriptionsOnReconnect = true;
 
-                            ClientFunctions clientFunctions = new ClientFunctions(output, ClientBase.ValidateResponse, quitEvent, verbose);
+                            var clientFunctions = new ClientFunctions(output, ClientBase.ValidateResponse, quitEvent, verbose);
 
                             if (browseAll || fetchAll || jsonValues)
                             {
@@ -284,7 +284,7 @@ namespace SampleCompany.SampleClient
                                     }
                                     else if (browseAll)
                                     {
-                                        List<ExpandedNodeId> variableReferences = referenceDescriptions
+                                        var variableReferences = referenceDescriptions
                                             .Where(r => r.NodeClass == NodeClass.Variable && r.NodeId.NamespaceIndex > 1)
                                             .Select(r => r.NodeId)
                                             .OrderBy(o => random.Next())
@@ -317,8 +317,8 @@ namespace SampleCompany.SampleClient
                                 clientFunctions.WriteNodes(uaClient.Session);
                                 clientFunctions.Browse(uaClient.Session);
                                 clientFunctions.CallMethod(uaClient.Session);
-                                clientFunctions.SubscribeToDataChanges(uaClient.Session, 120_000);
-                                clientFunctions.SubscribeToEventChanges(uaClient.Session, 120_000);
+                                _ = clientFunctions.SubscribeToDataChanges(uaClient.Session, 120_000);
+                                _ = clientFunctions.SubscribeToEventChanges(uaClient.Session, 120_000);
 
                                 await output.WriteLineAsync("Waiting...").ConfigureAwait(false);
 

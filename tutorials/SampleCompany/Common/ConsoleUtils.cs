@@ -72,7 +72,7 @@ namespace SampleCompany.Common
                     string envKey = config[longest.ToUpperInvariant()];
                     if (envKey != null)
                     {
-                        if (string.IsNullOrWhiteSpace(envKey) || option.OptionValueType == Mono.Options.OptionValueType.None)
+                        if (string.IsNullOrWhiteSpace(envKey) || option.OptionValueType == OptionValueType.None)
                         {
                             argslist.Add("--" + longest);
                         }
@@ -232,7 +232,7 @@ namespace SampleCompany.Common
             {
                 Console.CancelKeyPress += (_, eArgs) => {
                     cts.Cancel();
-                    quitEvent.Set();
+                    _ = quitEvent.Set();
                     eArgs.Cancel = true;
                 };
             }

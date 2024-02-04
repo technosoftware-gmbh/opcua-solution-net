@@ -89,12 +89,12 @@ namespace SampleCompany.ReferenceServer
                 ExitCode = ExitCode.ErrorNotStarted;
 
                 ApplicationInstance.MessageDlg = new ApplicationMessageDlg(output_);
-                var PasswordProvider = new CertificatePasswordProvider(Password);
+                var passwordProvider = new CertificatePasswordProvider(Password);
                 Application = new ApplicationInstance {
                     ApplicationName = applicationName,
                     ApplicationType = ApplicationType.Server,
                     ConfigSectionName = configSectionName,
-                    CertificatePasswordProvider = PasswordProvider
+                    CertificatePasswordProvider = passwordProvider
                 };
 
                 // load the application configuration.

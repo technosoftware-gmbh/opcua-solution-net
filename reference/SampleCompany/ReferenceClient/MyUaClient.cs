@@ -12,7 +12,6 @@
 #region Using Directives
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,7 +24,7 @@ using Technosoftware.UaClient;
 namespace SampleCompany.ReferenceClient
 {
     /// <summary>The UA client sample functionality.</summary>
-    public class MyUaClient : IDisposable
+    public class MyUaClient : IMyUaClient, IDisposable
     {
         #region Constructors
         /// <summary>
@@ -120,7 +119,10 @@ namespace SampleCompany.ReferenceClient
         /// </summary>
         public async Task<bool> ConnectAsync(string serverUrl, bool useSecurity = true, CancellationToken ct = default)
         {
-            if (serverUrl == null) throw new ArgumentNullException(nameof(serverUrl));
+            if (serverUrl == null)
+            {
+                throw new ArgumentNullException(nameof(serverUrl));
+            }
 
             try
             {
@@ -274,7 +276,7 @@ namespace SampleCompany.ReferenceClient
                         return;
                     }
 
-                    var state = reconnectHandler_.BeginReconnect(session_, reverseConnectManager_, ReconnectPeriod, Client_ReconnectComplete);
+                    var state = reconnectHandler_.BeginReconnect(session_, reverseConnectManager_, ReconnectPeriod, OnReconnectComplete);
                     if (state == SessionReconnectHandler.ReconnectState.Triggered)
                     {
                         Utils.LogInfo("KeepAlive status {0}, reconnect status {1}, reconnect period {2}ms.", e.Status, state, ReconnectPeriod);
@@ -299,7 +301,7 @@ namespace SampleCompany.ReferenceClient
         /// <summary>
         /// Called when the reconnect attempt was successful.
         /// </summary>
-        private void Client_ReconnectComplete(object sender, EventArgs e)
+        private void OnReconnectComplete(object sender, EventArgs e)
         {
             // ignore callbacks from discarded objects.
             if (!Object.ReferenceEquals(sender, reconnectHandler_))
@@ -370,8 +372,8 @@ namespace SampleCompany.ReferenceClient
 
         #region Private Fields
         private readonly object lock_ = new object();
-        private ReverseConnectManager reverseConnectManager_;
-        private ApplicationConfiguration configuration_;        
+        private readonly ReverseConnectManager reverseConnectManager_;
+        private readonly ApplicationConfiguration configuration_;
         private SessionReconnectHandler reconnectHandler_;
         private IUaSession session_;
         private readonly TextWriter output_;

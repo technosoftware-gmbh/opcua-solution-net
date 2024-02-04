@@ -91,16 +91,16 @@ namespace SampleCompany.SampleServer
                 ExitCode = ExitCode.ErrorNotStarted;
 
                 ApplicationInstance.MessageDlg = new ApplicationMessageDlg(output_);
-                CertificatePasswordProvider PasswordProvider = new CertificatePasswordProvider(Password);
+                var passwordProvider = new CertificatePasswordProvider(Password);
                 Application = new ApplicationInstance {
                     ApplicationName = applicationName,
                     ApplicationType = ApplicationType.Server,
                     ConfigSectionName = configSectionName,
-                    CertificatePasswordProvider = PasswordProvider
+                    CertificatePasswordProvider = passwordProvider
                 };
 
                 // load the application configuration.
-                await Application.LoadApplicationConfigurationAsync(false).ConfigureAwait(false);
+                _ = await Application.LoadApplicationConfigurationAsync(false).ConfigureAwait(false);
 
             }
             catch (Exception ex)
@@ -182,7 +182,7 @@ namespace SampleCompany.SampleServer
 
                 // print endpoint info
                 IEnumerable<string> endpoints = Application.BaseServer.GetEndpoints().Select(e => e.EndpointUrl).Distinct();
-                foreach (string endpoint in endpoints)
+                foreach (var endpoint in endpoints)
                 {
                     output_.WriteLine(endpoint);
                 }
@@ -254,7 +254,7 @@ namespace SampleCompany.SampleServer
         private void OnEventStatus(object sender, SessionEventArgs eventArgs)
         {
             lastEventTime_ = DateTime.UtcNow;
-            Session session = sender as Session;
+            var session = sender as Session;
             PrintSessionStatus(session, eventArgs.Reason.ToString());
         }
         #endregion
@@ -271,18 +271,18 @@ namespace SampleCompany.SampleServer
             StringBuilder item = new StringBuilder();
             lock (session.DiagnosticsLock)
             {
-                item.AppendFormat("{0,9}:{1,20}:", reason, session.SessionDiagnostics.SessionName);
+                _ = item.AppendFormat("{0,9}:{1,20}:", reason, session.SessionDiagnostics.SessionName);
                 if (lastContact)
                 {
-                    item.AppendFormat("Last Event:{0:HH:mm:ss}", session.SessionDiagnostics.ClientLastContactTime.ToLocalTime());
+                    _ = item.AppendFormat("Last Event:{0:HH:mm:ss}", session.SessionDiagnostics.ClientLastContactTime.ToLocalTime());
                 }
                 else
                 {
                     if (session.Identity != null)
                     {
-                        item.AppendFormat(":{0,20}", session.Identity.DisplayName);
+                        _ = item.AppendFormat(":{0,20}", session.Identity.DisplayName);
                     }
-                    item.AppendFormat(":{0}", session.Id);
+                    _ = item.AppendFormat(":{0}", session.Id);
                 }
             }
             output_.WriteLine(item.ToString());
