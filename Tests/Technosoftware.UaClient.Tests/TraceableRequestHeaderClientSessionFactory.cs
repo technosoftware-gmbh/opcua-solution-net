@@ -22,14 +22,13 @@ namespace Technosoftware.UaClient.Tests
     /// It can be used to create instances of enhanced Session
     /// classes with added functionality or overridden methods.
     /// </summary>
-    public class HeaderUpdatingSessionInstantiator : TraceableSessionFactory
+    public class TraceableRequestHeaderClientSessionFactory : TraceableSessionFactory
     {
         #region ISessionInstantiator Members
-
         /// <summary>
         /// Object that creates instances of an Opc.Ua.Client.Session object with Activity Source.
         /// </summary>
-        public new static readonly HeaderUpdatingSessionInstantiator Instance = new HeaderUpdatingSessionInstantiator();
+        public new static readonly TraceableRequestHeaderClientSessionFactory Instance = new TraceableRequestHeaderClientSessionFactory();
 
         /// <inheritdoc/>
         public override Session Create(
@@ -37,7 +36,7 @@ namespace Technosoftware.UaClient.Tests
             ApplicationConfiguration configuration,
             ConfiguredEndpoint endpoint)
         {
-            return new HeaderUpdatingSession(channel, configuration, endpoint);
+            return new TraceableRequestHeaderClientSession(channel, configuration, endpoint);
         }
 
         /// <inheritdoc/>
@@ -49,9 +48,8 @@ namespace Technosoftware.UaClient.Tests
             EndpointDescriptionCollection availableEndpoints = null,
             StringCollection discoveryProfileUris = null)
         {
-            return new HeaderUpdatingSession(channel, configuration, endpoint, clientCertificate, availableEndpoints, discoveryProfileUris);
+            return new TraceableRequestHeaderClientSession(channel, configuration, endpoint, clientCertificate, availableEndpoints, discoveryProfileUris);
         }
-
         #endregion
     }
 }

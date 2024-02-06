@@ -49,7 +49,7 @@ namespace Technosoftware.UaClient
         public OperationLimits OperationLimits
         {
             get => operationLimits_;
-            internal set
+            protected internal set
             {
                 if (value == null)
                 {

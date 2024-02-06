@@ -1,13 +1,13 @@
-#region Copyright (c) 2022-2023 Technosoftware GmbH. All rights reserved
+#region Copyright (c) 2022-2024 Technosoftware GmbH. All rights reserved
 //-----------------------------------------------------------------------------
-// Copyright (c) 2022-2023 Technosoftware GmbH. All rights reserved
+// Copyright (c) 2022-2024 Technosoftware GmbH. All rights reserved
 // Web: https://technosoftware.com 
 //
 // The Software is based on the OPC Foundation MIT License. 
 // The complete license agreement for that can be found here:
 // http://opcfoundation.org/License/MIT/1.00/
 //-----------------------------------------------------------------------------
-#endregion Copyright (c) 2022-2023 Technosoftware GmbH. All rights reserved
+#endregion Copyright (c) 2022-2024 Technosoftware GmbH. All rights reserved
 
 #region Using Directives
 using System;
@@ -97,24 +97,6 @@ namespace Technosoftware.UaClient.Tests
             return base.TearDown();
         }
         #endregion
-
-        // Test class for testing protected methods in HeaderUpdatingSession
-        public class TestableHeaderUpdatingSession : HeaderUpdatingSession
-        {
-            public TestableHeaderUpdatingSession(
-                ISessionChannel channel,
-                ApplicationConfiguration configuration,
-                ConfiguredEndpoint endpoint)
-                : base(channel, configuration, endpoint)
-            {
-            }
-
-            // Expose the protected method for testing
-            public void TestableUpdateRequestHeader(IServiceRequest request, bool useDefaults)
-            {
-                base.UpdateRequestHeader(request, useDefaults);
-            }
-        }
 
         #region Benchmark Setup
         /// <summary>
@@ -1305,8 +1287,66 @@ namespace Technosoftware.UaClient.Tests
             }
         }
 
+        // Test class for testing protected methods in TraceableRequestHeaderClientSession
+        public class TestableTraceableRequestHeaderClientSession : TraceableRequestHeaderClientSession
+        {
+            public TestableTraceableRequestHeaderClientSession(
+                ISessionChannel channel,
+                ApplicationConfiguration configuration,
+                ConfiguredEndpoint endpoint)
+                : base(channel, configuration, endpoint)
+            {
+            }
+
+            // Expose the protected method for testing
+            public void TestableUpdateRequestHeader(IServiceRequest request, bool useDefaults)
+            {
+                base.UpdateRequestHeader(request, useDefaults);
+            }
+        }
+
+        public static ActivityContext TestExtractActivityContextFromParameters(AdditionalParametersType parameters)
+        {
+            if (parameters == null)
+            {
+                return default;
+            }
+
+            ActivityTraceId traceId = default;
+            ActivitySpanId spanId = default;
+            ActivityTraceFlags traceFlags = ActivityTraceFlags.None;
+
+            foreach (var item in parameters.Parameters)
+            {
+                if (item.Key == "traceparent")
+                {
+                    var traceparent = item.Value.ToString();
+                    int firstDash = traceparent.IndexOf('-');
+                    int secondDash = traceparent.IndexOf('-', firstDash + 1);
+                    int thirdDash = traceparent.IndexOf('-', secondDash + 1);
+
+                    if (firstDash != -1 && secondDash != -1)
+                    {
+                        ReadOnlySpan<char> traceIdSpan = traceparent.AsSpan(firstDash + 1, secondDash - firstDash - 1);
+                        ReadOnlySpan<char> spanIdSpan = traceparent.AsSpan(secondDash + 1, thirdDash - secondDash - 1);
+                        ReadOnlySpan<char> traceFlagsSpan = traceparent.AsSpan(thirdDash + 1);
+
+                        traceId = ActivityTraceId.CreateFromString(traceIdSpan);
+                        spanId = ActivitySpanId.CreateFromString(spanIdSpan);
+                        traceFlags = traceFlagsSpan.SequenceEqual("01".AsSpan()) ? ActivityTraceFlags.Recorded : ActivityTraceFlags.None;
+
+                        return new ActivityContext(traceId, spanId, traceFlags);
+                    }
+                    return default;
+                }
+            }
+
+            // no traceparent header found
+            return default;
+        }
+
         [Test, Order(900)]
-        public async Task TestTraceContextIsPropagated()
+        public async Task ClientTestRequestHeaderUpdate()
         {
             var rootActivity = new Activity("Test_Activity_Root") {
                 ActivityTraceFlags = ActivityTraceFlags.Recorded,
@@ -1330,26 +1370,26 @@ namespace Technosoftware.UaClient.Tests
                     var channelMock = new Mock<ITransportChannel>();
                     var sessionChannelMock = channelMock.As<ISessionChannel>();
 
-                    TestableHeaderUpdatingSession testableHeaderUpdatingSession = new TestableHeaderUpdatingSession(sessionChannelMock.Object, ClientFixture.Config, endpoint);
+                    TestableTraceableRequestHeaderClientSession testableTraceableRequestHeaderClientSession = new TestableTraceableRequestHeaderClientSession(sessionChannelMock.Object, ClientFixture.Config, endpoint);
                     CreateSessionRequest request = new CreateSessionRequest();
                     request.RequestHeader = new RequestHeader();
 
                     // Mock call TestableUpdateRequestHeader() to simulate the header update
-                    testableHeaderUpdatingSession.TestableUpdateRequestHeader(request, true);
+                    testableTraceableRequestHeaderClientSession.TestableUpdateRequestHeader(request, true);
 
                     // Get the AdditionalHeader from the request
                     var additionalHeader = request.RequestHeader.AdditionalHeader as ExtensionObject;
                     Assert.NotNull(additionalHeader);
 
                     // Simulate extraction
-                    var extractedContext = HeaderUpdatingSession.ExtractTraceContextFromParameters(additionalHeader.Body as AdditionalParametersType);
+                    var extractedContext = TestExtractActivityContextFromParameters(additionalHeader.Body as AdditionalParametersType);
 
                     // Verify that the trace context is propagated.
-                    Assert.AreEqual(activity.TraceId, extractedContext.ActivityContext.TraceId);
-                    Assert.AreEqual(activity.SpanId, extractedContext.ActivityContext.SpanId);
+                    Assert.AreEqual(activity.TraceId, extractedContext.TraceId);
+                    Assert.AreEqual(activity.SpanId, extractedContext.SpanId);
 
                     TestContext.Out.WriteLine($"Activity TraceId: {activity.TraceId}, Activity SpanId: {activity.SpanId}");
-                    TestContext.Out.WriteLine($"Extracted TraceId: {extractedContext.ActivityContext.TraceId}, Extracted SpanId: {extractedContext.ActivityContext.SpanId}");
+                    TestContext.Out.WriteLine($"Extracted TraceId: {extractedContext.TraceId}, Extracted SpanId: {extractedContext.SpanId}");
                 }
             }
 

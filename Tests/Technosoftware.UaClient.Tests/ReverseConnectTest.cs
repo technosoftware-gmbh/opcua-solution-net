@@ -1,13 +1,13 @@
-#region Copyright (c) 2022-2023 Technosoftware GmbH. All rights reserved
+#region Copyright (c) 2022-2024 Technosoftware GmbH. All rights reserved
 //-----------------------------------------------------------------------------
-// Copyright (c) 2022-2023 Technosoftware GmbH. All rights reserved
+// Copyright (c) 2022-2024 Technosoftware GmbH. All rights reserved
 // Web: https://technosoftware.com 
 //
 // The Software is based on the OPC Foundation MIT License. 
 // The complete license agreement for that can be found here:
 // http://opcfoundation.org/License/MIT/1.00/
 //-----------------------------------------------------------------------------
-#endregion Copyright (c) 2022-2023 Technosoftware GmbH. All rights reserved
+#endregion Copyright (c) 2022-2024 Technosoftware GmbH. All rights reserved
 
 #region Using Directives
 using System;
@@ -37,6 +37,8 @@ namespace Technosoftware.UaClient.Tests
     public class ReverseConnectTest : ClientTestFramework
     {
         #region DataPointSources
+        [DatapointSource]
+        public static IUaSessionFactory[] SessionFactories = { TraceableSessionFactory.Instance, TestableSessionFactory.Instance, DefaultSessionFactory.Instance };
         #endregion
 
         #region Test Setup
@@ -60,8 +62,6 @@ namespace Technosoftware.UaClient.Tests
 
             // create client
             ClientFixture = new ClientFixture();
-            ClientFixture.UseTracing = true;
-            ClientFixture.StartActivityListener();
 
             await ClientFixture.LoadClientConfiguration(PkiRoot).ConfigureAwait(false);
             await ClientFixture.StartReverseConnectHost().ConfigureAwait(false);
@@ -151,7 +151,7 @@ namespace Technosoftware.UaClient.Tests
         }
 
         [Theory, Order(300)]
-        public async Task ReverseConnect(string securityPolicy)
+        public async Task ReverseConnect(string securityPolicy, IUaSessionFactory sessionFactory)
         {
             // ensure endpoints are available
             await RequireEndpoints().ConfigureAwait(false);
@@ -174,12 +174,7 @@ namespace Technosoftware.UaClient.Tests
             Assert.NotNull(endpoint);
 
             // connect
-#if NET6_0_OR_GREATER
-            var sessionfactory = TraceableSessionFactory.Instance;
-#else
-            var sessionfactory = TestableSessionFactory.Instance;
-#endif
-            var session = await sessionfactory.CreateAsync(config, connection, endpoint, false, false, "Reverse Connect Client",
+            var session = await sessionFactory.CreateAsync(config, connection, endpoint, false, false, "Reverse Connect Client",
                 MaxTimeout, new UserIdentity(new AnonymousIdentityToken()), null).ConfigureAwait(false);
             Assert.NotNull(session);
 
@@ -200,7 +195,7 @@ namespace Technosoftware.UaClient.Tests
         }
 
         [Theory, Order(301)]
-        public async Task ReverseConnect2(bool updateBeforeConnect, bool checkDomain)
+        public async Task ReverseConnect2(bool updateBeforeConnect, bool checkDomain, IUaSessionFactory sessionFactory)
         {
             string securityPolicy = SecurityPolicies.Basic256Sha256;
 
@@ -218,14 +213,9 @@ namespace Technosoftware.UaClient.Tests
             Assert.NotNull(endpoint);
 
             // connect
-#if NET6_0_OR_GREATER
-            var sessionfactory = TraceableSessionFactory.Instance;
-#else
-            var sessionfactory = TestableSessionFactory.Instance;
-#endif
-            var session = await sessionfactory.CreateAsync(config, ClientFixture.ReverseConnectManager, endpoint, updateBeforeConnect, checkDomain, "Reverse Connect Client",
+            var session = await sessionFactory.CreateAsync(config, ClientFixture.ReverseConnectManager, endpoint, updateBeforeConnect, checkDomain, "Reverse Connect Client",
                 MaxTimeout, new UserIdentity(new AnonymousIdentityToken()), null).ConfigureAwait(false);
-                
+
             Assert.NotNull(session);
 
             // header

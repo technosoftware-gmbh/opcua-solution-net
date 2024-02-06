@@ -1,13 +1,13 @@
-#region Copyright (c) 2022-2023 Technosoftware GmbH. All rights reserved
+#region Copyright (c) 2022-2024 Technosoftware GmbH. All rights reserved
 //-----------------------------------------------------------------------------
-// Copyright (c) 2022-2023 Technosoftware GmbH. All rights reserved
+// Copyright (c) 2022-2024 Technosoftware GmbH. All rights reserved
 // Web: https://technosoftware.com 
 //
 // The Software is based on the OPC Foundation MIT License. 
 // The complete license agreement for that can be found here:
 // http://opcfoundation.org/License/MIT/1.00/
 //-----------------------------------------------------------------------------
-#endregion Copyright (c) 2022-2023 Technosoftware GmbH. All rights reserved
+#endregion Copyright (c) 2022-2024 Technosoftware GmbH. All rights reserved
 
 #region Using Directives
 using System;
@@ -71,6 +71,10 @@ namespace Technosoftware.UaClient.Tests
             TestSetDataSimulation = CommonTestWorkers.NodeIdTestSetDataSimulation;
             TestSetHistory = CommonTestWorkers.NodeIdTestDataHistory;
         }
+        public void InitializeSession(IUaSession session)
+        {
+            Session = session;
+        }
 
         #region DataPointSources
         [DatapointSource]
@@ -91,7 +95,7 @@ namespace Technosoftware.UaClient.Tests
         /// Setup a server and client fixture.
         /// </summary>
         /// <param name="writer">The test output writer.</param>
-        public async Task OneTimeSetUpAsync(TextWriter writer = null, bool securityNone = false)
+        public async Task OneTimeSetUpAsync(TextWriter writer = null, bool securityNone = false, bool enableTracing = false, bool disableActivityLogging = false)
         {
             // pki directory root for test runs.
             PkiRoot = Path.GetTempPath() + Path.GetRandomFileName();
@@ -119,7 +123,8 @@ namespace Technosoftware.UaClient.Tests
             if (customUrl == null)
             {
                 // start Ref server
-                ServerFixture = new ServerFixture<ReferenceServer> {
+                ServerFixture = new ServerFixture<ReferenceServer>(enableTracing, disableActivityLogging)
+                {
                     UriScheme = UriScheme,
                     SecurityNone = securityNone,
                     AutoAccept = true,
@@ -145,12 +150,7 @@ namespace Technosoftware.UaClient.Tests
                 ReferenceServer.TokenValidator = this.TokenValidator;
             }
 
-            ClientFixture = new ClientFixture();
-            ClientFixture.UseTracing = UseTracing;
-            if (UseTracing)
-            {
-                ClientFixture.StartActivityListener();
-            }
+            ClientFixture = new ClientFixture(enableTracing, disableActivityLogging);
 
             await ClientFixture.LoadClientConfiguration(PkiRoot).ConfigureAwait(false);
             ClientFixture.Config.TransportQuotas.MaxMessageSize = TransportQuotaMaxMessageSize;

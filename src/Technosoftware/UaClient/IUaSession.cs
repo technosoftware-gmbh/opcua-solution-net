@@ -961,7 +961,7 @@ namespace Technosoftware.UaClient
         /// <summary>
         /// Sends a republish request.
         /// </summary>
-        bool Republish(uint subscriptionId, uint sequenceNumber);
+        bool Republish(uint subscriptionId, uint sequenceNumber, out ServiceResult error);
 
         /// <summary>
         /// Call the ResendData method on the server for all subscriptions.
@@ -971,7 +971,7 @@ namespace Technosoftware.UaClient
         /// <summary>
         /// Sends a republish request.
         /// </summary>
-        Task<bool> RepublishAsync(uint subscriptionId, uint sequenceNumber, CancellationToken ct = default);
+        Task<(bool, ServiceResult)> RepublishAsync(uint subscriptionId, uint sequenceNumber, CancellationToken ct = default);
 
         /// <summary>
         /// Call the ResendData method on the server for all subscriptions.

@@ -39,7 +39,7 @@ namespace Technosoftware.UaClient
         /// <summary>
         /// Creates a session configuration
         /// </summary>
-        internal SessionConfiguration(IUaSession session, byte[] serverNonce, NodeId authenthicationToken)
+        public SessionConfiguration(IUaSession session, byte[] serverNonce, NodeId authenthicationToken)
         {
             Timestamp = DateTime.UtcNow;
             SessionName = session.SessionName;
