@@ -23,6 +23,19 @@
     <DefineConstants>$(DefineConstants);SIGNASSEMBLY</DefineConstants>
   </PropertyGroup>
 
+  <Choose>
+    <When Condition="'$(TargetFramework)' == 'net462' OR '$(TargetFramework)' == 'net472' OR '$(TargetFramework)' == 'net48'">
+      <ItemGroup>
+        <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="6.0.1" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="6.0.1" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+
   <ItemGroup Condition=" '$(NoHttps)' != 'true' ">
     <PackageReference Include="Technosoftware.UaSolution.UaBindings.Https" Version="3.3.0" />
   </ItemGroup>

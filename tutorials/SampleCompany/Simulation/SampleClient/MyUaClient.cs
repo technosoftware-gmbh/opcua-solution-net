@@ -24,7 +24,7 @@ using Technosoftware.UaClient;
 namespace SampleCompany.SampleClient
 {
     /// <summary>The UA client sample functionality.</summary>
-    public class MyUaClient : IDisposable
+    public class MyUaClient : IMyUaClient, IDisposable
     {
         #region Constructors
         /// <summary>
@@ -119,11 +119,14 @@ namespace SampleCompany.SampleClient
         /// </summary>
         public async Task<bool> ConnectAsync(string serverUrl, bool useSecurity = true, CancellationToken ct = default)
         {
-            if (serverUrl == null) throw new ArgumentNullException(nameof(serverUrl));
+            if (serverUrl == null)
+            {
+                throw new ArgumentNullException(nameof(serverUrl));
+            }
 
             try
             {
-                if (session_ != null && session_.Connected == true)
+                if (session_ != null && session_.Connected)
                 {
                     output_.WriteLine("Session already connected!");
                 }
@@ -136,8 +139,8 @@ namespace SampleCompany.SampleClient
                         output_.WriteLine("Waiting for reverse connection to.... {0}", serverUrl);
                         do
                         {
-                            using (CancellationTokenSource cts = new CancellationTokenSource(30_000))
-                            using (CancellationTokenSource linkedCTS = CancellationTokenSource.CreateLinkedTokenSource(ct, cts.Token))
+                            using (var cts = new CancellationTokenSource(30_000))
+                            using (var linkedCTS = CancellationTokenSource.CreateLinkedTokenSource(ct, cts.Token))
                             {
                                 connection = await reverseConnectManager_.WaitForConnectionAsync(new Uri(serverUrl), null, linkedCTS.Token).ConfigureAwait(false);
                                 if (connection == null)
@@ -161,8 +164,8 @@ namespace SampleCompany.SampleClient
 
                     // Get the endpoint by connecting to server's discovery endpoint.
                     // Try to find the first endopint with security.
-                    EndpointConfiguration endpointConfiguration = EndpointConfiguration.Create(configuration_);
-                    ConfiguredEndpoint endpoint = new ConfiguredEndpoint(null, endpointDescription, endpointConfiguration);
+                    var endpointConfiguration = EndpointConfiguration.Create(configuration_);
+                    var endpoint = new ConfiguredEndpoint(null, endpointDescription, endpointConfiguration);
 
                     TraceableSessionFactory sessionFactory = TraceableSessionFactory.Instance;
 
@@ -230,7 +233,7 @@ namespace SampleCompany.SampleClient
                         reconnectHandler_ = null;
                     }
 
-                    session_.Close();
+                    _ = session_.Close();
                     session_.Dispose();
                     session_ = null;
 
@@ -256,7 +259,7 @@ namespace SampleCompany.SampleClient
         {
             try
             {
-                Session session = (Session)sender;
+                var session = (Session)sender;
 
                 // check for events from discarded sessions.
                 if (!session_.Equals(session))
@@ -301,7 +304,7 @@ namespace SampleCompany.SampleClient
         private void OnReconnectComplete(object sender, EventArgs e)
         {
             // ignore callbacks from discarded objects.
-            if (!Object.ReferenceEquals(sender, reconnectHandler_))
+            if (!ReferenceEquals(sender, reconnectHandler_))
             {
                 return;
             }
@@ -313,7 +316,7 @@ namespace SampleCompany.SampleClient
                 {
                     // ensure only a new instance is disposed
                     // after reactivate, the same session instance may be returned
-                    if (!Object.ReferenceEquals(session_, reconnectHandler_.Session))
+                    if (!ReferenceEquals(session_, reconnectHandler_.Session))
                     {
                         output_.WriteLine("--- RECONNECTED TO NEW SESSION --- {0}", reconnectHandler_.Session.SessionId);
                         IUaSession session = session_;
@@ -340,7 +343,7 @@ namespace SampleCompany.SampleClient
         /// </summary>
         protected virtual void OnCertificateValidation(CertificateValidator sender, CertificateValidationEventArgs e)
         {
-            bool certificateAccepted = false;
+            var certificateAccepted = false;
 
             // ****
             // Implement a custom logic to decide if the certificate should be
@@ -369,8 +372,8 @@ namespace SampleCompany.SampleClient
 
         #region Private Fields
         private readonly object lock_ = new object();
-        private ReverseConnectManager reverseConnectManager_;
-        private ApplicationConfiguration configuration_;        
+        private readonly ReverseConnectManager reverseConnectManager_;
+        private readonly ApplicationConfiguration configuration_;
         private SessionReconnectHandler reconnectHandler_;
         private IUaSession session_;
         private readonly TextWriter output_;

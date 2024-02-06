@@ -30,6 +30,10 @@ namespace Technosoftware.UaClient
     /// </summary>
     public static class Discover
     {
+        /// <summary>
+        /// A discovery suffix that may be appended to the discovery url of https endpoints.
+        /// </summary>
+        public static readonly string DiscoverySuffix = "/discovery";
 
         #region Public Properties
         /// <summary>
@@ -67,7 +71,7 @@ namespace Technosoftware.UaClient
             endpointConfiguration.OperationTimeout = discoverTimeout;
 
             // Connect to the local discovery server and find the available servers.
-            using (var client = DiscoveryClient.Create(new Uri(string.Format(Utils.DiscoveryUrls[0], "localhost")), endpointConfiguration))
+            using (var client = DiscoveryClient.Create(new Uri(Utils.Format(Utils.DiscoveryUrls[0], "localhost")), endpointConfiguration))
             {
                 var servers = client.FindServers(null);
 
@@ -85,13 +89,13 @@ namespace Technosoftware.UaClient
 
                         // Many servers will use the '/discovery' suffix for the discovery endpoint.
                         // The URL without this prefix should be the base URL for the server. 
-                        if (discoveryUrl.EndsWith("/discovery"))
+                        if (discoveryUrl.EndsWith(DiscoverySuffix, StringComparison.OrdinalIgnoreCase))
                         {
-                            discoveryUrl = discoveryUrl.Substring(0, discoveryUrl.Length - "/discovery".Length);
+                            discoveryUrl = discoveryUrl.Substring(0, discoveryUrl.Length - DiscoverySuffix.Length);
                         }
 
                         // ensure duplicates do not get added.
-                        if (!serverUrls.Contains(discoveryUrl))
+                        if (!serverUrls.Exists(serverUrl => serverUrl.Equals(discoveryUrl, StringComparison.OrdinalIgnoreCase)))
                         {
                             serverUrls.Add(discoveryUrl);
                         }
@@ -304,354 +308,15 @@ namespace Technosoftware.UaClient
             // needs to add the '/discovery' back onto non-UA TCP URLs.
             if (discoveryUrl.StartsWith(Utils.UriSchemeHttp, StringComparison.Ordinal))
             {
-                if (!discoveryUrl.EndsWith("/discovery", StringComparison.OrdinalIgnoreCase))
+                if (!discoveryUrl.EndsWith(DiscoverySuffix, StringComparison.OrdinalIgnoreCase))
                 {
-                    discoveryUrl += "/discovery";
+                    discoveryUrl += DiscoverySuffix;
                 }
             }
 
             // parse the selected URL.
             return new Uri(discoveryUrl);
         }
-        #endregion
-
-        #region Public Methods (GetUaServer methods)
-        /// <summary>
-        ///     Returns a list of OPC Unified Architecture (OPC UA) servers.
-        /// </summary>
-        /// <param name="applicationConfiguration">The configuration for the client application.</param>
-        /// <returns>Returns a list of found OPC UA server urls.</returns>
-        /// <exception caption="" cref="ServiceResultException">
-        ///     Thrown when a service result error condition
-        ///     occurs.
-        /// </exception>
-        public static List<string> GetUaServers(ApplicationConfiguration applicationConfiguration)
-        {
-            return GetUaServers(applicationConfiguration, "");
-        }
-
-        /// <summary>
-        ///     Returns a list of OPC Unified Architecture (OPC UA) servers.
-        /// </summary>
-        /// <param name="applicationConfiguration">The configuration for the client application.</param>
-        /// <param name="discoveryServerUrl">The URL of the Discovery Server to be used.</param>
-        /// <returns>Returns a list of found OPC UA server urls.</returns>
-        /// <exception caption="" cref="ServiceResultException">
-        ///     Thrown when a service result error condition
-        ///     occurs.
-        /// </exception>
-        public static List<string> GetUaServers(ApplicationConfiguration applicationConfiguration,
-            string discoveryServerUrl)
-        {
-            var serverList = new List<string>();
-
-            if (string.IsNullOrEmpty(discoveryServerUrl))
-            {
-                discoveryServerUrl = Dns.GetHostName();
-            }
-
-            // get a list of well known discovery urls to use.
-            StringCollection discoveryUrls = null;
-
-            if (applicationConfiguration.ClientConfiguration != null)
-            {
-                discoveryUrls = applicationConfiguration.ClientConfiguration.WellKnownDiscoveryUrls;
-            }
-
-            if (discoveryUrls == null || discoveryUrls.Count == 0)
-            {
-                discoveryUrls = new StringCollection(Utils.DiscoveryUrls);
-            }
-
-            // update the urls with the hostname.
-            var urlsToUse = new StringCollection();
-            urlsToUse.AddRange(discoveryUrls.Select(discoveryUrl => Utils.Format(discoveryUrl, discoveryServerUrl)));
-
-            // process each url.
-            foreach (var discoveryUrl in urlsToUse)
-            {
-                var url = Utils.ParseUri(discoveryUrl);
-
-                if (url != null)
-                {
-                    var servers = GetUaServers(applicationConfiguration, url);
-                    foreach (var server in servers)
-                    {
-                        // ensure duplicates do not get added.
-                        if (!serverList.Contains(server))
-                        {
-                            serverList.Add(server);
-                        }
-                    }
-                }
-            }
-
-            return serverList;
-        }
-
-        /// <summary>
-        ///     Returns a list of OPC Unified Architecture (OPC UA) servers.
-        /// </summary>
-        /// <param name="applicationConfiguration">The configuration for the client application.</param>
-        /// <param name="uri">The URL of the Discovery Server to be used.</param>
-        /// <returns>Returns a list of found OPC UA server urls.</returns>
-        public static List<string> GetUaServers(ApplicationConfiguration applicationConfiguration, Uri uri)
-        {
-            var serverList = new List<string>();
-
-            // use a short timeout.
-            var configuration = EndpointConfiguration.Create(applicationConfiguration);
-            configuration.OperationTimeout = DefaultDiscoverTimeout;
-
-            DiscoveryClient client = null;
-
-            try
-            {
-                client = DiscoveryClient.Create(
-                    uri,
-                    EndpointConfiguration.Create(applicationConfiguration));
-
-                var servers = client.FindServers(null);
-                foreach (
-                    var t in servers.Where(t => t.ApplicationType != ApplicationType.DiscoveryServer)
-                    )
-                {
-                    foreach (var t1 in t.DiscoveryUrls)
-                    {
-                        var discoveryUri = t1;
-
-                        // Many servers will use the '/discovery' suffix for the discovery endpoint.
-                        // The URL without this prefix should be the base URL for the server. 
-                        if (discoveryUri.EndsWith("/discovery"))
-                        {
-                            discoveryUri = discoveryUri.Substring(0,
-                                discoveryUri.Length - "/discovery".Length);
-                        }
-
-                        // ensure duplicates do not get added.
-                        if (!serverList.Contains(discoveryUri))
-                        {
-                            serverList.Add(discoveryUri);
-                        }
-                    }
-                }
-
-                discoveryUrl_ = uri.ToString();
-            }
-            catch (Exception e)
-            {
-                Utils.LogError("DISCOVERY ERROR - Could not fetch servers from url: {0}. Error=({2}){1}", discoveryUrl_,
-                    e.Message, e.GetType());
-            }
-            finally
-            {
-                client?.Close();
-            }
-            return serverList;
-        }
-        #endregion
-
-        #region Public Methods (Returns EndpointDescription object for a specific URL)
-        /// <summary>
-        ///     Returns a list of endpoint descriptions for the specified server.
-        /// </summary>
-        /// <param name="applicationConfiguration">The configuration for the client application.</param>
-        /// <param name="discoveryUrl">
-        ///     The URL of the server as returned by the GetServerDescriptions method,
-        ///     e.g."http://localhost:55541/UA/SampleServer"
-        /// </param>
-        /// <returns>The available endpoint descriptions.</returns>
-        /// <exception caption="" cref="ServiceResultException">
-        ///     Thrown when a service result error condition
-        ///     occurs.
-        /// </exception>
-        /// <exception caption="" cref="ServiceResultException">
-        ///     Thrown when a service result error condition
-        ///     occurs.
-        /// </exception>
-        public static List<EndpointDescription> GetEndpointDescriptions(
-            ApplicationConfiguration applicationConfiguration, string discoveryUrl)
-        {
-            var endpointDescriptions = new List<EndpointDescription>();
-
-            // needs to add the '/discovery' back onto non-UA TCP URLs.
-            if (!discoveryUrl.StartsWith(Utils.UriSchemeOpcTcp))
-            {
-                if (!discoveryUrl.EndsWith("/discovery"))
-                {
-                    discoveryUrl += "/discovery";
-                }
-            }
-
-            // parse the selected URL.
-            var uri = new Uri(discoveryUrl);
-
-            // Connect to the server's discovery endpoint and find the available configuration.
-            using (var client = DiscoveryClient.Create(uri))
-            {
-                var endpoints = client.GetEndpoints(null);
-
-                endpointDescriptions.AddRange(endpoints);
-            }
-
-            // return the list of endpoint descriptions.
-            return endpointDescriptions;
-        }
-
-        /// <summary>
-        ///     Returns the configured endpoint for a given endpoint description.
-        /// </summary>
-        /// <param name="endpointDescription">The endpoint description.</param>
-        /// <returns>The configured endpoint.</returns>
-        /// <exception caption="" cref="ServiceResultException">
-        ///     Thrown when a service result error condition
-        ///     occurs.
-        /// </exception>
-        public static ConfiguredEndpoint GetConfiguredEndpoint(EndpointDescription endpointDescription)
-        {
-            return new ConfiguredEndpoint(null, endpointDescription);
-        }
-
-        /// <summary>
-        ///     Returns a list of OPC servers supporting one of the specified specifications. If no specifications is given only
-        ///     OPC Unified Architecture (OPC UA) servers are returned.
-        /// </summary>
-        /// <param name="applicationConfiguration">The configuration for the client application.</param>
-        /// <returns>Returns a collection of Application Descriptions for the found OPC servers.</returns>
-        public static ApplicationDescriptionCollection GetServerDescriptions(
-            ApplicationConfiguration applicationConfiguration)
-        {
-            return GetServerDescriptions(applicationConfiguration, "");
-        }
-
-        /// <summary>
-        ///     Returns a list of OPC servers supporting one of the specified specifications. If no specifications is given only
-        ///     OPC Unified Architecture (OPC UA) servers are returned.
-        /// </summary>
-        /// <param name="applicationConfiguration">The configuration for the client application.</param>
-        /// <param name="hostname">Host name</param>
-        /// <returns>Returns a collection of Application Descriptions for the found OPC servers.</returns>
-        /// <exception caption="" cref="ServiceResultException">
-        ///     Thrown when a service result error condition
-        ///     occurs.
-        /// </exception>
-        public static ApplicationDescriptionCollection GetServerDescriptions(
-            ApplicationConfiguration applicationConfiguration, string hostname)
-        {
-            discoveryUrl_ = hostname;
-            var serverList = new ApplicationDescriptionCollection();
-
-            if (string.IsNullOrEmpty(discoveryUrl_))
-            {
-                discoveryUrl_ = Dns.GetHostName();
-            }
-
-            // get a list of well known discovery urls to use.
-            var urlsToUse = new StringCollection();
-
-            var url = Utils.ParseUri(discoveryUrl_);
-
-            if (url == null)
-            {
-                StringCollection discoveryUrls = null;
-                if (applicationConfiguration.ClientConfiguration != null)
-                {
-                    discoveryUrls = applicationConfiguration.ClientConfiguration.WellKnownDiscoveryUrls;
-                }
-
-                if (discoveryUrls == null || discoveryUrls.Count == 0)
-                {
-                    discoveryUrls = new StringCollection(Utils.DiscoveryUrls);
-                }
-
-                // update the urls with the hostname.
-                urlsToUse.AddRange(
-                    discoveryUrls.Select(discoveryUrl => Utils.Format(discoveryUrl, discoveryUrl_)));
-            }
-            else
-            {
-                urlsToUse.Add(discoveryUrl_);
-            }
-
-            // process each url.
-            foreach (var discoveryUrl in urlsToUse)
-            {
-                url = Utils.ParseUri(discoveryUrl);
-
-                if (url != null)
-                {
-                    var uaServers = GetServerDescriptions(applicationConfiguration, url);
-                    foreach (var server in uaServers)
-                    {
-                        // ensure duplicates do not get added.
-                        if (!serverList.Contains(server) &&
-                            server.ApplicationType != ApplicationType.DiscoveryServer)
-                        {
-                            var alreadyAdded = false;
-                            foreach (var addedServer in serverList)
-                            {
-                                if (addedServer.ApplicationUri == server.ApplicationUri)
-                                {
-                                    alreadyAdded = true;
-                                }
-                            }
-                            if (!alreadyAdded)
-                            {
-                                serverList.Add(server);
-                            }
-                        }
-                    }
-                }
-            }
-            return serverList;
-        }
-
-        /// <summary>
-        ///     Returns a list of servers.
-        /// </summary>
-        /// <param name="applicationConfiguration">The configuration for the client application.</param>
-        /// <param name="uri">The URL of the Discovery Server to be used.</param>
-        /// <returns>Returns a list of found OPC server urls.</returns>
-        /// <exception caption="" cref="ServiceResultException">
-        ///     Thrown when a service result error condition
-        ///     occurs.
-        /// </exception>
-        public static ApplicationDescriptionCollection GetServerDescriptions(
-            ApplicationConfiguration applicationConfiguration, Uri uri)
-        {
-            var servers = new ApplicationDescriptionCollection();
-
-            // use a short timeout.
-            var configuration = EndpointConfiguration.Create(applicationConfiguration);
-            configuration.OperationTimeout = DefaultDiscoverTimeout;
-
-            DiscoveryClient client = null;
-
-            try
-            {
-                client = DiscoveryClient.Create(
-                    uri,
-                    EndpointConfiguration.Create(applicationConfiguration));
-
-                servers = client.FindServers(null);
-
-                discoveryUrl_ = uri.ToString();
-            }
-            catch (Exception e)
-            {
-                Utils.LogError("DISCOVERY ERROR - Could not fetch servers from url: {0}. Error=({2}){1}", discoveryUrl_,
-                    e.Message, e.GetType());
-            }
-            finally
-            {
-                client?.Close();
-            }
-            return servers;
-        }
-        #endregion
-
-        #region Private Fields
-        private static string discoveryUrl_;
         #endregion
     }
 }

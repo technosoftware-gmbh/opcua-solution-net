@@ -1,16 +1,17 @@
-#region Copyright (c) 2022-2023 Technosoftware GmbH. All rights reserved
+#region Copyright (c) 2022-2024 Technosoftware GmbH. All rights reserved
 //-----------------------------------------------------------------------------
-// Copyright (c) 2022-2023 Technosoftware GmbH. All rights reserved
+// Copyright (c) 2022-2024 Technosoftware GmbH. All rights reserved
 // Web: https://technosoftware.com 
 //
 // The Software is based on the OPC Foundation MIT License. 
 // The complete license agreement for that can be found here:
 // http://opcfoundation.org/License/MIT/1.00/
 //-----------------------------------------------------------------------------
-#endregion Copyright (c) 2022-2023 Technosoftware GmbH. All rights reserved
+#endregion Copyright (c) 2022-2024 Technosoftware GmbH. All rights reserved
 
 #region Using Directives
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -43,6 +44,22 @@ namespace Technosoftware.UaStandardServer.Tests
         public bool SecurityNone { get; set; } = false;
         public string UriScheme { get; set; } = Utils.UriSchemeOpcTcp;
         public int Port { get; private set; }
+        public bool UseTracing { get; set; }
+        public ActivityListener ActivityListener { get; private set; }
+
+        public ServerFixture(bool useTracing, bool disableActivityLogging)
+        {
+            UseTracing = useTracing;
+            if (UseTracing)
+            {
+                StartActivityListenerInternal(disableActivityLogging);
+            }
+        }
+
+            public ServerFixture()
+        {
+
+        }
 
         public async Task LoadConfiguration(string pkiRoot = null)
         {
@@ -215,6 +232,36 @@ namespace Technosoftware.UaStandardServer.Tests
         }
 
         /// <summary>
+        /// Configures Activity Listener and registers with Activity Source.
+        /// </summary>
+        public void StartActivityListenerInternal(bool disableActivityLogging = false)
+        {
+            if (disableActivityLogging)
+            {
+                // Create an instance of ActivityListener without logging
+                ActivityListener = new ActivityListener() {
+                    ShouldListenTo = (source) => (source.Name == EndpointBase.ActivitySourceName),
+                    Sample = (ref ActivityCreationOptions<ActivityContext> options) => ActivitySamplingResult.AllDataAndRecorded,
+                    ActivityStarted = _ => { },
+                    ActivityStopped = _ => { }
+                };
+            }
+            else
+            {
+                // Create an instance of ActivityListener and configure its properties with logging
+                ActivityListener = new ActivityListener() {
+                    ShouldListenTo = (source) => (source.Name == EndpointBase.ActivitySourceName),
+                    Sample = (ref ActivityCreationOptions<ActivityContext> options) => ActivitySamplingResult.AllDataAndRecorded,
+                    ActivityStarted = activity => Utils.LogInfo("Server Started: {0,-15} - TraceId: {1,-32} SpanId: {2,-16} ParentId: {3,-32}",
+                        activity.OperationName, activity.TraceId, activity.SpanId, activity.ParentId),
+                    ActivityStopped = activity => Utils.LogInfo("Server Stopped: {0,-15} - TraceId: {1,-32} SpanId: {2,-16} ParentId: {3,-32} Duration: {4}",
+                        activity.OperationName, activity.TraceId, activity.SpanId, activity.ParentId, activity.Duration),
+                };
+            }
+            ActivitySource.AddActivityListener(ActivityListener);
+        }
+
+        /// <summary>
         /// Stop the server.
         /// </summary>
         public Task StopAsync()
@@ -222,6 +269,10 @@ namespace Technosoftware.UaStandardServer.Tests
             Server?.Stop();
             Server?.Dispose();
             Server = null;
+#if NET6_0_OR_GREATER
+            ActivityListener?.Dispose();
+            ActivityListener = null;
+#endif
             return Task.Delay(100);
         }
     }

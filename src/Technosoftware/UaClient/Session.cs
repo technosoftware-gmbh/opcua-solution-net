@@ -27,6 +27,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 
+using Microsoft.Extensions.Logging;
+
 using Opc.Ua;
 #endregion
 
@@ -42,6 +44,8 @@ namespace Technosoftware.UaClient
         private const int MinPublishRequestCountMax = 100;
         private const int DefaultPublishRequestCount = 1;
         private const int KeepAliveGuardBand = 1000;
+        private const int kPublishRequestSequenceNumberOutOfOrderThreshold = 10;
+        private const int kPublishRequestSequenceNumberOutdatedThreshold = 100;
         #endregion
 
         #region Constructors, Destructor, Initialization
@@ -378,13 +382,13 @@ namespace Technosoftware.UaClient
             {
                 StopKeepAliveTimer();
 
-                Utils.SilentDispose(keepAliveTimer_);
-                keepAliveTimer_ = null;
+                Utils.SilentDispose(DefaultSubscription);
+                DefaultSubscription = null;
 
                 Utils.SilentDispose(NodeCache);
                 NodeCache = null;
 
-                IList<Subscription> subscriptions = null;
+                List<Subscription> subscriptions = null;
                 lock (SyncRoot)
                 {
                     subscriptions = new List<Subscription>(subscriptions_);
@@ -395,6 +399,7 @@ namespace Technosoftware.UaClient
                 {
                     Utils.SilentDispose(subscription);
                 }
+                subscriptions.Clear();
             }
 
             base.Dispose(disposing);
@@ -2457,7 +2462,8 @@ namespace Technosoftware.UaClient
             // save session id.
             lock (SyncRoot)
             {
-                SessionCreated(sessionId, sessionCookie);
+                // save session id and cookie in base
+                base.SessionCreated(sessionId, sessionCookie);
             }
 
             Utils.LogInfo("Revised session timeout value: {0}. ", sessionTimeout_);
@@ -2565,6 +2571,9 @@ namespace Technosoftware.UaClient
 
                 // raise event that session configuration chnaged.
                 IndicateSessionConfigurationChanged();
+
+                // notify session created callback, which was already set in base class only.
+                SessionCreated(sessionId, sessionCookie);
             }
             catch (Exception)
             {
@@ -4910,8 +4919,8 @@ namespace Technosoftware.UaClient
 #endif
             }
 
-            uint timeoutHint = (uint)((timeout > 0) ? timeout : 0);
-            timeoutHint = Math.Min((uint)OperationTimeout / 2, timeoutHint);
+            uint timeoutHint = (uint)((timeout > 0) ? (uint)timeout : uint.MaxValue);
+            timeoutHint = Math.Min((uint)(OperationTimeout / 2), timeoutHint);
 
             // send publish request.
             var requestHeader = new RequestHeader {
@@ -5008,11 +5017,14 @@ namespace Technosoftware.UaClient
                     out var acknowledgeResults,
                     out _);
 
+                LogLevel logLevel = LogLevel.Warning;
                 foreach (var code in acknowledgeResults)
                 {
                     if (StatusCode.IsBad(code))
                     {
-                        Utils.LogError("Error - Publish call finished. ResultCode={0}; SubscriptionId={1};", code.ToString(), subscriptionId);
+                        Utils.Log(logLevel, "Publish Ack Response. ResultCode={0}; SubscriptionId={1}", code.ToString(), subscriptionId);
+                        // only show the first error as warning
+                        logLevel = LogLevel.Trace;
                     }
                 }
 
@@ -5150,8 +5162,11 @@ namespace Technosoftware.UaClient
         }
 
         /// <inheritdoc/>
-        public bool Republish(uint subscriptionId, uint sequenceNumber)
+        public bool Republish(uint subscriptionId, uint sequenceNumber, out ServiceResult error)
         {
+            bool result = true;
+            error = ServiceResult.Good;
+
             // send republish request.
             var requestHeader = new RequestHeader {
                 TimeoutHint = (uint)OperationTimeout,
@@ -5180,13 +5195,13 @@ namespace Technosoftware.UaClient
                     null,
                     false,
                     notificationMessage);
-
-                return true;
             }
             catch (Exception e)
             {
-                return ProcessRepublishResponseError(e, subscriptionId, sequenceNumber);
+                (result, error) = ProcessRepublishResponseError(e, subscriptionId, sequenceNumber);
             }
+
+            return result;
         }
 
         /// <inheritdoc/>
@@ -5641,7 +5656,7 @@ namespace Technosoftware.UaClient
         /// <param name="e">The exception that occurred during the republish operation.</param>
         /// <param name="subscriptionId">The subscription Id for which the republish was requested. </param>
         /// <param name="sequenceNumber">The sequencenumber for which the republish was requested.</param>
-        private bool ProcessRepublishResponseError(Exception e, uint subscriptionId, uint sequenceNumber)
+        private (bool, ServiceResult) ProcessRepublishResponseError(Exception e, uint subscriptionId, uint sequenceNumber)
         {
 
             ServiceResult error = new ServiceResult(e);
@@ -5649,6 +5664,7 @@ namespace Technosoftware.UaClient
             bool result = true;
             switch (error.StatusCode.Code)
             {
+                case StatusCodes.BadSubscriptionIdInvalid:
                 case StatusCodes.BadMessageNotAvailable:
                     Utils.LogWarning("Message {0}-{1} no longer available.", subscriptionId, sequenceNumber);
                     break;
@@ -5689,7 +5705,7 @@ namespace Technosoftware.UaClient
                 }
             }
 
-            return result;
+            return (result, error);
         }
 
         /// <summary>
@@ -5777,21 +5793,27 @@ namespace Technosoftware.UaClient
                         acknowledgementsToSend.Add(acknowledgement);
                         UpdateLatestSequenceNumberToSend(ref latestSequenceNumberToSend, acknowledgement.SequenceNumber);
                     }
+                    // a publish response may by processed out of order,
+                    // allow for a tolerance until the sequence number is removed.
+                    else if (Math.Abs((int)(acknowledgement.SequenceNumber - latestSequenceNumberToSend)) < kPublishRequestSequenceNumberOutOfOrderThreshold)
+                    {
+                        acknowledgementsToSend.Add(acknowledgement);
+                    }
                     else
                     {
                         Utils.LogWarning("SessionId {0}, SubscriptionId {1}, Sequence number={2} was not received in the available sequence numbers.", SessionId, subscriptionId, acknowledgement.SequenceNumber);
                     }
                 }
 
-                // Check for sleeping sequence numbers. May have been not acked due to a network glitch. 
+                // Check for outdated sequence numbers. May have been not acked due to a network glitch. 
                 if (latestSequenceNumberToSend != 0 && availableSequenceNumbers?.Count > 0)
                 {
                     foreach (var sequenceNumber in availableSequenceNumbers)
                     {
-                        if ((int)(latestSequenceNumberToSend - sequenceNumber) > 100)
+                        if ((int)(latestSequenceNumberToSend - sequenceNumber) > kPublishRequestSequenceNumberOutdatedThreshold)
                         {
                             AddAcknowledgementToSend(acknowledgementsToSend, subscriptionId, sequenceNumber);
-                            Utils.LogWarning("SessionId {0}, SubscriptionId {1}, Sequence number={2} was sleeping, acknowledged.", SessionId, subscriptionId, sequenceNumber);
+                            Utils.LogWarning("SessionId {0}, SubscriptionId {1}, Sequence number={2} was outdated, acknowledged.", SessionId, subscriptionId, sequenceNumber);
                         }
                     }
                 }

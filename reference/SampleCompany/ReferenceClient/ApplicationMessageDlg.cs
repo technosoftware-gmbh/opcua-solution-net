@@ -50,13 +50,13 @@ namespace SampleCompany.ReferenceClient
             if (ask_)
             {
                 var message = new StringBuilder(message_);
-                message.Append(" (y/n, default y): ");
-                await output_.WriteAsync(message.ToString());
+                _ = message.Append(" (y/n, default y): ");
+                await output_.WriteAsync(message.ToString()).ConfigureAwait(false);
 
                 try
                 {
-                    var result = Console.ReadKey();
-                    await output_.WriteLineAsync();
+                    ConsoleKeyInfo result = Console.ReadKey();
+                    await output_.WriteLineAsync().ConfigureAwait(false);
                     return await Task.FromResult(result.KeyChar == 'y' ||
                         result.KeyChar == 'Y' || result.KeyChar == '\r').ConfigureAwait(false);
                 }
@@ -67,7 +67,7 @@ namespace SampleCompany.ReferenceClient
             }
             else
             {
-                await output_.WriteLineAsync(message_);
+                await output_.WriteLineAsync(message_).ConfigureAwait(false);
             }
 
             return await Task.FromResult(true).ConfigureAwait(false);

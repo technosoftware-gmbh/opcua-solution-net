@@ -1,4 +1,4 @@
-﻿#region Copyright (c) 2022-2024 Technosoftware GmbH. All rights reserved
+#region Copyright (c) 2022-2024 Technosoftware GmbH. All rights reserved
 //-----------------------------------------------------------------------------
 // Copyright (c) 2022-2024 Technosoftware GmbH. All rights reserved
 // Web: https://technosoftware.com 
@@ -11,7 +11,6 @@
 
 #region Using Directives
 using System;
-using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,32 +35,37 @@ namespace SampleCompany.ReferenceServer
         /// <param name="args">The arguments.</param>
         public static async Task<int> Main(string[] args)
         {
+            TextWriter output = Console.Out;
+            await output.WriteLineAsync("OPC UA Console Reference Server").ConfigureAwait(false);
+
             #region License validation
             var licenseData =
                     @"";
             var licensed = Technosoftware.UaServer.LicenseHandler.Validate(licenseData);
+            if (!licensed)
+            {
+                await output.WriteLineAsync("WARNING: No valid license applied.").ConfigureAwait(false);
+            }
             #endregion
 
-            TextWriter output = Console.Out;
-            output.WriteLine("SampleCompany {0} OPC UA Reference Server", Utils.IsRunningOnMono() ? "Mono" : ".NET Core");
 
             // The application name and config file names
             var applicationName = "SampleCompany.ReferenceServer";
             var configSectionName = "SampleCompany.ReferenceServer";
 
             // command line options
-            bool showHelp = false;
-            bool autoAccept = false;
-            bool logConsole = false;
-            bool appLog = false;
-            bool renewCertificate = false;
-            bool shadowConfig = false;
-            bool cttMode = false;
+            var showHelp = false;
+            var autoAccept = false;
+            var logConsole = false;
+            var appLog = false;
+            var renewCertificate = false;
+            var shadowConfig = false;
+            var cttMode = false;
             string password = null;
-            int timeout = -1;
+            var timeout = -1;
 
             var usage = Utils.IsRunningOnMono() ? $"Usage: mono {applicationName}.exe [OPTIONS]" : $"Usage: dotnet {applicationName}.dll [OPTIONS]";
-            Mono.Options.OptionSet options = new Mono.Options.OptionSet {
+            var options = new Mono.Options.OptionSet {
                 usage,
                 { "h|help", "show this message and exit", h => showHelp = h != null },
                 { "a|autoaccept", "auto accept certificates (for testing only)", a => autoAccept = a != null },
@@ -77,7 +81,7 @@ namespace SampleCompany.ReferenceServer
             try
             {
                 // parse command line and set options
-                ConsoleUtils.ProcessCommandLine(output, args, options, ref showHelp, "REFSERVER");
+                _ = ConsoleUtils.ProcessCommandLine(output, args, options, ref showHelp, "REFSERVER");
 
                 if (logConsole && appLog)
                 {
@@ -114,33 +118,33 @@ namespace SampleCompany.ReferenceServer
                 ConsoleUtils.ConfigureLogging(server.Configuration, applicationName, logConsole, LogLevel.Information);
 
                 // check or renew the certificate
-                await output.WriteLineAsync("Check the certificate.");
+                await output.WriteLineAsync("Check the certificate.").ConfigureAwait(false);
                 await server.CheckCertificateAsync(renewCertificate).ConfigureAwait(false);
 
                 // Create and add the node managers
                 server.Create(NodeManagerUtils.NodeManagerFactories);
 
                 // start the server
-                await output.WriteLineAsync("Start the server.");
+                await output.WriteLineAsync("Start the server.").ConfigureAwait(false);
                 await server.StartAsync().ConfigureAwait(false);
 
                 // Apply custom settings for CTT testing
                 if (cttMode)
                 {
-                    await output.WriteLineAsync("Apply settings for CTT.");
+                    await output.WriteLineAsync("Apply settings for CTT.").ConfigureAwait(false);
                     // start Alarms and other settings for CTT test
                     NodeManagerUtils.ApplyCTTMode(output, server.Server);
                 }
 
-                await output.WriteLineAsync("Server started. Press Ctrl-C to exit...");
+                await output.WriteLineAsync("Server started. Press Ctrl-C to exit...").ConfigureAwait(false);
 
                 // wait for timeout or Ctrl-C
-                var quitCTS = new CancellationTokenSource();
-                var quitEvent = ConsoleUtils.CtrlCHandler(quitCTS);
-                bool ctrlc = quitEvent.WaitOne(timeout);
+                var quitCts = new CancellationTokenSource();
+                ManualResetEvent quitEvent = ConsoleUtils.CtrlCHandler(quitCts);
+                var ctrlc = quitEvent.WaitOne(timeout);
 
                 // stop server. May have to wait for clients to disconnect.
-                await output.WriteLineAsync("Server stopped. Waiting for exit...");
+                await output.WriteLineAsync("Server stopped. Waiting for exit...").ConfigureAwait(false);
                 await server.StopAsync().ConfigureAwait(false);
 
                 return (int)ExitCode.Ok;

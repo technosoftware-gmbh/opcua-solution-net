@@ -91,16 +91,16 @@ namespace SampleCompany.SampleServer
                 ExitCode = ExitCode.ErrorNotStarted;
 
                 ApplicationInstance.MessageDlg = new ApplicationMessageDlg(output_);
-                CertificatePasswordProvider PasswordProvider = new CertificatePasswordProvider(Password);
+                var passwordProvider = new CertificatePasswordProvider(Password);
                 Application = new ApplicationInstance {
                     ApplicationName = applicationName,
                     ApplicationType = ApplicationType.Server,
                     ConfigSectionName = configSectionName,
-                    CertificatePasswordProvider = PasswordProvider
+                    CertificatePasswordProvider = passwordProvider
                 };
 
                 // load the application configuration.
-                await Application.LoadApplicationConfigurationAsync(false).ConfigureAwait(false);
+                _ = await Application.LoadApplicationConfigurationAsync(false).ConfigureAwait(false);
 
             }
             catch (Exception ex)
@@ -124,7 +124,7 @@ namespace SampleCompany.SampleServer
                 }
 
                 // check the application certificate.
-                bool haveAppCertificate = await Application.CheckApplicationInstanceCertificateAsync(false, minimumKeySize: 0).ConfigureAwait(false);
+                var haveAppCertificate = await Application.CheckApplicationInstanceCertificateAsync(false, minimumKeySize: 0).ConfigureAwait(false);
                 if (!haveAppCertificate)
                 {
                     throw new ErrorExitException("Application instance certificate invalid!");
@@ -182,7 +182,7 @@ namespace SampleCompany.SampleServer
 
                 // print endpoint info
                 IEnumerable<string> endpoints = Application.BaseServer.GetEndpoints().Select(e => e.EndpointUrl).Distinct();
-                foreach (string endpoint in endpoints)
+                foreach (var endpoint in endpoints)
                 {
                     output_.WriteLine(endpoint);
                 }
@@ -254,7 +254,7 @@ namespace SampleCompany.SampleServer
         private void OnEventStatus(object sender, SessionEventArgs eventArgs)
         {
             lastEventTime_ = DateTime.UtcNow;
-            Session session = sender as Session;
+            var session = sender as Session;
             PrintSessionStatus(session, eventArgs.Reason.ToString());
         }
         #endregion
@@ -268,21 +268,21 @@ namespace SampleCompany.SampleServer
         /// <param name="lastContact">true if the date/time of the last event should also be in the output; false if not.</param>
         private void PrintSessionStatus(Session session, string reason, bool lastContact = false)
         {
-            StringBuilder item = new StringBuilder();
+            var item = new StringBuilder();
             lock (session.DiagnosticsLock)
             {
-                item.AppendFormat("{0,9}:{1,20}:", reason, session.SessionDiagnostics.SessionName);
+                _ = item.AppendFormat("{0,9}:{1,20}:", reason, session.SessionDiagnostics.SessionName);
                 if (lastContact)
                 {
-                    item.AppendFormat("Last Event:{0:HH:mm:ss}", session.SessionDiagnostics.ClientLastContactTime.ToLocalTime());
+                    _ = item.AppendFormat("Last Event:{0:HH:mm:ss}", session.SessionDiagnostics.ClientLastContactTime.ToLocalTime());
                 }
                 else
                 {
                     if (session.Identity != null)
                     {
-                        item.AppendFormat(":{0,20}", session.Identity.DisplayName);
+                        _ = item.AppendFormat(":{0,20}", session.Identity.DisplayName);
                     }
-                    item.AppendFormat(":{0}", session.Id);
+                    _ = item.AppendFormat(":{0}", session.Id);
                 }
             }
             output_.WriteLine(item.ToString());
@@ -298,7 +298,7 @@ namespace SampleCompany.SampleServer
                 if (DateTime.UtcNow - lastEventTime_ > TimeSpan.FromMilliseconds(10000))
                 {
                     IList<Session> sessions = server_.CurrentInstance.SessionManager.GetSessions();
-                    for (int ii = 0; ii < sessions.Count; ii++)
+                    for (var ii = 0; ii < sessions.Count; ii++)
                     {
                         Session session = sessions[ii];
                         PrintSessionStatus(session, "-Status-", true);

@@ -13,7 +13,7 @@
         <AnalysisLevel>preview-all</AnalysisLevel>
         <AppTargetFrameworks>net48;net6.0;net7.0;net8.0</AppTargetFrameworks>
         <AppTargetFramework>net6.0</AppTargetFramework>
-        <TestsTargetFrameworks>net48;net6.0;net7.0;net8.0</TestsTargetFrameworks>
+        <TestsTargetFrameworks>net48;net8.0</TestsTargetFrameworks>
         <LibTargetFrameworks>net48;net6.0;net7.0;net8.0</LibTargetFrameworks>
         <HttpsTargetFrameworks>net48;net6.0;net7.0;net8.0</HttpsTargetFrameworks>
       </PropertyGroup>

@@ -532,7 +532,7 @@ namespace Technosoftware.UaClient
         /// <summary>
         /// The session that owns the subscription item.
         /// </summary>
-        public IUaSession Session { get; internal set; }
+        public IUaSession Session { get; protected internal set; }
 
         /// <summary>
         /// A local handle assigned to the subscription
@@ -2270,7 +2270,8 @@ namespace Technosoftware.UaClient
                 {
                     for (int ii = 0; ii < messagesToRepublish.Count; ii++)
                     {
-                        if (!await session.RepublishAsync(subscriptionId, messagesToRepublish[ii].SequenceNumber, ct).ConfigureAwait(false))
+                        (bool success, _) = await session.RepublishAsync(subscriptionId, messagesToRepublish[ii].SequenceNumber, ct).ConfigureAwait(false);
+                        if (!success)
                         {
                             messagesToRepublish[ii].Republished = false;
                         }

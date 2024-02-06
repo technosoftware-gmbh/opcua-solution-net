@@ -1,13 +1,13 @@
-#region Copyright (c) 2022-2023 Technosoftware GmbH. All rights reserved
+#region Copyright (c) 2022-2024 Technosoftware GmbH. All rights reserved
 //-----------------------------------------------------------------------------
-// Copyright (c) 2022-2023 Technosoftware GmbH. All rights reserved
+// Copyright (c) 2022-2024 Technosoftware GmbH. All rights reserved
 // Web: https://technosoftware.com 
 //
 // The Software is based on the OPC Foundation MIT License. 
 // The complete license agreement for that can be found here:
 // http://opcfoundation.org/License/MIT/1.00/
 //-----------------------------------------------------------------------------
-#endregion Copyright (c) 2022-2023 Technosoftware GmbH. All rights reserved
+#endregion Copyright (c) 2022-2024 Technosoftware GmbH. All rights reserved
 
 #region Using Directives
 using System;
@@ -39,9 +39,26 @@ namespace Technosoftware.UaClient.Tests
         public uint SessionTimeout { get; set; } = 10000;
         public int OperationTimeout { get; set; } = 10000;
         public int TraceMasks { get; set; } = Utils.TraceMasks.Error | Utils.TraceMasks.StackTrace | Utils.TraceMasks.Security | Utils.TraceMasks.Information;
-        public bool UseTracing { get; set; } = false;
-        public IUaSessionFactory SessionFactory => UseTracing ? (DefaultSessionFactory)TraceableSessionFactory.Instance : (DefaultSessionFactory)TestableSessionFactory.Instance;
+        public IUaSessionFactory SessionFactory { get; set; } = DefaultSessionFactory.Instance;
         public ActivityListener ActivityListener { get; private set; }
+
+        public ClientFixture(bool UseTracing, bool disableActivityLogging)
+        {
+            if (UseTracing)
+            {
+                SessionFactory = TraceableRequestHeaderClientSessionFactory.Instance;
+                StartActivityListenerInternal(disableActivityLogging);
+            }
+            else
+            {
+                SessionFactory = TraceableSessionFactory.Instance;
+            }
+        }
+
+        public ClientFixture()
+        {
+            SessionFactory = DefaultSessionFactory.Instance;
+        }
 
         #region Public Methods
         public void Dispose()
@@ -332,27 +349,38 @@ namespace Technosoftware.UaClient.Tests
         /// <summary>
         /// Configures Activity Listener and registers with Activity Source.
         /// </summary>
-        public void StartActivityListener(bool shouldListenToAllSources = false, bool shouldWriteStartAndStop = true)
+        public void StartActivityListenerInternal(bool disableActivityLogging)
         {
-            // Create an instance of ActivityListener and configure its properties
-            ActivityListener = new ActivityListener() {
-
-                // Set ShouldListenTo property to true for all activity sources
-                ShouldListenTo = (source) => shouldListenToAllSources || source.Name.Equals(TraceableSession.ActivitySourceName),
-
-                // Sample all data and recorded activities
-                Sample = (ref ActivityCreationOptions<ActivityContext> options) => ActivitySamplingResult.AllDataAndRecorded,
-
-            };
-
-            if (shouldWriteStartAndStop)
+            if (disableActivityLogging)
             {
-                ActivityListener.ActivityStarted = activity => Utils.LogInfo("Started: {0,-15} {1,-60}", activity.OperationName, activity.Id);
-                ActivityListener.ActivityStopped = activity => Utils.LogInfo("Stopped: {0,-15} {1,-60} Duration: {2}", activity.OperationName, activity.Id, activity.Duration);
-            }
+                // Create an instance of ActivityListener without logging
+                ActivityListener = new ActivityListener() {
+                    ShouldListenTo = (source) => (source.Name == (TraceableSession.ActivitySourceName)),
 
+                    // Sample all data and recorded activities
+                    Sample = (ref ActivityCreationOptions<ActivityContext> options) => ActivitySamplingResult.AllDataAndRecorded,
+                    // Do not log during benchmarks
+                    ActivityStarted = _ => { },
+                    ActivityStopped = _ => { }
+                };
+            }
+            else
+            {
+                // Create an instance of ActivityListener and configure its properties with logging
+                ActivityListener = new ActivityListener() {
+                    ShouldListenTo = (source) => (source.Name == (TraceableSession.ActivitySourceName)),
+
+                    // Sample all data and recorded activities
+                    Sample = (ref ActivityCreationOptions<ActivityContext> options) => ActivitySamplingResult.AllDataAndRecorded,
+                    ActivityStarted = activity => Utils.LogInfo("Client Started: {0,-15} - TraceId: {1,-32} SpanId: {2,-16}",
+                        activity.OperationName, activity.TraceId, activity.SpanId),
+                    ActivityStopped = activity => Utils.LogInfo("Client Stopped: {0,-15} - TraceId: {1,-32} SpanId: {2,-16} Duration: {3}",
+                        activity.OperationName, activity.TraceId, activity.SpanId, activity.Duration)
+                };
+            }
             ActivitySource.AddActivityListener(ActivityListener);
         }
+
 
         /// <summary>
         /// Disposes Activity Listener and unregisters from Activity Source.

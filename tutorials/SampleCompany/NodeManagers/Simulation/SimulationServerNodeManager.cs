@@ -124,7 +124,7 @@ namespace SampleCompany.NodeManagers.Simulation
 
                 FolderState root = CreateFolderState(null, "CTT", "CTT", null);
 
-                List<BaseDataVariableState> variables = new List<BaseDataVariableState>();
+                var variables = new List<BaseDataVariableState>();
 
                 try
                 {
@@ -166,8 +166,8 @@ namespace SampleCompany.NodeManagers.Simulation
 
                     BaseDataVariableState decimalVariable = CreateBaseDataVariableState(staticFolder, scalarStatic + "Decimal", "Decimal", null, DataTypeIds.DecimalDataType, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
                     // Set an arbitrary precision decimal value.
-                    BigInteger largeInteger = BigInteger.Parse("1234567890123546789012345678901234567890123456789012345");
-                    DecimalDataType decimalValue = new DecimalDataType {
+                    var largeInteger = BigInteger.Parse("1234567890123546789012345678901234567890123456789012345");
+                    var decimalValue = new DecimalDataType {
                         Scale = 100,
                         Value = largeInteger.ToByteArray()
                     };
@@ -345,32 +345,32 @@ namespace SampleCompany.NodeManagers.Simulation
                     ResetRandomGenerator(6);
                     FolderState simulationFolder = CreateFolderState(scalarFolder, "Scalar_Simulation", "Simulation", null);
                     const string scalarSimulation = "Scalar_Simulation_";
-                    CreateDynamicVariable(simulationFolder, scalarSimulation + "Boolean", "Boolean", null, DataTypeIds.Boolean, ValueRanks.Scalar);
-                    CreateDynamicVariable(simulationFolder, scalarSimulation + "Byte", "Byte", null, DataTypeIds.Byte, ValueRanks.Scalar);
-                    CreateDynamicVariable(simulationFolder, scalarSimulation + "ByteString", "ByteString", null, DataTypeIds.ByteString, ValueRanks.Scalar);
-                    CreateDynamicVariable(simulationFolder, scalarSimulation + "DateTime", "DateTime", null, DataTypeIds.DateTime, ValueRanks.Scalar);
-                    CreateDynamicVariable(simulationFolder, scalarSimulation + "Double", "Double", null, DataTypeIds.Double, ValueRanks.Scalar);
-                    CreateDynamicVariable(simulationFolder, scalarSimulation + "Duration", "Duration", null, DataTypeIds.Duration, ValueRanks.Scalar);
-                    CreateDynamicVariable(simulationFolder, scalarSimulation + "Float", "Float", null, DataTypeIds.Float, ValueRanks.Scalar);
-                    CreateDynamicVariable(simulationFolder, scalarSimulation + "Guid", "Guid", null, DataTypeIds.Guid, ValueRanks.Scalar);
-                    CreateDynamicVariable(simulationFolder, scalarSimulation + "Int16", "Int16", null, DataTypeIds.Int16, ValueRanks.Scalar);
-                    CreateDynamicVariable(simulationFolder, scalarSimulation + "Int32", "Int32", null, DataTypeIds.Int32, ValueRanks.Scalar);
-                    CreateDynamicVariable(simulationFolder, scalarSimulation + "Int64", "Int64", null, DataTypeIds.Int64, ValueRanks.Scalar);
-                    CreateDynamicVariable(simulationFolder, scalarSimulation + "Integer", "Integer", null, DataTypeIds.Integer, ValueRanks.Scalar);
-                    CreateDynamicVariable(simulationFolder, scalarSimulation + "LocaleId", "LocaleId", null, DataTypeIds.LocaleId, ValueRanks.Scalar);
-                    CreateDynamicVariable(simulationFolder, scalarSimulation + "LocalizedText", "LocalizedText", null, DataTypeIds.LocalizedText, ValueRanks.Scalar);
-                    CreateDynamicVariable(simulationFolder, scalarSimulation + "NodeId", "NodeId", null, DataTypeIds.NodeId, ValueRanks.Scalar);
-                    CreateDynamicVariable(simulationFolder, scalarSimulation + "Number", "Number", null, DataTypeIds.Number, ValueRanks.Scalar);
-                    CreateDynamicVariable(simulationFolder, scalarSimulation + "QualifiedName", "QualifiedName", null, DataTypeIds.QualifiedName, ValueRanks.Scalar);
-                    CreateDynamicVariable(simulationFolder, scalarSimulation + "SByte", "SByte", null, DataTypeIds.SByte, ValueRanks.Scalar);
-                    CreateDynamicVariable(simulationFolder, scalarSimulation + "String", "String", null, DataTypeIds.String, ValueRanks.Scalar);
-                    CreateDynamicVariable(simulationFolder, scalarSimulation + "UInt16", "UInt16", null, DataTypeIds.UInt16, ValueRanks.Scalar);
-                    CreateDynamicVariable(simulationFolder, scalarSimulation + "UInt32", "UInt32", null, DataTypeIds.UInt32, ValueRanks.Scalar);
-                    CreateDynamicVariable(simulationFolder, scalarSimulation + "UInt64", "UInt64", null, DataTypeIds.UInt64, ValueRanks.Scalar);
-                    CreateDynamicVariable(simulationFolder, scalarSimulation + "UInteger", "UInteger", null, DataTypeIds.UInteger, ValueRanks.Scalar);
-                    CreateDynamicVariable(simulationFolder, scalarSimulation + "UtcTime", "UtcTime", null, DataTypeIds.UtcTime, ValueRanks.Scalar);
-                    CreateDynamicVariable(simulationFolder, scalarSimulation + "Variant", "Variant", null, BuiltInType.Variant, ValueRanks.Scalar);
-                    CreateDynamicVariable(simulationFolder, scalarSimulation + "XmlElement", "XmlElement", null, DataTypeIds.XmlElement, ValueRanks.Scalar);
+                    _ = CreateDynamicVariable(simulationFolder, scalarSimulation + "Boolean", "Boolean", null, DataTypeIds.Boolean, ValueRanks.Scalar);
+                    _ = CreateDynamicVariable(simulationFolder, scalarSimulation + "Byte", "Byte", null, DataTypeIds.Byte, ValueRanks.Scalar);
+                    _ = CreateDynamicVariable(simulationFolder, scalarSimulation + "ByteString", "ByteString", null, DataTypeIds.ByteString, ValueRanks.Scalar);
+                    _ = CreateDynamicVariable(simulationFolder, scalarSimulation + "DateTime", "DateTime", null, DataTypeIds.DateTime, ValueRanks.Scalar);
+                    _ = CreateDynamicVariable(simulationFolder, scalarSimulation + "Double", "Double", null, DataTypeIds.Double, ValueRanks.Scalar);
+                    _ = CreateDynamicVariable(simulationFolder, scalarSimulation + "Duration", "Duration", null, DataTypeIds.Duration, ValueRanks.Scalar);
+                    _ = CreateDynamicVariable(simulationFolder, scalarSimulation + "Float", "Float", null, DataTypeIds.Float, ValueRanks.Scalar);
+                    _ = CreateDynamicVariable(simulationFolder, scalarSimulation + "Guid", "Guid", null, DataTypeIds.Guid, ValueRanks.Scalar);
+                    _ = CreateDynamicVariable(simulationFolder, scalarSimulation + "Int16", "Int16", null, DataTypeIds.Int16, ValueRanks.Scalar);
+                    _ = CreateDynamicVariable(simulationFolder, scalarSimulation + "Int32", "Int32", null, DataTypeIds.Int32, ValueRanks.Scalar);
+                    _ = CreateDynamicVariable(simulationFolder, scalarSimulation + "Int64", "Int64", null, DataTypeIds.Int64, ValueRanks.Scalar);
+                    _ = CreateDynamicVariable(simulationFolder, scalarSimulation + "Integer", "Integer", null, DataTypeIds.Integer, ValueRanks.Scalar);
+                    _ = CreateDynamicVariable(simulationFolder, scalarSimulation + "LocaleId", "LocaleId", null, DataTypeIds.LocaleId, ValueRanks.Scalar);
+                    _ = CreateDynamicVariable(simulationFolder, scalarSimulation + "LocalizedText", "LocalizedText", null, DataTypeIds.LocalizedText, ValueRanks.Scalar);
+                    _ = CreateDynamicVariable(simulationFolder, scalarSimulation + "NodeId", "NodeId", null, DataTypeIds.NodeId, ValueRanks.Scalar);
+                    _ = CreateDynamicVariable(simulationFolder, scalarSimulation + "Number", "Number", null, DataTypeIds.Number, ValueRanks.Scalar);
+                    _ = CreateDynamicVariable(simulationFolder, scalarSimulation + "QualifiedName", "QualifiedName", null, DataTypeIds.QualifiedName, ValueRanks.Scalar);
+                    _ = CreateDynamicVariable(simulationFolder, scalarSimulation + "SByte", "SByte", null, DataTypeIds.SByte, ValueRanks.Scalar);
+                    _ = CreateDynamicVariable(simulationFolder, scalarSimulation + "String", "String", null, DataTypeIds.String, ValueRanks.Scalar);
+                    _ = CreateDynamicVariable(simulationFolder, scalarSimulation + "UInt16", "UInt16", null, DataTypeIds.UInt16, ValueRanks.Scalar);
+                    _ = CreateDynamicVariable(simulationFolder, scalarSimulation + "UInt32", "UInt32", null, DataTypeIds.UInt32, ValueRanks.Scalar);
+                    _ = CreateDynamicVariable(simulationFolder, scalarSimulation + "UInt64", "UInt64", null, DataTypeIds.UInt64, ValueRanks.Scalar);
+                    _ = CreateDynamicVariable(simulationFolder, scalarSimulation + "UInteger", "UInteger", null, DataTypeIds.UInteger, ValueRanks.Scalar);
+                    _ = CreateDynamicVariable(simulationFolder, scalarSimulation + "UtcTime", "UtcTime", null, DataTypeIds.UtcTime, ValueRanks.Scalar);
+                    _ = CreateDynamicVariable(simulationFolder, scalarSimulation + "Variant", "Variant", null, BuiltInType.Variant, ValueRanks.Scalar);
+                    _ = CreateDynamicVariable(simulationFolder, scalarSimulation + "XmlElement", "XmlElement", null, DataTypeIds.XmlElement, ValueRanks.Scalar);
 
                     BaseDataVariableState intervalVariable = CreateBaseDataVariableState(simulationFolder, scalarSimulation + "Interval", "Interval", null, DataTypeIds.UInt16, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
                     intervalVariable.Value = simulationInterval_;
@@ -385,64 +385,64 @@ namespace SampleCompany.NodeManagers.Simulation
                     ResetRandomGenerator(7);
                     FolderState arraysSimulationFolder = CreateFolderState(simulationFolder, "Scalar_Simulation_Arrays", "Arrays", null);
                     const string simulationArrays = "Scalar_Simulation_Arrays_";
-                    CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "Boolean", "Boolean", null, DataTypeIds.Boolean, ValueRanks.OneDimension);
-                    CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "Byte", "Byte", null, DataTypeIds.Byte, ValueRanks.OneDimension);
-                    CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "ByteString", "ByteString", null, DataTypeIds.ByteString, ValueRanks.OneDimension);
-                    CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "DateTime", "DateTime", null, DataTypeIds.DateTime, ValueRanks.OneDimension);
-                    CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "Double", "Double", null, DataTypeIds.Double, ValueRanks.OneDimension);
-                    CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "Duration", "Duration", null, DataTypeIds.Duration, ValueRanks.OneDimension);
-                    CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "Float", "Float", null, DataTypeIds.Float, ValueRanks.OneDimension);
-                    CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "Guid", "Guid", null, DataTypeIds.Guid, ValueRanks.OneDimension);
-                    CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "Int16", "Int16", null, DataTypeIds.Int16, ValueRanks.OneDimension);
-                    CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "Int32", "Int32", null, DataTypeIds.Int32, ValueRanks.OneDimension);
-                    CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "Int64", "Int64", null, DataTypeIds.Int64, ValueRanks.OneDimension);
-                    CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "Integer", "Integer", null, DataTypeIds.Integer, ValueRanks.OneDimension);
-                    CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "LocaleId", "LocaleId", null, DataTypeIds.LocaleId, ValueRanks.OneDimension);
-                    CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "LocalizedText", "LocalizedText", null, DataTypeIds.LocalizedText, ValueRanks.OneDimension);
-                    CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "NodeId", "NodeId", null, DataTypeIds.NodeId, ValueRanks.OneDimension);
-                    CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "Number", "Number", null, DataTypeIds.Number, ValueRanks.OneDimension);
-                    CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "QualifiedName", "QualifiedName", null, DataTypeIds.QualifiedName, ValueRanks.OneDimension);
-                    CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "SByte", "SByte", null, DataTypeIds.SByte, ValueRanks.OneDimension);
-                    CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "String", "String", null, DataTypeIds.String, ValueRanks.OneDimension);
-                    CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "UInt16", "UInt16", null, DataTypeIds.UInt16, ValueRanks.OneDimension);
-                    CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "UInt32", "UInt32", null, DataTypeIds.UInt32, ValueRanks.OneDimension);
-                    CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "UInt64", "UInt64", null, DataTypeIds.UInt64, ValueRanks.OneDimension);
-                    CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "UInteger", "UInteger", null, DataTypeIds.UInteger, ValueRanks.OneDimension);
-                    CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "UtcTime", "UtcTime", null, DataTypeIds.UtcTime, ValueRanks.OneDimension);
-                    CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "Variant", "Variant", null, BuiltInType.Variant, ValueRanks.OneDimension);
-                    CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "XmlElement", "XmlElement", null, DataTypeIds.XmlElement, ValueRanks.OneDimension);
+                    _ = CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "Boolean", "Boolean", null, DataTypeIds.Boolean, ValueRanks.OneDimension);
+                    _ = CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "Byte", "Byte", null, DataTypeIds.Byte, ValueRanks.OneDimension);
+                    _ = CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "ByteString", "ByteString", null, DataTypeIds.ByteString, ValueRanks.OneDimension);
+                    _ = CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "DateTime", "DateTime", null, DataTypeIds.DateTime, ValueRanks.OneDimension);
+                    _ = CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "Double", "Double", null, DataTypeIds.Double, ValueRanks.OneDimension);
+                    _ = CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "Duration", "Duration", null, DataTypeIds.Duration, ValueRanks.OneDimension);
+                    _ = CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "Float", "Float", null, DataTypeIds.Float, ValueRanks.OneDimension);
+                    _ = CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "Guid", "Guid", null, DataTypeIds.Guid, ValueRanks.OneDimension);
+                    _ = CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "Int16", "Int16", null, DataTypeIds.Int16, ValueRanks.OneDimension);
+                    _ = CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "Int32", "Int32", null, DataTypeIds.Int32, ValueRanks.OneDimension);
+                    _ = CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "Int64", "Int64", null, DataTypeIds.Int64, ValueRanks.OneDimension);
+                    _ = CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "Integer", "Integer", null, DataTypeIds.Integer, ValueRanks.OneDimension);
+                    _ = CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "LocaleId", "LocaleId", null, DataTypeIds.LocaleId, ValueRanks.OneDimension);
+                    _ = CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "LocalizedText", "LocalizedText", null, DataTypeIds.LocalizedText, ValueRanks.OneDimension);
+                    _ = CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "NodeId", "NodeId", null, DataTypeIds.NodeId, ValueRanks.OneDimension);
+                    _ = CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "Number", "Number", null, DataTypeIds.Number, ValueRanks.OneDimension);
+                    _ = CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "QualifiedName", "QualifiedName", null, DataTypeIds.QualifiedName, ValueRanks.OneDimension);
+                    _ = CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "SByte", "SByte", null, DataTypeIds.SByte, ValueRanks.OneDimension);
+                    _ = CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "String", "String", null, DataTypeIds.String, ValueRanks.OneDimension);
+                    _ = CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "UInt16", "UInt16", null, DataTypeIds.UInt16, ValueRanks.OneDimension);
+                    _ = CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "UInt32", "UInt32", null, DataTypeIds.UInt32, ValueRanks.OneDimension);
+                    _ = CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "UInt64", "UInt64", null, DataTypeIds.UInt64, ValueRanks.OneDimension);
+                    _ = CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "UInteger", "UInteger", null, DataTypeIds.UInteger, ValueRanks.OneDimension);
+                    _ = CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "UtcTime", "UtcTime", null, DataTypeIds.UtcTime, ValueRanks.OneDimension);
+                    _ = CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "Variant", "Variant", null, BuiltInType.Variant, ValueRanks.OneDimension);
+                    _ = CreateDynamicVariable(arraysSimulationFolder, simulationArrays + "XmlElement", "XmlElement", null, DataTypeIds.XmlElement, ValueRanks.OneDimension);
                     #endregion
 
                     #region Scalar_Simulation_Mass
                     ResetRandomGenerator(8);
                     FolderState massSimulationFolder = CreateFolderState(simulationFolder, "Scalar_Simulation_Mass", "Mass", null);
                     const string massSimulation = "Scalar_Simulation_Mass_";
-                    CreateDynamicVariables(massSimulationFolder, massSimulation + "Boolean", "Boolean", null, DataTypeIds.Boolean, ValueRanks.Scalar, 100);
-                    CreateDynamicVariables(massSimulationFolder, massSimulation + "Byte", "Byte", null, DataTypeIds.Byte, ValueRanks.Scalar, 100);
-                    CreateDynamicVariables(massSimulationFolder, massSimulation + "ByteString", "ByteString", null, DataTypeIds.ByteString, ValueRanks.Scalar, 100);
-                    CreateDynamicVariables(massSimulationFolder, massSimulation + "DateTime", "DateTime", null, DataTypeIds.DateTime, ValueRanks.Scalar, 100);
-                    CreateDynamicVariables(massSimulationFolder, massSimulation + "Double", "Double", null, DataTypeIds.Double, ValueRanks.Scalar, 100);
-                    CreateDynamicVariables(massSimulationFolder, massSimulation + "Duration", "Duration", null, DataTypeIds.Duration, ValueRanks.Scalar, 100);
-                    CreateDynamicVariables(massSimulationFolder, massSimulation + "Float", "Float", null, DataTypeIds.Float, ValueRanks.Scalar, 100);
-                    CreateDynamicVariables(massSimulationFolder, massSimulation + "Guid", "Guid", null, DataTypeIds.Guid, ValueRanks.Scalar, 100);
-                    CreateDynamicVariables(massSimulationFolder, massSimulation + "Int16", "Int16", null, DataTypeIds.Int16, ValueRanks.Scalar, 100);
-                    CreateDynamicVariables(massSimulationFolder, massSimulation + "Int32", "Int32", null, DataTypeIds.Int32, ValueRanks.Scalar, 100);
-                    CreateDynamicVariables(massSimulationFolder, massSimulation + "Int64", "Int64", null, DataTypeIds.Int64, ValueRanks.Scalar, 100);
-                    CreateDynamicVariables(massSimulationFolder, massSimulation + "Integer", "Integer", null, DataTypeIds.Integer, ValueRanks.Scalar, 100);
-                    CreateDynamicVariables(massSimulationFolder, massSimulation + "LocaleId", "LocaleId", null, DataTypeIds.LocaleId, ValueRanks.Scalar, 100);
-                    CreateDynamicVariables(massSimulationFolder, massSimulation + "LocalizedText", "LocalizedText", null, DataTypeIds.LocalizedText, ValueRanks.Scalar, 100);
-                    CreateDynamicVariables(massSimulationFolder, massSimulation + "NodeId", "NodeId", null, DataTypeIds.NodeId, ValueRanks.Scalar, 100);
-                    CreateDynamicVariables(massSimulationFolder, massSimulation + "Number", "Number", null, DataTypeIds.Number, ValueRanks.Scalar, 100);
-                    CreateDynamicVariables(massSimulationFolder, massSimulation + "QualifiedName", "QualifiedName", null, DataTypeIds.QualifiedName, ValueRanks.Scalar, 100);
-                    CreateDynamicVariables(massSimulationFolder, massSimulation + "SByte", "SByte", null, DataTypeIds.SByte, ValueRanks.Scalar, 100);
-                    CreateDynamicVariables(massSimulationFolder, massSimulation + "String", "String", null, DataTypeIds.String, ValueRanks.Scalar, 100);
-                    CreateDynamicVariables(massSimulationFolder, massSimulation + "UInt16", "UInt16", null, DataTypeIds.UInt16, ValueRanks.Scalar, 100);
-                    CreateDynamicVariables(massSimulationFolder, massSimulation + "UInt32", "UInt32", null, DataTypeIds.UInt32, ValueRanks.Scalar, 100);
-                    CreateDynamicVariables(massSimulationFolder, massSimulation + "UInt64", "UInt64", null, DataTypeIds.UInt64, ValueRanks.Scalar, 100);
-                    CreateDynamicVariables(massSimulationFolder, massSimulation + "UInteger", "UInteger", null, DataTypeIds.UInteger, ValueRanks.Scalar, 100);
-                    CreateDynamicVariables(massSimulationFolder, massSimulation + "UtcTime", "UtcTime", null, DataTypeIds.UtcTime, ValueRanks.Scalar, 100);
-                    CreateDynamicVariables(massSimulationFolder, massSimulation + "Variant", "Variant", null, BuiltInType.Variant, ValueRanks.Scalar, 100);
-                    CreateDynamicVariables(massSimulationFolder, massSimulation + "XmlElement", "XmlElement", null, DataTypeIds.XmlElement, ValueRanks.Scalar, 100);
+                    _ = CreateDynamicVariables(massSimulationFolder, massSimulation + "Boolean", "Boolean", null, DataTypeIds.Boolean, ValueRanks.Scalar, 100);
+                    _ = CreateDynamicVariables(massSimulationFolder, massSimulation + "Byte", "Byte", null, DataTypeIds.Byte, ValueRanks.Scalar, 100);
+                    _ = CreateDynamicVariables(massSimulationFolder, massSimulation + "ByteString", "ByteString", null, DataTypeIds.ByteString, ValueRanks.Scalar, 100);
+                    _ = CreateDynamicVariables(massSimulationFolder, massSimulation + "DateTime", "DateTime", null, DataTypeIds.DateTime, ValueRanks.Scalar, 100);
+                    _ = CreateDynamicVariables(massSimulationFolder, massSimulation + "Double", "Double", null, DataTypeIds.Double, ValueRanks.Scalar, 100);
+                    _ = CreateDynamicVariables(massSimulationFolder, massSimulation + "Duration", "Duration", null, DataTypeIds.Duration, ValueRanks.Scalar, 100);
+                    _ = CreateDynamicVariables(massSimulationFolder, massSimulation + "Float", "Float", null, DataTypeIds.Float, ValueRanks.Scalar, 100);
+                    _ = CreateDynamicVariables(massSimulationFolder, massSimulation + "Guid", "Guid", null, DataTypeIds.Guid, ValueRanks.Scalar, 100);
+                    _ = CreateDynamicVariables(massSimulationFolder, massSimulation + "Int16", "Int16", null, DataTypeIds.Int16, ValueRanks.Scalar, 100);
+                    _ = CreateDynamicVariables(massSimulationFolder, massSimulation + "Int32", "Int32", null, DataTypeIds.Int32, ValueRanks.Scalar, 100);
+                    _ = CreateDynamicVariables(massSimulationFolder, massSimulation + "Int64", "Int64", null, DataTypeIds.Int64, ValueRanks.Scalar, 100);
+                    _ = CreateDynamicVariables(massSimulationFolder, massSimulation + "Integer", "Integer", null, DataTypeIds.Integer, ValueRanks.Scalar, 100);
+                    _ = CreateDynamicVariables(massSimulationFolder, massSimulation + "LocaleId", "LocaleId", null, DataTypeIds.LocaleId, ValueRanks.Scalar, 100);
+                    _ = CreateDynamicVariables(massSimulationFolder, massSimulation + "LocalizedText", "LocalizedText", null, DataTypeIds.LocalizedText, ValueRanks.Scalar, 100);
+                    _ = CreateDynamicVariables(massSimulationFolder, massSimulation + "NodeId", "NodeId", null, DataTypeIds.NodeId, ValueRanks.Scalar, 100);
+                    _ = CreateDynamicVariables(massSimulationFolder, massSimulation + "Number", "Number", null, DataTypeIds.Number, ValueRanks.Scalar, 100);
+                    _ = CreateDynamicVariables(massSimulationFolder, massSimulation + "QualifiedName", "QualifiedName", null, DataTypeIds.QualifiedName, ValueRanks.Scalar, 100);
+                    _ = CreateDynamicVariables(massSimulationFolder, massSimulation + "SByte", "SByte", null, DataTypeIds.SByte, ValueRanks.Scalar, 100);
+                    _ = CreateDynamicVariables(massSimulationFolder, massSimulation + "String", "String", null, DataTypeIds.String, ValueRanks.Scalar, 100);
+                    _ = CreateDynamicVariables(massSimulationFolder, massSimulation + "UInt16", "UInt16", null, DataTypeIds.UInt16, ValueRanks.Scalar, 100);
+                    _ = CreateDynamicVariables(massSimulationFolder, massSimulation + "UInt32", "UInt32", null, DataTypeIds.UInt32, ValueRanks.Scalar, 100);
+                    _ = CreateDynamicVariables(massSimulationFolder, massSimulation + "UInt64", "UInt64", null, DataTypeIds.UInt64, ValueRanks.Scalar, 100);
+                    _ = CreateDynamicVariables(massSimulationFolder, massSimulation + "UInteger", "UInteger", null, DataTypeIds.UInteger, ValueRanks.Scalar, 100);
+                    _ = CreateDynamicVariables(massSimulationFolder, massSimulation + "UtcTime", "UtcTime", null, DataTypeIds.UtcTime, ValueRanks.Scalar, 100);
+                    _ = CreateDynamicVariables(massSimulationFolder, massSimulation + "Variant", "Variant", null, BuiltInType.Variant, ValueRanks.Scalar, 100);
+                    _ = CreateDynamicVariables(massSimulationFolder, massSimulation + "XmlElement", "XmlElement", null, DataTypeIds.XmlElement, ValueRanks.Scalar, 100);
                     #endregion
 
                     #region DataAccess_DataItem
@@ -455,7 +455,7 @@ namespace SampleCompany.NodeManagers.Simulation
                     FolderState dataItemFolder = CreateFolderState(daFolder, "DataAccess_DataItem", "DataItem", null);
                     const string daDataItem = "DataAccess_DataItem_";
 
-                    foreach (string name in Enum.GetNames(typeof(BuiltInType)))
+                    foreach (var name in Enum.GetNames(typeof(BuiltInType)))
                     {
                         DataItemState item = CreateDataItemState(dataItemFolder, daDataItem + name, name, null, (BuiltInType)Enum.Parse(typeof(BuiltInType), name), ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null, AttributeWriteMask.None, AttributeWriteMask.None, String.Empty, 2, null, null);
 
@@ -472,9 +472,9 @@ namespace SampleCompany.NodeManagers.Simulation
                     FolderState analogItemFolder = CreateFolderState(daFolder, "DataAccess_AnalogType", "AnalogType", null);
                     const string daAnalogItem = "DataAccess_AnalogType_";
 
-                    foreach (string name in Enum.GetNames(typeof(BuiltInType)))
+                    foreach (var name in Enum.GetNames(typeof(BuiltInType)))
                     {
-                        BuiltInType builtInType = (BuiltInType)Enum.Parse(typeof(BuiltInType), name);
+                        var builtInType = (BuiltInType)Enum.Parse(typeof(BuiltInType), name);
                         if (IsAnalogType(builtInType))
                         {
                             AnalogItemState item = CreateAnalogItemVariable(analogItemFolder, daAnalogItem + name, name, null, builtInType, ValueRanks.Scalar);
@@ -506,33 +506,33 @@ namespace SampleCompany.NodeManagers.Simulation
                     FolderState analogArrayFolder = CreateFolderState(analogItemFolder, "DataAccess_AnalogType_Array", "Array", null);
                     const string daAnalogArray = "DataAccess_AnalogType_Array_";
 
-                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Boolean", "Boolean", null, BuiltInType.Boolean, ValueRanks.OneDimension, new[] { true, false, true, false, true, false, true, false, true });
-                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Byte", "Byte", null, BuiltInType.Byte, ValueRanks.OneDimension, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
-                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "ByteString", "ByteString", null, BuiltInType.ByteString, ValueRanks.OneDimension, new[] { new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 } });
-                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "DateTime", "DateTime", null, BuiltInType.DateTime, ValueRanks.OneDimension, new[] { DateTime.MinValue, DateTime.MaxValue, DateTime.MinValue, DateTime.MaxValue, DateTime.MinValue, DateTime.MaxValue, DateTime.MinValue, DateTime.MaxValue, DateTime.MinValue });
-                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Double", "Double", null, BuiltInType.Double, ValueRanks.OneDimension, new[] { 9.00001d, 9.0002d, 9.003d, 9.04d, 9.5d, 9.06d, 9.007d, 9.008d, 9.0009d });
-                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Duration", "Duration", null, DataTypeIds.Duration, ValueRanks.OneDimension, new[] { 9.00001d, 9.0002d, 9.003d, 9.04d, 9.5d, 9.06d, 9.007d, 9.008d, 9.0009d }, null);
-                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Float", "Float", null, BuiltInType.Float, ValueRanks.OneDimension, new float[] { 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 1.1f, 2.2f, 3.3f, 4.4f, 5.5f });
-                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Guid", "Guid", null, BuiltInType.Guid, ValueRanks.OneDimension, new Guid[] { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() });
-                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Int16", "Int16", null, BuiltInType.Int16, ValueRanks.OneDimension, new Int16[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
-                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Int32", "Int32", null, BuiltInType.Int32, ValueRanks.OneDimension, new Int32[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
-                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Int64", "Int64", null, BuiltInType.Int64, ValueRanks.OneDimension, new Int64[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
-                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Integer", "Integer", null, BuiltInType.Integer, ValueRanks.OneDimension, new Int64[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
-                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "LocaleId", "LocaleId", null, DataTypeIds.LocaleId, ValueRanks.OneDimension, new string[] { "en", "fr", "de", "en", "fr", "de", "en", "fr", "de", "en" }, null);
-                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "LocalizedText", "LocalizedText", null, BuiltInType.LocalizedText, ValueRanks.OneDimension, new LocalizedText[] { new LocalizedText("en", "Hello World1"), new LocalizedText("en", "Hello World2"), new LocalizedText("en", "Hello World3"), new LocalizedText("en", "Hello World4"), new LocalizedText("en", "Hello World5"), new LocalizedText("en", "Hello World6"), new LocalizedText("en", "Hello World7"), new LocalizedText("en", "Hello World8"), new LocalizedText("en", "Hello World9"), new LocalizedText("en", "Hello World10") });
-                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "NodeId", "NodeId", null, BuiltInType.NodeId, ValueRanks.OneDimension, new NodeId[] { new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()) });
-                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Number", "Number", null, BuiltInType.Number, ValueRanks.OneDimension, new Int16[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
-                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "QualifiedName", "QualifiedName", null, BuiltInType.QualifiedName, ValueRanks.OneDimension, new QualifiedName[] { "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8", "q9" });
-                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "SByte", "SByte", null, BuiltInType.SByte, ValueRanks.OneDimension, new SByte[] { 10, 20, 30, 40, 50, 60, 70, 80, 90 });
-                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "String", "String", null, BuiltInType.String, ValueRanks.OneDimension, new[] { "a00", "b10", "c20", "d30", "e40", "f50", "g60", "h70", "i80", "j90" });
-                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "UInt16", "UInt16", null, BuiltInType.UInt16, ValueRanks.OneDimension, new UInt16[] { 20, 21, 22, 23, 24, 25, 26, 27, 28, 29 });
-                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "UInt32", "UInt32", null, BuiltInType.UInt32, ValueRanks.OneDimension, new UInt32[] { 30, 31, 32, 33, 34, 35, 36, 37, 38, 39 });
-                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "UInt64", "UInt64", null, BuiltInType.UInt64, ValueRanks.OneDimension, new UInt64[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
-                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "UInteger", "UInteger", null, BuiltInType.UInteger, ValueRanks.OneDimension, new UInt64[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
-                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "UtcTime", "UtcTime", null, DataTypeIds.UtcTime, ValueRanks.OneDimension, new DateTime[] { DateTime.MinValue.ToUniversalTime(), DateTime.MaxValue.ToUniversalTime(), DateTime.MinValue.ToUniversalTime(), DateTime.MaxValue.ToUniversalTime(), DateTime.MinValue.ToUniversalTime(), DateTime.MaxValue.ToUniversalTime(), DateTime.MinValue.ToUniversalTime(), DateTime.MaxValue.ToUniversalTime(), DateTime.MinValue.ToUniversalTime() }, null);
-                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Variant", "Variant", null, BuiltInType.Variant, ValueRanks.OneDimension, new Variant[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
-                    XmlDocument doc1 = new XmlDocument();
-                    CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "XmlElement", "XmlElement", null, BuiltInType.XmlElement, ValueRanks.OneDimension, new XmlElement[] { doc1.CreateElement("tag1"), doc1.CreateElement("tag2"), doc1.CreateElement("tag3"), doc1.CreateElement("tag4"), doc1.CreateElement("tag5"), doc1.CreateElement("tag6"), doc1.CreateElement("tag7"), doc1.CreateElement("tag8"), doc1.CreateElement("tag9"), doc1.CreateElement("tag10") });
+                    _ = CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Boolean", "Boolean", null, BuiltInType.Boolean, ValueRanks.OneDimension, new[] { true, false, true, false, true, false, true, false, true });
+                    _ = CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Byte", "Byte", null, BuiltInType.Byte, ValueRanks.OneDimension, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
+                    _ = CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "ByteString", "ByteString", null, BuiltInType.ByteString, ValueRanks.OneDimension, new[] { new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new Byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 } });
+                    _ = CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "DateTime", "DateTime", null, BuiltInType.DateTime, ValueRanks.OneDimension, new[] { DateTime.MinValue, DateTime.MaxValue, DateTime.MinValue, DateTime.MaxValue, DateTime.MinValue, DateTime.MaxValue, DateTime.MinValue, DateTime.MaxValue, DateTime.MinValue });
+                    _ = CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Double", "Double", null, BuiltInType.Double, ValueRanks.OneDimension, new[] { 9.00001d, 9.0002d, 9.003d, 9.04d, 9.5d, 9.06d, 9.007d, 9.008d, 9.0009d });
+                    _ = CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Duration", "Duration", null, DataTypeIds.Duration, ValueRanks.OneDimension, new[] { 9.00001d, 9.0002d, 9.003d, 9.04d, 9.5d, 9.06d, 9.007d, 9.008d, 9.0009d }, null);
+                    _ = CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Float", "Float", null, BuiltInType.Float, ValueRanks.OneDimension, new float[] { 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 1.1f, 2.2f, 3.3f, 4.4f, 5.5f });
+                    _ = CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Guid", "Guid", null, BuiltInType.Guid, ValueRanks.OneDimension, new Guid[] { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() });
+                    _ = CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Int16", "Int16", null, BuiltInType.Int16, ValueRanks.OneDimension, new Int16[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
+                    _ = CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Int32", "Int32", null, BuiltInType.Int32, ValueRanks.OneDimension, new Int32[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
+                    _ = CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Int64", "Int64", null, BuiltInType.Int64, ValueRanks.OneDimension, new Int64[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
+                    _ = CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Integer", "Integer", null, BuiltInType.Integer, ValueRanks.OneDimension, new Int64[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
+                    _ = CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "LocaleId", "LocaleId", null, DataTypeIds.LocaleId, ValueRanks.OneDimension, new string[] { "en", "fr", "de", "en", "fr", "de", "en", "fr", "de", "en" }, null);
+                    _ = CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "LocalizedText", "LocalizedText", null, BuiltInType.LocalizedText, ValueRanks.OneDimension, new LocalizedText[] { new LocalizedText("en", "Hello World1"), new LocalizedText("en", "Hello World2"), new LocalizedText("en", "Hello World3"), new LocalizedText("en", "Hello World4"), new LocalizedText("en", "Hello World5"), new LocalizedText("en", "Hello World6"), new LocalizedText("en", "Hello World7"), new LocalizedText("en", "Hello World8"), new LocalizedText("en", "Hello World9"), new LocalizedText("en", "Hello World10") });
+                    _ = CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "NodeId", "NodeId", null, BuiltInType.NodeId, ValueRanks.OneDimension, new NodeId[] { new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()), new NodeId(Guid.NewGuid()) });
+                    _ = CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Number", "Number", null, BuiltInType.Number, ValueRanks.OneDimension, new Int16[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+                    _ = CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "QualifiedName", "QualifiedName", null, BuiltInType.QualifiedName, ValueRanks.OneDimension, new QualifiedName[] { "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8", "q9" });
+                    _ = CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "SByte", "SByte", null, BuiltInType.SByte, ValueRanks.OneDimension, new SByte[] { 10, 20, 30, 40, 50, 60, 70, 80, 90 });
+                    _ = CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "String", "String", null, BuiltInType.String, ValueRanks.OneDimension, new[] { "a00", "b10", "c20", "d30", "e40", "f50", "g60", "h70", "i80", "j90" });
+                    _ = CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "UInt16", "UInt16", null, BuiltInType.UInt16, ValueRanks.OneDimension, new UInt16[] { 20, 21, 22, 23, 24, 25, 26, 27, 28, 29 });
+                    _ = CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "UInt32", "UInt32", null, BuiltInType.UInt32, ValueRanks.OneDimension, new UInt32[] { 30, 31, 32, 33, 34, 35, 36, 37, 38, 39 });
+                    _ = CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "UInt64", "UInt64", null, BuiltInType.UInt64, ValueRanks.OneDimension, new UInt64[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
+                    _ = CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "UInteger", "UInteger", null, BuiltInType.UInteger, ValueRanks.OneDimension, new UInt64[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
+                    _ = CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "UtcTime", "UtcTime", null, DataTypeIds.UtcTime, ValueRanks.OneDimension, new DateTime[] { DateTime.MinValue.ToUniversalTime(), DateTime.MaxValue.ToUniversalTime(), DateTime.MinValue.ToUniversalTime(), DateTime.MaxValue.ToUniversalTime(), DateTime.MinValue.ToUniversalTime(), DateTime.MaxValue.ToUniversalTime(), DateTime.MinValue.ToUniversalTime(), DateTime.MaxValue.ToUniversalTime(), DateTime.MinValue.ToUniversalTime() }, null);
+                    _ = CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Variant", "Variant", null, BuiltInType.Variant, ValueRanks.OneDimension, new Variant[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
+                    var doc1 = new XmlDocument();
+                    _ = CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "XmlElement", "XmlElement", null, BuiltInType.XmlElement, ValueRanks.OneDimension, new XmlElement[] { doc1.CreateElement("tag1"), doc1.CreateElement("tag2"), doc1.CreateElement("tag3"), doc1.CreateElement("tag4"), doc1.CreateElement("tag5"), doc1.CreateElement("tag6"), doc1.CreateElement("tag7"), doc1.CreateElement("tag8"), doc1.CreateElement("tag9"), doc1.CreateElement("tag10") });
                     #endregion
 
                     #region DataAccess_DiscreteType
@@ -542,11 +542,11 @@ namespace SampleCompany.NodeManagers.Simulation
                     const string daTwoStateDiscrete = "DataAccess_TwoStateDiscreteType_";
 
                     // Add our Nodes to the folder, and specify their customized discrete enumerations
-                    CreateTwoStateDiscreteState(twoStateDiscreteFolder, daTwoStateDiscrete + "001", "001", null, AccessLevels.CurrentReadOrWrite, false, "red", "blue");
-                    CreateTwoStateDiscreteState(twoStateDiscreteFolder, daTwoStateDiscrete + "002", "002", null, AccessLevels.CurrentReadOrWrite, false, "open", "close");
-                    CreateTwoStateDiscreteState(twoStateDiscreteFolder, daTwoStateDiscrete + "003", "003", null, AccessLevels.CurrentReadOrWrite, false, "up", "down");
-                    CreateTwoStateDiscreteState(twoStateDiscreteFolder, daTwoStateDiscrete + "004", "004", null, AccessLevels.CurrentReadOrWrite, false, "left", "right");
-                    CreateTwoStateDiscreteState(twoStateDiscreteFolder, daTwoStateDiscrete + "005", "005", null, AccessLevels.CurrentReadOrWrite, false, "circle", "cross");
+                    _ = CreateTwoStateDiscreteState(twoStateDiscreteFolder, daTwoStateDiscrete + "001", "001", null, AccessLevels.CurrentReadOrWrite, false, "red", "blue");
+                    _ = CreateTwoStateDiscreteState(twoStateDiscreteFolder, daTwoStateDiscrete + "002", "002", null, AccessLevels.CurrentReadOrWrite, false, "open", "close");
+                    _ = CreateTwoStateDiscreteState(twoStateDiscreteFolder, daTwoStateDiscrete + "003", "003", null, AccessLevels.CurrentReadOrWrite, false, "up", "down");
+                    _ = CreateTwoStateDiscreteState(twoStateDiscreteFolder, daTwoStateDiscrete + "004", "004", null, AccessLevels.CurrentReadOrWrite, false, "left", "right");
+                    _ = CreateTwoStateDiscreteState(twoStateDiscreteFolder, daTwoStateDiscrete + "005", "005", null, AccessLevels.CurrentReadOrWrite, false, "circle", "cross");
 
                     FolderState multiStateDiscreteFolder = CreateFolderState(discreteTypeFolder, "DataAccess_MultiStateDiscreteType", "MultiStateDiscreteType", null);
                     const string daMultiStateDiscrete = "DataAccess_MultiStateDiscreteType_";
@@ -625,9 +625,9 @@ namespace SampleCompany.NodeManagers.Simulation
                     variables.Add(hasInverseReference);
 
                     BaseDataVariableState has3InverseReference = null;
-                    for (int i = 1; i <= 5; i++)
+                    for (var i = 1; i <= 5; i++)
                     {
-                        string referenceString = "Has3ForwardReferences";
+                        var referenceString = "Has3ForwardReferences";
                         if (i > 1)
                         {
                             referenceString += i.ToString();
@@ -853,7 +853,7 @@ namespace SampleCompany.NodeManagers.Simulation
                     variables.Add(methodsInstructions);
 
                     #region Void Method
-                    CreateMethodState(methodsFolder, methods + "Void", "Void", OnVoidCall);
+                    _ = CreateMethodState(methodsFolder, methods + "Void", "Void", OnVoidCall);
                     #endregion
 
                     #region Add Method
@@ -861,19 +861,19 @@ namespace SampleCompany.NodeManagers.Simulation
                     // set input arguments
                     Argument inputArgument1 = CreateArgument("Float value", "Float value", BuiltInType.Float, ValueRanks.Scalar);
                     Argument inputArgument2 = CreateArgument("UInt32 value", "UInt32 value", BuiltInType.UInt32, ValueRanks.Scalar);
-                    AddInputArguments(addMethod, new[] { inputArgument1, inputArgument2 });
+                    _ = AddInputArguments(addMethod, new[] { inputArgument1, inputArgument2 });
 
                     // set output arguments
                     Argument outputArgument1 = CreateArgument("Add Result", "Add Result", BuiltInType.Float, ValueRanks.Scalar);
-                    AddOutputArguments(addMethod, new[] { outputArgument1 });
+                    _ = AddOutputArguments(addMethod, new[] { outputArgument1 });
                     #endregion
 
                     #region Multiply Method
                     MethodState multiplyMethod = CreateMethodState(methodsFolder, methods + "Multiply", "Multiply", OnMultiplyCall);
                     // set input arguments
-                    inputArgument1 = CreateArgument("Int16 value","Int16 value",BuiltInType.Int16,ValueRanks.Scalar);
+                    inputArgument1 = CreateArgument("Int16 value", "Int16 value", BuiltInType.Int16, ValueRanks.Scalar);
                     inputArgument2 = CreateArgument("UInt16 value", "UInt16 value", BuiltInType.UInt16, ValueRanks.Scalar);
-                    AddInputArguments(multiplyMethod, new[] { inputArgument1, inputArgument2 });
+                    _ = AddInputArguments(multiplyMethod, new[] { inputArgument1, inputArgument2 });
 
                     // set output arguments
                     multiplyMethod.OutputArguments = new PropertyState<Argument[]>(multiplyMethod);
@@ -886,7 +886,7 @@ namespace SampleCompany.NodeManagers.Simulation
                     multiplyMethod.OutputArguments.ValueRank = ValueRanks.OneDimension;
 
                     outputArgument1 = CreateArgument("Multiply Result", "Multiply Result", BuiltInType.Int32, ValueRanks.Scalar);
-                    AddOutputArguments(multiplyMethod, new[] { outputArgument1 });
+                    _ = AddOutputArguments(multiplyMethod, new[] { outputArgument1 });
                     #endregion
 
                     #region Divide Method
@@ -894,11 +894,11 @@ namespace SampleCompany.NodeManagers.Simulation
                     // set input arguments
                     inputArgument1 = CreateArgument("Int32 value", "Int32 value", BuiltInType.Int32, ValueRanks.Scalar);
                     inputArgument2 = CreateArgument("UInt16 value", "UInt16 value", BuiltInType.UInt16, ValueRanks.Scalar);
-                    AddInputArguments(divideMethod, new[] { inputArgument1, inputArgument2 });
+                    _ = AddInputArguments(divideMethod, new[] { inputArgument1, inputArgument2 });
 
                     // set output arguments
                     outputArgument1 = CreateArgument("Divide Result", "Divide Result", BuiltInType.Float, ValueRanks.Scalar);
-                    AddOutputArguments(divideMethod, new[] { outputArgument1 });
+                    _ = AddOutputArguments(divideMethod, new[] { outputArgument1 });
                     #endregion
 
                     #region Substract Method
@@ -906,37 +906,37 @@ namespace SampleCompany.NodeManagers.Simulation
                     // set input arguments
                     inputArgument1 = CreateArgument("Int16 value", "Int16 value", BuiltInType.Int16, ValueRanks.Scalar);
                     inputArgument2 = CreateArgument("Byte value", "Byte value", BuiltInType.Byte, ValueRanks.Scalar);
-                    AddInputArguments(substractMethod, new[] { inputArgument1, inputArgument2 });
+                    _ = AddInputArguments(substractMethod, new[] { inputArgument1, inputArgument2 });
 
                     // set output arguments
                     outputArgument1 = CreateArgument("Substract Result", "Substract Result", BuiltInType.Int16, ValueRanks.Scalar);
-                    AddOutputArguments(substractMethod, new[] { outputArgument1 });
+                    _ = AddOutputArguments(substractMethod, new[] { outputArgument1 });
                     #endregion
 
                     #region Hello Method
                     MethodState helloMethod = CreateMethodState(methodsFolder, methods + "Hello", "Hello", new GenericMethodCalledEventHandler2(OnHelloCall));
                     // set input arguments
-                    inputArgument1 = CreateArgument("String value","String value",BuiltInType.String,ValueRanks.Scalar);
-                    AddInputArguments(helloMethod, new[] { inputArgument1 });
+                    inputArgument1 = CreateArgument("String value", "String value", BuiltInType.String, ValueRanks.Scalar);
+                    _ = AddInputArguments(helloMethod, new[] { inputArgument1 });
 
                     // set output arguments
                     outputArgument1 = CreateArgument("Hello Result", "Hello Result", BuiltInType.String, ValueRanks.Scalar);
-                    AddOutputArguments(helloMethod, new[] { outputArgument1 });
+                    _ = AddOutputArguments(helloMethod, new[] { outputArgument1 });
                     #endregion
 
                     #region Input Method
                     MethodState inputMethod = CreateMethodState(methodsFolder, methods + "Input", "Input", new GenericMethodCalledEventHandler2(OnInputCall));
                     // set input arguments
-                    inputArgument1 = CreateArgument("String value","String value",BuiltInType.String,ValueRanks.Scalar);
-                    AddInputArguments(inputMethod, new[] { inputArgument1 });
+                    inputArgument1 = CreateArgument("String value", "String value", BuiltInType.String, ValueRanks.Scalar);
+                    _ = AddInputArguments(inputMethod, new[] { inputArgument1 });
                     #endregion
 
                     #region Output Method
                     MethodState outputMethod = CreateMethodState(methodsFolder, methods + "Output", "Output", new GenericMethodCalledEventHandler2(OnOutputCall));
 
                     // set output arguments
-                    outputArgument1 = CreateArgument("Output Result","Output Result",BuiltInType.String,ValueRanks.Scalar);
-                    AddOutputArguments(outputMethod, new[] { outputArgument1 });
+                    outputArgument1 = CreateArgument("Output Result", "Output Result", BuiltInType.String, ValueRanks.Scalar);
+                    _ = AddOutputArguments(outputMethod, new[] { outputArgument1 });
                     #endregion
                     #endregion
 
@@ -1299,19 +1299,19 @@ namespace SampleCompany.NodeManagers.Simulation
 
                     viewStateOperations = CreateViewState(standardServerTestFolder, externalReferences, views + "Operations 2", "Operations 2", null);
 
-                    CreateBaseDataVariableState(standardServerTestFolder, standardServerTest + "Double 1", "Double 1", null, BuiltInType.Double, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+                    _ = CreateBaseDataVariableState(standardServerTestFolder, standardServerTest + "Double 1", "Double 1", null, BuiltInType.Double, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
 
-                    CreateDataItemState(standardServerTestFolder, standardServerTest + "Double 1", "Double 1", null, BuiltInType.Double, ValueRanks.OneDimension, AccessLevels.CurrentReadOrWrite, null, AttributeWriteMask.None, AttributeWriteMask.None, String.Empty, 2, null, null);
-                    CreateDataItemState(standardServerTestFolder, standardServerTest + "Double 2", "Double 2", null, BuiltInType.Double, ValueRanks.TwoDimensions, AccessLevels.CurrentReadOrWrite, null, AttributeWriteMask.None, AttributeWriteMask.None, String.Empty, 2, null, null);
+                    _ = CreateDataItemState(standardServerTestFolder, standardServerTest + "Double 1", "Double 1", null, BuiltInType.Double, ValueRanks.OneDimension, AccessLevels.CurrentReadOrWrite, null, AttributeWriteMask.None, AttributeWriteMask.None, String.Empty, 2, null, null);
+                    _ = CreateDataItemState(standardServerTestFolder, standardServerTest + "Double 2", "Double 2", null, BuiltInType.Double, ValueRanks.TwoDimensions, AccessLevels.CurrentReadOrWrite, null, AttributeWriteMask.None, AttributeWriteMask.None, String.Empty, 2, null, null);
 
-                    CreateAnalogItemState(standardServerTestFolder, standardServerTest + "Boolean 1", "Boolean 1", null, BuiltInType.Boolean, ValueRanks.OneDimension, AccessLevels.CurrentReadOrWrite, null, null);
-                    CreateAnalogItemState(standardServerTestFolder, standardServerTest + "Boolean 2", "Boolean 2", null, BuiltInType.Boolean, ValueRanks.TwoDimensions, AccessLevels.CurrentReadOrWrite, null, null);
+                    _ = CreateAnalogItemState(standardServerTestFolder, standardServerTest + "Boolean 1", "Boolean 1", null, BuiltInType.Boolean, ValueRanks.OneDimension, AccessLevels.CurrentReadOrWrite, null, null);
+                    _ = CreateAnalogItemState(standardServerTestFolder, standardServerTest + "Boolean 2", "Boolean 2", null, BuiltInType.Boolean, ValueRanks.TwoDimensions, AccessLevels.CurrentReadOrWrite, null, null);
 
-                    CreateTwoStateDiscreteState(standardServerTestFolder, standardServerTest + "005", "005", null, AccessLevels.CurrentReadOrWrite, false, "circle", "cross");
+                    _ = CreateTwoStateDiscreteState(standardServerTestFolder, standardServerTest + "005", "005", null, AccessLevels.CurrentReadOrWrite, false, "circle", "cross");
 
-                    CreateMultiStateDiscreteState(standardServerTestFolder, standardServerTest + "001", "001", null, AccessLevels.CurrentReadOrWrite, null, AttributeWriteMask.None, AttributeWriteMask.None, null, null, null, "open", "closed", "jammed");
+                    _ = CreateMultiStateDiscreteState(standardServerTestFolder, standardServerTest + "001", "001", null, AccessLevels.CurrentReadOrWrite, null, AttributeWriteMask.None, AttributeWriteMask.None, null, null, null, "open", "closed", "jammed");
 
-                    CreateMultiStateValueDiscreteState(standardServerTestFolder, daMultiStateValueDiscrete + "001", "001", null, null, AccessLevels.CurrentReadOrWrite, null, AttributeWriteMask.None, AttributeWriteMask.None, null, null, null, new LocalizedText[] { "open", "closed", "jammed" });
+                    _ = CreateMultiStateValueDiscreteState(standardServerTestFolder, daMultiStateValueDiscrete + "001", "001", null, null, AccessLevels.CurrentReadOrWrite, null, AttributeWriteMask.None, AttributeWriteMask.None, null, null, null, new LocalizedText[] { "open", "closed", "jammed" });
 
                     #endregion
 
@@ -1337,7 +1337,7 @@ namespace SampleCompany.NodeManagers.Simulation
 
                 if (simulationEnabled_)
                 {
-                    simulationTimer_.Change(100, simulationInterval_);
+                    _ = simulationTimer_.Change(100, simulationInterval_);
                 }
 
                 return ServiceResult.Good;
@@ -1357,11 +1357,11 @@ namespace SampleCompany.NodeManagers.Simulation
 
                 if (simulationEnabled_)
                 {
-                    simulationTimer_.Change(100, simulationInterval_);
+                    _ = simulationTimer_.Change(100, simulationInterval_);
                 }
                 else
                 {
-                    simulationTimer_.Change(100, 0);
+                    _ = simulationTimer_.Change(100, 0);
                 }
 
                 return ServiceResult.Good;
@@ -1402,9 +1402,9 @@ namespace SampleCompany.NodeManagers.Simulation
 
         private AnalogItemState CreateAnalogItemVariable(NodeState parent, string browseName, string name, string description, NodeId dataType, int valueRank, object initialValues = null, Opc.Ua.Range customRange = null)
         {
-            LocalizedText displayName = new LocalizedText("", name);
+            var displayName = new LocalizedText("", name);
 
-            BuiltInType builtInType = Opc.Ua.TypeInfo.GetBuiltInType(dataType, ServerData.TypeTree);
+            BuiltInType builtInType = TypeInfo.GetBuiltInType(dataType, ServerData.TypeTree);
 
             // Simulate a mV Voltmeter
 
@@ -1413,7 +1413,7 @@ namespace SampleCompany.NodeManagers.Simulation
             newRange.High = Math.Min(newRange.High, 120);
             newRange.Low = Math.Max(newRange.Low, -10);
 
-            EUInformation engineeringUnits = new EUInformation("mV", "millivolt", "http://www.opcfoundation.org/UA/units/un/cefact");
+            var engineeringUnits = new EUInformation("mV", "millivolt", "http://www.opcfoundation.org/UA/units/un/cefact");
             // The mapping of the UNECE codes to OPC UA(EUInformation.unitId) is available here:
             // http://www.opcfoundation.org/UA/EngineeringUnits/UNECE/UNECE_to_OPCUA.csv
             engineeringUnits.UnitId = 12890; // "2Z"
@@ -1438,17 +1438,17 @@ namespace SampleCompany.NodeManagers.Simulation
             ref StatusCode statusCode,
             ref DateTime timestamp)
         {
-            MultiStateDiscreteState variable = node as MultiStateDiscreteState;
+            var variable = node as MultiStateDiscreteState;
 
             // verify data type.
-            TypeInfo typeInfo = Opc.Ua.TypeInfo.IsInstanceOfDataType(
+            var typeInfo = TypeInfo.IsInstanceOfDataType(
                     value,
                     variable.DataType,
                     variable.ValueRank,
                     context.NamespaceUris,
                     context.TypeTable);
 
-            if (typeInfo == null || typeInfo == Opc.Ua.TypeInfo.Unknown)
+            if (typeInfo == null || typeInfo == TypeInfo.Unknown)
             {
                 return StatusCodes.BadTypeMismatch;
             }
@@ -1458,7 +1458,7 @@ namespace SampleCompany.NodeManagers.Simulation
                 return StatusCodes.BadIndexRangeInvalid;
             }
 
-            double number = Convert.ToDouble(value);
+            var number = Convert.ToDouble(value);
 
             if (number >= variable.EnumStrings.Value.Length || number < 0)
             {
@@ -1477,14 +1477,12 @@ namespace SampleCompany.NodeManagers.Simulation
             ref StatusCode statusCode,
             ref DateTime timestamp)
         {
-            MultiStateValueDiscreteState variable = node as MultiStateValueDiscreteState;
+            var typeInfo = TypeInfo.Construct(value);
 
-            TypeInfo typeInfo = Opc.Ua.TypeInfo.Construct(value);
-
-            if (variable == null ||
+            if (!(node is MultiStateValueDiscreteState variable) ||
                 typeInfo == null ||
-                typeInfo == Opc.Ua.TypeInfo.Unknown ||
-                !Opc.Ua.TypeInfo.IsNumericType(typeInfo.BuiltInType))
+                typeInfo == TypeInfo.Unknown ||
+                !TypeInfo.IsNumericType(typeInfo.BuiltInType))
             {
                 return StatusCodes.BadTypeMismatch;
             }
@@ -1494,7 +1492,7 @@ namespace SampleCompany.NodeManagers.Simulation
                 return StatusCodes.BadIndexRangeInvalid;
             }
 
-            int number = Convert.ToInt32(value);
+            var number = Convert.ToInt32(value);
             if (number >= variable.EnumValues.Value.Length || number < 0)
             {
                 return StatusCodes.BadOutOfRange;
@@ -1519,17 +1517,17 @@ namespace SampleCompany.NodeManagers.Simulation
             ref StatusCode statusCode,
             ref DateTime timestamp)
         {
-            AnalogItemState variable = node as AnalogItemState;
+            var variable = node as AnalogItemState;
 
             // verify data type.
-            TypeInfo typeInfo = Opc.Ua.TypeInfo.IsInstanceOfDataType(
+            var typeInfo = TypeInfo.IsInstanceOfDataType(
                 value,
                 variable.DataType,
                 variable.ValueRank,
                 context.NamespaceUris,
                 context.TypeTable);
 
-            if (typeInfo == null || typeInfo == Opc.Ua.TypeInfo.Unknown)
+            if (typeInfo == null || typeInfo == TypeInfo.Unknown)
             {
                 return StatusCodes.BadTypeMismatch;
             }
@@ -1539,7 +1537,7 @@ namespace SampleCompany.NodeManagers.Simulation
             {
                 if (indexRange != NumericRange.Empty)
                 {
-                    object target = variable.Value;
+                    var target = variable.Value;
                     ServiceResult result = indexRange.UpdateRange(ref target, value);
 
                     if (ServiceResult.IsBad(result))
@@ -1559,7 +1557,7 @@ namespace SampleCompany.NodeManagers.Simulation
                     return StatusCodes.BadIndexRangeInvalid;
                 }
 
-                double number = Convert.ToDouble(value);
+                var number = Convert.ToDouble(value);
 
                 if (variable.InstrumentRange != null && (number < variable.InstrumentRange.Value.Low || number > variable.InstrumentRange.Value.High))
                 {
@@ -1579,23 +1577,17 @@ namespace SampleCompany.NodeManagers.Simulation
             ref StatusCode statusCode,
             ref DateTime timestamp)
         {
+            var typeInfo = TypeInfo.Construct(value);
 
-            PropertyState<Opc.Ua.Range> variable = node as PropertyState<Opc.Ua.Range>;
-            ExtensionObject extensionObject = value as ExtensionObject;
-            TypeInfo typeInfo = Opc.Ua.TypeInfo.Construct(value);
-
-            if (variable == null ||
-                extensionObject == null ||
+            if (!(node is PropertyState<Opc.Ua.Range> variable) ||
+                !(value is ExtensionObject extensionObject) ||
                 typeInfo == null ||
-                typeInfo == Opc.Ua.TypeInfo.Unknown)
+                typeInfo == TypeInfo.Unknown)
             {
                 return StatusCodes.BadTypeMismatch;
             }
-
-            Opc.Ua.Range newRange = extensionObject.Body as Opc.Ua.Range;
-            AnalogItemState parent = variable.Parent as AnalogItemState;
-            if (newRange == null ||
-                parent == null)
+            if (!(extensionObject.Body is Opc.Ua.Range newRange) ||
+                !(variable.Parent is AnalogItemState parent))
             {
                 return StatusCodes.BadTypeMismatch;
             }
@@ -1605,7 +1597,7 @@ namespace SampleCompany.NodeManagers.Simulation
                 return StatusCodes.BadIndexRangeInvalid;
             }
 
-            TypeInfo parentTypeInfo = Opc.Ua.TypeInfo.Construct(parent.Value);
+            var parentTypeInfo = TypeInfo.Construct(parent.Value);
 
             Opc.Ua.Range parentRange = GetAnalogRange(parentTypeInfo.BuiltInType);
             if (parentRange.High < newRange.High ||
@@ -1629,15 +1621,15 @@ namespace SampleCompany.NodeManagers.Simulation
             // first, create a new Parent folder for this data-type
             FolderState newParentFolder = CreateFolderState(parent, path, name, null);
 
-            List<BaseDataVariableState> itemsCreated = new List<BaseDataVariableState>();
+            var itemsCreated = new List<BaseDataVariableState>();
             // now to create the remaining NUMBERED items
             for (uint i = 0; i < numVariables; i++)
             {
-                string newName = string.Format("{0}_{1}", name, i.ToString("00"));
-                string newPath = string.Format("{0}_{1}", path, newName);
+                var newName = string.Format("{0}_{1}", name, i.ToString("00"));
+                var newPath = string.Format("{0}_{1}", path, newName);
                 itemsCreated.Add(CreateBaseDataVariableState(newParentFolder, newPath, newName, null, dataType, valueRank, AccessLevels.CurrentReadOrWrite, null));
             }
-            return (itemsCreated.ToArray());
+            return itemsCreated.ToArray();
         }
 
         /// <summary>
@@ -1669,15 +1661,15 @@ namespace SampleCompany.NodeManagers.Simulation
             // first, create a new Parent folder for this data-type
             FolderState newParentFolder = CreateFolderState(parent, path, name, null);
 
-            List<BaseDataVariableState> itemsCreated = new List<BaseDataVariableState>();
+            var itemsCreated = new List<BaseDataVariableState>();
             // now to create the remaining NUMBERED items
             for (uint i = 0; i < numVariables; i++)
             {
-                string newName = string.Format("{0}_{1}", name, i.ToString("00"));
-                string newPath = string.Format("{0}_{1}", path, newName);
+                var newName = string.Format("{0}_{1}", name, i.ToString("00"));
+                var newPath = string.Format("{0}_{1}", path, newName);
                 itemsCreated.Add(CreateDynamicVariable(newParentFolder, newPath, newName, description, dataType, valueRank));
             }//for i
-            return (itemsCreated.ToArray());
+            return itemsCreated.ToArray();
         }
 
         private ServiceResult OnVoidCall(
@@ -1706,11 +1698,11 @@ namespace SampleCompany.NodeManagers.Simulation
 
             try
             {
-                float floatValue = (float)inputArguments[0];
-                uint uintValue = (UInt32)inputArguments[1];
+                var floatValue = (float)inputArguments[0];
+                var uintValue = (UInt32)inputArguments[1];
 
                 // set output parameter
-                outputArguments[0] = (float)(floatValue + uintValue);
+                outputArguments[0] = floatValue + uintValue;
                 return ServiceResult.Good;
             }
             catch
@@ -1735,11 +1727,11 @@ namespace SampleCompany.NodeManagers.Simulation
 
             try
             {
-                short op1 = (Int16)inputArguments[0];
-                ushort op2 = (UInt16)inputArguments[1];
+                var op1 = (Int16)inputArguments[0];
+                var op2 = (UInt16)inputArguments[1];
 
                 // set output parameter
-                outputArguments[0] = (Int32)(op1 * op2);
+                outputArguments[0] = op1 * op2;
                 return ServiceResult.Good;
             }
             catch
@@ -1763,11 +1755,11 @@ namespace SampleCompany.NodeManagers.Simulation
 
             try
             {
-                int op1 = (Int32)inputArguments[0];
-                ushort op2 = (UInt16)inputArguments[1];
+                var op1 = (Int32)inputArguments[0];
+                var op2 = (UInt16)inputArguments[1];
 
                 // set output parameter
-                outputArguments[0] = (float)((float)op1 / (float)op2);
+                outputArguments[0] = op1 / (float)op2;
                 return ServiceResult.Good;
             }
             catch
@@ -1791,8 +1783,8 @@ namespace SampleCompany.NodeManagers.Simulation
 
             try
             {
-                short op1 = (Int16)inputArguments[0];
-                byte op2 = (Byte)inputArguments[1];
+                var op1 = (Int16)inputArguments[0];
+                var op2 = (Byte)inputArguments[1];
 
                 // set output parameter
                 outputArguments[0] = (Int16)(op1 - op2);
@@ -1819,10 +1811,10 @@ namespace SampleCompany.NodeManagers.Simulation
 
             try
             {
-                string op1 = (string)inputArguments[0];
+                var op1 = (string)inputArguments[0];
 
                 // set output parameter
-                outputArguments[0] = (string)("hello " + op1);
+                outputArguments[0] = "hello " + op1;
                 return ServiceResult.Good;
             }
             catch
@@ -1857,7 +1849,7 @@ namespace SampleCompany.NodeManagers.Simulation
             try
             {
                 // set output parameter
-                outputArguments[0] = (string)("Output");
+                outputArguments[0] = "Output";
                 return ServiceResult.Good;
             }
             catch
@@ -1916,7 +1908,7 @@ namespace SampleCompany.NodeManagers.Simulation
                     return null;
                 }
 
-                UaNodeHandle handle = new UaNodeHandle { NodeId = nodeId, Node = node, Validated = true };
+                var handle = new UaNodeHandle { NodeId = nodeId, Node = node, Validated = true };
 
 
                 return handle;
@@ -2000,12 +1992,12 @@ namespace SampleCompany.NodeManagers.Simulation
         private bool disposed_;
         private readonly object lockDisposable_ = new object();
 
-        private SimulationServerConfiguration configuration_;
+        private readonly SimulationServerConfiguration configuration_;
 
         private Timer simulationTimer_;
         private UInt16 simulationInterval_ = 1000;
         private bool simulationEnabled_ = true;
-        private List<BaseDataVariableState> dynamicNodes_;
+        private readonly List<BaseDataVariableState> dynamicNodes_;
         #endregion
     }
 }

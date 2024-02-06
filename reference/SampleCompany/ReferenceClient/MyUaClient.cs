@@ -12,7 +12,6 @@
 #region Using Directives
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,7 +24,7 @@ using Technosoftware.UaClient;
 namespace SampleCompany.ReferenceClient
 {
     /// <summary>The UA client sample functionality.</summary>
-    public class MyUaClient : IDisposable
+    public class MyUaClient : IMyUaClient, IDisposable
     {
         #region Constructors
         /// <summary>
@@ -120,11 +119,14 @@ namespace SampleCompany.ReferenceClient
         /// </summary>
         public async Task<bool> ConnectAsync(string serverUrl, bool useSecurity = true, CancellationToken ct = default)
         {
-            if (serverUrl == null) throw new ArgumentNullException(nameof(serverUrl));
+            if (serverUrl == null)
+            {
+                throw new ArgumentNullException(nameof(serverUrl));
+            }
 
             try
             {
-                if (session_ != null && session_.Connected == true)
+                if (session_ != null && session_.Connected)
                 {
                     output_.WriteLine("Session already connected!");
                 }
@@ -162,13 +164,13 @@ namespace SampleCompany.ReferenceClient
 
                     // Get the endpoint by connecting to server's discovery endpoint.
                     // Try to find the first endopint with security.
-                    EndpointConfiguration endpointConfiguration = EndpointConfiguration.Create(configuration_);
-                    ConfiguredEndpoint endpoint = new ConfiguredEndpoint(null, endpointDescription, endpointConfiguration);
+                    var endpointConfiguration = EndpointConfiguration.Create(configuration_);
+                    var endpoint = new ConfiguredEndpoint(null, endpointDescription, endpointConfiguration);
 
-                    var sessionFactory = TraceableSessionFactory.Instance;
+                    TraceableSessionFactory sessionFactory = TraceableSessionFactory.Instance;
 
                     // Create the session
-                    var session = await sessionFactory.CreateAsync(
+                    IUaSession session = await sessionFactory.CreateAsync(
                         configuration_,
                         connection,
                         endpoint,
@@ -231,7 +233,7 @@ namespace SampleCompany.ReferenceClient
                         reconnectHandler_ = null;
                     }
 
-                    session_.Close();
+                    _ = session_.Close();
                     session_.Dispose();
                     session_ = null;
 
@@ -257,7 +259,7 @@ namespace SampleCompany.ReferenceClient
         {
             try
             {
-                Session session = (Session)sender;
+                var session = (Session)sender;
 
                 // check for events from discarded sessions.
                 if (!session_.Equals(session))
@@ -274,7 +276,7 @@ namespace SampleCompany.ReferenceClient
                         return;
                     }
 
-                    var state = reconnectHandler_.BeginReconnect(session_, reverseConnectManager_, ReconnectPeriod, Client_ReconnectComplete);
+                    SessionReconnectHandler.ReconnectState state = reconnectHandler_.BeginReconnect(session_, reverseConnectManager_, ReconnectPeriod, OnReconnectComplete);
                     if (state == SessionReconnectHandler.ReconnectState.Triggered)
                     {
                         Utils.LogInfo("KeepAlive status {0}, reconnect status {1}, reconnect period {2}ms.", e.Status, state, ReconnectPeriod);
@@ -299,10 +301,10 @@ namespace SampleCompany.ReferenceClient
         /// <summary>
         /// Called when the reconnect attempt was successful.
         /// </summary>
-        private void Client_ReconnectComplete(object sender, EventArgs e)
+        private void OnReconnectComplete(object sender, EventArgs e)
         {
             // ignore callbacks from discarded objects.
-            if (!Object.ReferenceEquals(sender, reconnectHandler_))
+            if (!ReferenceEquals(sender, reconnectHandler_))
             {
                 return;
             }
@@ -314,10 +316,10 @@ namespace SampleCompany.ReferenceClient
                 {
                     // ensure only a new instance is disposed
                     // after reactivate, the same session instance may be returned
-                    if (!Object.ReferenceEquals(session_, reconnectHandler_.Session))
+                    if (!ReferenceEquals(session_, reconnectHandler_.Session))
                     {
                         output_.WriteLine("--- RECONNECTED TO NEW SESSION --- {0}", reconnectHandler_.Session.SessionId);
-                        var session = session_;
+                        IUaSession session = session_;
                         session_ = reconnectHandler_.Session;
                         Utils.SilentDispose(session);
                     }
@@ -341,7 +343,7 @@ namespace SampleCompany.ReferenceClient
         /// </summary>
         protected virtual void OnCertificateValidation(CertificateValidator sender, CertificateValidationEventArgs e)
         {
-            bool certificateAccepted = false;
+            var certificateAccepted = false;
 
             // ****
             // Implement a custom logic to decide if the certificate should be
@@ -370,8 +372,8 @@ namespace SampleCompany.ReferenceClient
 
         #region Private Fields
         private readonly object lock_ = new object();
-        private ReverseConnectManager reverseConnectManager_;
-        private ApplicationConfiguration configuration_;        
+        private readonly ReverseConnectManager reverseConnectManager_;
+        private readonly ApplicationConfiguration configuration_;
         private SessionReconnectHandler reconnectHandler_;
         private IUaSession session_;
         private readonly TextWriter output_;

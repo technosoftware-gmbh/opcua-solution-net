@@ -22,57 +22,57 @@ namespace SampleCompany.Common
     /// </summary>
     public class LogWriter : TextWriter
     {
-        private StringBuilder builder_ = new StringBuilder();
+        private readonly StringBuilder builder_ = new StringBuilder();
 
         public override void Write(char value)
         {
-            builder_.Append(value);
+            _ = builder_.Append(value);
         }
 
         public override void WriteLine(char value)
         {
-            builder_.Append(value);
+            _ = builder_.Append(value);
             LogInfo("{0}", builder_.ToString());
-            builder_.Clear();
+            _ = builder_.Clear();
         }
 
         public override void WriteLine()
         {
             LogInfo("{0}", builder_.ToString());
-            builder_.Clear();
+            _ = builder_.Clear();
         }
 
         public override void WriteLine(string format, object arg0)
         {
-            builder_.Append(format);
+            _ = builder_.Append(format);
             LogInfo(builder_.ToString(), arg0);
-            builder_.Clear();
+            _ = builder_.Clear();
         }
 
         public override void WriteLine(string format, object arg0, object arg1)
         {
-            builder_.Append(format);
+            _ = builder_.Append(format);
             LogInfo(builder_.ToString(), arg0, arg1);
-            builder_.Clear();
+            _ = builder_.Clear();
         }
 
         public override void WriteLine(string format, params object[] arg)
         {
-            builder_.Append(format);
+            _ = builder_.Append(format);
             LogInfo(builder_.ToString(), arg);
-            builder_.Clear();
+            _ = builder_.Clear();
         }
 
         public override void Write(string value)
         {
-            builder_.Append(value);
+            _ = builder_.Append(value);
         }
 
         public override void WriteLine(string value)
         {
-            builder_.Append(value);
+            _ = builder_.Append(value);
             LogInfo("{0}", builder_.ToString());
-            builder_.Clear();
+            _ = builder_.Clear();
         }
 
         public override Encoding Encoding

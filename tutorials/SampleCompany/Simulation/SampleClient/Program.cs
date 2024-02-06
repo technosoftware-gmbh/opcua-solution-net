@@ -58,85 +58,87 @@ namespace SampleCompany.SampleClient
         /// <returns></returns>
         public static async Task Main(string[] args)
         {
+            TextWriter output = Console.Out;
+            await output.WriteLineAsync("OPC UA Console Sample Client").ConfigureAwait(false);
+
             #region License validation
-            string licenseData =
+            var licenseData =
                     @"";
-            bool licensed = Technosoftware.UaClient.LicenseHandler.Validate(licenseData);
+            var licensed = Technosoftware.UaClient.LicenseHandler.Validate(licenseData);
+            if (!licensed)
+            {
+                await output.WriteLineAsync("WARNING: No valid license applied.").ConfigureAwait(false);
+            }
             #endregion
 
-            TextWriter output = Console.Out;
-            output.WriteLine("OPC UA Console Sample Client");
-
             // The application name and config file names
-            string applicationName = "SampleCompany.SampleClient";
-            string configSectionName = "SampleCompany.SampleClient";
-            string usage = $"Usage: dotnet {applicationName}.dll [OPTIONS] [ENDPOINTURL]";
+            var applicationName = "SampleCompany.SampleClient";
+            var configSectionName = "SampleCompany.SampleClient";
+            var usage = $"Usage: dotnet {applicationName}.dll [OPTIONS] [ENDPOINTURL]";
 
             // command line options
-            bool showHelp = false;
-            bool autoAccept = false;
+            var showHelp = false;
+            var autoAccept = false;
             string username = null;
-            string userpassword = null;
-            bool logConsole = false;
-            bool appLog = false;
-            bool renewCertificate = false;
-            bool browseall = false;
-            bool fetchall = false;
-            bool jsonvalues = false;
-            bool verbose = false;
-            bool subscribe = false;
-            bool noSecurity = false;
+            string userPassword = null;
+            var logConsole = false;
+            var appLog = false;
+            var renewCertificate = false;
+            var browseAll = false;
+            var fetchAll = false;
+            var jsonValues = false;
+            var verbose = false;
+            var subscribe = false;
+            var noSecurity = false;
             string password = null;
-            int timeout = Timeout.Infinite;
+            var timeout = Timeout.Infinite;
             string logFile = null;
             string reverseConnectUrlString = null;
 
-            Mono.Options.OptionSet options = new Mono.Options.OptionSet {
+            var options = new Mono.Options.OptionSet {
                 usage,
                 { "h|help", "Show this message and exit", h => showHelp = h != null },
                 { "a|autoaccept", "Auto accept certificates (for testing only)", a => autoAccept = a != null },
                 { "nsec|nosecurity", "Select endpoint with security NONE, least secure if unavailable", s => noSecurity = s != null },
-                { "un|username=", "The name of the user identity for the connection", (string u) => username = u },
-                { "up|userpassword=", "The password of the user identity for the connection", (string u) => userpassword = u },
+                { "un|username=", "The name of the user identity for the connection", u => username = u },
+                { "up|userpassword=", "The password of the user identity for the connection", u => userPassword = u },
                 { "c|console", "Log to console", c => logConsole = c != null },
                 { "l|log", "Log app output", c => appLog = c != null },
-                { "p|password=", "Optional password for private key", (string p) => password = p },
+                { "p|password=", "Optional password for private key", p => password = p },
                 { "r|renew", "Renew application certificate", r => renewCertificate = r != null },
                 { "t|timeout=", "Timeout in seconds to exit application", (int t) => timeout = t * 1000 },
                 { "logfile=", "Custom file name for log output", l => { if (l != null) { logFile = l; } } },
-                { "b|browseall", "Browse all references", b => { if (b != null) browseall = true; } },
-                { "f|fetchall", "Fetch all nodes", f => { if (f != null) fetchall = true; } },
-                { "j|json", "Output all Values as JSON", j => { if (j != null) jsonvalues = true; } },
+                { "b|browseall", "Browse all references", b => { if (b != null) { browseAll = true; } } },
+                { "f|fetchall", "Fetch all nodes", f => { if (f != null) { fetchAll = true; } } },
+                { "j|json", "Output all Values as JSON", j => { if (j != null) { jsonValues = true; } } },
                 { "v|verbose", "Verbose output", v => { if (v != null) { verbose = true; } } },
-                { "s|subscribe", "Subscribe", s => { if (s != null) subscribe = true; } },
-                { "rc|reverseconnect=", "Connect using the reverse connect endpoint. (e.g. rc=opc.tcp://localhost:65300)", (string url) => reverseConnectUrlString = url},
+                { "s|subscribe", "Subscribe", s => { if (s != null) { subscribe = true; } } },
+                { "rc|reverseconnect=", "Connect using the reverse connect endpoint. (e.g. rc=opc.tcp://localhost:65300)", url => reverseConnectUrlString = url},
             };
 
             ReverseConnectManager reverseConnectManager = null;
 
+            // wait for timeout or Ctrl-C
+            var quitCts = new CancellationTokenSource();
+            ManualResetEvent quitEvent = ConsoleUtils.CtrlCHandler(quitCts);
+
             if (verbose)
             {
-                output.WriteLine("OPC UA library: {0} @ {1} -- {2}",
-                    Utils.GetAssemblyBuildNumber(),
-                    Utils.GetAssemblyTimestamp().ToString("G", CultureInfo.InvariantCulture),
-                    Utils.GetAssemblySoftwareVersion());
+                var assemblyBuildNumber = Utils.GetAssemblyBuildNumber();
+                var assemblyTimestamp = Utils.GetAssemblyTimestamp().ToString("G", CultureInfo.InvariantCulture);
+                var assemblySoftwareVersion = Utils.GetAssemblySoftwareVersion();
+                var outputString =
+                    $"OPC UA library: {assemblyBuildNumber} @ {assemblyTimestamp} -- {assemblySoftwareVersion}";
+                await output.WriteLineAsync(outputString).ConfigureAwait(false);
             }
 
             try
             {
                 // parse command line and set options
-                string extraArg = ConsoleUtils.ProcessCommandLine(output, args, options, ref showHelp, "SAMPLECLIENT", false);
+                var extraArg = ConsoleUtils.ProcessCommandLine(output, args, options, ref showHelp, "SAMPLECLIENT");
 
                 // connect Url?
-                Uri serverUrl = null;
-                if (!string.IsNullOrEmpty(extraArg))
-                {
-                    serverUrl = new Uri(extraArg);
-                }
-                else
-                {
-                    serverUrl = new Uri("opc.tcp://localhost:62555/SampleServer");
-                }
+                Uri serverUrl = !string.IsNullOrEmpty(extraArg) ? new Uri(extraArg) : new Uri("opc.tcp://localhost:62555/SampleServer");
 
                 // log console output to logger
                 if (logConsole && appLog)
@@ -146,12 +148,12 @@ namespace SampleCompany.SampleClient
 
                 // Define the UA Client application
                 ApplicationInstance.MessageDlg = new ApplicationMessageDlg(output);
-                CertificatePasswordProvider PasswordProvider = new CertificatePasswordProvider(password);
-                ApplicationInstance application = new ApplicationInstance {
+                var passwordProvider = new CertificatePasswordProvider(password);
+                var application = new ApplicationInstance {
                     ApplicationName = applicationName,
                     ApplicationType = ApplicationType.Client,
                     ConfigSectionName = configSectionName,
-                    CertificatePasswordProvider = PasswordProvider
+                    CertificatePasswordProvider = passwordProvider
                 };
 
                 // load the application configuration.
@@ -160,9 +162,12 @@ namespace SampleCompany.SampleClient
                 // override logfile
                 if (logFile != null)
                 {
-                    string logFilePath = config.TraceConfiguration.OutputFilePath;
-                    string filename = Path.GetFileNameWithoutExtension(logFilePath);
-                    config.TraceConfiguration.OutputFilePath = logFilePath.Replace(filename, logFile);
+                    var logFilePath = config.TraceConfiguration.OutputFilePath;
+                    if (logFilePath != null)
+                    {
+                        var filename = Path.GetFileNameWithoutExtension(logFilePath);
+                        config.TraceConfiguration.OutputFilePath = logFilePath.Replace(filename, logFile);
+                    }
                     config.TraceConfiguration.DeleteOnLoad = true;
                     config.TraceConfiguration.ApplySettings();
                 }
@@ -173,11 +178,11 @@ namespace SampleCompany.SampleClient
                 // delete old certificate
                 if (renewCertificate)
                 {
-                    await application.DeleteApplicationInstanceCertificateAsync().ConfigureAwait(false);
+                    await application.DeleteApplicationInstanceCertificateAsync(quitCts.Token).ConfigureAwait(false);
                 }
 
                 // check the application certificate.
-                bool haveAppCertificate = await application.CheckApplicationInstanceCertificateAsync(false, minimumKeySize: 0).ConfigureAwait(false);
+                var haveAppCertificate = await application.CheckApplicationInstanceCertificateAsync(false, minimumKeySize: 0).ConfigureAwait(false);
                 if (!haveAppCertificate)
                 {
                     throw new ErrorExitException("Application instance certificate invalid!", ExitCode.ErrorCertificate);
@@ -186,20 +191,19 @@ namespace SampleCompany.SampleClient
                 if (reverseConnectUrlString != null)
                 {
                     // start the reverse connection manager
-                    output.WriteLine("Create reverse connection endpoint at {0}.", reverseConnectUrlString);
+                    var outputString =
+                        $"Create reverse connection endpoint at {reverseConnectUrlString}";
+
+                    await output.WriteLineAsync(outputString).ConfigureAwait(false);
                     reverseConnectManager = new ReverseConnectManager();
                     reverseConnectManager.AddEndpoint(new Uri(reverseConnectUrlString));
                     reverseConnectManager.StartService(config);
                 }
 
-                // wait for timeout or Ctrl-C
-                CancellationTokenSource quitCTS = new CancellationTokenSource();
-                ManualResetEvent quitEvent = ConsoleUtils.CtrlCHandler(quitCTS);
-
                 // connect to a server until application stops
-                bool quit = false;
+                bool quit;
                 DateTime start = DateTime.UtcNow;
-                int waitTime = int.MaxValue;
+                var waitTime = int.MaxValue;
                 do
                 {
                     if (timeout > 0)
@@ -213,7 +217,7 @@ namespace SampleCompany.SampleClient
 
                     // create the UA Client object and connect to configured server.
 
-                    using (MyUaClient uaClient = new MyUaClient(application.ApplicationConfiguration, reverseConnectManager, output, ClientBase.ValidateResponse, verbose) {
+                    using (var uaClient = new MyUaClient(application.ApplicationConfiguration, reverseConnectManager, output, ClientBase.ValidateResponse, verbose) {
                         AutoAccept = autoAccept,
                         SessionLifeTime = 60_000,
                     })
@@ -221,13 +225,13 @@ namespace SampleCompany.SampleClient
                         // set user identity
                         if (!String.IsNullOrEmpty(username))
                         {
-                            uaClient.UserIdentity = new UserIdentity(username, userpassword ?? string.Empty);
+                            uaClient.UserIdentity = new UserIdentity(username, userPassword ?? string.Empty);
                         }
 
-                        bool connected = await uaClient.ConnectAsync(serverUrl.ToString(), !noSecurity, quitCTS.Token).ConfigureAwait(false);
+                        var connected = await uaClient.ConnectAsync(serverUrl.ToString(), !noSecurity, quitCts.Token).ConfigureAwait(false);
                         if (connected)
                         {
-                            output.WriteLine("Connected! Ctrl-C to quit.");
+                            await output.WriteLineAsync("Connected! Ctrl-C to quit.").ConfigureAwait(false);
 
                             // enable subscription transfer
                             uaClient.ReconnectPeriod = 1000;
@@ -235,52 +239,52 @@ namespace SampleCompany.SampleClient
                             uaClient.Session.MinPublishRequestCount = 3;
                             uaClient.Session.TransferSubscriptionsOnReconnect = true;
 
-                            ClientFunctions samples = new ClientFunctions(output, ClientBase.ValidateResponse, quitEvent, verbose);
+                            var clientFunctions = new ClientFunctions(output, ClientBase.ValidateResponse, quitEvent, verbose);
 
-                            if (browseall || fetchall || jsonvalues)
+                            if (browseAll || fetchAll || jsonValues)
                             {
                                 NodeIdCollection variableIds = null;
                                 ReferenceDescriptionCollection referenceDescriptions = null;
-                                if (browseall)
+                                if (browseAll)
                                 {
                                     referenceDescriptions =
-                                        await samples.BrowseFullAddressSpaceAsync((IMyClient)uaClient, Objects.RootFolder).ConfigureAwait(false);
+                                        await clientFunctions.BrowseFullAddressSpaceAsync(uaClient, Objects.RootFolder).ConfigureAwait(false);
                                     variableIds = new NodeIdCollection(referenceDescriptions
                                         .Where(r => r.NodeClass == NodeClass.Variable && r.TypeDefinition.NamespaceIndex != 0)
                                         .Select(r => ExpandedNodeId.ToNodeId(r.NodeId, uaClient.Session.NamespaceUris)));
                                 }
 
                                 IList<INode> allNodes = null;
-                                if (fetchall)
+                                if (fetchAll)
                                 {
-                                    allNodes = await samples.FetchAllNodesNodeCacheAsync((IMyClient)uaClient, Objects.RootFolder, true, true, false).ConfigureAwait(false);
+                                    allNodes = await clientFunctions.FetchAllNodesNodeCacheAsync(uaClient, Objects.RootFolder, true, true, false).ConfigureAwait(false);
                                     variableIds = new NodeIdCollection(allNodes
-                                        .Where(r => r.NodeClass == NodeClass.Variable && r is VariableNode && ((VariableNode)r).DataType.NamespaceIndex != 0)
+                                        .Where(r => r.NodeClass == NodeClass.Variable && r is VariableNode node && node.DataType.NamespaceIndex != 0)
                                         .Select(r => ExpandedNodeId.ToNodeId(r.NodeId, uaClient.Session.NamespaceUris)));
                                 }
 
-                                if (jsonvalues && variableIds != null)
+                                if (jsonValues && variableIds != null)
                                 {
-                                    (DataValueCollection allValues, IList<ServiceResult> results) = await samples.ReadAllValuesAsync((IMyClient)uaClient, variableIds).ConfigureAwait(false);
+                                    (DataValueCollection allValues, IList<ServiceResult> results) = await clientFunctions.ReadAllValuesAsync(uaClient, variableIds).ConfigureAwait(false);
                                 }
 
-                                if (subscribe && (browseall || fetchall))
+                                if (subscribe && (browseAll || fetchAll))
                                 {
                                     // subscribe to 100 random variables
                                     const int MaxVariables = 100;
-                                    NodeCollection variables = new NodeCollection();
-                                    Random random = new Random(62541);
-                                    if (fetchall)
+                                    var variables = new NodeCollection();
+                                    var random = new Random(62541);
+                                    if (fetchAll)
                                     {
                                         variables.AddRange(allNodes
                                             .Where(r => r.NodeClass == NodeClass.Variable && r.NodeId.NamespaceIndex > 1)
-                                            .Select(r => ((VariableNode)r))
+                                            .Select(r => (VariableNode)r)
                                             .OrderBy(o => random.Next())
                                             .Take(MaxVariables));
                                     }
-                                    else if (browseall)
+                                    else if (browseAll)
                                     {
-                                        List<ExpandedNodeId> variableReferences = referenceDescriptions
+                                        var variableReferences = referenceDescriptions
                                             .Where(r => r.NodeClass == NodeClass.Variable && r.NodeId.NamespaceIndex > 1)
                                             .Select(r => r.NodeId)
                                             .OrderBy(o => random.Next())
@@ -289,7 +293,7 @@ namespace SampleCompany.SampleClient
                                         variables.AddRange(uaClient.Session.NodeCache.Find(variableReferences).Cast<Node>());
                                     }
 
-                                    await samples.SubscribeAllValuesAsync((IMyClient)uaClient,
+                                    await clientFunctions.SubscribeAllValuesAsync(uaClient,
                                         variableIds: new NodeCollection(variables),
                                         samplingInterval: 1000,
                                         publishingInterval: 5000,
@@ -309,39 +313,41 @@ namespace SampleCompany.SampleClient
                             else
                             {
                                 // Run tests for available methods on reference server.
-                                samples.ReadNodes(uaClient.Session);
-                                samples.WriteNodes(uaClient.Session);
-                                samples.Browse(uaClient.Session);
-                                samples.CallMethod(uaClient.Session);
-                                samples.SubscribeToDataChanges(uaClient.Session, 120_000);
-                                
-                                output.WriteLine("Waiting...");
+                                clientFunctions.ReadNodes(uaClient.Session);
+                                clientFunctions.WriteNodes(uaClient.Session);
+                                clientFunctions.Browse(uaClient.Session);
+                                clientFunctions.CallMethod(uaClient.Session);
+                                _ = clientFunctions.SubscribeToDataChanges(uaClient.Session, 120_000);
+                                _ = clientFunctions.SubscribeToEventChanges(uaClient.Session, 120_000);
+
+                                await output.WriteLineAsync("Waiting...").ConfigureAwait(false);
 
                                 // Wait for some DataChange notifications from MonitoredItems
                                 quit = quitEvent.WaitOne(timeout > 0 ? waitTime : 30_000);
                             }
 
-                            output.WriteLine("Client disconnected.");
+                            await output.WriteLineAsync("Client disconnected.").ConfigureAwait(false);
 
                             uaClient.Disconnect();
                         }
                         else
                         {
-                            output.WriteLine("Could not connect to server! Retry in 10 seconds or Ctrl-C to quit.");
+                            await output.WriteLineAsync("Could not connect to server! Retry in 10 seconds or Ctrl-C to quit.").ConfigureAwait(false);
                             quit = quitEvent.WaitOne(Math.Min(10_000, waitTime));
                         }
                     }
 
                 } while (!quit);
-
-                output.WriteLine("Client stopped.");
+                await output.WriteLineAsync("Client stopped.").ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                output.WriteLine(ex.Message);
+                await output.WriteLineAsync(ex.Message).ConfigureAwait(false);
             }
             finally
             {
+                quitEvent.Dispose();
+                quitCts.Dispose();
                 Utils.SilentDispose(reverseConnectManager);
                 output.Close();
             }
