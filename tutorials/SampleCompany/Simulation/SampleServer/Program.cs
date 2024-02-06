@@ -73,17 +73,17 @@ namespace SampleCompany.SampleServer
             var configSectionName = "SampleCompany.SampleServer";
 
             // command line options
-            bool showHelp = false;
-            bool autoAccept = false;
-            bool logConsole = false;
-            bool appLog = false;
-            bool renewCertificate = false;
-            bool shadowConfig = false;
+            var showHelp = false;
+            var autoAccept = false;
+            var logConsole = false;
+            var appLog = false;
+            var renewCertificate = false;
+            var shadowConfig = false;
             string password = null;
-            int timeout = -1;
+            var timeout = -1;
 
             var usage = Utils.IsRunningOnMono() ? $"Usage: mono {applicationName}.exe [OPTIONS]" : $"Usage: dotnet {applicationName}.dll [OPTIONS]";
-            Mono.Options.OptionSet options = new Mono.Options.OptionSet {
+            var options = new Mono.Options.OptionSet {
                 usage,
                 { "h|help", "show this message and exit", h => showHelp = h != null },
                 { "a|autoaccept", "auto accept certificates (for testing only)", a => autoAccept = a != null },
@@ -150,7 +150,7 @@ namespace SampleCompany.SampleServer
                 // wait for timeout or Ctrl-C
                 var quitCts = new CancellationTokenSource();
                 ManualResetEvent quitEvent = ConsoleUtils.CtrlCHandler(quitCts);
-                bool ctrlc = quitEvent.WaitOne(timeout);
+                var ctrlc = quitEvent.WaitOne(timeout);
 
                 // stop server. May have to wait for clients to disconnect.
                 await output.WriteLineAsync("Server stopped. Waiting for exit...").ConfigureAwait(false);

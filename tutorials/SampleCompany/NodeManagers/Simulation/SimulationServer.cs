@@ -77,7 +77,7 @@ namespace SampleCompany.NodeManagers.Simulation
         /// </remarks>
         protected override ServerProperties LoadServerProperties()
         {
-            ServerProperties properties = new ServerProperties {
+            var properties = new ServerProperties {
                 ManufacturerName = "Technosoftware GmbH",
                 ProductName = "Technosoftware OPC UA Sample Server",
                 ProductUri = "http://technosoftware.com/SampleServer/v1.04",
@@ -94,13 +94,13 @@ namespace SampleCompany.NodeManagers.Simulation
         /// </summary>
         protected override ResourceManager CreateResourceManager(IUaServerData server, ApplicationConfiguration configuration)
         {
-            ResourceManager resourceManager = new ResourceManager(server, configuration);
+            var resourceManager = new ResourceManager(server, configuration);
 
             System.Reflection.FieldInfo[] fields = typeof(StatusCodes).GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
 
             foreach (System.Reflection.FieldInfo field in fields)
             {
-                uint? id = field.GetValue(typeof(StatusCodes)) as uint?;
+                var id = field.GetValue(typeof(StatusCodes)) as uint?;
 
                 if (id != null)
                 {
@@ -198,7 +198,7 @@ namespace SampleCompany.NodeManagers.Simulation
                     if (configuration.SecurityConfiguration.TrustedUserCertificates != null &&
                         configuration.SecurityConfiguration.UserIssuerCertificates != null)
                     {
-                        CertificateValidator certificateValidator = new CertificateValidator();
+                        var certificateValidator = new CertificateValidator();
                         certificateValidator.Update(configuration.SecurityConfiguration).Wait();
                         certificateValidator.Update(configuration.SecurityConfiguration.UserIssuerCertificates,
                             configuration.SecurityConfiguration.TrustedUserCertificates,
@@ -281,8 +281,8 @@ namespace SampleCompany.NodeManagers.Simulation
         /// </summary>
         private IUserIdentity VerifyPassword(UserNameIdentityToken userNameToken)
         {
-            string userName = userNameToken.UserName;
-            string password = userNameToken.DecryptedPassword;
+            var userName = userNameToken.UserName;
+            var password = userNameToken.DecryptedPassword;
             if (String.IsNullOrEmpty(userName))
             {
                 // an empty username is not accepted.
@@ -308,7 +308,7 @@ namespace SampleCompany.NodeManagers.Simulation
                 (userName == "user2" && password == "password1")))
             {
                 // construct translation object with default text.
-                TranslationInfo info = new TranslationInfo(
+                var info = new TranslationInfo(
                     "InvalidPassword",
                     "en-US",
                     "Invalid username or password.",

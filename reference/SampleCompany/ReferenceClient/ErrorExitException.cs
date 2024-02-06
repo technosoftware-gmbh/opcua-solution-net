@@ -11,23 +11,6 @@
 
 #region Using Directives
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Mono.Options;
-
-using Serilog;
-using Serilog.Events;
-using Serilog.Templates;
-
-using Opc.Ua;
-using static Opc.Ua.Utils;
-
-using Technosoftware.UaConfiguration;
 #endregion
 
 namespace SampleCompany.ReferenceClient

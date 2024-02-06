@@ -124,7 +124,7 @@ namespace SampleCompany.SampleServer
                 }
 
                 // check the application certificate.
-                bool haveAppCertificate = await Application.CheckApplicationInstanceCertificateAsync(false, minimumKeySize: 0).ConfigureAwait(false);
+                var haveAppCertificate = await Application.CheckApplicationInstanceCertificateAsync(false, minimumKeySize: 0).ConfigureAwait(false);
                 if (!haveAppCertificate)
                 {
                     throw new ErrorExitException("Application instance certificate invalid!");
@@ -268,7 +268,7 @@ namespace SampleCompany.SampleServer
         /// <param name="lastContact">true if the date/time of the last event should also be in the output; false if not.</param>
         private void PrintSessionStatus(Session session, string reason, bool lastContact = false)
         {
-            StringBuilder item = new StringBuilder();
+            var item = new StringBuilder();
             lock (session.DiagnosticsLock)
             {
                 _ = item.AppendFormat("{0,9}:{1,20}:", reason, session.SessionDiagnostics.SessionName);
@@ -298,7 +298,7 @@ namespace SampleCompany.SampleServer
                 if (DateTime.UtcNow - lastEventTime_ > TimeSpan.FromMilliseconds(10000))
                 {
                     IList<Session> sessions = server_.CurrentInstance.SessionManager.GetSessions();
-                    for (int ii = 0; ii < sessions.Count; ii++)
+                    for (var ii = 0; ii < sessions.Count; ii++)
                     {
                         Session session = sessions[ii];
                         PrintSessionStatus(session, "-Status-", true);

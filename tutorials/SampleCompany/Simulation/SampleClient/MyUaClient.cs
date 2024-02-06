@@ -139,8 +139,8 @@ namespace SampleCompany.SampleClient
                         output_.WriteLine("Waiting for reverse connection to.... {0}", serverUrl);
                         do
                         {
-                            using (CancellationTokenSource cts = new CancellationTokenSource(30_000))
-                            using (CancellationTokenSource linkedCTS = CancellationTokenSource.CreateLinkedTokenSource(ct, cts.Token))
+                            using (var cts = new CancellationTokenSource(30_000))
+                            using (var linkedCTS = CancellationTokenSource.CreateLinkedTokenSource(ct, cts.Token))
                             {
                                 connection = await reverseConnectManager_.WaitForConnectionAsync(new Uri(serverUrl), null, linkedCTS.Token).ConfigureAwait(false);
                                 if (connection == null)
@@ -164,8 +164,8 @@ namespace SampleCompany.SampleClient
 
                     // Get the endpoint by connecting to server's discovery endpoint.
                     // Try to find the first endopint with security.
-                    EndpointConfiguration endpointConfiguration = EndpointConfiguration.Create(configuration_);
-                    ConfiguredEndpoint endpoint = new ConfiguredEndpoint(null, endpointDescription, endpointConfiguration);
+                    var endpointConfiguration = EndpointConfiguration.Create(configuration_);
+                    var endpoint = new ConfiguredEndpoint(null, endpointDescription, endpointConfiguration);
 
                     TraceableSessionFactory sessionFactory = TraceableSessionFactory.Instance;
 
@@ -259,7 +259,7 @@ namespace SampleCompany.SampleClient
         {
             try
             {
-                Session session = (Session)sender;
+                var session = (Session)sender;
 
                 // check for events from discarded sessions.
                 if (!session_.Equals(session))
@@ -343,7 +343,7 @@ namespace SampleCompany.SampleClient
         /// </summary>
         protected virtual void OnCertificateValidation(CertificateValidator sender, CertificateValidationEventArgs e)
         {
-            bool certificateAccepted = false;
+            var certificateAccepted = false;
 
             // ****
             // Implement a custom logic to decide if the certificate should be

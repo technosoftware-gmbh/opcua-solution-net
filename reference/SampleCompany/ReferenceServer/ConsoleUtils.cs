@@ -67,10 +67,10 @@ namespace SampleCompany.ReferenceServer
             foreach (var option in options)
             {
                 var names = option.GetNames();
-                string longest = names.MaxBy(s => s.Length);
+                var longest = names.MaxBy(s => s.Length);
                 if (longest != null && longest.Length >= 3)
                 {
-                    string envKey = config[longest.ToUpperInvariant()];
+                    var envKey = config[longest.ToUpperInvariant()];
                     if (envKey != null)
                     {
                         if (string.IsNullOrWhiteSpace(envKey) || option.OptionValueType == Mono.Options.OptionValueType.None)
@@ -93,7 +93,7 @@ namespace SampleCompany.ReferenceServer
                 additionalArguments = options.Parse(args);
                 if (!additionalArgs)
                 {
-                    foreach (string additionalArg in additionalArguments)
+                    foreach (var additionalArg in additionalArguments)
                     {
                         output.WriteLine("Error: Unknown option: {0}", additionalArg);
                         showHelp = true;

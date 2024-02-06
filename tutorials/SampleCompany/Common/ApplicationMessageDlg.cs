@@ -49,7 +49,7 @@ namespace SampleCompany.Common
         {
             if (ask_)
             {
-                StringBuilder message = new StringBuilder(message_);
+                var message = new StringBuilder(message_);
                 _ = message.Append(" (y/n, default y): ");
                 await output_.WriteAsync(message.ToString()).ConfigureAwait(false);
 

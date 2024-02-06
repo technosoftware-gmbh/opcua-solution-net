@@ -77,21 +77,21 @@ namespace SampleCompany.SampleClient
             var usage = $"Usage: dotnet {applicationName}.dll [OPTIONS] [ENDPOINTURL]";
 
             // command line options
-            bool showHelp = false;
-            bool autoAccept = false;
+            var showHelp = false;
+            var autoAccept = false;
             string username = null;
             string userPassword = null;
-            bool logConsole = false;
-            bool appLog = false;
-            bool renewCertificate = false;
-            bool browseAll = false;
-            bool fetchAll = false;
-            bool jsonValues = false;
-            bool verbose = false;
-            bool subscribe = false;
-            bool noSecurity = false;
+            var logConsole = false;
+            var appLog = false;
+            var renewCertificate = false;
+            var browseAll = false;
+            var fetchAll = false;
+            var jsonValues = false;
+            var verbose = false;
+            var subscribe = false;
+            var noSecurity = false;
             string password = null;
-            int timeout = Timeout.Infinite;
+            var timeout = Timeout.Infinite;
             string logFile = null;
             string reverseConnectUrlString = null;
 
@@ -119,7 +119,7 @@ namespace SampleCompany.SampleClient
             ReverseConnectManager reverseConnectManager = null;
 
             // wait for timeout or Ctrl-C
-            CancellationTokenSource quitCts = new CancellationTokenSource();
+            var quitCts = new CancellationTokenSource();
             ManualResetEvent quitEvent = ConsoleUtils.CtrlCHandler(quitCts);
 
             if (verbose)
@@ -135,7 +135,7 @@ namespace SampleCompany.SampleClient
             try
             {
                 // parse command line and set options
-                string extraArg = ConsoleUtils.ProcessCommandLine(output, args, options, ref showHelp, "SAMPLECLIENT");
+                var extraArg = ConsoleUtils.ProcessCommandLine(output, args, options, ref showHelp, "SAMPLECLIENT");
 
                 // connect Url?
                 Uri serverUrl = !string.IsNullOrEmpty(extraArg) ? new Uri(extraArg) : new Uri("opc.tcp://localhost:62555/SampleServer");
@@ -148,8 +148,8 @@ namespace SampleCompany.SampleClient
 
                 // Define the UA Client application
                 ApplicationInstance.MessageDlg = new ApplicationMessageDlg(output);
-                CertificatePasswordProvider passwordProvider = new CertificatePasswordProvider(password);
-                ApplicationInstance application = new ApplicationInstance {
+                var passwordProvider = new CertificatePasswordProvider(password);
+                var application = new ApplicationInstance {
                     ApplicationName = applicationName,
                     ApplicationType = ApplicationType.Client,
                     ConfigSectionName = configSectionName,
@@ -182,7 +182,7 @@ namespace SampleCompany.SampleClient
                 }
 
                 // check the application certificate.
-                bool haveAppCertificate = await application.CheckApplicationInstanceCertificateAsync(false, minimumKeySize: 0).ConfigureAwait(false);
+                var haveAppCertificate = await application.CheckApplicationInstanceCertificateAsync(false, minimumKeySize: 0).ConfigureAwait(false);
                 if (!haveAppCertificate)
                 {
                     throw new ErrorExitException("Application instance certificate invalid!", ExitCode.ErrorCertificate);
@@ -203,7 +203,7 @@ namespace SampleCompany.SampleClient
                 // connect to a server until application stops
                 bool quit;
                 DateTime start = DateTime.UtcNow;
-                int waitTime = int.MaxValue;
+                var waitTime = int.MaxValue;
                 do
                 {
                     if (timeout > 0)
@@ -217,7 +217,7 @@ namespace SampleCompany.SampleClient
 
                     // create the UA Client object and connect to configured server.
 
-                    using (MyUaClient uaClient = new MyUaClient(application.ApplicationConfiguration, reverseConnectManager, output, ClientBase.ValidateResponse, verbose) {
+                    using (var uaClient = new MyUaClient(application.ApplicationConfiguration, reverseConnectManager, output, ClientBase.ValidateResponse, verbose) {
                         AutoAccept = autoAccept,
                         SessionLifeTime = 60_000,
                     })
@@ -228,7 +228,7 @@ namespace SampleCompany.SampleClient
                             uaClient.UserIdentity = new UserIdentity(username, userPassword ?? string.Empty);
                         }
 
-                        bool connected = await uaClient.ConnectAsync(serverUrl.ToString(), !noSecurity, quitCts.Token).ConfigureAwait(false);
+                        var connected = await uaClient.ConnectAsync(serverUrl.ToString(), !noSecurity, quitCts.Token).ConfigureAwait(false);
                         if (connected)
                         {
                             await output.WriteLineAsync("Connected! Ctrl-C to quit.").ConfigureAwait(false);
@@ -272,8 +272,8 @@ namespace SampleCompany.SampleClient
                                 {
                                     // subscribe to 100 random variables
                                     const int MaxVariables = 100;
-                                    NodeCollection variables = new NodeCollection();
-                                    Random random = new Random(62541);
+                                    var variables = new NodeCollection();
+                                    var random = new Random(62541);
                                     if (fetchAll)
                                     {
                                         variables.AddRange(allNodes

@@ -1,4 +1,4 @@
-﻿#region Copyright (c) 2022-2024 Technosoftware GmbH. All rights reserved
+#region Copyright (c) 2022-2024 Technosoftware GmbH. All rights reserved
 //-----------------------------------------------------------------------------
 // Copyright (c) 2022-2024 Technosoftware GmbH. All rights reserved
 // Web: https://technosoftware.com 
@@ -11,7 +11,6 @@
 
 #region Using Directives
 using System;
-using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -55,18 +54,18 @@ namespace SampleCompany.ReferenceServer
             var configSectionName = "SampleCompany.ReferenceServer";
 
             // command line options
-            bool showHelp = false;
-            bool autoAccept = false;
-            bool logConsole = false;
-            bool appLog = false;
-            bool renewCertificate = false;
-            bool shadowConfig = false;
-            bool cttMode = false;
+            var showHelp = false;
+            var autoAccept = false;
+            var logConsole = false;
+            var appLog = false;
+            var renewCertificate = false;
+            var shadowConfig = false;
+            var cttMode = false;
             string password = null;
-            int timeout = -1;
+            var timeout = -1;
 
             var usage = Utils.IsRunningOnMono() ? $"Usage: mono {applicationName}.exe [OPTIONS]" : $"Usage: dotnet {applicationName}.dll [OPTIONS]";
-            Mono.Options.OptionSet options = new Mono.Options.OptionSet {
+            var options = new Mono.Options.OptionSet {
                 usage,
                 { "h|help", "show this message and exit", h => showHelp = h != null },
                 { "a|autoaccept", "auto accept certificates (for testing only)", a => autoAccept = a != null },
@@ -82,7 +81,7 @@ namespace SampleCompany.ReferenceServer
             try
             {
                 // parse command line and set options
-                ConsoleUtils.ProcessCommandLine(output, args, options, ref showHelp, "REFSERVER");
+                _ = ConsoleUtils.ProcessCommandLine(output, args, options, ref showHelp, "REFSERVER");
 
                 if (logConsole && appLog)
                 {
@@ -132,7 +131,7 @@ namespace SampleCompany.ReferenceServer
                 // Apply custom settings for CTT testing
                 if (cttMode)
                 {
-                    await output.WriteLineAsync("Apply settings for CTT.");
+                    await output.WriteLineAsync("Apply settings for CTT.").ConfigureAwait(false);
                     // start Alarms and other settings for CTT test
                     NodeManagerUtils.ApplyCTTMode(output, server.Server);
                 }
@@ -141,8 +140,8 @@ namespace SampleCompany.ReferenceServer
 
                 // wait for timeout or Ctrl-C
                 var quitCts = new CancellationTokenSource();
-                var quitEvent = ConsoleUtils.CtrlCHandler(quitCts);
-                bool ctrlc = quitEvent.WaitOne(timeout);
+                ManualResetEvent quitEvent = ConsoleUtils.CtrlCHandler(quitCts);
+                var ctrlc = quitEvent.WaitOne(timeout);
 
                 // stop server. May have to wait for clients to disconnect.
                 await output.WriteLineAsync("Server stopped. Waiting for exit...").ConfigureAwait(false);

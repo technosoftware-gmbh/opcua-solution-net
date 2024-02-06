@@ -75,21 +75,21 @@ namespace SampleCompany.ReferenceClient
             var usage = $"Usage: dotnet {applicationName}.dll [OPTIONS] [ENDPOINTURL]";
 
             // command line options
-            bool showHelp = false;
-            bool autoAccept = false;
+            var showHelp = false;
+            var autoAccept = false;
             string username = null;
             string userPassword = null;
-            bool logConsole = false;
-            bool appLog = false;
-            bool renewCertificate = false;
-            bool browseAll = false;
-            bool fetchAll = false;
-            bool jsonValues = false;
-            bool verbose = false;
-            bool subscribe = false;
-            bool noSecurity = false;
+            var logConsole = false;
+            var appLog = false;
+            var renewCertificate = false;
+            var browseAll = false;
+            var fetchAll = false;
+            var jsonValues = false;
+            var verbose = false;
+            var subscribe = false;
+            var noSecurity = false;
             string password = null;
-            int timeout = Timeout.Infinite;
+            var timeout = Timeout.Infinite;
             string logFile = null;
             string reverseConnectUrlString = null;
 
@@ -117,7 +117,7 @@ namespace SampleCompany.ReferenceClient
             ReverseConnectManager reverseConnectManager = null;
 
             // wait for timeout or Ctrl-C
-            CancellationTokenSource quitCts = new CancellationTokenSource();
+            var quitCts = new CancellationTokenSource();
             ManualResetEvent quitEvent = ConsoleUtils.CtrlCHandler(quitCts);
 
             if (verbose)
@@ -133,7 +133,7 @@ namespace SampleCompany.ReferenceClient
             try
             {
                 // parse command line and set options
-                string extraArg = ConsoleUtils.ProcessCommandLine(output, args, options, ref showHelp, "SAMPLECLIENT");
+                var extraArg = ConsoleUtils.ProcessCommandLine(output, args, options, ref showHelp, "SAMPLECLIENT");
 
                 // connect Url?
                 Uri serverUrl = !string.IsNullOrEmpty(extraArg) ? new Uri(extraArg) : new Uri("opc.tcp://localhost:62555/ReferenceServer");
@@ -146,8 +146,8 @@ namespace SampleCompany.ReferenceClient
 
                 // Define the UA Client application
                 ApplicationInstance.MessageDlg = new ApplicationMessageDlg(output);
-                CertificatePasswordProvider passwordProvider = new CertificatePasswordProvider(password);
-                ApplicationInstance application = new ApplicationInstance {
+                var passwordProvider = new CertificatePasswordProvider(password);
+                var application = new ApplicationInstance {
                     ApplicationName = applicationName,
                     ApplicationType = ApplicationType.Client,
                     ConfigSectionName = configSectionName,
@@ -155,7 +155,7 @@ namespace SampleCompany.ReferenceClient
                 };
 
                 // load the application configuration.
-                var config = await application.LoadApplicationConfigurationAsync(silent: false).ConfigureAwait(false);
+                ApplicationConfiguration config = await application.LoadApplicationConfigurationAsync(silent: false).ConfigureAwait(false);
 
                 // override logfile
                 if (logFile != null)
@@ -180,7 +180,7 @@ namespace SampleCompany.ReferenceClient
                 }
 
                 // check the application certificate.
-                bool haveAppCertificate = await application.CheckApplicationInstanceCertificateAsync(false, minimumKeySize: 0).ConfigureAwait(false);
+                var haveAppCertificate = await application.CheckApplicationInstanceCertificateAsync(false, minimumKeySize: 0).ConfigureAwait(false);
                 if (!haveAppCertificate)
                 {
                     throw new ErrorExitException("Application instance certificate invalid!", ExitCode.ErrorCertificate);
@@ -201,7 +201,7 @@ namespace SampleCompany.ReferenceClient
                 // connect to a server until application stops
                 bool quit;
                 DateTime start = DateTime.UtcNow;
-                int waitTime = int.MaxValue;
+                var waitTime = int.MaxValue;
                 do
                 {
                     if (timeout > 0)
@@ -215,7 +215,7 @@ namespace SampleCompany.ReferenceClient
 
                     // create the UA Client object and connect to configured server.
 
-                    using (MyUaClient uaClient = new MyUaClient(application.ApplicationConfiguration, reverseConnectManager, output, ClientBase.ValidateResponse, verbose) {
+                    using (var uaClient = new MyUaClient(application.ApplicationConfiguration, reverseConnectManager, output, ClientBase.ValidateResponse, verbose) {
                         AutoAccept = autoAccept,
                         SessionLifeTime = 60_000,
                     })
@@ -226,7 +226,7 @@ namespace SampleCompany.ReferenceClient
                             uaClient.UserIdentity = new UserIdentity(username, userPassword ?? string.Empty);
                         }
 
-                        bool connected = await uaClient.ConnectAsync(serverUrl.ToString(), !noSecurity, quitCts.Token).ConfigureAwait(false);
+                        var connected = await uaClient.ConnectAsync(serverUrl.ToString(), !noSecurity, quitCts.Token).ConfigureAwait(false);
                         if (connected)
                         {
                             await output.WriteLineAsync("Connected! Ctrl-C to quit.").ConfigureAwait(false);
@@ -263,15 +263,15 @@ namespace SampleCompany.ReferenceClient
 
                                 if (jsonValues && variableIds != null)
                                 {
-                                    var (allValues, results) = await clientFunctions.ReadAllValuesAsync(uaClient, variableIds).ConfigureAwait(false);
+                                    (DataValueCollection allValues, IList<ServiceResult> results) = await clientFunctions.ReadAllValuesAsync(uaClient, variableIds).ConfigureAwait(false);
                                 }
 
                                 if (subscribe && (browseAll || fetchAll))
                                 {
                                     // subscribe to 100 random variables
                                     const int MaxVariables = 100;
-                                    NodeCollection variables = new NodeCollection();
-                                    Random random = new Random(62541);
+                                    var variables = new NodeCollection();
+                                    var random = new Random(62541);
                                     if (fetchAll)
                                     {
                                         variables.AddRange(allNodes
@@ -315,8 +315,8 @@ namespace SampleCompany.ReferenceClient
                                 clientFunctions.WriteNodes(uaClient.Session);
                                 clientFunctions.Browse(uaClient.Session);
                                 clientFunctions.CallMethod(uaClient.Session);
-                                clientFunctions.SubscribeToDataChanges(uaClient.Session, 120_000);
-                                clientFunctions.SubscribeToEventChanges(uaClient.Session, 120_000);
+                                _ = clientFunctions.SubscribeToDataChanges(uaClient.Session, 120_000);
+                                _ = clientFunctions.SubscribeToEventChanges(uaClient.Session, 120_000);
 
                                 await output.WriteLineAsync("Waiting...").ConfigureAwait(false);
 
@@ -330,7 +330,7 @@ namespace SampleCompany.ReferenceClient
                         }
                         else
                         {
-                            output.WriteLine("Could not connect to server! Retry in 10 seconds or Ctrl-C to quit.");
+                            await output.WriteLineAsync("Could not connect to server! Retry in 10 seconds or Ctrl-C to quit.").ConfigureAwait(false);
                             quit = quitEvent.WaitOne(Math.Min(10_000, waitTime));
                         }
                     }

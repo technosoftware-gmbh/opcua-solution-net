@@ -124,7 +124,7 @@ namespace SampleCompany.NodeManagers.Simulation
 
                 FolderState root = CreateFolderState(null, "CTT", "CTT", null);
 
-                List<BaseDataVariableState> variables = new List<BaseDataVariableState>();
+                var variables = new List<BaseDataVariableState>();
 
                 try
                 {
@@ -166,8 +166,8 @@ namespace SampleCompany.NodeManagers.Simulation
 
                     BaseDataVariableState decimalVariable = CreateBaseDataVariableState(staticFolder, scalarStatic + "Decimal", "Decimal", null, DataTypeIds.DecimalDataType, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
                     // Set an arbitrary precision decimal value.
-                    BigInteger largeInteger = BigInteger.Parse("1234567890123546789012345678901234567890123456789012345");
-                    DecimalDataType decimalValue = new DecimalDataType {
+                    var largeInteger = BigInteger.Parse("1234567890123546789012345678901234567890123456789012345");
+                    var decimalValue = new DecimalDataType {
                         Scale = 100,
                         Value = largeInteger.ToByteArray()
                     };
@@ -455,7 +455,7 @@ namespace SampleCompany.NodeManagers.Simulation
                     FolderState dataItemFolder = CreateFolderState(daFolder, "DataAccess_DataItem", "DataItem", null);
                     const string daDataItem = "DataAccess_DataItem_";
 
-                    foreach (string name in Enum.GetNames(typeof(BuiltInType)))
+                    foreach (var name in Enum.GetNames(typeof(BuiltInType)))
                     {
                         DataItemState item = CreateDataItemState(dataItemFolder, daDataItem + name, name, null, (BuiltInType)Enum.Parse(typeof(BuiltInType), name), ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null, AttributeWriteMask.None, AttributeWriteMask.None, String.Empty, 2, null, null);
 
@@ -472,9 +472,9 @@ namespace SampleCompany.NodeManagers.Simulation
                     FolderState analogItemFolder = CreateFolderState(daFolder, "DataAccess_AnalogType", "AnalogType", null);
                     const string daAnalogItem = "DataAccess_AnalogType_";
 
-                    foreach (string name in Enum.GetNames(typeof(BuiltInType)))
+                    foreach (var name in Enum.GetNames(typeof(BuiltInType)))
                     {
-                        BuiltInType builtInType = (BuiltInType)Enum.Parse(typeof(BuiltInType), name);
+                        var builtInType = (BuiltInType)Enum.Parse(typeof(BuiltInType), name);
                         if (IsAnalogType(builtInType))
                         {
                             AnalogItemState item = CreateAnalogItemVariable(analogItemFolder, daAnalogItem + name, name, null, builtInType, ValueRanks.Scalar);
@@ -531,7 +531,7 @@ namespace SampleCompany.NodeManagers.Simulation
                     _ = CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "UInteger", "UInteger", null, BuiltInType.UInteger, ValueRanks.OneDimension, new UInt64[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
                     _ = CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "UtcTime", "UtcTime", null, DataTypeIds.UtcTime, ValueRanks.OneDimension, new DateTime[] { DateTime.MinValue.ToUniversalTime(), DateTime.MaxValue.ToUniversalTime(), DateTime.MinValue.ToUniversalTime(), DateTime.MaxValue.ToUniversalTime(), DateTime.MinValue.ToUniversalTime(), DateTime.MaxValue.ToUniversalTime(), DateTime.MinValue.ToUniversalTime(), DateTime.MaxValue.ToUniversalTime(), DateTime.MinValue.ToUniversalTime() }, null);
                     _ = CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "Variant", "Variant", null, BuiltInType.Variant, ValueRanks.OneDimension, new Variant[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
-                    XmlDocument doc1 = new XmlDocument();
+                    var doc1 = new XmlDocument();
                     _ = CreateAnalogItemVariable(analogArrayFolder, daAnalogArray + "XmlElement", "XmlElement", null, BuiltInType.XmlElement, ValueRanks.OneDimension, new XmlElement[] { doc1.CreateElement("tag1"), doc1.CreateElement("tag2"), doc1.CreateElement("tag3"), doc1.CreateElement("tag4"), doc1.CreateElement("tag5"), doc1.CreateElement("tag6"), doc1.CreateElement("tag7"), doc1.CreateElement("tag8"), doc1.CreateElement("tag9"), doc1.CreateElement("tag10") });
                     #endregion
 
@@ -625,9 +625,9 @@ namespace SampleCompany.NodeManagers.Simulation
                     variables.Add(hasInverseReference);
 
                     BaseDataVariableState has3InverseReference = null;
-                    for (int i = 1; i <= 5; i++)
+                    for (var i = 1; i <= 5; i++)
                     {
-                        string referenceString = "Has3ForwardReferences";
+                        var referenceString = "Has3ForwardReferences";
                         if (i > 1)
                         {
                             referenceString += i.ToString();
@@ -1402,7 +1402,7 @@ namespace SampleCompany.NodeManagers.Simulation
 
         private AnalogItemState CreateAnalogItemVariable(NodeState parent, string browseName, string name, string description, NodeId dataType, int valueRank, object initialValues = null, Opc.Ua.Range customRange = null)
         {
-            LocalizedText displayName = new LocalizedText("", name);
+            var displayName = new LocalizedText("", name);
 
             BuiltInType builtInType = TypeInfo.GetBuiltInType(dataType, ServerData.TypeTree);
 
@@ -1413,7 +1413,7 @@ namespace SampleCompany.NodeManagers.Simulation
             newRange.High = Math.Min(newRange.High, 120);
             newRange.Low = Math.Max(newRange.Low, -10);
 
-            EUInformation engineeringUnits = new EUInformation("mV", "millivolt", "http://www.opcfoundation.org/UA/units/un/cefact");
+            var engineeringUnits = new EUInformation("mV", "millivolt", "http://www.opcfoundation.org/UA/units/un/cefact");
             // The mapping of the UNECE codes to OPC UA(EUInformation.unitId) is available here:
             // http://www.opcfoundation.org/UA/EngineeringUnits/UNECE/UNECE_to_OPCUA.csv
             engineeringUnits.UnitId = 12890; // "2Z"
@@ -1438,10 +1438,10 @@ namespace SampleCompany.NodeManagers.Simulation
             ref StatusCode statusCode,
             ref DateTime timestamp)
         {
-            MultiStateDiscreteState variable = node as MultiStateDiscreteState;
+            var variable = node as MultiStateDiscreteState;
 
             // verify data type.
-            TypeInfo typeInfo = TypeInfo.IsInstanceOfDataType(
+            var typeInfo = TypeInfo.IsInstanceOfDataType(
                     value,
                     variable.DataType,
                     variable.ValueRank,
@@ -1458,7 +1458,7 @@ namespace SampleCompany.NodeManagers.Simulation
                 return StatusCodes.BadIndexRangeInvalid;
             }
 
-            double number = Convert.ToDouble(value);
+            var number = Convert.ToDouble(value);
 
             if (number >= variable.EnumStrings.Value.Length || number < 0)
             {
@@ -1477,7 +1477,7 @@ namespace SampleCompany.NodeManagers.Simulation
             ref StatusCode statusCode,
             ref DateTime timestamp)
         {
-            TypeInfo typeInfo = TypeInfo.Construct(value);
+            var typeInfo = TypeInfo.Construct(value);
 
             if (!(node is MultiStateValueDiscreteState variable) ||
                 typeInfo == null ||
@@ -1492,7 +1492,7 @@ namespace SampleCompany.NodeManagers.Simulation
                 return StatusCodes.BadIndexRangeInvalid;
             }
 
-            int number = Convert.ToInt32(value);
+            var number = Convert.ToInt32(value);
             if (number >= variable.EnumValues.Value.Length || number < 0)
             {
                 return StatusCodes.BadOutOfRange;
@@ -1517,10 +1517,10 @@ namespace SampleCompany.NodeManagers.Simulation
             ref StatusCode statusCode,
             ref DateTime timestamp)
         {
-            AnalogItemState variable = node as AnalogItemState;
+            var variable = node as AnalogItemState;
 
             // verify data type.
-            TypeInfo typeInfo = TypeInfo.IsInstanceOfDataType(
+            var typeInfo = TypeInfo.IsInstanceOfDataType(
                 value,
                 variable.DataType,
                 variable.ValueRank,
@@ -1537,7 +1537,7 @@ namespace SampleCompany.NodeManagers.Simulation
             {
                 if (indexRange != NumericRange.Empty)
                 {
-                    object target = variable.Value;
+                    var target = variable.Value;
                     ServiceResult result = indexRange.UpdateRange(ref target, value);
 
                     if (ServiceResult.IsBad(result))
@@ -1557,7 +1557,7 @@ namespace SampleCompany.NodeManagers.Simulation
                     return StatusCodes.BadIndexRangeInvalid;
                 }
 
-                double number = Convert.ToDouble(value);
+                var number = Convert.ToDouble(value);
 
                 if (variable.InstrumentRange != null && (number < variable.InstrumentRange.Value.Low || number > variable.InstrumentRange.Value.High))
                 {
@@ -1577,7 +1577,7 @@ namespace SampleCompany.NodeManagers.Simulation
             ref StatusCode statusCode,
             ref DateTime timestamp)
         {
-            TypeInfo typeInfo = TypeInfo.Construct(value);
+            var typeInfo = TypeInfo.Construct(value);
 
             if (!(node is PropertyState<Opc.Ua.Range> variable) ||
                 !(value is ExtensionObject extensionObject) ||
@@ -1597,7 +1597,7 @@ namespace SampleCompany.NodeManagers.Simulation
                 return StatusCodes.BadIndexRangeInvalid;
             }
 
-            TypeInfo parentTypeInfo = TypeInfo.Construct(parent.Value);
+            var parentTypeInfo = TypeInfo.Construct(parent.Value);
 
             Opc.Ua.Range parentRange = GetAnalogRange(parentTypeInfo.BuiltInType);
             if (parentRange.High < newRange.High ||
@@ -1621,12 +1621,12 @@ namespace SampleCompany.NodeManagers.Simulation
             // first, create a new Parent folder for this data-type
             FolderState newParentFolder = CreateFolderState(parent, path, name, null);
 
-            List<BaseDataVariableState> itemsCreated = new List<BaseDataVariableState>();
+            var itemsCreated = new List<BaseDataVariableState>();
             // now to create the remaining NUMBERED items
             for (uint i = 0; i < numVariables; i++)
             {
-                string newName = string.Format("{0}_{1}", name, i.ToString("00"));
-                string newPath = string.Format("{0}_{1}", path, newName);
+                var newName = string.Format("{0}_{1}", name, i.ToString("00"));
+                var newPath = string.Format("{0}_{1}", path, newName);
                 itemsCreated.Add(CreateBaseDataVariableState(newParentFolder, newPath, newName, null, dataType, valueRank, AccessLevels.CurrentReadOrWrite, null));
             }
             return itemsCreated.ToArray();
@@ -1661,12 +1661,12 @@ namespace SampleCompany.NodeManagers.Simulation
             // first, create a new Parent folder for this data-type
             FolderState newParentFolder = CreateFolderState(parent, path, name, null);
 
-            List<BaseDataVariableState> itemsCreated = new List<BaseDataVariableState>();
+            var itemsCreated = new List<BaseDataVariableState>();
             // now to create the remaining NUMBERED items
             for (uint i = 0; i < numVariables; i++)
             {
-                string newName = string.Format("{0}_{1}", name, i.ToString("00"));
-                string newPath = string.Format("{0}_{1}", path, newName);
+                var newName = string.Format("{0}_{1}", name, i.ToString("00"));
+                var newPath = string.Format("{0}_{1}", path, newName);
                 itemsCreated.Add(CreateDynamicVariable(newParentFolder, newPath, newName, description, dataType, valueRank));
             }//for i
             return itemsCreated.ToArray();
@@ -1698,8 +1698,8 @@ namespace SampleCompany.NodeManagers.Simulation
 
             try
             {
-                float floatValue = (float)inputArguments[0];
-                uint uintValue = (UInt32)inputArguments[1];
+                var floatValue = (float)inputArguments[0];
+                var uintValue = (UInt32)inputArguments[1];
 
                 // set output parameter
                 outputArguments[0] = floatValue + uintValue;
@@ -1727,8 +1727,8 @@ namespace SampleCompany.NodeManagers.Simulation
 
             try
             {
-                short op1 = (Int16)inputArguments[0];
-                ushort op2 = (UInt16)inputArguments[1];
+                var op1 = (Int16)inputArguments[0];
+                var op2 = (UInt16)inputArguments[1];
 
                 // set output parameter
                 outputArguments[0] = op1 * op2;
@@ -1755,8 +1755,8 @@ namespace SampleCompany.NodeManagers.Simulation
 
             try
             {
-                int op1 = (Int32)inputArguments[0];
-                ushort op2 = (UInt16)inputArguments[1];
+                var op1 = (Int32)inputArguments[0];
+                var op2 = (UInt16)inputArguments[1];
 
                 // set output parameter
                 outputArguments[0] = op1 / (float)op2;
@@ -1783,8 +1783,8 @@ namespace SampleCompany.NodeManagers.Simulation
 
             try
             {
-                short op1 = (Int16)inputArguments[0];
-                byte op2 = (Byte)inputArguments[1];
+                var op1 = (Int16)inputArguments[0];
+                var op2 = (Byte)inputArguments[1];
 
                 // set output parameter
                 outputArguments[0] = (Int16)(op1 - op2);
@@ -1811,7 +1811,7 @@ namespace SampleCompany.NodeManagers.Simulation
 
             try
             {
-                string op1 = (string)inputArguments[0];
+                var op1 = (string)inputArguments[0];
 
                 // set output parameter
                 outputArguments[0] = "hello " + op1;
@@ -1908,7 +1908,7 @@ namespace SampleCompany.NodeManagers.Simulation
                     return null;
                 }
 
-                UaNodeHandle handle = new UaNodeHandle { NodeId = nodeId, Node = node, Validated = true };
+                var handle = new UaNodeHandle { NodeId = nodeId, Node = node, Validated = true };
 
 
                 return handle;
