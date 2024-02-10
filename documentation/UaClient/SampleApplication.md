@@ -11,7 +11,7 @@ The SDK is divided into several DLL’s as shown in the picture below:
 The DLLs are delivered as local NuGet Packages. The OPC UA Client .NET uses the following packages:
 
 | **Name**                                       | **Description**                                                                                    |
-|------------------------------------------------|----------------------------------------------------------------------------------------------------|
+|:-----------------------------------------------|:---------------------------------------------------------------------------------------------------|
 | **Technosoftware.UaSolution.UaCore**           | The OPC UA Core Class Library.                                                                     |
 | **Technosoftware.UaSolution.UaBindings.Https** | The OPC UA Https Binding Library.                                                                  |
 | **Technosoftware.UaSolution.UaConfiguration**  | Contains configuration related classes like, e.g. ApplicationInstance.                             |

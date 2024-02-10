@@ -5,7 +5,7 @@
 The solution provides an extensible mechanism for storing the application configuration in an XML file. The class is extensible, so developers can add their own configuration information to it. The table below describes primary elements of the ApplicationConfiguration class.
 
 | **Name**                | **Type**                          | **Description**                                                                                                                                                                                                                                                                                |
-|-------------------------|-----------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|:------------------------|:----------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | ApplicationName         | String                            | A human readable name for the application.                                                                                                                                                                                                                                                     |
 | ApplicationUri          | String                            | A globally unique name for the application. This should be a URL with which the machine domain name or IP address as the hostname followed by the vendor/product name followed by an instance identifier. For example: http://machine1/OPC/UASampleServer/4853DB1C-776D-4ADA-9188-00CAA737B780 |
 | ProductUri              | String                            | A human readable name for the product.                                                                                                                                                                                                                                                         |
@@ -33,7 +33,7 @@ The Application Configuration file of the SampleClient can be found in the file 
 The Application Configuration file of the SampleClient uses the Extensions feature to make the Excel Configuration configurable.
 
 | **Name**          | **Type** | **Description**                                                                                      |
-|-------------------|----------|------------------------------------------------------------------------------------------------------|
+|:------------------|:---------|:-----------------------------------------------------------------------------------------------------|
 | ConfigurationFile | String   | The full path including file name of the Excel file used for the configuration of the address space. |
 
 The Extension looks like:
