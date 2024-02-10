@@ -12,7 +12,6 @@ The **OPC UA Client .NET API** defines classes which can be used to implement an
 |-------------|-------------|--------------------------------------|
 | 3.1         | 28-APR-2023 | Initial version based on version 3.1 |
 | 3.3         | 02-FEB-2024 | Updated to new sample client         |
-|             |             |                                      |
 
 **Purpose and audience of document**
 
@@ -29,3 +28,9 @@ This document gives a short overview of the functionality of the OPC UA .NET sol
 
 
 ## [Supported OPC UA Profiles](./UaClient/SupportedProfiles.md)
+
+## [Sample Application](./UaClient/SampleApplication.md)
+
+## [Configuration](./UaClient/Configuration.md)
+
+## [Certificate Management and Validation](./UaClient/CertificateManagement.md)
