@@ -34,3 +34,5 @@ This document gives a short overview of the functionality of the OPC UA .NET sol
 ## [Configuration](./UaClient/Configuration.md)
 
 ## [Certificate Management and Validation](./UaClient/CertificateManagement.md)
+
+## [Client Design](./UaClient/ClientDesign.md)
