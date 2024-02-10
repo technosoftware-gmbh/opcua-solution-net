@@ -122,7 +122,7 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
             MemoryTagState tag = null;
 
             // check if a specific browse name is requested.
-            if (!QualifiedName.IsNull(base.BrowseName))
+            if (!QualifiedName.IsNull(BrowseName))
             {
                 // check if match found previously.
                 if (position_ == UInt32.MaxValue)
@@ -131,14 +131,14 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
                 }
 
                 // browse name must be qualified by the correct namespace.
-                if (buffer_.TypeDefinitionId.NamespaceIndex != base.BrowseName.NamespaceIndex)
+                if (buffer_.TypeDefinitionId.NamespaceIndex != BrowseName.NamespaceIndex)
                 {
                     return null;
                 }
 
-                string name = base.BrowseName.Name;
+                var name = BrowseName.Name;
 
-                for (int ii = 0; ii < name.Length; ii++)
+                for (var ii = 0; ii < name.Length; ii++)
                 {
                     if ("0123456789ABCDEF".IndexOf(name[ii]) == -1)
                     {

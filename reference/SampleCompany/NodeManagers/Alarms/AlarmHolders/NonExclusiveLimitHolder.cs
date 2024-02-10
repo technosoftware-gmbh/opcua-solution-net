@@ -34,7 +34,7 @@ namespace SampleCompany.NodeManagers.Alarms
         {
             if (create)
             {
-                Initialize(Opc.Ua.ObjectTypes.NonExclusiveLimitAlarmType, name, maxShelveTime);
+                Initialize(ObjectTypes.NonExclusiveLimitAlarmType, name, maxShelveTime);
             }
         }
 

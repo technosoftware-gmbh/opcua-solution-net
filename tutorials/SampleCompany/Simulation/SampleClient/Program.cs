@@ -94,6 +94,7 @@ namespace SampleCompany.SampleClient
             var timeout = Timeout.Infinite;
             string logFile = null;
             string reverseConnectUrlString = null;
+            var discover = false;
 
             var options = new Mono.Options.OptionSet {
                 usage,
@@ -114,6 +115,7 @@ namespace SampleCompany.SampleClient
                 { "v|verbose", "Verbose output", v => { if (v != null) { verbose = true; } } },
                 { "s|subscribe", "Subscribe", s => { if (s != null) { subscribe = true; } } },
                 { "rc|reverseconnect=", "Connect using the reverse connect endpoint. (e.g. rc=opc.tcp://localhost:65300)", url => reverseConnectUrlString = url},
+                { "d|discover", "Browses for OPC UA servers on the local machine.", d => discover = d != null},
             };
 
             ReverseConnectManager reverseConnectManager = null;
@@ -222,6 +224,12 @@ namespace SampleCompany.SampleClient
                         SessionLifeTime = 60_000,
                     })
                     {
+                        // Discover UA Servers
+                        if (discover)
+                        {
+                            uaClient.DiscoverUaServers();
+                        }
+
                         // set user identity
                         if (!String.IsNullOrEmpty(username))
                         {

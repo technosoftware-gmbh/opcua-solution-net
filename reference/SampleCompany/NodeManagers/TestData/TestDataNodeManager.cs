@@ -133,7 +133,7 @@ namespace SampleCompany.NodeManagers.TestData
         /// <returns>The new NodeId.</returns>
         public override NodeId Create(ISystemContext context, NodeState node)
         {
-            uint id = Utils.IncrementIdentifier(ref lastUsedId_);
+            var id = Utils.IncrementIdentifier(ref lastUsedId_);
             return new NodeId(id, namespaceIndex_);
         }
         #endregion
@@ -203,14 +203,14 @@ namespace SampleCompany.NodeManagers.TestData
                 }
 #endif
                 // link all conditions to the conditions folder.
-                NodeState conditionsFolder = (NodeState)FindPredefinedNode(
+                var conditionsFolder = (NodeState)FindPredefinedNode(
                     new NodeId(Objects.Data_Conditions, typeNamespaceIndex_),
                     typeof(NodeState));
 
                 foreach (NodeState node in PredefinedNodes.Values)
                 {
-                    ConditionState condition = node as ConditionState;
-                    if (condition != null && !Object.ReferenceEquals(condition.Parent, conditionsFolder))
+                    var condition = node as ConditionState;
+                    if (condition != null && !ReferenceEquals(condition.Parent, conditionsFolder))
                     {
                         condition.AddNotifier(SystemContext, null, true, conditionsFolder);
                         conditionsFolder.AddNotifier(SystemContext, null, false, condition);
@@ -218,7 +218,7 @@ namespace SampleCompany.NodeManagers.TestData
                 }
 
                 // enable history for all numeric scalar values.
-                ScalarValueObjectState scalarValues = (ScalarValueObjectState)FindPredefinedNode(
+                var scalarValues = (ScalarValueObjectState)FindPredefinedNode(
                     new NodeId(Objects.Data_Dynamic_Scalar, typeNamespaceIndex_),
                     typeof(ScalarValueObjectState));
 
@@ -280,13 +280,10 @@ namespace SampleCompany.NodeManagers.TestData
                             break;
                         }
 
-                        TestSystemConditionState activeNode = new TestSystemConditionState(passiveNode.Parent);
+                        var activeNode = new TestSystemConditionState(passiveNode.Parent);
                         activeNode.Create(context, passiveNode);
 
-                        if (passiveNode.Parent != null)
-                        {
-                            passiveNode.Parent.ReplaceChild(context, activeNode);
-                        }
+                        passiveNode.Parent?.ReplaceChild(context, activeNode);
 
                         return activeNode;
                     }
@@ -298,13 +295,10 @@ namespace SampleCompany.NodeManagers.TestData
                             break;
                         }
 
-                        ScalarValueObjectState activeNode = new ScalarValueObjectState(passiveNode.Parent);
+                        var activeNode = new ScalarValueObjectState(passiveNode.Parent);
                         activeNode.Create(context, passiveNode);
 
-                        if (passiveNode.Parent != null)
-                        {
-                            passiveNode.Parent.ReplaceChild(context, activeNode);
-                        }
+                        passiveNode.Parent?.ReplaceChild(context, activeNode);
 
                         return activeNode;
                     }
@@ -316,13 +310,10 @@ namespace SampleCompany.NodeManagers.TestData
                             break;
                         }
 
-                        StructureValueObjectState activeNode = new StructureValueObjectState(passiveNode.Parent);
+                        var activeNode = new StructureValueObjectState(passiveNode.Parent);
                         activeNode.Create(context, passiveNode);
 
-                        if (passiveNode.Parent != null)
-                        {
-                            passiveNode.Parent.ReplaceChild(context, activeNode);
-                        }
+                        passiveNode.Parent?.ReplaceChild(context, activeNode);
 
                         return activeNode;
                     }
@@ -334,13 +325,10 @@ namespace SampleCompany.NodeManagers.TestData
                             break;
                         }
 
-                        AnalogScalarValueObjectState activeNode = new AnalogScalarValueObjectState(passiveNode.Parent);
+                        var activeNode = new AnalogScalarValueObjectState(passiveNode.Parent);
                         activeNode.Create(context, passiveNode);
 
-                        if (passiveNode.Parent != null)
-                        {
-                            passiveNode.Parent.ReplaceChild(context, activeNode);
-                        }
+                        passiveNode.Parent?.ReplaceChild(context, activeNode);
 
                         return activeNode;
                     }
@@ -352,13 +340,10 @@ namespace SampleCompany.NodeManagers.TestData
                             break;
                         }
 
-                        ArrayValueObjectState activeNode = new ArrayValueObjectState(passiveNode.Parent);
+                        var activeNode = new ArrayValueObjectState(passiveNode.Parent);
                         activeNode.Create(context, passiveNode);
 
-                        if (passiveNode.Parent != null)
-                        {
-                            passiveNode.Parent.ReplaceChild(context, activeNode);
-                        }
+                        passiveNode.Parent?.ReplaceChild(context, activeNode);
 
                         return activeNode;
                     }
@@ -370,13 +355,10 @@ namespace SampleCompany.NodeManagers.TestData
                             break;
                         }
 
-                        AnalogArrayValueObjectState activeNode = new AnalogArrayValueObjectState(passiveNode.Parent);
+                        var activeNode = new AnalogArrayValueObjectState(passiveNode.Parent);
                         activeNode.Create(context, passiveNode);
 
-                        if (passiveNode.Parent != null)
-                        {
-                            passiveNode.Parent.ReplaceChild(context, activeNode);
-                        }
+                        passiveNode.Parent?.ReplaceChild(context, activeNode);
 
                         return activeNode;
                     }
@@ -388,13 +370,10 @@ namespace SampleCompany.NodeManagers.TestData
                             break;
                         }
 
-                        UserScalarValueObjectState activeNode = new UserScalarValueObjectState(passiveNode.Parent);
+                        var activeNode = new UserScalarValueObjectState(passiveNode.Parent);
                         activeNode.Create(context, passiveNode);
 
-                        if (passiveNode.Parent != null)
-                        {
-                            passiveNode.Parent.ReplaceChild(context, activeNode);
-                        }
+                        passiveNode.Parent?.ReplaceChild(context, activeNode);
 
                         return activeNode;
                     }
@@ -406,13 +385,10 @@ namespace SampleCompany.NodeManagers.TestData
                             break;
                         }
 
-                        UserArrayValueObjectState activeNode = new UserArrayValueObjectState(passiveNode.Parent);
+                        var activeNode = new UserArrayValueObjectState(passiveNode.Parent);
                         activeNode.Create(context, passiveNode);
 
-                        if (passiveNode.Parent != null)
-                        {
-                            passiveNode.Parent.ReplaceChild(context, activeNode);
-                        }
+                        passiveNode.Parent?.ReplaceChild(context, activeNode);
 
                         return activeNode;
                     }
@@ -424,13 +400,10 @@ namespace SampleCompany.NodeManagers.TestData
                             break;
                         }
 
-                        MethodTestState activeNode = new MethodTestState(passiveNode.Parent);
+                        var activeNode = new MethodTestState(passiveNode.Parent);
                         activeNode.Create(context, passiveNode);
 
-                        if (passiveNode.Parent != null)
-                        {
-                            passiveNode.Parent.ReplaceChild(context, activeNode);
-                        }
+                        passiveNode.Parent?.ReplaceChild(context, activeNode);
 
                         return activeNode;
                     }
@@ -455,13 +428,10 @@ namespace SampleCompany.NodeManagers.TestData
                             break;
                         }
 
-                        ScalarStructureVariableState activeNode = new ScalarStructureVariableState(variableNode.Parent);
+                        var activeNode = new ScalarStructureVariableState(variableNode.Parent);
                         activeNode.Create(context, variableNode);
 
-                        if (variableNode.Parent != null)
-                        {
-                            variableNode.Parent.ReplaceChild(context, activeNode);
-                        }
+                        variableNode.Parent?.ReplaceChild(context, activeNode);
 
                         return activeNode;
                     }
@@ -473,13 +443,10 @@ namespace SampleCompany.NodeManagers.TestData
                             break;
                         }
 
-                        VectorVariableState activeNode = new VectorVariableState(variableNode.Parent);
+                        var activeNode = new VectorVariableState(variableNode.Parent);
                         activeNode.Create(context, variableNode);
 
-                        if (variableNode.Parent != null)
-                        {
-                            variableNode.Parent.ReplaceChild(context, activeNode);
-                        }
+                        variableNode.Parent?.ReplaceChild(context, activeNode);
 
                         return activeNode;
                     }
@@ -500,7 +467,7 @@ namespace SampleCompany.NodeManagers.TestData
                 return null;
             }
 
-            HistoryDataReader reader = context.Session.RestoreHistoryContinuationPoint(continuationPoint) as HistoryDataReader;
+            var reader = context.Session.RestoreHistoryContinuationPoint(continuationPoint) as HistoryDataReader;
 
             if (reader == null)
             {
@@ -553,10 +520,10 @@ namespace SampleCompany.NodeManagers.TestData
             HistoryReadValueId nodeToRead,
             HistoryReadResult result)
         {
-            UaServerOperationContext serverContext = context as UaServerOperationContext;
+            var serverContext = context as UaServerOperationContext;
 
             HistoryDataReader reader = null;
-            HistoryData data = new HistoryData();
+            var data = new HistoryData();
 
             if (nodeToRead.ContinuationPoint != null && nodeToRead.ContinuationPoint.Length > 0)
             {
@@ -607,7 +574,7 @@ namespace SampleCompany.NodeManagers.TestData
             }
 
             // continue reading data until done or max values reached.
-            bool complete = reader.NextReadRaw(
+            var complete = reader.NextReadRaw(
                 serverContext,
                 timestampsToReturn,
                 nodeToRead.ParsedIndexRange,
@@ -649,14 +616,14 @@ namespace SampleCompany.NodeManagers.TestData
             // check for variables that need to be scanned.
             if (monitoredItem.AttributeId == Attributes.Value)
             {
-                TestDataObjectState test = source.Parent as TestDataObjectState;
+                var test = source.Parent as TestDataObjectState;
                 if (test != null && test.SimulationActive.Value)
                 {
                     return true;
                 }
 
                 var sourcesource = source.Parent as BaseVariableState;
-                TestDataObjectState testtest = sourcesource?.Parent as TestDataObjectState;
+                var testtest = sourcesource?.Parent as TestDataObjectState;
                 if (testtest != null && testtest.SimulationActive.Value)
                 {
                     return true;
@@ -704,7 +671,7 @@ namespace SampleCompany.NodeManagers.TestData
             {
                 if (monitoredItem.MonitoringMode != MonitoringMode.Disabled)
                 {
-                    BaseVariableState source = handle.Node as BaseVariableState;
+                    var source = handle.Node as BaseVariableState;
                     system_.StopMonitoringValue(monitoredItem.Id);
                     system_.StartMonitoringValue(monitoredItem.Id, monitoredItem.SamplingInterval, source);
                 }
@@ -746,7 +713,7 @@ namespace SampleCompany.NodeManagers.TestData
         {
             if (SystemScanRequired(handle.MonitoredNode, monitoredItem))
             {
-                BaseVariableState source = handle.Node as BaseVariableState;
+                var source = handle.Node as BaseVariableState;
 
                 if (previousMode != MonitoringMode.Disabled && monitoredItem.MonitoringMode == MonitoringMode.Disabled)
                 {

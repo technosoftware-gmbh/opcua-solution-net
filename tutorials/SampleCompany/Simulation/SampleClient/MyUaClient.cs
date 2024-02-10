@@ -114,6 +114,29 @@ namespace SampleCompany.SampleClient
         #endregion
 
         #region Public Methods
+        public void DiscoverUaServers()
+        {
+            try
+            {
+                // Discover all OPC UA Servers
+                ApplicationDescriptionCollection servers = null;
+                servers = Discover.GetServerDescriptions(configuration_);
+
+                if (servers != null)
+                {
+                    output_.WriteLine("Found OPC UA Servers:");
+                    foreach (ApplicationDescription server in servers)
+                    {
+                        output_.WriteLine("      { 0}, { 1}", server.ApplicationName, server.ApplicationUri);
+                    }
+                }
+                return;
+            }
+            finally
+            {
+            }
+        }
+
         /// <summary>
         /// Creates a session with the UA server
         /// </summary>

@@ -57,8 +57,8 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
         [DataMember(Order = 1)]
         public MemoryBufferInstanceCollection Buffers
         {
-            get { return buffers_; }
-            set { buffers_ = value; }
+            get => buffers_;
+            set => buffers_ = value;
         }
         #endregion
 
@@ -109,8 +109,8 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
         [DataMember(Order = 1)]
         public string Name
         {
-            get { return name_; }
-            set { name_ = value; }
+            get => name_;
+            set => name_ = value;
         }
 
         /// <summary>
@@ -119,8 +119,8 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
         [DataMember(Order = 2)]
         public int TagCount
         {
-            get { return tagCount_; }
-            set { tagCount_ = value; }
+            get => tagCount_;
+            set => tagCount_ = value;
         }
 
         /// <summary>
@@ -129,8 +129,8 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
         [DataMember(Order = 3)]
         public string DataType
         {
-            get { return dataType_; }
-            set { dataType_ = value; }
+            get => dataType_;
+            set => dataType_ = value;
         }
         #endregion
 

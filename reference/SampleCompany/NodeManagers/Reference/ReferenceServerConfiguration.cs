@@ -57,8 +57,8 @@ namespace SampleCompany.NodeManagers.Reference
         [DataMember(Order = 1)]
         public bool ShowCertificateValidationDialog
         {
-            get { return showCertificateValidationDialog_; }
-            set { showCertificateValidationDialog_ = value; }
+            get => showCertificateValidationDialog_;
+            set => showCertificateValidationDialog_ = value;
         }
         #endregion
 

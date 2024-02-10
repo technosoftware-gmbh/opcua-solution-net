@@ -42,7 +42,7 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
             Description = null;
             WriteMask = AttributeWriteMask.None;
             UserWriteMask = AttributeWriteMask.None;
-            ReferenceTypeId = Opc.Ua.ReferenceTypeIds.HasComponent;
+            ReferenceTypeId = ReferenceTypeIds.HasComponent;
             TypeDefinitionId = new NodeId(VariableTypes.MemoryTagType, parent.TypeDefinitionId.NamespaceIndex);
             ModellingRuleId = null;
             NumericId = offet;

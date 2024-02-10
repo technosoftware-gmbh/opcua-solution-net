@@ -38,7 +38,7 @@ namespace SampleCompany.NodeManagers.Alarms
             alarmTypeIdentifier_ = alarmTypeIdentifier;
             alarmTypeName_ = GetAlarmTypeName(alarmTypeIdentifier_);
 
-            string extraName = "";
+            var extraName = "";
             if (name.Length > 0)
             {
                 extraName = "." + name;
@@ -52,9 +52,9 @@ namespace SampleCompany.NodeManagers.Alarms
 
         public bool HasBranches()
         {
-            bool hasBranches = false;
+            var hasBranches = false;
 
-            ConditionState alarm = alarm_ as ConditionState;
+            var alarm = alarm_ as ConditionState;
             if (alarm != null)
             {
                 hasBranches = alarm.GetBranchCount() > 0;
@@ -67,7 +67,7 @@ namespace SampleCompany.NodeManagers.Alarms
         {
             BaseEventState state = null;
 
-            ConditionState alarm = alarm_ as ConditionState;
+            var alarm = alarm_ as ConditionState;
             if (alarm != null)
             {
                 state = alarm.GetBranch(eventId);
@@ -78,7 +78,7 @@ namespace SampleCompany.NodeManagers.Alarms
 
         public void ClearBranches()
         {
-            ConditionState alarm = alarm_ as ConditionState;
+            var alarm = alarm_ as ConditionState;
             if (alarm != null)
             {
                 alarm.ClearBranches();
@@ -88,7 +88,7 @@ namespace SampleCompany.NodeManagers.Alarms
 
         public void GetBranchesForConditionRefresh(List<IFilterTarget> events)
         {
-            ConditionState alarm = alarm_ as ConditionState;
+            var alarm = alarm_ as ConditionState;
             if (alarm != null)
             {
                 Dictionary<string, ConditionState> branches = alarm.GetBranches();
@@ -106,17 +106,17 @@ namespace SampleCompany.NodeManagers.Alarms
 
         private void InitializeInternal(BaseEventState alarm, NodeId branchId = null)
         {
-            string alarmName = AlarmName;
-            string alarmNodeId = (string)parent_.NodeId.Identifier + "." + AlarmName;
+            var alarmName = AlarmName;
+            var alarmNodeId = (string)parent_.NodeId.Identifier + "." + AlarmName;
 
             alarm.SymbolicName = alarmName;
 
             NodeId createNodeId = null;
-            QualifiedName createQualifiedName = new QualifiedName(alarmName, NamespaceIndex);
+            var createQualifiedName = new QualifiedName(alarmName, NamespaceIndex);
             LocalizedText createLocalizedText = null;
 
 
-            bool isBranch = IsBranch(branchId);
+            var isBranch = IsBranch(branchId);
             createNodeId = new NodeId(alarmNodeId, NamespaceIndex);
             createLocalizedText = new LocalizedText(alarmName);
 
@@ -139,7 +139,7 @@ namespace SampleCompany.NodeManagers.Alarms
 
         private bool IsBranch(NodeId branchId)
         {
-            bool isBranch = false;
+            var isBranch = false;
             if (branchId != null && !branchId.IsNullNodeId)
             {
                 isBranch = true;
@@ -238,7 +238,7 @@ namespace SampleCompany.NodeManagers.Alarms
                 SetValue("Manual Write to trigger " + value.ToString());
             }
 
-            return Opc.Ua.StatusCodes.Good;
+            return StatusCodes.Good;
         }
         #endregion
 
@@ -327,103 +327,103 @@ namespace SampleCompany.NodeManagers.Alarms
 
         protected string GetAlarmTypeName(UInt32 alarmTypeIdentifier)
         {
-            string alarmTypeName = "";
+            var alarmTypeName = "";
 
             switch (alarmTypeIdentifier)
             {
-                case Opc.Ua.ObjectTypes.ConditionType:
+                case ObjectTypes.ConditionType:
                     alarmTypeName = "ConditionType";
                     break;
 
-                case Opc.Ua.ObjectTypes.DialogConditionType:
+                case ObjectTypes.DialogConditionType:
                     alarmTypeName = "DialogConditionType";
                     break;
 
-                case Opc.Ua.ObjectTypes.AcknowledgeableConditionType:
+                case ObjectTypes.AcknowledgeableConditionType:
                     alarmTypeName = "AcknowledgeableConditionType";
                     break;
 
-                case Opc.Ua.ObjectTypes.AlarmConditionType:
+                case ObjectTypes.AlarmConditionType:
                     alarmTypeName = "AlarmConditionType";
                     break;
 
-                case Opc.Ua.ObjectTypes.AlarmGroupType:
+                case ObjectTypes.AlarmGroupType:
                     alarmTypeName = "AlarmGroupType";
                     break;
 
-                case Opc.Ua.ObjectTypes.ShelvedStateMachineType:
+                case ObjectTypes.ShelvedStateMachineType:
                     alarmTypeName = "ShelvedStateMachineType";
                     break;
 
-                case Opc.Ua.ObjectTypes.LimitAlarmType:
+                case ObjectTypes.LimitAlarmType:
                     alarmTypeName = "LimitAlarmType";
                     break;
 
-                case Opc.Ua.ObjectTypes.ExclusiveLimitStateMachineType:
+                case ObjectTypes.ExclusiveLimitStateMachineType:
                     alarmTypeName = "ExclusiveLimitStateMachineType";
                     break;
 
-                case Opc.Ua.ObjectTypes.ExclusiveLimitAlarmType:
+                case ObjectTypes.ExclusiveLimitAlarmType:
                     alarmTypeName = "ExclusiveLimitAlarmType";
                     break;
 
-                case Opc.Ua.ObjectTypes.NonExclusiveLimitAlarmType:
+                case ObjectTypes.NonExclusiveLimitAlarmType:
                     alarmTypeName = "NonExclusiveLimitAlarmType";
                     break;
 
-                case Opc.Ua.ObjectTypes.NonExclusiveLevelAlarmType:
+                case ObjectTypes.NonExclusiveLevelAlarmType:
                     alarmTypeName = "NonExclusiveLevelAlarmType";
                     break;
 
-                case Opc.Ua.ObjectTypes.ExclusiveLevelAlarmType:
+                case ObjectTypes.ExclusiveLevelAlarmType:
                     alarmTypeName = "ExclusiveLevelAlarmType";
                     break;
 
-                case Opc.Ua.ObjectTypes.NonExclusiveDeviationAlarmType:
+                case ObjectTypes.NonExclusiveDeviationAlarmType:
                     alarmTypeName = "NonExclusiveDeviationAlarmType";
                     break;
 
-                case Opc.Ua.ObjectTypes.NonExclusiveRateOfChangeAlarmType:
+                case ObjectTypes.NonExclusiveRateOfChangeAlarmType:
                     alarmTypeName = "NonExclusiveRateOfChangeAlarmType";
                     break;
 
-                case Opc.Ua.ObjectTypes.ExclusiveDeviationAlarmType:
+                case ObjectTypes.ExclusiveDeviationAlarmType:
                     alarmTypeName = "ExclusiveDeviationAlarmType";
                     break;
 
-                case Opc.Ua.ObjectTypes.ExclusiveRateOfChangeAlarmType:
+                case ObjectTypes.ExclusiveRateOfChangeAlarmType:
                     alarmTypeName = "ExclusiveRateOfChangeAlarmType";
                     break;
 
-                case Opc.Ua.ObjectTypes.DiscreteAlarmType:
+                case ObjectTypes.DiscreteAlarmType:
                     alarmTypeName = "DiscreteAlarmType";
                     break;
 
-                case Opc.Ua.ObjectTypes.OffNormalAlarmType:
+                case ObjectTypes.OffNormalAlarmType:
                     alarmTypeName = "OffNormalAlarmType";
                     break;
 
-                case Opc.Ua.ObjectTypes.SystemOffNormalAlarmType:
+                case ObjectTypes.SystemOffNormalAlarmType:
                     alarmTypeName = "SystemOffNormalAlarmType";
                     break;
 
-                case Opc.Ua.ObjectTypes.TripAlarmType:
+                case ObjectTypes.TripAlarmType:
                     alarmTypeName = "TripAlarmType";
                     break;
 
-                case Opc.Ua.ObjectTypes.InstrumentDiagnosticAlarmType:
+                case ObjectTypes.InstrumentDiagnosticAlarmType:
                     alarmTypeName = "InstrumentDiagnosticAlarmType";
                     break;
 
-                case Opc.Ua.ObjectTypes.SystemDiagnosticAlarmType:
+                case ObjectTypes.SystemDiagnosticAlarmType:
                     alarmTypeName = "SystemDiagnosticAlarmType";
                     break;
 
-                case Opc.Ua.ObjectTypes.CertificateExpirationAlarmType:
+                case ObjectTypes.CertificateExpirationAlarmType:
                     alarmTypeName = "CertificateExpirationAlarmType";
                     break;
 
-                case Opc.Ua.ObjectTypes.DiscrepancyAlarmType:
+                case ObjectTypes.DiscrepancyAlarmType:
                     alarmTypeName = "DiscrepancyAlarmType";
                     break;
 

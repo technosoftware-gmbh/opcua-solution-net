@@ -56,8 +56,8 @@ namespace SampleCompany.NodeManagers.TestData
         [DataMember(Order = 1)]
         public string SaveFilePath
         {
-            get { return m_saveFilePath; }
-            set { m_saveFilePath = value; }
+            get => m_saveFilePath;
+            set => m_saveFilePath = value;
         }
 
         /// <summary>
@@ -66,8 +66,8 @@ namespace SampleCompany.NodeManagers.TestData
         [DataMember(Order = 2)]
         public uint MaxQueueSize
         {
-            get { return m_maxQueueSize; }
-            set { m_maxQueueSize = value; }
+            get => m_maxQueueSize;
+            set => m_maxQueueSize = value;
         }
 
         /// <summary>
@@ -76,8 +76,8 @@ namespace SampleCompany.NodeManagers.TestData
         [DataMember(Order = 3)]
         public uint NextUnusedId
         {
-            get { return m_nextUnusedId; }
-            set { m_nextUnusedId = value; }
+            get => m_nextUnusedId;
+            set => m_nextUnusedId = value;
         }
         #endregion
 

@@ -210,9 +210,9 @@ namespace SampleCompany.NodeManagers.SampleDataTypes
 
                     #region Devices
                     var devices = CreateFolderState(root_, "Devices", "Devices", null);
-                    string symbolicName = $"Controler #1";
-                    string displayName = symbolicName;
-                    GenericControllerState controller = new GenericControllerState(devices);
+                    var symbolicName = $"Controler #1";
+                    var displayName = symbolicName;
+                    var controller = new GenericControllerState(devices);
 
                     var nodeId = new NodeId(symbolicName, devices.NodeId.NamespaceIndex);
                     controller.Create(SystemContext, nodeId, symbolicName, displayName, true);
@@ -273,7 +273,7 @@ namespace SampleCompany.NodeManagers.SampleDataTypes
                     // Create an instance of GetMachineDataMethodState
                     symbolicName = $"GetMachineData";
                     displayName = symbolicName;
-                    GetMachineDataMethodState getMachineDataMethod = new GetMachineDataMethodState(plantFolder);
+                    var getMachineDataMethod = new GetMachineDataMethodState(plantFolder);
 
                     nodeId = new NodeId(symbolicName, plantFolder.NodeId.NamespaceIndex);
                     getMachineDataMethod.Create(SystemContext, nodeId, symbolicName, displayName, true);

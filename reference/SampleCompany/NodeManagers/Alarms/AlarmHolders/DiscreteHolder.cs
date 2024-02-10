@@ -64,8 +64,8 @@ namespace SampleCompany.NodeManagers.Alarms
         public override void SetValue(string message = "")
         {
 
-            bool active = alarmController_.IsBooleanActive();
-            int value = alarmController_.GetValue();
+            var active = alarmController_.IsBooleanActive();
+            var value = alarmController_.GetValue();
 
             if (message.Length == 0)
             {

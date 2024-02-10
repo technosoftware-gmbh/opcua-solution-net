@@ -145,8 +145,8 @@ namespace SampleCompany.NodeManagers.SampleNodeManager
         /// </summary>
         public bool AlwaysReportUpdates
         {
-            get { return alwaysReportUpdates_; }
-            set { alwaysReportUpdates_ = value; }
+            get => alwaysReportUpdates_;
+            set => alwaysReportUpdates_ = value;
         }
 
         /// <summary>
@@ -232,7 +232,7 @@ namespace SampleCompany.NodeManagers.SampleNodeManager
                 clientHandle_ = clientHandle;
 
                 // subtract the previous sampling interval.
-                long oldSamplingInterval = (long)(samplingInterval_ * TimeSpan.TicksPerMillisecond);
+                var oldSamplingInterval = (long)(samplingInterval_ * TimeSpan.TicksPerMillisecond);
 
                 if (oldSamplingInterval < nextSampleTime_)
                 {
@@ -242,7 +242,7 @@ namespace SampleCompany.NodeManagers.SampleNodeManager
                 samplingInterval_ = samplingInterval;
 
                 // calculate the next sampling interval.                
-                long newSamplingInterval = (long)(samplingInterval_ * TimeSpan.TicksPerMillisecond);
+                var newSamplingInterval = (long)(samplingInterval_ * TimeSpan.TicksPerMillisecond);
 
                 if (samplingInterval_ > 0)
                 {
@@ -287,7 +287,7 @@ namespace SampleCompany.NodeManagers.SampleNodeManager
         /// </summary>
         public void ValueChanged(ISystemContext context)
         {
-            DataValue value = new DataValue();
+            var value = new DataValue();
 
             ServiceResult error = source_.Node.ReadAttribute(context, attributeId_, NumericRange.Empty, null, value);
 
@@ -368,15 +368,9 @@ namespace SampleCompany.NodeManagers.SampleNodeManager
         /// </summary>
         public IUaSubscription SubscriptionCallback
         {
-            get
-            {
-                return subscription_;
-            }
+            get => subscription_;
 
-            set
-            {
-                subscription_ = value;
-            }
+            set => subscription_ = value;
         }
 
         /// <summary>
@@ -417,7 +411,7 @@ namespace SampleCompany.NodeManagers.SampleNodeManager
                     }
 
                     // re-queue if too little time has passed since the last publish.
-                    long now = DateTime.UtcNow.Ticks;
+                    var now = DateTime.UtcNow.Ticks;
 
                     if (nextSampleTime_ > now)
                     {
@@ -476,13 +470,13 @@ namespace SampleCompany.NodeManagers.SampleNodeManager
         {
             lock (lock_)
             {
-                result = new MonitoredItemCreateResult();
-
-                result.MonitoredItemId = id_;
-                result.StatusCode = StatusCodes.Good;
-                result.RevisedSamplingInterval = samplingInterval_;
-                result.RevisedQueueSize = 0;
-                result.FilterResult = null;
+                result = new MonitoredItemCreateResult {
+                    MonitoredItemId = id_,
+                    StatusCode = StatusCodes.Good,
+                    RevisedSamplingInterval = samplingInterval_,
+                    RevisedQueueSize = 0,
+                    FilterResult = null
+                };
 
                 if (queue_ != null)
                 {
@@ -500,12 +494,12 @@ namespace SampleCompany.NodeManagers.SampleNodeManager
         {
             lock (lock_)
             {
-                result = new MonitoredItemModifyResult();
-
-                result.StatusCode = StatusCodes.Good;
-                result.RevisedSamplingInterval = samplingInterval_;
-                result.RevisedQueueSize = 0;
-                result.FilterResult = null;
+                result = new MonitoredItemModifyResult {
+                    StatusCode = StatusCodes.Good,
+                    RevisedSamplingInterval = samplingInterval_,
+                    RevisedQueueSize = 0,
+                    FilterResult = null
+                };
 
                 if (queue_ != null)
                 {
@@ -555,14 +549,14 @@ namespace SampleCompany.NodeManagers.SampleNodeManager
                 // make a shallow copy of the value.
                 if (value != null)
                 {
-                    DataValue copy = new DataValue();
-
-                    copy.WrappedValue = value.WrappedValue;
-                    copy.StatusCode = value.StatusCode;
-                    copy.SourceTimestamp = value.SourceTimestamp;
-                    copy.SourcePicoseconds = value.SourcePicoseconds;
-                    copy.ServerTimestamp = value.ServerTimestamp;
-                    copy.ServerPicoseconds = value.ServerPicoseconds;
+                    var copy = new DataValue {
+                        WrappedValue = value.WrappedValue,
+                        StatusCode = value.StatusCode,
+                        SourceTimestamp = value.SourceTimestamp,
+                        SourcePicoseconds = value.SourcePicoseconds,
+                        ServerTimestamp = value.ServerTimestamp,
+                        ServerPicoseconds = value.ServerPicoseconds
+                    };
 
                     value = copy;
 
@@ -577,10 +571,7 @@ namespace SampleCompany.NodeManagers.SampleNodeManager
                 lastError_ = error;
 
                 // queue value.
-                if (queue_ != null)
-                {
-                    queue_.QueueValue(value, error);
-                }
+                queue_?.QueueValue(value, error);
 
                 // flag the item as ready to publish.
                 readyToPublish_ = true;
@@ -663,12 +654,12 @@ namespace SampleCompany.NodeManagers.SampleNodeManager
         private void IncrementSampleTime()
         {
             // update next sample time.
-            long now = DateTime.UtcNow.Ticks;
-            long samplingInterval = (long)(samplingInterval_ * TimeSpan.TicksPerMillisecond);
+            var now = DateTime.UtcNow.Ticks;
+            var samplingInterval = (long)(samplingInterval_ * TimeSpan.TicksPerMillisecond);
 
             if (nextSampleTime_ > 0)
             {
-                long delta = now - nextSampleTime_;
+                var delta = now - nextSampleTime_;
 
                 if (samplingInterval > 0 && delta >= 0)
                 {
@@ -792,10 +783,10 @@ namespace SampleCompany.NodeManagers.SampleNodeManager
             }
 
             // copy data value.
-            MonitoredItemNotification item = new MonitoredItemNotification();
-
-            item.ClientHandle = clientHandle_;
-            item.Value = value;
+            var item = new MonitoredItemNotification {
+                ClientHandle = clientHandle_,
+                Value = value
+            };
 
             // apply timestamp filter.
             if (timestampsToReturn_ != TimestampsToReturn.Server && timestampsToReturn_ != TimestampsToReturn.Both)

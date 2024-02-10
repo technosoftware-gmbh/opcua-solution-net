@@ -80,7 +80,7 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
             uint clientHandle,
             double samplingInterval)
         {
-            return base.ModifyAttributes(diagnosticsMasks,
+            return ModifyAttributes(diagnosticsMasks,
                 timestampsToReturn,
                 clientHandle,
                 null,

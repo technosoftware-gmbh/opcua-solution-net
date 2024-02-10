@@ -1,3 +1,4 @@
+
 #region Copyright (c) 2022-2024 Technosoftware GmbH. All rights reserved
 //-----------------------------------------------------------------------------
 // Copyright (c) 2022-2024 Technosoftware GmbH. All rights reserved
@@ -12,7 +13,6 @@
 #region Using Directives
 #endregion
 
-#pragma warning disable CS1591
 
 namespace SampleCompany.NodeManagers.Alarms
 {

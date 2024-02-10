@@ -95,13 +95,13 @@ namespace SampleCompany.NodeManagers.Reference
         /// </summary>
         protected override ResourceManager CreateResourceManager(IUaServerData server, ApplicationConfiguration configuration)
         {
-            ResourceManager resourceManager = new ResourceManager(server, configuration);
+            var resourceManager = new ResourceManager(server, configuration);
 
-            System.Reflection.FieldInfo[] fields = typeof(StatusCodes).GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+            System.Reflection.FieldInfo[] fields = typeof(StatusCodes).GetFields(BindingFlags.Public | BindingFlags.Static);
 
             foreach (System.Reflection.FieldInfo field in fields)
             {
-                uint? id = field.GetValue(typeof(StatusCodes)) as uint?;
+                var id = field.GetValue(typeof(StatusCodes)) as uint?;
 
                 if (id != null)
                 {
@@ -238,7 +238,7 @@ namespace SampleCompany.NodeManagers.Reference
             }
 
             // check for x509 user token.
-            X509IdentityToken x509Token = args.NewIdentity as X509IdentityToken;
+            var x509Token = args.NewIdentity as X509IdentityToken;
 
             if (x509Token != null)
             {
