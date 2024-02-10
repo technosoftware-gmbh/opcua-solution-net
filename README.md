@@ -47,7 +47,8 @@ Documentation of the Model Compiler can be found [here](https://github.com/OPCFo
  * [Installation and Administration of .NET based OPC UA Applications](./documentation/Installation.md)
  * [Distribution Guide](./documentation/Distribution.md)
  * [OPC UA Development](./documentation/Development.md)
-
+ * [OPC UA Client Development](./documentation/ClientDevelopment.md)
+ 
 ### Online Help
 
 We provide an online help for the current version: [OPC UA Solution NET Online Help](https://technosoftware.com/help/OPCUaSolutionNet/33/)
