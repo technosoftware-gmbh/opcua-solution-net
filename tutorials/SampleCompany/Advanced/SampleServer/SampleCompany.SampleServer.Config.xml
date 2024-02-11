@@ -21,17 +21,14 @@
 
     <!-- Where the application instance certificate is stored (MachineDefault) -->
     <ApplicationCertificate>
-
       <!-- The type of store. -->
       <StoreType>Directory</StoreType>
-
       <!-- The location of the store. 
            Windows store must start with LocalMachine, CurrentUser or CurrentService
            The name of the store is appended.
            Note that the names used in code are difference from what appears in the control panel.
            e.g. My == "Personal", Root == "Trusted Root Certification Authorities" -->
       <StorePath>%LocalApplicationData%/OPC Foundation/pki/own</StorePath>
-
       <!-- The subject for the certificate 
            Note that subject names are complex structures. Only text that appears here is treated as the CommonName component.
            The first certificate found is used if multiple certificates with the same CommonName and a matching hostname exist.
@@ -40,14 +37,12 @@
            If no certificate is found, a new self signed application certificate is created.
            The Thumbprint should be specified if the CN or DN does not uniquely identify a certificate. -->
       <SubjectName>CN=SampleCompany OPC UA Sample Server, C=CH, S=Aargau, O=SampleCompany, DC=localhost</SubjectName>
-
       <!-- The SHA1 thumbprint for the certificate.
            The thumbprint uniquely identifies a certificate.
            It should be specified in this file, however, the samples rely on quick and 
            dirty scripts to create new certificate on each machine. A commercial application 
            would generate the initial certificate itself and update the thumbprint accordingly -->
       <!--<Thumbprint>3a35fb798fc6dee8a7e7e4652b0e28fc14c6ee0f</Thumbprint>-->
-
     </ApplicationCertificate>
 
     <!-- Where the issuer certificate are stored (certificate authorities) 
@@ -129,39 +124,30 @@
        Note protocols other than HTTP or UA-TCP are not considered to be interoperable -->
   <TransportConfigurations>
   </TransportConfigurations>
-
   <!-- Specifies quotas used to by the transport layer -->
   <TransportQuotas>
-
     <!-- The default timeout in milliseconds for operations (used by clients) -->
     <OperationTimeout>120000</OperationTimeout>
-
     <!-- The maximum length for a string value in any message -->
     <MaxStringLength>1048576</MaxStringLength>
-
     <!-- The maximum length for a byte string value in any message -->
     <MaxByteStringLength>1048576</MaxByteStringLength>
-
     <!-- The maximum length for any array in a message. 
          Note that some protocols do not distinguish between bytes and arrays. 
          In these cases the binding will choose the larger of 
          MaxByteStringLength or MaxArrayLength-->
     <MaxArrayLength>65535</MaxArrayLength>
-
     <!-- The maximum size of any message -->
     <MaxMessageSize>4194304</MaxMessageSize>
-
     <!-- The maximum buffer size 
          This value controls how big a block of memory the transport layer allocates.
          Setting this value to a large value will reduce performance and use a lot of RAM -->
     <MaxBufferSize>65535</MaxBufferSize>
-
     <!-- The lifetime of a SecureChannel in milliseconds.
          This specifies how long the server will keep a broken channel around while waiting 
          for a client to reconnect.
          Not used by HTTP or .NET TCP bindings -->
     <ChannelLifetime>300000</ChannelLifetime>
-
     <!-- The lifetime of a SecurityToken in milliseconds.
          This specifies how long a security token can be used without renewal. -->
     <SecurityTokenLifetime>3600000</SecurityTokenLifetime>

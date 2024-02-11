@@ -175,18 +175,28 @@ The Session object provides several helper methods including a Session.CreateAsy
 -   The client can also use the Discover.SelectEndpoint() method which choose the best match for the current settings.
 -   The Client takes the EndpointDescription and uses it to Create the Session object by using the Session.CreateAsync() method. If Session.CreateAsync() succeeds the client application will be able to call other methods.
 
-Example from the SampleClient:
+Example from the SampleClient (MyUaClient.cs):
 
 ```
-   var selectedEndpoint = Discover.SelectEndpoint(endpointUrl_, haveAppCertificate, 15000);
+    // Get the endpoint by connecting to server's discovery endpoint.
+    // Try to find the first endopint with security.
+    var endpointConfiguration = EndpointConfiguration.Create(configuration_);
+    var endpoint = new ConfiguredEndpoint(null, endpointDescription, endpointConfiguration);
 
-   var endpointConfiguration = EndpointConfiguration.Create(config);
-   var endpoint = new ConfiguredEndpoint(null, selectedEndpoint, endpointConfiguration);
-   var session_ = Session.CreateAsync(config, 
-                                      endpoint, false, 
-                                      "OPC UA Console Client", 60000, 
-                                      userIdentity, null);
+    TraceableSessionFactory sessionFactory = TraceableSessionFactory.Instance;
 
+    // Create the session
+	Session session = await Session.CreateAsync(
+		configuration_,
+		endpoint,
+		false,
+		false,
+		configuration_.ApplicationName,
+		SessionLifeTime,
+		UserIdentity,
+		null,
+		ct
+	).ConfigureAwait(false);
 ```
 
 #### Keep Alive
@@ -197,74 +207,153 @@ The client application uses the SessionKeepAliveEvent event and KeepAliveStopped
 
 Client applications need to ensure that the SessionTimeout is not set too low. If a call times out the WCF channel is closed automatically and the client application will need to create a new one. Creating a new channel will take time. The KeepAliveStopped property allows applications to detect failures even if they are using a long SessionTimeout.
 
-The following sample is taken from the WorkshopClientConsole and shows how to use the KeepAlive and Reconnect handling. After creating the session [6.5.1] the client can add a keep alive event handler:
+After creating the session the client can add a keep alive event handler.
+
+Example from the Simple SampleClient (MyUaClient.cs):
 
 ```
-    session_.SessionKeepAliveEvent += OnSessionKeepAliveEvent;
+	// Assign the created session
+	if (session != null && session.Connected)
+	{
+		Session = session;
+
+		// override keep alive interval
+		Session.KeepAliveInterval = KeepAliveInterval;
+
+		// support transfer
+		Session.DeleteSubscriptionsOnClose = false;
+		Session.TransferSubscriptionsOnReconnect = true;
+
+		// set up keep alive callback.
+		Session.SessionKeepAliveEvent += OnSessionKeepAlive;
+
+		// prepare a reconnect handler
+		reconnectHandler_ = new SessionReconnectHandler(true, ReconnectPeriodExponentialBackoff);
+	}
 ```
 
 Now the client gets updated with the keep alive events and can easily add a reconnect feature:
 
 ```
-    private void OnSessionKeepAliveEvent(object sender, SessionKeepAliveEventArgs e)
-    {
-        if (sender is Session session && e.Status != null && ServiceResult.IsNotGood(e.Status))
-        {
-            Console.WriteLine("{0} {1}/{2}", e.Status, session.OutstandingRequestCount, 
-                           session.DefunctRequestCount);
- 
-            if (reconnectHandler_ == null)
-            {
-                Console.WriteLine("--- RECONNECTING ---");
-                reconnectHandler_ = new SessionReconnectHandler();
-                reconnectHandler_.BeginReconnect(session, ReconnectPeriod * 1000, 
-                                             OnServerReconnectComplete);
-            }
-        }
-    }
+	/// <summary>
+	/// Handles a keep alive event from a session and triggers a reconnect if necessary.
+	/// </summary>
+	private void OnSessionKeepAlive(object sender, SessionKeepAliveEventArgs e)
+	{
+		try
+		{
+			var session = (Session)sender;
+
+			// check for events from discarded sessions.
+			if (!Session.Equals(session))
+			{
+				return;
+			}
+
+			// start reconnect sequence on communication error.
+			if (ServiceResult.IsBad(e.Status))
+			{
+				if (ReconnectPeriod <= 0)
+				{
+					Utils.LogWarning("KeepAlive status {0}, but reconnect is disabled.", e.Status);
+					return;
+				}
+
+				SessionReconnectHandler.ReconnectState state = reconnectHandler_.BeginReconnect(Session, ReconnectPeriod, OnReconnectComplete);
+				if (state == SessionReconnectHandler.ReconnectState.Triggered)
+				{
+					Utils.LogInfo("KeepAlive status {0}, reconnect status {1}, reconnect period {2}ms.", e.Status, state, ReconnectPeriod);
+				}
+				else
+				{
+					Utils.LogInfo("KeepAlive status {0}, reconnect status {1}.", e.Status, state);
+				}
+
+				// cancel sending a new keep alive request, because reconnect is triggered.
+				e.CancelKeepAlive = true;
+
+				return;
+			}
+		}
+		catch (Exception exception)
+		{
+			Utils.LogError(exception, "Error in OnKeepAlive.");
+		}
+	}
 ```
 
-As soon as the session keep alive event handler (OnSessionKeepAliveEvent) detects that a reconnect must be done a reconnect handler is created. In the above sample the following lines are doing this:
+As soon as the session keep alive event handler (OnSessionKeepAlive) detects that a reconnect must be done a reconnect handler is called to begin the reconnect. In the above sample the following lines are doing this:
 
 ```
-    if (reconnectHandler_ == null)
-    {
-        Console.WriteLine("--- RECONNECTING ---");
-        reconnectHandler_ = new SessionReconnectHandler();
-        reconnectHandler_.BeginReconnect(session, ReconnectPeriod * 1000, 
-                                        OnServerReconnectComplete);
-    }
+				SessionReconnectHandler.ReconnectState state = reconnectHandler_.BeginReconnect(Session, ReconnectPeriod, OnReconnectComplete);
+				if (state == SessionReconnectHandler.ReconnectState.Triggered)
+				{
+					Utils.LogInfo("KeepAlive status {0}, reconnect status {1}, reconnect period {2}ms.", e.Status, state, ReconnectPeriod);
+				}
+				else
+				{
+					Utils.LogInfo("KeepAlive status {0}, reconnect status {1}.", e.Status, state);
+				}
 ```
 
-As soon as the OPC UA stack reconnected to the OPC UA Server the OnServerReconnectComplete handler is called and can then finish the client-side actions.
+As soon as the OPC UA stack reconnected to the OPC UA Server the OnReconnectComplete handler is called and can then finish the client-side actions.
 
-The following sample is taken from the SampleClient and shows how to implement the OnServerReconnectComplete handler:
+The following sample is taken from the Simple SampleClient (MyUaClient.cs) and shows how to implement the OnReconnectComplete handler:
 
 ```
-   private void OnServerReconnectComplete(object sender, EventArgs e)
-   {
-      // ignore callbacks from discarded objects.
-      if (!ReferenceEquals(sender, reconnectHandler_))
-      {
-         return;
-      }
- 
-      if (reconnectHandler_ != null)
-      {
-         session_ = reconnectHandler_.Session;
-         reconnectHandler_.Dispose();
-         reconnectHandler_ = null;
-         Console.WriteLine("--- RECONNECTED ---");
-      }
-   }
+	/// <summary>
+	/// Called when the reconnect attempt was successful.
+	/// </summary>
+	private void OnReconnectComplete(object sender, EventArgs e)
+	{
+		// ignore callbacks from discarded objects.
+		if (!ReferenceEquals(sender, reconnectHandler_))
+		{
+			return;
+		}
+
+		lock (lock_)
+		{
+			// if session recovered, Session property is null
+			if (reconnectHandler_.Session != null)
+			{
+				// ensure only a new instance is disposed
+				// after reactivate, the same session instance may be returned
+				if (!ReferenceEquals(Session, reconnectHandler_.Session))
+				{
+					output_.WriteLine("--- RECONNECTED TO NEW SESSION --- {0}", reconnectHandler_.Session.SessionId);
+					IUaSession session = Session;
+					Session = (Session)reconnectHandler_.Session;
+					Utils.SilentDispose(session);
+				}
+				else
+				{
+					output_.WriteLine("--- REACTIVATED SESSION --- {0}", reconnectHandler_.Session.SessionId);
+				}
+			}
+			else
+			{
+				output_.WriteLine("--- RECONNECT KeepAlive recovered ---");
+			}
+		}
+	}
 ```
 
 Important in the OnServerReconnectComplete handler are the following lines:
 
-1.  session\_ = reconnectHandler_.Session;  
-    The session used up to now must be replaced with the new session provided by the reconnect handler. The client itself does not need to create a new session, subscreiptions or MonitoredItems. That’s all done by the OPC UA stack. So with taking the session provided by the reconnect handler all subriptions and MonitoredItems are then still valid and functional.
-2.  reconnectHandler_.Dispose(); and reconnectHandler\_ = null;  
-    This ensures that the keep alive event handler doesn’t start a new reconnect again.
+```
+				// ensure only a new instance is disposed
+				// after reactivate, the same session instance may be returned
+				if (!ReferenceEquals(Session, reconnectHandler_.Session))
+				{
+					output_.WriteLine("--- RECONNECTED TO NEW SESSION --- {0}", reconnectHandler_.Session.SessionId);
+					IUaSession session = Session;
+					Session = (Session)reconnectHandler_.Session;
+					Utils.SilentDispose(session);
+				}
+```
+
+The session used up to now must be replaced with the new session provided by the reconnect handler. The client itself does not need to create a new session, subscriptions or MonitoredItems. That’s all done by the OPC UA stack. So with taking the session provided by the reconnect handler all subriptions and MonitoredItems are then still valid and functional.
 
 #### Cache
 
@@ -274,7 +363,7 @@ The NodeCache is populated with the FetchNode() method which will read all of th
 
 Client applications that wish to use the NodeCache must pre-fetch all the ReferenceType hierarchy supported by the Server by calling FetchTypeTree() method on the Session object.
 
-The Find() method is used during Browse of the address space [6.5.1].
+The Find() method is used during Browse of the address space.
 
 #### Events
 
@@ -284,7 +373,7 @@ The Session object is responsible for sending and processing the Publish request
 -   The SubscriptionsChangedEvent event indicates when a Subscription is added or removed.
 -   The SessionClosingEvent event indicates that the Session is about to be closed.
 
-**Important**: The WorkshopClientConsole doesn’t show the usage of these features.
+**Important**: The Simple Sample doesn’t show the usage of these features.
 
 #### Multi-Threading
 
@@ -297,172 +386,277 @@ The first thing to do is typically to find the server items you wish to read or 
 In the solution, the address space is accessed through the Browser class. You can call browse to request nodes from the server. You start from any known node, typically the root folder and follow references between the nodes. In a first step, you create a browser object as follows:
 
 ```
-    // Create the browser
-    var browser = new Browser(mySessionSampleServer_)
-    {
-        BrowseDirection = BrowseDirection.Forward,
-        ReferenceTypeId = ReferenceTypeIds.HierarchicalReferences,
-        IncludeSubtypes = true,
-        NodeClassMask = 0,
-        ContinueUntilDone = false,
-    };
+	/// <summary>
+	/// Browse Server nodes
+	/// </summary>
+	public void Browse(IUaSession session)
+	{
+		if (session == null || session.Connected == false)
+		{
+			output_.WriteLine("Session not connected!");
+			return;
+		}
+
+		try
+		{
+			// Create a Browser object
+			var browser = new Browser(session) {
+				// Set browse parameters
+				BrowseDirection = BrowseDirection.Forward,
+				NodeClassMask = (int)NodeClass.Object | (int)NodeClass.Variable,
+				ReferenceTypeId = ReferenceTypeIds.HierarchicalReferences,
+				IncludeSubtypes = true
+			};
+
+			NodeId nodeToBrowse = ObjectIds.Server;
+
+			// Call Browse service
+			output_.WriteLine("Browsing {0} node...", nodeToBrowse);
+			ReferenceDescriptionCollection browseResults = browser.Browse(nodeToBrowse);
+
+			// Display the results
+			output_.WriteLine("Browse returned {0} results:", browseResults.Count);
+
+			foreach (ReferenceDescription result in browseResults)
+			{
+				output_.WriteLine("     DisplayName = {0}, NodeClass = {1}", result.DisplayName.Text, result.NodeClass);
+			}
+		}
+		catch (Exception ex)
+		{
+			// Log Error
+			output_.WriteLine($"Browse Error : {ex.Message}.");
+		}
+	}
 ```
 
-The Objects.ObjectsFolder node represents the root folder, so starting from the root folder can be done with the following call:
+The ObjectIds.Server node represents the root folder of the server node, so starting from the root folder can be done with the following call:
 
 ```
-    // Browse from the RootFolder
-    ReferenceDescriptionCollection references = browser.Browse(Objects.ObjectsFolder);
-
-    GetElements(mySessionSampleServer_, browser, 0, references);
-```
-
-The GetElements method can be implemented like this:
+			// Call Browse service
+			output_.WriteLine("Browsing {0} node...", nodeToBrowse);
+			ReferenceDescriptionCollection browseResults = browser.Browse(nodeToBrowse);
 
 ```
-    private static void GetElements(Session session, Browser browser, uint level,
-                                    ReferenceDescriptionCollection references)
-    {
-        var spaces = "";
-        for (int i = 0; i <= level; i++)
-        {
-            spaces += "   ";
-        }
-        // Iterate through the references and print the variables
-        foreach (ReferenceDescription reference in references)
-        {
-            // make sure the type definition is in the cache.
-            session.NodeCache.Find(reference.ReferenceTypeId);
 
-            switch (reference.NodeClass)
-            {
-                case NodeClass.Object:
-                    Console.WriteLine(spaces + "+ " + reference.DisplayName);
-                    break;
+### Read Value(s)
 
-                default:
-                    Console.WriteLine(spaces + "- " + reference.DisplayName);
-                    break;
-            }
-            var subReferences = browser.Browse((NodeId)reference.NodeId);
-            level += 1;
-            GetElements(session, browser, level, subReferences);
-            level -= 1;
-        }
-    } 
-```
-
-### Read Value
-
-Once you have a node selected, you can read the attributes of the node. There are actually several alternative read-calls that you can make in the Session class. In the WorkshopClientConsole this is used with
+Once you have a node selected, you can read the attributes of the node. There are actually several alternative read-calls that you can make in the Session class, e.g.: 
 
 ```
-    DataValue simulatedDataValue = mySessionSampleServer_.ReadValue(simulatedDataNodeId_);
-```
+	/// <summary>
+	/// Read a list of nodes from Server
+	/// </summary>
+	public void ReadNodes(IUaSession session)
+	{
+		if (session == null || session.Connected == false)
+		{
+			output_.WriteLine("Session not connected!");
+			return;
+		}
 
-where the simulatedDataNodeId\_ is defined as
-```
-    private readonly NodeId simulatedDataNodeId_ = new NodeId("ns=2;s=Scalar_Simulation_Number");
-```
+		try
+		{
+			#region Read a node by calling the Read Service
 
-This reads the value of the node "ns=2;s=Scalar_Simulation_Number" from the server.
+			// build a list of nodes to be read
+			var nodesToRead = new ReadValueIdCollection()
+			{
+				// Value of ServerStatus
+				new ReadValueId() { NodeId = Variables.Server_ServerStatus, AttributeId = Attributes.Value },
+				// BrowseName of ServerStatus_StartTime
+				new ReadValueId() { NodeId = Variables.Server_ServerStatus_StartTime, AttributeId = Attributes.BrowseName },
+				// Value of ServerStatus_StartTime
+				new ReadValueId() { NodeId = Variables.Server_ServerStatus_StartTime, AttributeId = Attributes.Value }
+			};
+
+			// Read the node attributes
+			output_.WriteLine("Reading nodes...");
+
+			// Call Read Service
+			_ = session.Read(
+				null,
+				0,
+				TimestampsToReturn.Both,
+				nodesToRead,
+				out DataValueCollection resultsValues,
+				out DiagnosticInfoCollection diagnosticInfos);
+
+			// Validate the results
+			validateResponse_(resultsValues, nodesToRead);
+
+			// Display the results.
+			foreach (DataValue result in resultsValues)
+			{
+				output_.WriteLine("Read Value = {0} , StatusCode = {1}", result.Value, result.StatusCode);
+			}
+			#endregion
+
+			#region Read the Value attribute of a node by calling the Session.ReadValue method
+			// Read Server NamespaceArray
+			output_.WriteLine("Reading Value of NamespaceArray node...");
+			DataValue namespaceArray = session.ReadValue(Variables.Server_NamespaceArray);
+			// Display the result
+			output_.WriteLine($"NamespaceArray Value = {namespaceArray}");
+			#endregion
+		}
+		catch (Exception ex)
+		{
+			// Log Error
+			output_.WriteLine($"Read Nodes Error : {ex.Message}.");
+		}
+	}
+```
 
 In general, you should avoid calling the read methods for individual items. If you need to read several items at the same time, you should consider using mySessionTechnosoftwareSampleServer .ReadValues() [6.5.4]. It is a bit more complicated to use, but it will only make a single call to the server to read any number of values. Or if you want to monitor variables that are changing in the server, you had better use the Subscription, as described in chapter [0].
 
-### Read Values
-
-As already mentioned above you can also read attributes of multiple nodes at the same time. This is more efficient then calling mySessionTechnosoftwareSampleServer .ReadValue() [6.5.3] several times for each of the nodes you want to get attributes from. In the WorkshopClientConsole this is used with
-
-```
-    // The input parameters of the ReadValues() method
-    List<NodeId> variableIds = new List<NodeId>();
-    List<Type> expectedTypes = new List<Type>();
-
-    // The output parameters of the ReadValues() method
-    List<object> values;
-    List<ServiceResult> errors;
-
-    // Add a node to the list
-    variableIds.Add(simulatedDataNodeId_);
-    // Add an expected type to the list (null means we get the original type from the server)
-    expectedTypes.Add(null);
-
-    // Add another node to the list
-    variableIds.Add(staticDataNodeId1_);
-    // Add an expected type to the list (null means we get the original type from the server)
-    expectedTypes.Add(null);
-
-    // Add another node to the list
-    variableIds.Add(staticDataNodeId2_);
-    // Add an expected type to the list (null means we get the original type from the server)
-    expectedTypes.Add(null);
-
-    mySessionSampleServer_.ReadValues(variableIds, expectedTypes, out values, out errors);
-```
-
-where the following NodeId’s:
-
-```
-    private readonly NodeId simulatedDataNodeId_ = new NodeId("ns=2;s=Scalar_Simulation_Number");
-    private readonly NodeId staticDataNodeId1_ = new NodeId("ns=2;s=Scalar_Static_Integer");
-    private readonly NodeId staticDataNodeId2_ = new NodeId("ns=2;s=Scalar_Static_Double");
-```
-
-This reads the value of the 3 nodes from the server.
-
-### Write Value
+### Write Value(s)
 
 Like reading, you can also write values to the server. For example:
 
 ```
-    short writeInt = 1234;
+	/// <summary>
+	/// Write a list of nodes to the Server.
+	/// </summary>
+	public void WriteNodes(IUaSession session)
+	{
+		if (session == null || session.Connected == false)
+		{
+			output_.WriteLine("Session not connected!");
+			return;
+		}
 
-    Console.WriteLine("Write Value: " + writeInt);
-    StatusCode result = mySessionSampleServer_.WriteValue(staticDataNodeId1_, 
-                                                          new DataValue(writeInt));
+		try
+		{
+			// Write the configured nodes
+			var nodesToWrite = new WriteValueCollection();
 
-    // read it again to check the new value
-    Console.WriteLine("Node Value (should be {0}): {1}",
-                      mySessionSampleServer_.ReadValue(staticDataNodeId1_).Value, writeInt);
+			// Int32 Node - Objects\CTT\Scalar\Scalar_Static\Int32
+			var intWriteVal = new WriteValue {
+				NodeId = new NodeId("ns=2;s=Scalar_Static_Int32"),
+				AttributeId = Attributes.Value,
+				Value = new DataValue {
+					Value = 100
+				}
+			};
+			nodesToWrite.Add(intWriteVal);
 
+			// Float Node - Objects\CTT\Scalar\Scalar_Static\Float
+			var floatWriteVal = new WriteValue {
+				NodeId = new NodeId("ns=2;s=Scalar_Static_Float"),
+				AttributeId = Attributes.Value,
+				Value = new DataValue {
+					Value = (float)100.5
+				}
+			};
+			nodesToWrite.Add(floatWriteVal);
+
+			// String Node - Objects\CTT\Scalar\Scalar_Static\String
+			var stringWriteVal = new WriteValue {
+				NodeId = new NodeId("ns=2;s=Scalar_Static_String"),
+				AttributeId = Attributes.Value,
+				Value = new DataValue {
+					Value = "String Test"
+				}
+			};
+			nodesToWrite.Add(stringWriteVal);
+
+			// Write the node attributes
+			output_.WriteLine("Writing nodes...");
+
+			// Call Write Service
+			_ = session.Write(null,
+							nodesToWrite,
+							out StatusCodeCollection results,
+							out DiagnosticInfoCollection diagnosticInfos);
+
+			// Validate the response
+			validateResponse_(results, nodesToWrite);
+
+			// Display the results.
+			output_.WriteLine("Write Results :");
+
+			foreach (StatusCode writeResult in results)
+			{
+				output_.WriteLine("     {0}", writeResult);
+			}
+		}
+		catch (Exception ex)
+		{
+			// Log Error
+			output_.WriteLine($"Write Nodes Error : {ex.Message}.");
+		}
+	}
 ```
 
 As a response, you get a status code – indicating if the write was successful or not.
 
 If the operation fails, e.g. because of a connection loss, you will get an exception. For service call errors, such that the server could not handle the service request at all, you can expect ServiceResultException.
 
-### Write Values
+### Calling Methods
 
-Like reading several values at once, you can also write values of multiple nodes to the server. For example:
+OPC UA also defines a mechanism to call methods in the server objects. To find out if an object defines methods, you can call ReadNode() of the session and use as parameter the NodeId you want to call a method from:
 
 ```
-    writeInt = 5678;
-    Double writeDouble = 1234.1234;
+    private readonly NodeId methodsNodeId_ = new NodeId("ns=2;s=Methods");
+    private readonly NodeId callHelloMethodNodeId_ = new NodeId("ns=2;s=Methods_Hello");
 
-    List<NodeId> nodeIds = new List<NodeId>();                        
-    List<DataValue> dataValues = new List<DataValue>();
+    INode node = mySessionSampleServer_.ReadNode(callHelloMethodNodeId_);
 
-    nodeIds.Add(staticDataNodeId1_);
-    nodeIds.Add(staticDataNodeId2_);
+    MethodNode methodNode = node as MethodNode;
 
-    dataValues.Add(new DataValue(writeInt));
-    dataValues.Add(new DataValue(writeDouble));
-
-    Console.WriteLine("Write Values: {0} and {1}", writeInt, writeDouble);
-    result = mySessionSampleServer_.WriteValues(nodeIds, dataValues);
-
-    // read it again to check the new value
-    Console.WriteLine("Node Value (should be {0}): {1}",
-                      mySessionSampleServer_.ReadValue(staticDataNodeId1_).Value, 
-                      writeInt);
-    Console.WriteLine("Node Value (should be {0}): {1}",
-                      mySessionSampleServer_.ReadValue(staticDataNodeId2_).Value,
-                      writeDouble);
+    if (methodNode != null)
+    {
+        // Node supports methods
+    }
 ```
 
-As a response, you get a status code – indicating if the write was successful or not.
+OPC UA Methods have a variable list of Input and Output Arguments. To make this example simple we have choosen a method with one input and one output argument. To be able to call a method you need to know the node of the method, in our example callHelloMethodNodeId\_ but also the parent node, in our example methodsNodeId_. Calling the method then done by
 
-If the operation fails, e.g. because of a connection loss, you will get an exception. For service call errors, such that the server could not handle the service request at all, you can expect ServiceResultException.
+```
+	/// <summary>
+	/// Call UA method
+	/// </summary>
+	public void CallMethod(IUaSession session)
+	{
+		if (session == null || session.Connected == false)
+		{
+			output_.WriteLine("Session not connected!");
+			return;
+		}
+
+		try
+		{
+			// Define the UA Method to call
+			// Parent node - Objects\My Data\Methods
+			// Method node - Objects\My Data\Methods\Hello
+			var objectId = new NodeId("ns=2;s=Methods");
+			var methodId = new NodeId("ns=2;s=Methods_Hello");
+
+			// Define the method parameters
+			// Input argument requires a Float and an UInt32 value
+			var inputArguments = "from Call Method";
+			IList<object> outputArguments = null;
+
+			// Invoke Call service
+			output_.WriteLine("Calling UA method for node {0} ...", methodId);
+			outputArguments = session.Call(objectId, methodId, inputArguments);
+
+			// Display results
+			output_.WriteLine("Method call returned {0} output argument(s):", outputArguments.Count);
+
+			foreach (var outputArgument in outputArguments)
+			{
+				output_.WriteLine("     OutputValue = {0}", outputArgument.ToString());
+			}
+		}
+		catch (Exception ex)
+		{
+			output_.WriteLine("Method call error: {0}", ex.Message);
+		}
+	}
+```
+
 
 ### Create a MonitoredItem
 
@@ -489,20 +683,19 @@ The MonitoredItem is designed for multi-threaded operation because the Publish r
 
 Client applications must be careful when update MonitoredItem parameters while another thread has called ApplyChanges on the Subscription because it could lead to situation where the state of the MonitoredItem on the Server does not match the state of the MonitoredItem on the client.
 
-The WorkshopClientConsole uses the following code to create a MonitoredItem:
+The Advanced Sample client uses the following code to create a MonitoredItem:
 
 ```
-    // Create a MonitoredItem
-    MonitoredItem monitoredItem = new MonitoredItem
-    {
-        StartNodeId = new NodeId(simulatedDataNodeId_),
-        AttributeId = Attributes.Value,
-        DisplayName = "Simulated Data Value",
-        MonitoringMode = MonitoringMode.Reporting,
-        SamplingInterval = 1000,
-        QueueSize = 0,
-        DiscardOldest = true
-    };
+	// Create MonitoredItems for data changes (Sample Server)
+	var intMonitoredItem = new MonitoredItem(subscription.DefaultItem) {
+		// Int32 Node - Objects\CTT\Scalar\Simulation\Int32
+		StartNodeId = new NodeId("ns=2;s=Scalar_Simulation_Int32"),
+		AttributeId = Attributes.Value,
+		DisplayName = "Int32 Variable",
+		SamplingInterval = 1000,
+		QueueSize = 10,
+		DiscardOldest = true
+	};
 ```
 
 ### Create a Subscription
@@ -517,17 +710,14 @@ The Subscription object is designed for batch operations. This means the subscri
 In normal operation, the important settings for the Subscription are the PublishingEnabled and PublishingInterval. The following example shows how the WorkshopClientConsole creates a subscription:
 
 ```
-    // Create a new subscription
-    Subscription mySubscription = new Subscription
-    {
-        DisplayName = "My Subscription",
-        PublishingEnabled = true,
-        PublishingInterval = 500,
-        KeepAliveCount = 10,
-        LifetimeCount = 100,
-        MaxNotificationsPerPublish = 1000,
-        TimestampsToReturn = TimestampsToReturn.Both
-    };
+	// Define Subscription parameters
+	var subscription = new Subscription(session.DefaultSubscription) {
+		DisplayName = "Console ReferenceClient Subscription",
+		PublishingEnabled = true,
+		PublishingInterval = 1000,
+		LifetimeCount = 0,
+		MinLifetimeInterval = minLifeTime,
+	};
 ```
 
 The settings KeepAliveCount, LifetimeCount, MaxNotificationsPerPublish and the Priority of the Subscription can also be omitted to use the default values.
@@ -565,53 +755,48 @@ The Subscription is designed for multi-threaded operation because the Publish re
 In order to monitor data changes, you have to subscribe to the MonitoredItemNotificationEvent as shown below:
 
 ```
-    // Establish the notification event to get changes on the MonitoredItem
-    monitoredItem.MonitoredItemNotificationEvent += OnMonitoredItemNotificationEvent;
+    intMonitoredItem.MonitoredItemNotificationEvent += OnMonitoredDataItemNotification;
 ```
 
 You also must add the MonitoredItem to the subscription
 
 ```
-    // Add the item to the subscription
-    mySubscription.AddItem(monitoredItem);
+    subscription.AddItem(intMonitoredItem);
 ```
 
 If you are finished with adding MonitoredItems to the subscription you have to add the subscription to the session:
 
 ```
-    // Add the subscription to the session
-    mySessionSampleServer_.AddSubscription(mySubscription);
+    _ = session.AddSubscription(subscription);
 ```
 
 Now you can finish creating the subscription and apply the changes to the session by using the following code:
 
 ```
-    // Create the subscription. Must be done after adding the subscription to a session
-    mySubscription.Create();
-
-    // Apply all changes on the subscription
-    mySubscription.ApplyChanges();
+    // Create the subscription on Server side
+    subscription.Create();
+	
+    // Create the monitored items on Server side
+    subscription.ApplyChanges();
 ```
 
-The specified event callback OnMonitoredItemNotificationEvent of the WorkshopClientConsole looks like:
+The specified event callback OnMonitoredItemNotification looks like:
 
 ```
-    private void OnMonitoredItemNotificationEvent(object sender, 
-                                                  MonitoredItemNotificationEventArgs e)
-    {
-        var notification = e.NotificationValue as MonitoredItemNotification;
-        if (notification == null)
-        {
-            return;
-        }
-        var monitoredItem = sender as MonitoredItem;
-        if (monitoredItem != null)
-        {
-            var message = String.Format("Event called for Variable \"{0}\" with Value = {1}.", 
-                                        monitoredItem.DisplayName, notification.Value);
-            Console.WriteLine(message);
-        }
-    }
+	private void OnMonitoredDataItemNotification(object sender, MonitoredItemNotificationEventArgs e)
+	{
+		var monitoredItem = sender as MonitoredItem;
+		try
+		{
+			// Log MonitoredItem Notification event
+			var notification = e.NotificationValue as MonitoredItemNotification;
+			output_.WriteLine("Notification: {0} \"{1}\" and Value = {2}.", notification.Message.SequenceNumber, monitoredItem.ResolvedNodeId, notification.Value);
+		}
+		catch (Exception ex)
+		{
+			output_.WriteLine("OnMonitoredItemNotification error: {0}", ex.Message);
+		}
+	}
 ```
 
 ### Subscribe to events
@@ -658,60 +843,6 @@ See the WorkshopClientConsole for the code of the callback OnMonitoredEventItemN
     mySubscription.AddItem(monitoredEventItem);
     mySubscription.ApplyChanges();
     mySubscription.ConditionRefresh();
-```
-
-### Calling Methods
-
-OPC UA also defines a mechanism to call methods in the server objects. To find out if an object defines methods, you can call ReadNode() of the session and use as parameter the NodeId you want to call a method from:
-
-```
-    private readonly NodeId methodsNodeId_ = new NodeId("ns=2;s=Methods");
-    private readonly NodeId callHelloMethodNodeId_ = new NodeId("ns=2;s=Methods_Hello");
-
-    INode node = mySessionSampleServer_.ReadNode(callHelloMethodNodeId_);
-
-    MethodNode methodNode = node as MethodNode;
-
-    if (methodNode != null)
-    {
-        // Node supports methods
-    }
-```
-
-OPC UA Methods have a variable list of Input and Output Arguments. To make this example simple we have choosen a method with one input and one output argument. To be able to call a method you need to know the node of the method, in our example callHelloMethodNodeId\_ but also the parent node, in our example methodsNodeId_. Calling the method then done by
-
-```
-    NodeId methodId = callHelloMethodNodeId_;
-    NodeId objectId = methodsNodeId_;
-
-    VariantCollection inputArguments = new VariantCollection();
-    Argument argument = new Argument();
-    inputArguments.Add(new Variant("from Technosoftware"));
-                        
-    var request = new CallMethodRequest { ObjectId = objectId, 
-                                          MethodId = methodId, 
-                                          InputArguments = inputArguments };
-
-    var requests = new CallMethodRequestCollection { request };
-
-    CallMethodResultCollection results;
-    DiagnosticInfoCollection diagnosticInfos;
-
-    ResponseHeader responseHeader = mySessionSampleServer_.Call(
-                            null,
-                            requests,
-                            out results,
-                            out diagnosticInfos);
-
-    if (StatusCode.IsBad(results[0].StatusCode))
-    {
-        throw new ServiceResultException(new ServiceResult(
-                         results[0].StatusCode, 
-                         0, diagnosticInfos,
-                         responseHeader.StringTable));
-    }
-
-    Console.WriteLine(String.Format("{0}", results[0].OutputArguments[0]));
 ```
 
 ### History Access

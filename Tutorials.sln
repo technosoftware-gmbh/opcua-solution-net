@@ -3,15 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Simulation", "Simulation", "{69BE4B40-E6D2-4A20-9B6E-C74F661990CD}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Advanced", "Advanced", "{69BE4B40-E6D2-4A20-9B6E-C74F661990CD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleCompany.SampleClient", "tutorials\SampleCompany\Simulation\SampleClient\SampleCompany.SampleClient.csproj", "{B331B6A4-18C2-4F1A-9D36-1B2632260AF4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleCompany.SampleClient", "tutorials\SampleCompany\Advanced\SampleClient\SampleCompany.SampleClient.csproj", "{B331B6A4-18C2-4F1A-9D36-1B2632260AF4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleCompany.SampleServer", "tutorials\SampleCompany\Simulation\SampleServer\SampleCompany.SampleServer.csproj", "{16BDDC07-1CC1-4F79-B828-F2D337E842B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleCompany.SampleServer", "tutorials\SampleCompany\Advanced\SampleServer\SampleCompany.SampleServer.csproj", "{16BDDC07-1CC1-4F79-B828-F2D337E842B3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NodeManagers", "NodeManagers", "{64FB4509-A5BE-4053-9F56-85D37C4AEF73}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleCompany.NodeManagers", "tutorials\SampleCompany\NodeManagers\SampleCompany.NodeManagers.csproj", "{62681F76-F2C5-4B05-8208-5309AD932AB9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Simple", "Simple", "{C8D10361-85E0-48E7-8B51-BEF7399B8823}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleCompany.SampleServer", "tutorials\SampleCompany\Simple\SampleServer\SampleCompany.SampleServer.csproj", "{ED3B8B5E-F6CC-437E-BB7C-3EA01FB98EC3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleCompany.SampleClient", "tutorials\SampleCompany\Simple\SampleClient\SampleCompany.SampleClient.csproj", "{2675BE5F-29BB-47E1-AD0D-B9B9E6739393}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +37,14 @@ Global
 		{62681F76-F2C5-4B05-8208-5309AD932AB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62681F76-F2C5-4B05-8208-5309AD932AB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62681F76-F2C5-4B05-8208-5309AD932AB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED3B8B5E-F6CC-437E-BB7C-3EA01FB98EC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED3B8B5E-F6CC-437E-BB7C-3EA01FB98EC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED3B8B5E-F6CC-437E-BB7C-3EA01FB98EC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED3B8B5E-F6CC-437E-BB7C-3EA01FB98EC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2675BE5F-29BB-47E1-AD0D-B9B9E6739393}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2675BE5F-29BB-47E1-AD0D-B9B9E6739393}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2675BE5F-29BB-47E1-AD0D-B9B9E6739393}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2675BE5F-29BB-47E1-AD0D-B9B9E6739393}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -39,6 +53,8 @@ Global
 		{B331B6A4-18C2-4F1A-9D36-1B2632260AF4} = {69BE4B40-E6D2-4A20-9B6E-C74F661990CD}
 		{16BDDC07-1CC1-4F79-B828-F2D337E842B3} = {69BE4B40-E6D2-4A20-9B6E-C74F661990CD}
 		{62681F76-F2C5-4B05-8208-5309AD932AB9} = {64FB4509-A5BE-4053-9F56-85D37C4AEF73}
+		{ED3B8B5E-F6CC-437E-BB7C-3EA01FB98EC3} = {C8D10361-85E0-48E7-8B51-BEF7399B8823}
+		{2675BE5F-29BB-47E1-AD0D-B9B9E6739393} = {C8D10361-85E0-48E7-8B51-BEF7399B8823}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {519D77B6-EA9C-4A11-8248-ABCC01FD533C}

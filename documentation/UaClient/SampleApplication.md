@@ -1,10 +1,15 @@
 # Sample Application
 
-The OPC UA Client .NET contains a sample client application, you can find it them in the /tutorials/SampleCompany/Simulation/SampleClient folder.
+The OPC UA Client .NET contains two sample client applications, you can find it them in 
+
+- [Simple Sample Application](/tutorials/SampleCompany/Simple/SampleClient)
+  This sample client shows the basics of a client application.
+- [Advanced Sample Application](/tutorials/SampleCompany/Advanced/SampleClient)
+  This sample client shows advanced technics for a client application.
 
 ## Required NuGet packages
 
-The SDK is divided into several DLL’s as shown in the picture below:
+The OPC UA CLient .NET is divided into several DLL’s as shown in the picture below:
 
 ![](../images/OPCUANETArchitecture.png)
 
@@ -21,13 +26,13 @@ The DLLs are delivered as local NuGet Packages. The OPC UA Client .NET uses the 
 
 We provide an online help for the current version: [OPC UA Solution NET Online Help](https://technosoftware.com/help/OPCUaSolutionNet/33/) which also contains updated information about the directory structure.
 
-## OPC UA Client Solution for .NET
+## SOlution
 
 The main OPC UA Solution can be found in the root of the repository and is named.
 
--   Tutorials.sln
+- Tutorials.sln
 
-The solution contains a sample client, as well as a sample server used by this client.
+The solution contains two sample clients, as well as two sample servers used by these clients.
 
 ## Prerequisites
 
@@ -40,7 +45,7 @@ This command restores the tree of dependencies.
 ## Start the server
 
 1.  Open a command prompt.
-2.  Navigate to the folder tutorials/SampleCompany/Simulation/SampleServer.
+2.  Navigate to the folder tutorials/SampleCompany/Simple/SampleServer.
 3.  To run the server sample type  
        
     dotnet run --no-restore --framework net8.0 --project SampleCompany.SampleServer.csproj --autoaccept
@@ -50,7 +55,7 @@ This command restores the tree of dependencies.
 ## Start the client
 
 1.  Open a command prompt.
-2.  Navigate to the folder tutorials/SampleCompany/Simulation/SampleClient.
+2.  Navigate to the folder tutorials/SampleCompany/Simple/SampleClient.
 3.  To run the client sample type   
       
     dotnet run --no-restore --framework net8.0 --project SampleCompany.SampleClient.csproj --autoaccept
@@ -63,22 +68,26 @@ This command restores the tree of dependencies.
 If everything was done correctly the client should show the following lines:
 
 ```
-OPC UA Console Sample Client
+OPC UA Simple Console Sample Client
+WARNING: No valid license applied.
 Connecting to... opc.tcp://localhost:62555/SampleServer
 New Session Created with SessionName = SampleCompany OPC UA Sample Client
 Connected! Ctrl-C to quit.
+Reading server status...
+   Read Value = {11.02.2024 10:27:14 | 11.02.2024 10:27:26 | Running | Opc.Ua.BuildInfo | 0 | } , StatusCode = Good
+   Read Value = StartTime , StatusCode = Good
+   Read Value = 11.02.2024 10:27:14 , StatusCode = Good
 Reading nodes...
-Read Value = {28.01.2024 07:20:20 \| 28.01.2024 07:21:33 \| Running \| Opc.Ua.BuildInfo \| 0 \| } , StatusCode = Good
+Read Value = {11.02.2024 10:27:14 | 11.02.2024 10:27:26 | Running | Opc.Ua.BuildInfo | 0 | } , StatusCode = Good
 Read Value = StartTime , StatusCode = Good
-Read Value = 28.01.2024 07:20:20 , StatusCode = Good
+Read Value = 11.02.2024 10:27:14 , StatusCode = Good
 Reading Value of NamespaceArray node...
-NamespaceArray Value = {http://opcfoundation.org/UA/\|urn:technosoftware:SampleCompany:SampleServer\|http://samplecompany.com/SampleServer/NodeManagers/Simulation\|http://opcfoundation.org/UA/Diagnostics}
+NamespaceArray Value = {http://opcfoundation.org/UA/|urn:technosoftware:SampleCompany:SampleServer|http://samplecompany.com/SampleServer/Model|http://opcfoundation.org/UA/Diagnostics}
 Writing nodes...
 Write Results :
-Good
-Good
-Good
+     Good
+     Good
+     Good
 Browsing i=2253 node...
 Browse returned 19 results:
-You can abort the running application with Ctrl-C.
 ```

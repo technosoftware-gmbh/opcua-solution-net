@@ -59,7 +59,7 @@ namespace SampleCompany.SampleClient
         public static async Task Main(string[] args)
         {
             TextWriter output = Console.Out;
-            await output.WriteLineAsync("OPC UA Console Sample Client").ConfigureAwait(false);
+            await output.WriteLineAsync("OPC UA Advanced Console Sample Client").ConfigureAwait(false);
 
             #region License validation
             var licenseData =
@@ -320,7 +320,7 @@ namespace SampleCompany.SampleClient
                             }
                             else
                             {
-                                // Run tests for available methods on reference server.
+                                // Run tests for available methods on sample server.
                                 clientFunctions.ReadNodes(uaClient.Session);
                                 clientFunctions.WriteNodes(uaClient.Session);
                                 clientFunctions.Browse(uaClient.Session);
