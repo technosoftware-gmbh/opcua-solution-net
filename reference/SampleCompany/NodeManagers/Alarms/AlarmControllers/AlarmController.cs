@@ -82,14 +82,7 @@ namespace SampleCompany.NodeManagers.Alarms
 
                 Utils.LogInfo("AlarmController Update Value = {0}", value);
 
-                if (isBoolean_)
-                {
-                    variable_.Value = boolValue;
-                }
-                else
-                {
-                    variable_.Value = value;
-                }
+                variable_.Value = isBoolean_ ? boolValue : (object)value;
                 variable_.Timestamp = DateTime.UtcNow;
                 variable_.ClearChangeMasks(systemContext, false);
 
@@ -153,8 +146,8 @@ namespace SampleCompany.NodeManagers.Alarms
 
         public bool SupportsBranching
         {
-            get { return supportsBranching_; }
-            set { supportsBranching_ = value; }
+            get => supportsBranching_;
+            set => supportsBranching_ = value;
         }
 
         public virtual void SetBranchCount(int count)
@@ -287,7 +280,7 @@ namespace SampleCompany.NodeManagers.Alarms
                     if (validLastMaxValue_)
                     {
                         Utils.LogInfo(
-                            "Cycle Time {0} Interval {1}", (DateTime.Now - lastMaxValue_), interval_);
+                            "Cycle Time {0} Interval {1}", DateTime.Now - lastMaxValue_, interval_);
                     }
                     lastMaxValue_ = DateTime.Now;
                     validLastMaxValue_ = true;

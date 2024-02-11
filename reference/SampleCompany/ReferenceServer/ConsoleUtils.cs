@@ -14,10 +14,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+#if NET5_0_OR_GREATER
 using Microsoft.Extensions.Configuration;
+#endif
 using Microsoft.Extensions.Logging;
 using Mono.Options;
 
@@ -27,8 +28,6 @@ using Serilog.Templates;
 
 using Opc.Ua;
 using static Opc.Ua.Utils;
-
-using Technosoftware.UaConfiguration;
 #endregion
 
 namespace SampleCompany.ReferenceServer
@@ -59,12 +58,12 @@ namespace SampleCompany.ReferenceServer
             // Convert environment settings to command line flags
             // because in some environments (e.g. docker cloud) it is
             // the only supported way to pass arguments.
-            var config = new ConfigurationBuilder()
+            IConfigurationRoot config = new ConfigurationBuilder()
                 .AddEnvironmentVariables(environmentPrefix + "_")
                 .Build();
 
             var argslist = args.ToList();
-            foreach (var option in options)
+            foreach (Option option in options)
             {
                 var names = option.GetNames();
                 var longest = names.MaxBy(s => s.Length);
@@ -73,7 +72,7 @@ namespace SampleCompany.ReferenceServer
                     var envKey = config[longest.ToUpperInvariant()];
                     if (envKey != null)
                     {
-                        if (string.IsNullOrWhiteSpace(envKey) || option.OptionValueType == Mono.Options.OptionValueType.None)
+                        if (string.IsNullOrWhiteSpace(envKey) || option.OptionValueType == OptionValueType.None)
                         {
                             argslist.Add("--" + longest);
                         }
@@ -140,7 +139,7 @@ namespace SampleCompany.ReferenceServer
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             TaskScheduler.UnobservedTaskException += Unobserved_TaskException;
 
-            var loggerConfiguration = new LoggerConfiguration()
+            LoggerConfiguration loggerConfiguration = new LoggerConfiguration()
                 .Enrich.FromLogContext();
 
             if (logConsole)
@@ -184,11 +183,11 @@ namespace SampleCompany.ReferenceServer
             }
 
             // create the serilog logger
-            var serilogger = loggerConfiguration
+            Serilog.Core.Logger serilogger = loggerConfiguration
                 .CreateLogger();
 
             // create the ILogger for Opc.Ua.Core
-            var logger = LoggerFactory.Create(builder => builder.SetMinimumLevel(LogLevel.Trace))
+            Microsoft.Extensions.Logging.ILogger logger = LoggerFactory.Create(builder => builder.SetMinimumLevel(LogLevel.Trace))
                 .AddSerilog(serilogger)
                 .CreateLogger(context);
 
@@ -233,7 +232,7 @@ namespace SampleCompany.ReferenceServer
             {
                 Console.CancelKeyPress += (_, eArgs) => {
                     cts.Cancel();
-                    quitEvent.Set();
+                    _ = quitEvent.Set();
                     eArgs.Cancel = true;
                 };
             }
@@ -246,12 +245,12 @@ namespace SampleCompany.ReferenceServer
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs args)
         {
-            Utils.LogCritical("Unhandled Exception: {0} IsTerminating: {1}", args.ExceptionObject, args.IsTerminating);
+            LogCritical("Unhandled Exception: {0} IsTerminating: {1}", args.ExceptionObject, args.IsTerminating);
         }
 
         private static void Unobserved_TaskException(object sender, UnobservedTaskExceptionEventArgs args)
         {
-            Utils.LogCritical("Unobserved Exception: {0} Observed: {1}", args.Exception, args.Observed);
+            LogCritical("Unobserved Exception: {0} Observed: {1}", args.Exception, args.Observed);
         }
 
     }

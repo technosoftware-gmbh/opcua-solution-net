@@ -39,7 +39,7 @@ namespace SampleCompany.NodeManagers.Alarms
         {
             if (create)
             {
-                Initialize(Opc.Ua.ObjectTypes.AcknowledgeableConditionType, name);
+                Initialize(ObjectTypes.AcknowledgeableConditionType, name);
             }
         }
 
@@ -86,7 +86,7 @@ namespace SampleCompany.NodeManagers.Alarms
 
         public override void SetValue(string message = "")
         {
-            bool requiresUpdate = false;
+            var requiresUpdate = false;
 
             if (ShouldEvent() || message.Length > 0)
             {
@@ -115,7 +115,7 @@ namespace SampleCompany.NodeManagers.Alarms
         {
             AcknowledgeableConditionState alarm = GetAlarm();
 
-            bool retainState = true;
+            var retainState = true;
             if (alarm.AckedState.Id.Value)
             {
                 if (alarm.ConfirmedState.Id.Value)
@@ -167,7 +167,7 @@ namespace SampleCompany.NodeManagers.Alarms
             byte[] eventId,
             LocalizedText comment)
         {
-            string eventIdString = Utils.ToHexString(eventId);
+            var eventIdString = Utils.ToHexString(eventId);
 
             if (acked_.Contains(eventIdString))
             {
@@ -219,7 +219,7 @@ namespace SampleCompany.NodeManagers.Alarms
             LocalizedText comment)
         {
 
-            string eventIdString = Utils.ToHexString(eventId);
+            var eventIdString = Utils.ToHexString(eventId);
 
             Log("OnConfirm", "Called with eventId " + eventIdString + " Comment " + comment?.Text ?? "(empty)");
 

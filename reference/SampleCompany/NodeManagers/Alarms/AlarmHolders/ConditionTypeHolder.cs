@@ -62,7 +62,7 @@ namespace SampleCompany.NodeManagers.Alarms
             alarm.Retain.Value = false;
 
             alarm.SetEnableState(SystemContext, true);
-            alarm.Quality.Value = Opc.Ua.StatusCodes.Good;
+            alarm.Quality.Value = StatusCodes.Good;
             alarm.LastSeverity.Value = AlarmConstants.InactiveSeverity;
             alarm.Severity.Value = AlarmConstants.InactiveSeverity;
             alarm.Comment.Value = new LocalizedText("en", "");
@@ -101,7 +101,7 @@ namespace SampleCompany.NodeManagers.Alarms
                     NodeId branchId = GetNewBranchId();
                     ConditionState branch = alarm.CreateBranch(SystemContext, branchId);
 
-                    string postEventId = Utils.ToHexString(branch.EventId.Value as byte[]);
+                    var postEventId = Utils.ToHexString(branch.EventId.Value as byte[]);
 
                     Log("CreateBranch", " Branch " + branchId.ToString() +
                         " EventId " + postEventId + " created, Message " + alarm.Message.Value.Text);
@@ -157,7 +157,7 @@ namespace SampleCompany.NodeManagers.Alarms
 
                 alarm.ClearChangeMasks(SystemContext, true);
 
-                InstanceStateSnapshot eventSnapshot = new InstanceStateSnapshot();
+                var eventSnapshot = new InstanceStateSnapshot();
                 eventSnapshot.Initialize(SystemContext, alarm);
                 alarm.ReportEvent(SystemContext, eventSnapshot);
             }
@@ -167,7 +167,7 @@ namespace SampleCompany.NodeManagers.Alarms
         {
             ushort severity = AlarmConstants.InactiveSeverity;
 
-            int level = alarmController_.GetValue();
+            var level = alarmController_.GetValue();
 
             if (Analog)
             {
@@ -210,7 +210,7 @@ namespace SampleCompany.NodeManagers.Alarms
 
         protected bool IsActive()
         {
-            bool isActive = false;
+            var isActive = false;
             if (GetSeverity() > AlarmConstants.InactiveSeverity)
             {
                 isActive = true;
@@ -220,7 +220,7 @@ namespace SampleCompany.NodeManagers.Alarms
 
         protected bool WasActive()
         {
-            bool wasActive = false;
+            var wasActive = false;
             ConditionState alarm = GetAlarm();
             if (alarm.Severity.Value > AlarmConstants.InactiveSeverity)
             {
@@ -231,9 +231,9 @@ namespace SampleCompany.NodeManagers.Alarms
 
         protected bool ShouldEvent()
         {
-            bool shouldEvent = false;
+            var shouldEvent = false;
             ConditionState alarm = GetAlarm();
-            ushort newSeverity = GetSeverity();
+            var newSeverity = GetSeverity();
             if (newSeverity != alarm.Severity.Value)
             {
                 shouldEvent = true;
@@ -259,7 +259,7 @@ namespace SampleCompany.NodeManagers.Alarms
 
         protected bool IsEvent(string caller, byte[] eventId)
         {
-            bool isEvent = IsEvent(eventId);
+            var isEvent = IsEvent(eventId);
 
             if (!isEvent)
             {
@@ -297,14 +297,7 @@ namespace SampleCompany.NodeManagers.Alarms
             }
             else
             {
-                if (enabling)
-                {
-                    status = StatusCodes.BadConditionAlreadyEnabled;
-                }
-                else
-                {
-                    status = StatusCodes.BadConditionAlreadyDisabled;
-                }
+                status = enabling ? (StatusCode)StatusCodes.BadConditionAlreadyEnabled : (StatusCode)StatusCodes.BadConditionAlreadyDisabled;
             }
 
             return status;
@@ -321,7 +314,7 @@ namespace SampleCompany.NodeManagers.Alarms
             ConditionState alarmOrBranch = alarm.GetEventByEventId(eventId);
             if (alarmOrBranch == null)
             {
-                string errorMessage = "Unknown event id " + Utils.ToHexString(eventId);
+                var errorMessage = "Unknown event id " + Utils.ToHexString(eventId);
                 alarm.Message.Value = "OnAddComment " + errorMessage;
                 LogError("OnAddComment", errorMessage);
                 return StatusCodes.BadEventIdUnknown;
@@ -338,14 +331,14 @@ namespace SampleCompany.NodeManagers.Alarms
 
         protected bool CanSetComment(LocalizedText comment)
         {
-            bool canSetComment = false;
+            var canSetComment = false;
 
             if (comment != null)
             {
                 canSetComment = true;
 
-                bool emptyComment = comment.Text == null || comment.Text.Length == 0;
-                bool emptyLocale = comment.Locale == null || comment.Locale.Length == 0;
+                var emptyComment = comment.Text == null || comment.Text.Length == 0;
+                var emptyLocale = comment.Locale == null || comment.Locale.Length == 0;
 
                 if (emptyComment && emptyLocale)
                 {

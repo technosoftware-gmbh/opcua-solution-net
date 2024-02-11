@@ -10,12 +10,20 @@
     <Company>SampleCompany</Company>
     <Product>SampleCompany SampleClient</Product>
     <Description>SampleCompany SampleClient</Description>
-    <Copyright>Copyright © 2018 - 2024 SampleCompany</Copyright>
+    <Copyright>Copyright © 2011 - 2024 SampleCompany</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
+
+  <Choose>
+    <When Condition="'$(TargetFramework)' == 'net462' OR '$(TargetFramework)' == 'net472' OR '$(TargetFramework)' == 'net48'">
+      <ItemGroup>
+        <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="6.0.1" />
+      </ItemGroup>
+    </When>
+  </Choose>
 
   <ItemGroup Condition=" '$(NoHttps)' != 'true' ">
     <PackageReference Include="Technosoftware.UaSolution.UaBindings.Https" Version="3.3.0" />
@@ -27,23 +35,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0" />
     <PackageReference Include="Mono.Options" Version="6.12.0.148" />
-    <PackageReference Include="Serilog" Version="3.1.1" />
-    <PackageReference Include="Serilog.Expressions" Version="4.0.0" />
-    <PackageReference Include="Serilog.Sinks.Console" Version="5.0.0" />
-    <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
-    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-    <PackageReference Include="Serilog.Sinks.Debug" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Compile Include="..\..\Common\ApplicationMessageDlg.cs" />
     <Compile Include="..\..\Common\ConsoleUtils.cs" />
     <Compile Include="..\..\Common\ErrorExitException.cs" />
-    <Compile Include="..\..\Common\LogWriter.cs" />
   </ItemGroup>
 
   <ItemGroup>

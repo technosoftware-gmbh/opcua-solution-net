@@ -90,7 +90,7 @@ namespace SampleCompany.NodeManagers.Alarms
 
         protected bool IsEvent(byte[] eventId)
         {
-            bool isEvent = false;
+            var isEvent = false;
             if (GetAlarm().EventId.Value.SequenceEqual(eventId))
             {
                 isEvent = true;

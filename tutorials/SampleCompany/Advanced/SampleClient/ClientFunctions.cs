@@ -245,17 +245,17 @@ namespace SampleCompany.SampleClient
             {
                 // Define the UA Method to call
                 // Parent node - Objects\CTT\Methods
-                // Method node - Objects\CTT\Methods\Add
+                // Method node - Objects\CTT\Methods\Hello
                 var objectId = new NodeId("ns=2;s=Methods");
-                var methodId = new NodeId("ns=2;s=Methods_Add");
+                var methodId = new NodeId("ns=2;s=Methods_Hello");
 
                 // Define the method parameters
                 // Input argument requires a Float and an UInt32 value
-                var inputArguments = new object[] { (float)10.5, (uint)10 };
+                var inputArguments = "from Call Method";
                 IList<object> outputArguments = null;
 
                 // Invoke Call service
-                output_.WriteLine("Calling UAMethod for node {0} ...", methodId);
+                output_.WriteLine("Calling UA method for node {0} ...", methodId);
                 outputArguments = session.Call(objectId, methodId, inputArguments);
 
                 // Display results
@@ -269,6 +269,59 @@ namespace SampleCompany.SampleClient
             catch (Exception ex)
             {
                 output_.WriteLine("Method call error: {0}", ex.Message);
+            }
+        }
+        #endregion
+
+        #region Server Status
+        /// <summary>Read some values from the server status node.</summary>
+        public bool ReadServerStatus(IUaSession session)
+        {
+            if (session == null || session.Connected == false)
+            {
+                output_.WriteLine("Session not connected!");
+                return false;
+            }
+
+            try
+            {
+                // Build a list of nodes to be read
+                var nodesToRead = new ReadValueIdCollection()
+                {
+                    // Value of ServerStatus
+                    new ReadValueId() { NodeId = Variables.Server_ServerStatus, AttributeId = Attributes.Value },
+                    // BrowseName of ServerStatus_StartTime
+                    new ReadValueId() { NodeId = Variables.Server_ServerStatus_StartTime, AttributeId = Attributes.BrowseName },
+                    // Value of ServerStatus_StartTime
+                    new ReadValueId() { NodeId = Variables.Server_ServerStatus_StartTime, AttributeId = Attributes.Value }
+                };
+
+                // Read the node attributes
+                output_.WriteLine("Reading server status...");
+
+                // Call Read Service
+                _ = session.Read(
+                    null,
+                    0,
+                    TimestampsToReturn.Both,
+                    nodesToRead,
+                    out DataValueCollection resultsValues,
+                    out _);
+
+                // Validate the results
+                ClientBase.ValidateResponse(resultsValues, nodesToRead);
+
+                // Display the results.
+                foreach (DataValue result in resultsValues)
+                {
+                    output_.WriteLine("   Read Value = {0} , StatusCode = {1}", result.Value, result.StatusCode);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                output_.WriteLine($"Read Nodes Error : {ex.Message}.");
+                return false;
             }
         }
         #endregion
@@ -304,8 +357,7 @@ namespace SampleCompany.SampleClient
                 subscription.Create();
                 output_.WriteLine("New Subscription created with SubscriptionId = {0}.", subscription.Id);
 
-                // Create MonitoredItems for data changes (Reference Server)
-
+                // Create MonitoredItems for data changes (Sample Server)
                 var intMonitoredItem = new MonitoredItem(subscription.DefaultItem) {
                     // Int32 Node - Objects\CTT\Scalar\Simulation\Int32
                     StartNodeId = new NodeId("ns=2;s=Scalar_Simulation_Int32"),

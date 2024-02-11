@@ -47,7 +47,7 @@ namespace SampleCompany.NodeManagers.TestData
             }
 
             // set a valid initial value.
-            TestDataSystem system = context.SystemHandle as TestDataSystem;
+            var system = context.SystemHandle as TestDataSystem;
 
             if (system != null)
             {
@@ -72,18 +72,11 @@ namespace SampleCompany.NodeManagers.TestData
             }
 
             // set the EU range.
-            BaseVariableState euRange = variable.FindChild(context, Opc.Ua.BrowseNames.EURange) as BaseVariableState;
+            var euRange = variable.FindChild(context, Opc.Ua.BrowseNames.EURange) as BaseVariableState;
 
             if (euRange != null)
             {
-                if (context.TypeTable.IsTypeOf(variable.DataType, Opc.Ua.DataTypeIds.UInteger))
-                {
-                    euRange.Value = new Range(250, 50);
-                }
-                else
-                {
-                    euRange.Value = new Range(100, -100);
-                }
+                euRange.Value = context.TypeTable.IsTypeOf(variable.DataType, Opc.Ua.DataTypeIds.UInteger) ? new Range(250, 50) : (object)new Range(100, -100);
                 variable.OnSimpleWriteValue = OnWriteAnalogValue;
             }
         }
@@ -99,34 +92,34 @@ namespace SampleCompany.NodeManagers.TestData
             try
             {
 
-                BaseVariableState euRange = node.FindChild(context, Opc.Ua.BrowseNames.EURange) as BaseVariableState;
+                var euRange = node.FindChild(context, Opc.Ua.BrowseNames.EURange) as BaseVariableState;
 
                 if (euRange == null)
                 {
                     return ServiceResult.Good;
                 }
 
-                Range range = euRange.Value as Range;
+                var range = euRange.Value as Range;
 
                 if (range == null)
                 {
                     return ServiceResult.Good;
                 }
 
-                Array array = value as Array;
+                var array = value as Array;
 
                 if (array != null)
                 {
-                    for (int ii = 0; ii < array.Length; ii++)
+                    for (var ii = 0; ii < array.Length; ii++)
                     {
-                        object element = array.GetValue(ii);
+                        var element = array.GetValue(ii);
 
                         if (typeof(Variant).IsInstanceOfType(element))
                         {
                             element = ((Variant)element).Value;
                         }
 
-                        double elementNumber = Convert.ToDouble(element);
+                        var elementNumber = Convert.ToDouble(element);
 
                         if (elementNumber > range.High || elementNumber < range.Low)
                         {
@@ -137,7 +130,7 @@ namespace SampleCompany.NodeManagers.TestData
                     return ServiceResult.Good;
                 }
 
-                double number = Convert.ToDouble(value);
+                var number = Convert.ToDouble(value);
 
                 if (number > range.High || number < range.Low)
                 {
@@ -175,9 +168,9 @@ namespace SampleCompany.NodeManagers.TestData
 
             if (AreEventsMonitored)
             {
-                GenerateValuesEventState e = new GenerateValuesEventState(null);
+                var e = new GenerateValuesEventState(null);
 
-                TranslationInfo message = new TranslationInfo(
+                var message = new TranslationInfo(
                     "GenerateValuesEventType",
                     "en-US",
                     "New values generated for test source '{0}'.",
@@ -189,11 +182,13 @@ namespace SampleCompany.NodeManagers.TestData
                     EventSeverity.MediumLow,
                     new LocalizedText(message));
 
-                e.Iterations = new PropertyState<uint>(e);
-                e.Iterations.Value = count;
+                e.Iterations = new PropertyState<uint>(e) {
+                    Value = count
+                };
 
-                e.NewValueCount = new PropertyState<uint>(e);
-                e.NewValueCount.Value = 10;
+                e.NewValueCount = new PropertyState<uint>(e) {
+                    Value = 10
+                };
 
                 ReportEvent(context, e);
             }
@@ -217,7 +212,7 @@ namespace SampleCompany.NodeManagers.TestData
             ref StatusCode statusCode,
             ref DateTime timestamp)
         {
-            BaseVariableState variable = node as BaseVariableState;
+            var variable = node as BaseVariableState;
 
             if (variable == null)
             {
@@ -229,7 +224,7 @@ namespace SampleCompany.NodeManagers.TestData
                 return ServiceResult.Good;
             }
 
-            TestDataSystem system = context.SystemHandle as TestDataSystem;
+            var system = context.SystemHandle as TestDataSystem;
 
             if (system == null)
             {

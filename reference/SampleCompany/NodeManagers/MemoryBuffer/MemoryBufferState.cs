@@ -35,9 +35,9 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
         {
             Initialize(context);
 
-            string dataType = "UInt32";
-            string name = dataType;
-            int count = 10;
+            var dataType = "UInt32";
+            var name = dataType;
+            var count = 10;
 
             if (configuration != null)
             {
@@ -216,7 +216,7 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
             ref StatusCode statusCode,
             ref DateTime timestamp)
         {
-            MemoryTagState tag = node as MemoryTagState;
+            var tag = node as MemoryTagState;
 
             if (tag == null)
             {
@@ -233,7 +233,7 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
                 return StatusCodes.BadDataEncodingUnsupported;
             }
 
-            int offset = (int)tag.Offset;
+            var offset = (int)tag.Offset;
 
             lock (dataLock_)
             {
@@ -268,7 +268,7 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
             ref StatusCode statusCode,
             ref DateTime timestamp)
         {
-            MemoryTagState tag = node as MemoryTagState;
+            var tag = node as MemoryTagState;
 
             if (tag == null)
             {
@@ -295,8 +295,8 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
                 return StatusCodes.BadWriteNotSupported;
             }
 
-            bool changed = false;
-            int offset = (int)tag.Offset;
+            var changed = false;
+            var offset = (int)tag.Offset;
 
             lock (dataLock_)
             {
@@ -316,7 +316,7 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
                 {
                     case BuiltInType.UInt32:
                     {
-                        uint? valueToWrite = value as uint?;
+                        var valueToWrite = value as uint?;
 
                         if (valueToWrite == null)
                         {
@@ -329,7 +329,7 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
 
                     case BuiltInType.Double:
                     {
-                        double? valueToWrite = value as double?;
+                        var valueToWrite = value as double?;
 
                         if (valueToWrite == null)
                         {
@@ -346,7 +346,7 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
                     }
                 }
 
-                for (int ii = 0; ii < bytes.Length; ii++)
+                for (var ii = 0; ii < bytes.Length; ii++)
                 {
                     if (!changed)
                     {
@@ -447,7 +447,7 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
         {
             lock (dataLock_)
             {
-                MemoryBufferMonitoredItem monitoredItem = new MemoryBufferMonitoredItem(
+                var monitoredItem = new MemoryBufferMonitoredItem(
                     server_,
                     nodeManager_,
                     this,
@@ -486,7 +486,7 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
                     return monitoredItem;
                 }
 
-                int elementCount = (int)(SizeInBytes.Value / ElementSize);
+                var elementCount = (int)(SizeInBytes.Value / ElementSize);
 
                 if (monitoringTable_ == null)
                 {
@@ -494,7 +494,7 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
                     scanTimer_ = new Timer(DoScan, null, 100, 100);
                 }
 
-                int elementOffet = (int)(tag.Offset / ElementSize);
+                var elementOffet = (int)(tag.Offset / ElementSize);
 
                 MemoryBufferMonitoredItem[] monitoredItems = monitoringTable_[elementOffet];
 
@@ -525,7 +525,7 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
 
             lock (dataLock_)
             {
-                for (int ii = 0; ii < buffer_.Length; ii += elementSize_)
+                for (var ii = 0; ii < buffer_.Length; ii += elementSize_)
                 {
                     buffer_[ii]++;
 
@@ -538,7 +538,7 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
 
             DateTime end1 = DateTime.UtcNow;
 
-            double delta1 = ((double)(end1.Ticks - start1.Ticks)) / TimeSpan.TicksPerMillisecond;
+            var delta1 = ((double)(end1.Ticks - start1.Ticks)) / TimeSpan.TicksPerMillisecond;
 
             if (delta1 > 100)
             {
@@ -561,17 +561,17 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
 
                 if (monitoringTable_ != null)
                 {
-                    int elementOffet = (int)(monitoredItem.Offset / ElementSize);
+                    var elementOffet = (int)(monitoredItem.Offset / ElementSize);
 
                     MemoryBufferMonitoredItem[] monitoredItems = monitoringTable_[elementOffet];
 
                     if (monitoredItems != null)
                     {
-                        int index = -1;
+                        var index = -1;
 
-                        for (int ii = 0; ii < monitoredItems.Length; ii++)
+                        for (var ii = 0; ii < monitoredItems.Length; ii++)
                         {
-                            if (Object.ReferenceEquals(monitoredItems[ii], monitoredItem))
+                            if (ReferenceEquals(monitoredItems[ii], monitoredItem))
                             {
                                 index = ii;
                                 break;
@@ -610,20 +610,20 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
             {
                 if (monitoringTable_ != null)
                 {
-                    int elementOffet = (int)(offset / ElementSize);
+                    var elementOffet = (int)(offset / ElementSize);
 
                     MemoryBufferMonitoredItem[] monitoredItems = monitoringTable_[elementOffet];
 
                     if (monitoredItems != null)
                     {
-                        DataValue value = new DataValue();
+                        var value = new DataValue {
+                            WrappedValue = GetValueAtOffset(offset),
+                            StatusCode = StatusCodes.Good,
+                            ServerTimestamp = DateTime.UtcNow,
+                            SourceTimestamp = lastScanTime_
+                        };
 
-                        value.WrappedValue = GetValueAtOffset(offset);
-                        value.StatusCode = StatusCodes.Good;
-                        value.ServerTimestamp = DateTime.UtcNow;
-                        value.SourceTimestamp = lastScanTime_;
-
-                        for (int ii = 0; ii < monitoredItems.Length; ii++)
+                        for (var ii = 0; ii < monitoredItems.Length; ii++)
                         {
                             monitoredItems[ii].QueueValue(value, null);
                             updateCount_++;
@@ -654,7 +654,7 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
 
             DateTime end1 = DateTime.UtcNow;
 
-            double delta1 = ((double)(end1.Ticks - start1.Ticks)) / TimeSpan.TicksPerMillisecond;
+            var delta1 = ((double)(end1.Ticks - start1.Ticks)) / TimeSpan.TicksPerMillisecond;
 
             if (delta1 > 100)
             {

@@ -63,7 +63,7 @@ namespace SampleCompany.NodeManagers.TestData
         protected void InitializeVariable(ISystemContext context, BaseVariableState variable)
         {
             // set a valid initial value.
-            TestDataSystem system = context.SystemHandle as TestDataSystem;
+            var system = context.SystemHandle as TestDataSystem;
 
             // copy access level to childs
             variable.AccessLevel = AccessLevel;
@@ -74,7 +74,7 @@ namespace SampleCompany.NodeManagers.TestData
         #region Public Methods
         public virtual StatusCode OnGenerateValues(ISystemContext context)
         {
-            TestDataSystem system = context.SystemHandle as TestDataSystem;
+            var system = context.SystemHandle as TestDataSystem;
 
             if (system == null)
             {

@@ -36,7 +36,7 @@ namespace SampleCompany.NodeManagers.Alarms
         {
             if (create)
             {
-                Initialize(Opc.Ua.ObjectTypes.AlarmConditionType, name, maxShelveTime);
+                Initialize(ObjectTypes.AlarmConditionType, name, maxShelveTime);
             }
         }
 
@@ -123,7 +123,7 @@ namespace SampleCompany.NodeManagers.Alarms
 
         public override void SetValue(string message = "")
         {
-            bool setValue = false;
+            var setValue = false;
             AlarmConditionState alarm = GetAlarm();
 
 
@@ -161,13 +161,13 @@ namespace SampleCompany.NodeManagers.Alarms
         {
             AlarmConditionState alarm = GetAlarm();
 
-            bool retainState = true;
+            var retainState = true;
 
             if (!alarm.ActiveState.Id.Value)
             {
                 if (alarm.AckedState.Id.Value)
                 {
-                    if ((Optional))
+                    if (Optional)
                     {
                         if (alarm.ConfirmedState.Id.Value)
                         {
@@ -193,14 +193,14 @@ namespace SampleCompany.NodeManagers.Alarms
         protected override bool UpdateShelving()
         {
             // Don't have to worry about changing state to Unshelved, there is an SDK timer to deal with that.
-            bool update = false;
+            var update = false;
 
             return update;
         }
 
         protected override bool UpdateSuppression()
         {
-            bool update = false;
+            var update = false;
             if (Optional)
             {
                 AlarmConditionState alarm = GetAlarm();
@@ -245,19 +245,12 @@ namespace SampleCompany.NodeManagers.Alarms
             bool oneShot,
             double shelvingTime)
         {
-            string shelved = "Shelved";
-            string dueTo = "";
+            var shelved = "Shelved";
+            var dueTo = "";
 
             if (shelving)
             {
-                if (oneShot)
-                {
-                    dueTo = " due to OneShotShelve";
-                }
-                else
-                {
-                    dueTo = " due to TimedShelve of " + shelvingTime.ToString();
-                }
+                dueTo = oneShot ? " due to OneShotShelve" : " due to TimedShelve of " + shelvingTime.ToString();
             }
             else
             {

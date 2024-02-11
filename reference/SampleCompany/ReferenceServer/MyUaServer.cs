@@ -12,6 +12,7 @@
 #region Using Directives
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -62,7 +63,7 @@ namespace SampleCompany.ReferenceServer
         /// <summary>
         /// The server object
         /// </summary>
-        public T Server => server_;
+        public T Server { get; private set; }
         #endregion
 
         #region Constructors, Destructor, Initialization
@@ -98,7 +99,7 @@ namespace SampleCompany.ReferenceServer
                 };
 
                 // load the application configuration.
-                await Application.LoadApplicationConfigurationAsync(false).ConfigureAwait(false);
+                _ = await Application.LoadApplicationConfigurationAsync(false).ConfigureAwait(false);
 
             }
             catch (Exception ex)
@@ -115,7 +116,7 @@ namespace SampleCompany.ReferenceServer
         {
             try
             {
-                var config = Application.ApplicationConfiguration;
+                ApplicationConfiguration config = Application.ApplicationConfiguration;
                 if (renewCertificate)
                 {
                     await Application.DeleteApplicationInstanceCertificateAsync().ConfigureAwait(false);
@@ -147,12 +148,12 @@ namespace SampleCompany.ReferenceServer
             try
             {
                 // create the server.
-                server_ = new T();
+                Server = new T();
                 if (nodeManagerFactories != null)
                 {
-                    foreach (var factory in nodeManagerFactories)
+                    foreach (IUaNodeManagerFactory factory in nodeManagerFactories)
                     {
-                        server_.AddNodeManager(factory);
+                        Server.AddNodeManager(factory);
                     }
                 }
             }
@@ -170,16 +171,16 @@ namespace SampleCompany.ReferenceServer
             try
             {
                 // create the server.
-                server_ = server_ ?? new T();
+                Server = Server ?? new T();
 
                 // start the server
-                await Application.StartAsync(server_).ConfigureAwait(false);
+                await Application.StartAsync(Server).ConfigureAwait(false);
 
                 // save state
                 ExitCode = ExitCode.ErrorRunning;
 
                 // print endpoint info
-                var endpoints = Application.BaseServer.GetEndpoints().Select(e => e.EndpointUrl).Distinct();
+                IEnumerable<string> endpoints = Application.BaseServer.GetEndpoints().Select(e => e.EndpointUrl).Distinct();
                 foreach (var endpoint in endpoints)
                 {
                     output_.WriteLine(endpoint);
@@ -189,9 +190,9 @@ namespace SampleCompany.ReferenceServer
                 status_ = Task.Run(StatusThreadAsync);
 
                 // print notification on session events
-                server_.CurrentInstance.SessionManager.SessionActivatedEvent += OnEventStatus;
-                server_.CurrentInstance.SessionManager.SessionClosingEvent += OnEventStatus;
-                server_.CurrentInstance.SessionManager.SessionCreatedEvent += OnEventStatus;
+                Server.CurrentInstance.SessionManager.SessionActivatedEvent += OnEventStatus;
+                Server.CurrentInstance.SessionManager.SessionClosingEvent += OnEventStatus;
+                Server.CurrentInstance.SessionManager.SessionCreatedEvent += OnEventStatus;
             }
             catch (Exception ex)
             {
@@ -206,12 +207,12 @@ namespace SampleCompany.ReferenceServer
         {
             try
             {
-                if (server_ != null)
+                if (Server != null)
                 {
-                    using (T server = server_)
+                    using (T server = Server)
                     {
                         // Stop status thread
-                        server_ = null;
+                        Server = null;
                         await status_.ConfigureAwait(false);
 
                         // Stop server and dispose
@@ -269,18 +270,18 @@ namespace SampleCompany.ReferenceServer
             var item = new StringBuilder();
             lock (session.DiagnosticsLock)
             {
-                item.AppendFormat("{0,9}:{1,20}:", reason, session.SessionDiagnostics.SessionName);
+                _ = item.AppendFormat(CultureInfo.InvariantCulture, "{0,9}:{1,20}:", reason, session.SessionDiagnostics.SessionName);
                 if (lastContact)
                 {
-                    item.AppendFormat("Last Event:{0:HH:mm:ss}", session.SessionDiagnostics.ClientLastContactTime.ToLocalTime());
+                    _ = item.AppendFormat(CultureInfo.InvariantCulture, "Last Event:{0:HH:mm:ss}", session.SessionDiagnostics.ClientLastContactTime.ToLocalTime());
                 }
                 else
                 {
                     if (session.Identity != null)
                     {
-                        item.AppendFormat(":{0,20}", session.Identity.DisplayName);
+                        _ = item.AppendFormat(CultureInfo.InvariantCulture, ":{0,20}", session.Identity.DisplayName);
                     }
-                    item.AppendFormat(":{0}", session.Id);
+                    _ = item.AppendFormat(CultureInfo.InvariantCulture, $":{session.Id}");
                 }
             }
             output_.WriteLine(item.ToString());
@@ -291,11 +292,11 @@ namespace SampleCompany.ReferenceServer
         /// </summary>
         private async Task StatusThreadAsync()
         {
-            while (server_ != null)
+            while (Server != null)
             {
                 if (DateTime.UtcNow - lastEventTime_ > TimeSpan.FromMilliseconds(10000))
                 {
-                    IList<Session> sessions = server_.CurrentInstance.SessionManager.GetSessions();
+                    IList<Session> sessions = Server.CurrentInstance.SessionManager.GetSessions();
                     for (var ii = 0; ii < sessions.Count; ii++)
                     {
                         Session session = sessions[ii];
@@ -310,7 +311,6 @@ namespace SampleCompany.ReferenceServer
 
         #region Private Fields
         private readonly TextWriter output_;
-        private T server_;
         private Task status_;
         private DateTime lastEventTime_;
         #endregion

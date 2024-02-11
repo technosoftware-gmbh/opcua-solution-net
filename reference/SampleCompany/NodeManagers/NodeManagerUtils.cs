@@ -61,7 +61,7 @@ namespace SampleCompany.NodeManagers
                     {
                         if (ServiceResult.IsBad(result.StatusCode))
                         {
-                            Opc.Ua.Utils.LogError("Error calling method {0}.", result.StatusCode);
+                            Utils.LogError("Error calling method {0}.", result.StatusCode);
                         }
                     }
                     output.WriteLine("The Alarms for CTT mode are active.");
@@ -69,7 +69,7 @@ namespace SampleCompany.NodeManagers
                 }
                 catch (Exception ex)
                 {
-                    Opc.Ua.Utils.LogError(ex, "Failed to start alarms for CTT.");
+                    Utils.LogError(ex, "Failed to start alarms for CTT.");
                 }
             }
             output.WriteLine("The alarms could not be enabled for CTT, the namespace does not exist.");

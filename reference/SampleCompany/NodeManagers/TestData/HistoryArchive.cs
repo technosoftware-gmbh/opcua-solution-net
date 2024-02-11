@@ -83,20 +83,21 @@ namespace SampleCompany.NodeManagers.TestData
         {
             lock (m_lock)
             {
-                HistoryRecord record = new HistoryRecord();
-
-                record.RawData = new List<HistoryEntry>();
-                record.Historizing = true;
-                record.DataType = dataType;
+                var record = new HistoryRecord {
+                    RawData = new List<HistoryEntry>(),
+                    Historizing = true,
+                    DataType = dataType
+                };
 
                 DateTime now = DateTime.UtcNow;
 
-                for (int ii = 1000; ii >= 0; ii--)
+                for (var ii = 1000; ii >= 0; ii--)
                 {
-                    HistoryEntry entry = new HistoryEntry();
-
-                    entry.Value = new DataValue();
-                    entry.Value.ServerTimestamp = now.AddSeconds(-(ii * 10));
+                    var entry = new HistoryEntry {
+                        Value = new DataValue {
+                            ServerTimestamp = now.AddSeconds(-(ii * 10))
+                        }
+                    };
                     entry.Value.SourceTimestamp = entry.Value.ServerTimestamp.AddMilliseconds(1234);
                     entry.IsModified = false;
 
@@ -146,10 +147,11 @@ namespace SampleCompany.NodeManagers.TestData
                             continue;
                         }
 
-                        HistoryEntry entry = new HistoryEntry();
-
-                        entry.Value = new DataValue();
-                        entry.Value.ServerTimestamp = now;
+                        var entry = new HistoryEntry {
+                            Value = new DataValue {
+                                ServerTimestamp = now
+                            }
+                        };
                         entry.Value.SourceTimestamp = entry.Value.ServerTimestamp.AddMilliseconds(-4567);
                         entry.IsModified = false;
 
@@ -157,7 +159,7 @@ namespace SampleCompany.NodeManagers.TestData
                         {
                             case BuiltInType.Int32:
                             {
-                                int lastValue = (int)record.RawData[record.RawData.Count - 1].Value.Value;
+                                var lastValue = (int)record.RawData[record.RawData.Count - 1].Value.Value;
                                 entry.Value.Value = lastValue + 1;
                                 break;
                             }

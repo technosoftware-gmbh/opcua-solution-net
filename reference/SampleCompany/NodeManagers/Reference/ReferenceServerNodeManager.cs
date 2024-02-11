@@ -477,7 +477,7 @@ namespace SampleCompany.NodeManagers.Reference
 
                     foreach (var name in Enum.GetNames(typeof(BuiltInType)))
                     {
-                        BuiltInType builtInType = (BuiltInType)Enum.Parse(typeof(BuiltInType), name);
+                        var builtInType = (BuiltInType)Enum.Parse(typeof(BuiltInType), name);
                         if (IsAnalogType(builtInType))
                         {
                             var item = CreateAnalogItemVariable(analogItemFolder, daAnalogItem + name, name, null, builtInType, ValueRanks.Scalar);
@@ -879,9 +879,10 @@ namespace SampleCompany.NodeManagers.Reference
                     AddInputArguments(multiplyMethod, new[] { inputArgument1, inputArgument2 });
 
                     // set output arguments
-                    multiplyMethod.OutputArguments = new PropertyState<Argument[]>(multiplyMethod);
-                    multiplyMethod.OutputArguments.NodeId = new NodeId(multiplyMethod.BrowseName.Name + "OutArgs", NamespaceIndex);
-                    multiplyMethod.OutputArguments.BrowseName = BrowseNames.OutputArguments;
+                    multiplyMethod.OutputArguments = new PropertyState<Argument[]>(multiplyMethod) {
+                        NodeId = new NodeId(multiplyMethod.BrowseName.Name + "OutArgs", NamespaceIndex),
+                        BrowseName = BrowseNames.OutputArguments
+                    };
                     multiplyMethod.OutputArguments.DisplayName = multiplyMethod.OutputArguments.BrowseName.Name;
                     multiplyMethod.OutputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
                     multiplyMethod.OutputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
@@ -1407,7 +1408,7 @@ namespace SampleCompany.NodeManagers.Reference
         {
             var displayName = new LocalizedText("", name);
 
-            var builtInType = Opc.Ua.TypeInfo.GetBuiltInType(dataType, ServerData.TypeTree);
+            var builtInType = TypeInfo.GetBuiltInType(dataType, ServerData.TypeTree);
 
             // Simulate a mV Voltmeter
             var newRange = GetAnalogRange(builtInType);
@@ -1415,10 +1416,11 @@ namespace SampleCompany.NodeManagers.Reference
             newRange.High = Math.Min(newRange.High, 120);
             newRange.Low = Math.Max(newRange.Low, -10);
 
-            var engineeringUnits = new EUInformation("mV", "millivolt", "http://www.opcfoundation.org/UA/units/un/cefact");
-            // The mapping of the UNECE codes to OPC UA(EUInformation.unitId) is available here:
-            // http://www.opcfoundation.org/UA/EngineeringUnits/UNECE/UNECE_to_OPCUA.csv
-            engineeringUnits.UnitId = 12890; // "2Z"
+            var engineeringUnits = new EUInformation("mV", "millivolt", "http://www.opcfoundation.org/UA/units/un/cefact") {
+                // The mapping of the UNECE codes to OPC UA(EUInformation.unitId) is available here:
+                // http://www.opcfoundation.org/UA/EngineeringUnits/UNECE/UNECE_to_OPCUA.csv
+                UnitId = 12890 // "2Z"
+            };
 
             var variable = CreateAnalogItemState(parent, browseName, displayName, description, dataType, valueRank, AccessLevels.CurrentReadOrWrite, initialValues, customRange, engineeringUnits, newRange);
 
@@ -1443,14 +1445,14 @@ namespace SampleCompany.NodeManagers.Reference
             var variable = node as MultiStateDiscreteState;
 
             // verify data type.
-            var typeInfo = Opc.Ua.TypeInfo.IsInstanceOfDataType(
+            var typeInfo = TypeInfo.IsInstanceOfDataType(
                     value,
                     variable.DataType,
                     variable.ValueRank,
                     context.NamespaceUris,
                     context.TypeTable);
 
-            if (typeInfo == null || typeInfo == Opc.Ua.TypeInfo.Unknown)
+            if (typeInfo == null || typeInfo == TypeInfo.Unknown)
             {
                 return StatusCodes.BadTypeMismatch;
             }
@@ -1481,12 +1483,12 @@ namespace SampleCompany.NodeManagers.Reference
         {
             var variable = node as MultiStateValueDiscreteState;
 
-            var typeInfo = Opc.Ua.TypeInfo.Construct(value);
+            var typeInfo = TypeInfo.Construct(value);
 
             if (variable == null ||
                 typeInfo == null ||
-                typeInfo == Opc.Ua.TypeInfo.Unknown ||
-                !Opc.Ua.TypeInfo.IsNumericType(typeInfo.BuiltInType))
+                typeInfo == TypeInfo.Unknown ||
+                !TypeInfo.IsNumericType(typeInfo.BuiltInType))
             {
                 return StatusCodes.BadTypeMismatch;
             }
@@ -1524,14 +1526,14 @@ namespace SampleCompany.NodeManagers.Reference
             var variable = node as AnalogItemState;
 
             // verify data type.
-            var typeInfo = Opc.Ua.TypeInfo.IsInstanceOfDataType(
+            var typeInfo = TypeInfo.IsInstanceOfDataType(
                 value,
                 variable.DataType,
                 variable.ValueRank,
                 context.NamespaceUris,
                 context.TypeTable);
 
-            if (typeInfo == null || typeInfo == Opc.Ua.TypeInfo.Unknown)
+            if (typeInfo == null || typeInfo == TypeInfo.Unknown)
             {
                 return StatusCodes.BadTypeMismatch;
             }
@@ -1583,12 +1585,12 @@ namespace SampleCompany.NodeManagers.Reference
         {
             var variable = node as PropertyState<Opc.Ua.Range>;
             var extensionObject = value as ExtensionObject;
-            var typeInfo = Opc.Ua.TypeInfo.Construct(value);
+            var typeInfo = TypeInfo.Construct(value);
 
             if (variable == null ||
                 extensionObject == null ||
                 typeInfo == null ||
-                typeInfo == Opc.Ua.TypeInfo.Unknown)
+                typeInfo == TypeInfo.Unknown)
             {
                 return StatusCodes.BadTypeMismatch;
             }
@@ -1606,7 +1608,7 @@ namespace SampleCompany.NodeManagers.Reference
                 return StatusCodes.BadIndexRangeInvalid;
             }
 
-            var parentTypeInfo = Opc.Ua.TypeInfo.Construct(parent.Value);
+            var parentTypeInfo = TypeInfo.Construct(parent.Value);
             var parentRange = GetAnalogRange(parentTypeInfo.BuiltInType);
             if (parentRange.High < newRange.High ||
                 parentRange.Low > newRange.Low)
@@ -1637,7 +1639,7 @@ namespace SampleCompany.NodeManagers.Reference
                 var newPath = string.Format("{0}_{1}", path, newName);
                 itemsCreated.Add(CreateBaseDataVariableState(newParentFolder, newPath, newName, null, dataType, valueRank, AccessLevels.CurrentReadOrWrite, null));
             }
-            return (itemsCreated.ToArray());
+            return itemsCreated.ToArray();
         }
 
         /// <summary>
@@ -1677,7 +1679,7 @@ namespace SampleCompany.NodeManagers.Reference
                 var newPath = string.Format("{0}_{1}", path, newName);
                 itemsCreated.Add(CreateDynamicVariable(newParentFolder, newPath, newName, description, dataType, valueRank));
             }//for i
-            return (itemsCreated.ToArray());
+            return itemsCreated.ToArray();
         }
 
         private ServiceResult OnVoidCall(
@@ -1857,7 +1859,7 @@ namespace SampleCompany.NodeManagers.Reference
             try
             {
                 // set output parameter
-                outputArguments[0] = (string)("Output");
+                outputArguments[0] = (string)"Output";
                 return ServiceResult.Good;
             }
             catch

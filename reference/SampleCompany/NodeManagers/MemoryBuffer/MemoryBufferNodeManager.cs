@@ -97,9 +97,9 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
                 base.CreateAddressSpace(externalReferences);
 
                 // create the nodes from configuration.
-                ushort namespaceIndex = ServerData.NamespaceUris.GetIndexOrAppend(Namespaces.MemoryBuffer);
+                var namespaceIndex = ServerData.NamespaceUris.GetIndexOrAppend(Namespaces.MemoryBuffer);
 
-                BaseInstanceState root = (BaseInstanceState)FindPredefinedNode(
+                var root = (BaseInstanceState)FindPredefinedNode(
                     new NodeId(Objects.MemoryBuffers, namespaceIndex),
                     typeof(BaseInstanceState));
 
@@ -108,12 +108,12 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
 
                 if (configuration_ != null && configuration_.Buffers != null)
                 {
-                    for (int ii = 0; ii < configuration_.Buffers.Count; ii++)
+                    for (var ii = 0; ii < configuration_.Buffers.Count; ii++)
                     {
                         MemoryBufferInstance instance = configuration_.Buffers[ii];
 
                         // create a new buffer.
-                        MemoryBufferState bufferNode = new MemoryBufferState(SystemContext, instance);
+                        var bufferNode = new MemoryBufferState(SystemContext, instance);
 
                         // assign node ids.
                         bufferNode.Create(
@@ -195,7 +195,7 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
                     return null;
                 }
 
-                string id = nodeId.Identifier as string;
+                var id = nodeId.Identifier as string;
 
                 if (id != null)
                 {
@@ -213,14 +213,14 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
                         return null;
                     }
 
-                    int index = id.IndexOf('[');
+                    var index = id.IndexOf('[');
 
                     if (index == -1)
                     {
                         return null;
                     }
 
-                    string bufferName = id.Substring(0, index);
+                    var bufferName = id.Substring(0, index);
 
                     // verify the buffer.
                     if (!buffers_.TryGetValue(bufferName, out buffer))
@@ -229,9 +229,9 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
                     }
 
                     // validate the address.
-                    string offsetText = id.Substring(index + 1, id.Length - index - 2);
+                    var offsetText = id.Substring(index + 1, id.Length - index - 2);
 
-                    for (int ii = 0; ii < offsetText.Length; ii++)
+                    for (var ii = 0; ii < offsetText.Length; ii++)
                     {
                         if (!Char.IsDigit(offsetText[ii]))
                         {
@@ -240,7 +240,7 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
                     }
 
                     // check range on offset.
-                    uint offset = Convert.ToUInt32(offsetText);
+                    var offset = Convert.ToUInt32(offsetText);
 
                     if (offset >= buffer.SizeInBytes.Value)
                     {
@@ -281,7 +281,7 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
             filterError = null;
             monitoredItem = null;
 
-            MemoryTagState tag = source as MemoryTagState;
+            var tag = source as MemoryTagState;
 
             // use default behavior for non-tag sources.
             if (tag == null)
@@ -303,7 +303,7 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
             MonitoringParameters parameters = itemToCreate.RequestedParameters;
 
             // no filters supported at this time.
-            MonitoringFilter filter = (MonitoringFilter)ExtensionObject.ToEncodeable(parameters.Filter);
+            var filter = (MonitoringFilter)ExtensionObject.ToEncodeable(parameters.Filter);
 
             if (filter != null)
             {
@@ -323,12 +323,12 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
             }
 
             // read initial value.
-            DataValue initialValue = new DataValue();
-
-            initialValue.Value = null;
-            initialValue.ServerTimestamp = DateTime.UtcNow;
-            initialValue.SourceTimestamp = DateTime.MinValue;
-            initialValue.StatusCode = StatusCodes.Good;
+            var initialValue = new DataValue {
+                Value = null,
+                ServerTimestamp = DateTime.UtcNow,
+                SourceTimestamp = DateTime.MinValue,
+                StatusCode = StatusCodes.Good
+            };
 
             ServiceResult error = source.ReadAttribute(
                 context,
@@ -343,7 +343,7 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
             }
 
             // get the monitored node for the containing buffer.
-            MemoryBufferState buffer = tag.Parent as MemoryBufferState;
+            var buffer = tag.Parent as MemoryBufferState;
 
             if (buffer == null)
             {
@@ -351,10 +351,10 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
             }
 
             // create a globally unique identifier.
-            uint monitoredItemId = Utils.IncrementIdentifier(ref globalIdCounter);
+            var monitoredItemId = Utils.IncrementIdentifier(ref globalIdCounter);
 
             // determine the sampling interval.
-            double samplingInterval = itemToCreate.RequestedParameters.SamplingInterval;
+            var samplingInterval = itemToCreate.RequestedParameters.SamplingInterval;
 
             if (samplingInterval < 0)
             {
@@ -397,7 +397,7 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
             filterError = null;
 
             // check for valid handle.
-            MemoryBufferState buffer = monitoredItem.ManagerHandle as MemoryBufferState;
+            var buffer = monitoredItem.ManagerHandle as MemoryBufferState;
 
             if (buffer == null)
             {
@@ -414,7 +414,7 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
             itemToModify.Processed = true;
 
             // get the monitored item.
-            MemoryBufferMonitoredItem datachangeItem = monitoredItem as MemoryBufferMonitoredItem;
+            var datachangeItem = monitoredItem as MemoryBufferMonitoredItem;
 
             if (datachangeItem == null)
             {
@@ -425,7 +425,7 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
             MonitoringParameters parameters = itemToModify.RequestedParameters;
 
             // no filters supported at this time.
-            MonitoringFilter filter = (MonitoringFilter)ExtensionObject.ToEncodeable(parameters.Filter);
+            var filter = (MonitoringFilter)ExtensionObject.ToEncodeable(parameters.Filter);
 
             if (filter != null)
             {
@@ -453,7 +453,7 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
             processed = false;
 
             // check for valid handle.
-            MemoryBufferState buffer = monitoredItem.ManagerHandle as MemoryBufferState;
+            var buffer = monitoredItem.ManagerHandle as MemoryBufferState;
 
             if (buffer == null)
             {
@@ -467,7 +467,7 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
             processed = true;
 
             // get the monitored item.
-            MemoryBufferMonitoredItem datachangeItem = monitoredItem as MemoryBufferMonitoredItem;
+            var datachangeItem = monitoredItem as MemoryBufferMonitoredItem;
 
             if (datachangeItem == null)
             {
@@ -492,7 +492,7 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
             processed = false;
 
             // check for valid handle.
-            MemoryBufferState buffer = monitoredItem.ManagerHandle as MemoryBufferState;
+            var buffer = monitoredItem.ManagerHandle as MemoryBufferState;
 
             if (buffer == null)
             {
@@ -507,7 +507,7 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
             processed = true;
 
             // get the monitored item.
-            MemoryBufferMonitoredItem datachangeItem = monitoredItem as MemoryBufferMonitoredItem;
+            var datachangeItem = monitoredItem as MemoryBufferMonitoredItem;
 
             if (datachangeItem == null)
             {
@@ -520,14 +520,14 @@ namespace SampleCompany.NodeManagers.MemoryBuffer
             // need to provide an immediate update after enabling.
             if (previousMode == MonitoringMode.Disabled && monitoringMode != MonitoringMode.Disabled)
             {
-                DataValue initialValue = new DataValue();
+                var initialValue = new DataValue {
+                    Value = null,
+                    ServerTimestamp = DateTime.UtcNow,
+                    SourceTimestamp = DateTime.MinValue,
+                    StatusCode = StatusCodes.Good
+                };
 
-                initialValue.Value = null;
-                initialValue.ServerTimestamp = DateTime.UtcNow;
-                initialValue.SourceTimestamp = DateTime.MinValue;
-                initialValue.StatusCode = StatusCodes.Good;
-
-                MemoryTagState tag = new MemoryTagState(buffer, datachangeItem.Offset);
+                var tag = new MemoryTagState(buffer, datachangeItem.Offset);
 
                 ServiceResult error = tag.ReadAttribute(
                     context,

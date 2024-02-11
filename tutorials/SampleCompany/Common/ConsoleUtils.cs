@@ -19,15 +19,19 @@ using System.Threading.Tasks;
 #if NET5_0_OR_GREATER
 using Microsoft.Extensions.Configuration;
 #endif
-using Microsoft.Extensions.Logging;
 using Mono.Options;
+
+#if SERILOG
+using Microsoft.Extensions.Logging;
 
 using Serilog;
 using Serilog.Events;
 using Serilog.Templates;
+#endif
 
 using Opc.Ua;
 using static Opc.Ua.Utils;
+
 #endregion
 
 namespace SampleCompany.Common
@@ -44,6 +48,7 @@ namespace SampleCompany.Common
         /// <param name="args">The arguments to handle.</param>
         /// <param name="options">The available options to parse.</param>
         /// <param name="showHelp">true if help should be shown; false otherwise.</param>
+        /// <param name="environmentPrefix">used as prefix for environment variables.</param>
         /// <param name="additionalArgs">true if additional arguments should be returned; false otherwise.</param>
         /// <returns>Returns an additional argument provided and not handled yet, e.g. used for client as Url.</returns>
         public static string ProcessCommandLine(
@@ -114,6 +119,7 @@ namespace SampleCompany.Common
             return additionalArguments.FirstOrDefault();
         }
 
+#if SERILOG
         /// <summary>
         /// Configure the logging providers.
         /// </summary>
@@ -220,6 +226,7 @@ namespace SampleCompany.Common
             LogError("This is a Error message: {0}", LogLevel.Error);
             LogCritical("This is a Critical message: {0}", LogLevel.Critical);
         }
+#endif
 
         /// <summary>
         /// Create an event which is set if a user
@@ -252,7 +259,6 @@ namespace SampleCompany.Common
         {
             LogCritical("Unobserved Exception: {0} Observed: {1}", args.Exception, args.Observed);
         }
-
     }
 }
 

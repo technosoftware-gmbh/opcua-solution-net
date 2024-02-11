@@ -61,7 +61,7 @@ xmlns="http://opcfoundation.org/UA/SDK/Configuration.xsd"
          which means that every application which communicates with it must be configured to 
          trust it.
          
-         Administrators may designate a certificate store that contains trusted UA application 
+         Administrators may designate a certificate store that contains trusted UA application
          instance certificates (this store should not be the same as the store used for CAs 
          certificates). Alternately, Administrators may enter the certificates explicitly in
          this list.
@@ -82,20 +82,20 @@ xmlns="http://opcfoundation.org/UA/SDK/Configuration.xsd"
 
     <!-- WARNING: The following setting (to automatically accept untrusted certificates) should be used
     for easy debugging purposes ONLY and turned off for production deployments! -->
-    <AutoAcceptUntrustedCertificates>true</AutoAcceptUntrustedCertificates>
+    <AutoAcceptUntrustedCertificates>false</AutoAcceptUntrustedCertificates>
 
     <!-- WARNING: SHA1 signed certificates are by default rejected and should be phased out. 
     The setting below to allow them is only required for UACTT (1.02.336.244) which uses SHA-1 signed certs. -->
-    <RejectSHA1SignedCertificates>false</RejectSHA1SignedCertificates>
+    <RejectSHA1SignedCertificates>true</RejectSHA1SignedCertificates>
 
     <!-- Value indicating whether certificates with unavailable revocation lists are not accepted -->
-    <RejectUnknownRevocationStatus>false</RejectUnknownRevocationStatus>
+    <RejectUnknownRevocationStatus>true</RejectUnknownRevocationStatus>
 
     <!-- Value indicating which minimum certificate key strength is accepted -->
     <MinimumCertificateKeySize>2048</MinimumCertificateKeySize>
 
     <!-- Value indicating whether the application cert should be copied to the trusted store -->
-    <AddAppCertToTrustedStore>true</AddAppCertToTrustedStore>
+    <AddAppCertToTrustedStore>false</AddAppCertToTrustedStore>
 
     <!-- Specifies whether the complete certificate chain should be sent for CA signed certificates. -->
     <SendCertificateChain>true</SendCertificateChain>
@@ -112,7 +112,6 @@ xmlns="http://opcfoundation.org/UA/SDK/Configuration.xsd"
       <StorePath>%LocalApplicationData%/OPC Foundation/pki/trustedUser</StorePath>
     </TrustedUserCertificates>
   </SecurityConfiguration>
-
   <!-- Maps different transports onto a .NET implementation of a WCF Binding
        WCF bindings are very complex and have many parameters that can be tweaked. To ensure
        interoperability the SDK has defined 3 standard bindings which can be selected with this

@@ -139,7 +139,7 @@ This command restores the tree of dependencies.
 ### Start the server
 
 1. Open a command prompt.
-2. Navigate to the folder **tutorials/SampleCompany/Simulation/SampleServer**.
+2. Navigate to the folder **tutorials/SampleCompany/Advanced/SampleServer**.
 3. To run the server sample type
 
    `dotnet run --no-restore --framework net8.0 --project SampleCompany.SampleServer.csproj --autoaccept`
@@ -149,7 +149,7 @@ This command restores the tree of dependencies.
 
 ### Start the client
 1. Open a command prompt.
-2. Navigate to the folder **tutorials/SampleCompany/Simulation/SampleClient**.
+2. Navigate to the folder **tutorials/SampleCompany/Advanced/SampleClient**.
 3. To run the client sample type
    `dotnet run --no-restore --framework net8.0 --project SampleCompany.SampleClient.csproj --autoaccept`
    
@@ -162,14 +162,15 @@ This command restores the tree of dependencies.
 If everything was done correctly the client should show the following lines:
 
 ```
-OPC UA Console Sample Client
+OPC UA Advanced Console Sample Client
+WARNING: No valid license applied.
 Connecting to... opc.tcp://localhost:62555/SampleServer
 New Session Created with SessionName = SampleCompany OPC UA Sample Client
 Connected! Ctrl-C to quit.
 Reading nodes...
-Read Value = {28.01.2024 07:20:20 | 28.01.2024 07:21:33 | Running | Opc.Ua.BuildInfo | 0 | } , StatusCode = Good
+Read Value = {11.02.2024 10:28:49 | 11.02.2024 10:29:18 | Running | Opc.Ua.BuildInfo | 0 | } , StatusCode = Good
 Read Value = StartTime , StatusCode = Good
-Read Value = 28.01.2024 07:20:20 , StatusCode = Good
+Read Value = 11.02.2024 10:28:49 , StatusCode = Good
 Reading Value of NamespaceArray node...
 NamespaceArray Value = {http://opcfoundation.org/UA/|urn:technosoftware:SampleCompany:SampleServer|http://samplecompany.com/SampleServer/NodeManagers/Simulation|http://opcfoundation.org/UA/Diagnostics}
 Writing nodes...
@@ -179,4 +180,41 @@ Write Results :
      Good
 Browsing i=2253 node...
 Browse returned 19 results:
+     DisplayName = ServerArray, NodeClass = Variable
+     DisplayName = NamespaceArray, NodeClass = Variable
+     DisplayName = UrisVersion, NodeClass = Variable
+     DisplayName = ServerStatus, NodeClass = Variable
+     DisplayName = ServiceLevel, NodeClass = Variable
+     DisplayName = EstimatedReturnTime, NodeClass = Variable
+     DisplayName = LocalTime, NodeClass = Variable
+     DisplayName = ServerCapabilities, NodeClass = Object
+     DisplayName = ServerDiagnostics, NodeClass = Object
+     DisplayName = VendorServerInfo, NodeClass = Object
+     DisplayName = ServerRedundancy, NodeClass = Object
+     DisplayName = Namespaces, NodeClass = Object
+     DisplayName = ServerConfiguration, NodeClass = Object
+     DisplayName = Quantities, NodeClass = Object
+     DisplayName = DefaultHAConfiguration, NodeClass = Object
+     DisplayName = DefaultHEConfiguration, NodeClass = Object
+     DisplayName = PublishSubscribe, NodeClass = Object
+     DisplayName = Dictionaries, NodeClass = Object
+     DisplayName = Resources, NodeClass = Object
+Calling UA method for node ns=2;s=Methods_Hello ...
+Method call returned 1 output argument(s):
+     OutputValue = hello from Call Method
+New Subscription created with SubscriptionId = 1072294259.
+MonitoredItems created for SubscriptionId = 1072294259.
+Waiting...
+Notification: 1 "ns=2;s=Scalar_Simulation_Int32" and Value = 38825327.
+Notification: 1 "ns=2;s=Scalar_Simulation_Int32" and Value = 184268556.
+Notification: 1 "ns=2;s=Scalar_Simulation_Float" and Value = 1.0285675E+33.
+Notification: 1 "ns=2;s=Scalar_Simulation_Float" and Value = -1.3104288E+32.
+Notification: 1 "ns=2;s=Scalar_Simulation_String" and Value = ??????= ??????] ??????] ????? ????_ ??????????.
+Notification: 1 "ns=2;s=Scalar_Simulation_String" and Value = ?????????& ??????????. ???- ????????- ?????? ?????? ???????< ????????. ?????? ?????? ?????.
+Notification: 2 "ns=2;s=Scalar_Simulation_Int32" and Value = 332084715.
+Notification: 2 "ns=2;s=Scalar_Simulation_Float" and Value = -3.7500198E-34.
+Notification: 2 "ns=2;s=Scalar_Simulation_String" and Value = ?????? ???????? ????? ????? ??????$ ????' ?????? ???????????.
+Notification: 3 "ns=2;s=Scalar_Simulation_Int32" and Value = 103429018.
+Notification: 3 "ns=2;s=Scalar_Simulation_Float" and Value = -1.3437527E-14.
+Notification: 3 "ns=2;s=Scalar_Simulation_String" and Value = Elefante Elefante` Arándano Gato Rata[ Oveja" Fresa Negro Dragón( Elefante.
 ```

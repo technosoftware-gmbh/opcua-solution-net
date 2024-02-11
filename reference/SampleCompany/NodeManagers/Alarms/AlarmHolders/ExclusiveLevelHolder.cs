@@ -34,7 +34,7 @@ namespace SampleCompany.NodeManagers.Alarms
         {
             if (create)
             {
-                Initialize(Opc.Ua.ObjectTypes.ExclusiveLevelAlarmType, name, maxShelveTime);
+                Initialize(ObjectTypes.ExclusiveLevelAlarmType, name, maxShelveTime);
             }
         }
 
@@ -51,7 +51,7 @@ namespace SampleCompany.NodeManagers.Alarms
             }
 
             // Call the base class to set parameters
-            base.Initialize(alarmTypeIdentifier, name, maxTimeShelved, isLimit: false);
+            Initialize(alarmTypeIdentifier, name, maxTimeShelved, isLimit: false);
         }
 
     }

@@ -58,7 +58,7 @@ namespace SampleCompany.NodeManagers.TestData
             {
                 if (isForward)
                 {
-                    for (int ii = 0; ii < m_entries.Count; ii++)
+                    for (var ii = 0; ii < m_entries.Count; ii++)
                     {
                         if (m_entries[ii].Value.ServerTimestamp >= startTime)
                         {
@@ -69,7 +69,7 @@ namespace SampleCompany.NodeManagers.TestData
                 }
                 else
                 {
-                    for (int ii = m_entries.Count - 1; ii >= 0; ii--)
+                    for (var ii = m_entries.Count - 1; ii >= 0; ii--)
                     {
                         if (m_entries[ii].Value.ServerTimestamp <= startTime)
                         {
@@ -86,12 +86,12 @@ namespace SampleCompany.NodeManagers.TestData
 
                 HistoryEntry entry = m_entries[position];
 
-                DataValue value = new DataValue();
-
-                value.Value = entry.Value.Value;
-                value.ServerTimestamp = entry.Value.ServerTimestamp;
-                value.SourceTimestamp = entry.Value.SourceTimestamp;
-                value.StatusCode = entry.Value.StatusCode;
+                var value = new DataValue {
+                    Value = entry.Value.Value,
+                    ServerTimestamp = entry.Value.ServerTimestamp,
+                    SourceTimestamp = entry.Value.SourceTimestamp,
+                    StatusCode = entry.Value.StatusCode
+                };
 
                 return value;
             }
@@ -118,12 +118,12 @@ namespace SampleCompany.NodeManagers.TestData
 
                 HistoryEntry entry = m_entries[position];
 
-                DataValue value = new DataValue();
-
-                value.Value = entry.Value.Value;
-                value.ServerTimestamp = entry.Value.ServerTimestamp;
-                value.SourceTimestamp = entry.Value.SourceTimestamp;
-                value.StatusCode = entry.Value.StatusCode;
+                var value = new DataValue {
+                    Value = entry.Value.Value,
+                    ServerTimestamp = entry.Value.ServerTimestamp,
+                    SourceTimestamp = entry.Value.SourceTimestamp,
+                    StatusCode = entry.Value.StatusCode
+                };
 
                 return value;
             }

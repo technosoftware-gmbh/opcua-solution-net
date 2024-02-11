@@ -200,7 +200,7 @@ namespace SampleCompany.NodeManagers.TestData
             // check if the index range or data encoding can be applied.
             if (StatusCode.IsGood(value.StatusCode))
             {
-                object valueToReturn = value.Value;
+                var valueToReturn = value.Value;
 
                 // apply the index range.
                 if (indexRange != NumericRange.Empty)

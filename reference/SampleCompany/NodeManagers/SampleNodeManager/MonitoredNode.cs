@@ -72,7 +72,7 @@ namespace SampleCompany.NodeManagers.SampleNodeManager
         {
             if (monitoredItems_ != null)
             {
-                for (int ii = 0; ii < monitoredItems_.Count; ii++)
+                for (var ii = 0; ii < monitoredItems_.Count; ii++)
                 {
                     DataChangeMonitoredItem monitoredItem = monitoredItems_[ii];
 
@@ -124,7 +124,7 @@ namespace SampleCompany.NodeManagers.SampleNodeManager
             Opc.Ua.Range range,
             bool alwaysReportUpdates)
         {
-            DataChangeMonitoredItem monitoredItem = new DataChangeMonitoredItem(
+            var monitoredItem = new DataChangeMonitoredItem(
                 this,
                 monitoredItemId,
                 attributeId,
@@ -205,9 +205,9 @@ namespace SampleCompany.NodeManagers.SampleNodeManager
         {
             if (monitoredItems_ != null)
             {
-                for (int ii = 0; ii < monitoredItems_.Count; ii++)
+                for (var ii = 0; ii < monitoredItems_.Count; ii++)
                 {
-                    if (Object.ReferenceEquals(monitoredItem, monitoredItems_[ii]))
+                    if (ReferenceEquals(monitoredItem, monitoredItems_[ii]))
                     {
                         monitoredItems_.RemoveAt(ii);
                         break;
@@ -226,7 +226,7 @@ namespace SampleCompany.NodeManagers.SampleNodeManager
         {
             if (monitoredItems_ != null)
             {
-                for (int ii = 0; ii < monitoredItems_.Count; ii++)
+                for (var ii = 0; ii < monitoredItems_.Count; ii++)
                 {
                     DataChangeMonitoredItem monitoredItem = monitoredItems_[ii];
 
@@ -271,9 +271,9 @@ namespace SampleCompany.NodeManagers.SampleNodeManager
                 node_.SetAreEventsMonitored(context, true, true);
             }
 
-            for (int ii = 0; ii < eventSubscriptions_.Count; ii++)
+            for (var ii = 0; ii < eventSubscriptions_.Count; ii++)
             {
-                if (Object.ReferenceEquals(eventSubscription, eventSubscriptions_[ii]))
+                if (ReferenceEquals(eventSubscription, eventSubscriptions_[ii]))
                 {
                     return;
                 }
@@ -289,9 +289,9 @@ namespace SampleCompany.NodeManagers.SampleNodeManager
         {
             if (eventSubscriptions_ != null)
             {
-                for (int ii = 0; ii < eventSubscriptions_.Count; ii++)
+                for (var ii = 0; ii < eventSubscriptions_.Count; ii++)
                 {
-                    if (Object.ReferenceEquals(eventSubscription, eventSubscriptions_[ii]))
+                    if (ReferenceEquals(eventSubscription, eventSubscriptions_[ii]))
                     {
                         eventSubscriptions_.RemoveAt(ii);
 
@@ -317,7 +317,7 @@ namespace SampleCompany.NodeManagers.SampleNodeManager
         {
             if (eventSubscriptions_ != null)
             {
-                for (int ii = 0; ii < eventSubscriptions_.Count; ii++)
+                for (var ii = 0; ii < eventSubscriptions_.Count; ii++)
                 {
                     eventSubscriptions_[ii].QueueEvent(e);
                 }
@@ -335,20 +335,20 @@ namespace SampleCompany.NodeManagers.SampleNodeManager
         {
             if (eventSubscriptions_ != null)
             {
-                for (int ii = 0; ii < eventSubscriptions_.Count; ii++)
+                for (var ii = 0; ii < eventSubscriptions_.Count; ii++)
                 {
                     // only process items monitoring this node.
-                    if (!Object.ReferenceEquals(monitoredItem, eventSubscriptions_[ii]))
+                    if (!ReferenceEquals(monitoredItem, eventSubscriptions_[ii]))
                     {
                         continue;
                     }
 
                     // get the set of condition events for the node and its children.
-                    List<IFilterTarget> events = new List<IFilterTarget>();
+                    var events = new List<IFilterTarget>();
                     node_.ConditionRefresh(context, events, true);
 
                     // report the events to the monitored item.
-                    for (int jj = 0; jj < events.Count; jj++)
+                    for (var jj = 0; jj < events.Count; jj++)
                     {
                         monitoredItem.QueueEvent(events[jj]);
                     }

@@ -80,11 +80,11 @@ namespace SampleCompany.NodeManagers.Alarms
         /// </summary>
         public override NodeId Create(ISystemContext context, NodeState node)
         {
-            BaseInstanceState instance = node as BaseInstanceState;
+            var instance = node as BaseInstanceState;
 
             if (instance != null && instance.Parent != null)
             {
-                string id = instance.Parent.NodeId.Identifier as string;
+                var id = instance.Parent.NodeId.Identifier as string;
 
                 if (id != null)
                 {
@@ -121,14 +121,14 @@ namespace SampleCompany.NodeManagers.Alarms
                 try
                 {
                     #region Initialize
-                    string alarmsName = "Alarms";
-                    string alarmsNodeName = alarmsName;
+                    var alarmsName = "Alarms";
+                    var alarmsNodeName = alarmsName;
 
-                    Type alarmControllerType = Type.GetType("SampleCompany.NodeManagers.Alarms.AlarmController");
-                    int interval = 1000;
-                    string intervalString = interval.ToString();
+                    var alarmControllerType = Type.GetType("SampleCompany.NodeManagers.Alarms.AlarmController");
+                    var interval = 1000;
+                    var intervalString = interval.ToString();
 
-                    int conditionTypeIndex = 0;
+                    var conditionTypeIndex = 0;
                     #endregion
 
                     #region Create Alarm Folder
@@ -141,41 +141,41 @@ namespace SampleCompany.NodeManagers.Alarms
                     #endregion
 
                     #region Create Methods
-                    string startMethodName = "Start";
-                    string startMethodNodeName = alarmsNodeName + "." + startMethodName;
+                    var startMethodName = "Start";
+                    var startMethodNodeName = alarmsNodeName + "." + startMethodName;
                     MethodState startMethod = AlarmHelpers.CreateMethod(alarmsFolder, NamespaceIndex, startMethodNodeName, startMethodName);
                     AlarmHelpers.AddStartInputParameters(startMethod, NamespaceIndex);
                     startMethod.OnCallMethod = new GenericMethodCalledEventHandler(OnStart);
 
-                    string startBranchMethodName = "StartBranch";
-                    string startBranchMethodNodeName = alarmsNodeName + "." + startBranchMethodName;
+                    var startBranchMethodName = "StartBranch";
+                    var startBranchMethodNodeName = alarmsNodeName + "." + startBranchMethodName;
                     MethodState startBranchMethod = AlarmHelpers.CreateMethod(alarmsFolder, NamespaceIndex, startBranchMethodNodeName, startBranchMethodName);
                     AlarmHelpers.AddStartInputParameters(startBranchMethod, NamespaceIndex);
                     startBranchMethod.OnCallMethod = new GenericMethodCalledEventHandler(OnStartBranch);
 
-                    string endMethodName = "End";
-                    string endMethodNodeName = alarmsNodeName + "." + endMethodName;
+                    var endMethodName = "End";
+                    var endMethodNodeName = alarmsNodeName + "." + endMethodName;
                     MethodState endMethod = AlarmHelpers.CreateMethod(alarmsFolder, NamespaceIndex, endMethodNodeName, endMethodName);
                     endMethod.OnCallMethod = new GenericMethodCalledEventHandler(OnEnd);
                     #endregion
 
                     #region Create Variables
-                    string analogTriggerName = "AnalogSource";
-                    string analogTriggerNodeName = alarmsNodeName + "." + analogTriggerName;
+                    var analogTriggerName = "AnalogSource";
+                    var analogTriggerNodeName = alarmsNodeName + "." + analogTriggerName;
                     BaseDataVariableState analogTrigger = AlarmHelpers.CreateVariable(alarmsFolder,
                         NamespaceIndex, analogTriggerNodeName, analogTriggerName);
                     analogTrigger.OnWriteValue = OnWriteAlarmTrigger;
-                    AlarmController analogAlarmController = (AlarmController)Activator.CreateInstance(alarmControllerType, analogTrigger, interval, false);
-                    SourceController analogSourceController = new SourceController(analogTrigger, analogAlarmController);
+                    var analogAlarmController = (AlarmController)Activator.CreateInstance(alarmControllerType, analogTrigger, interval, false);
+                    var analogSourceController = new SourceController(analogTrigger, analogAlarmController);
                     triggerMap_.Add("Analog", analogSourceController);
 
-                    string booleanTriggerName = "BooleanSource";
-                    string booleanTriggerNodeName = alarmsNodeName + "." + booleanTriggerName;
+                    var booleanTriggerName = "BooleanSource";
+                    var booleanTriggerNodeName = alarmsNodeName + "." + booleanTriggerName;
                     BaseDataVariableState booleanTrigger = AlarmHelpers.CreateVariable(alarmsFolder,
                         NamespaceIndex, booleanTriggerNodeName, booleanTriggerName, boolValue: true);
                     booleanTrigger.OnWriteValue = OnWriteAlarmTrigger;
-                    AlarmController booleanAlarmController = (AlarmController)Activator.CreateInstance(alarmControllerType, booleanTrigger, interval, true);
-                    SourceController booleanSourceController = new SourceController(booleanTrigger, booleanAlarmController);
+                    var booleanAlarmController = (AlarmController)Activator.CreateInstance(alarmControllerType, booleanTrigger, interval, true);
+                    var booleanSourceController = new SourceController(booleanTrigger, booleanAlarmController);
                     triggerMap_.Add("Boolean", booleanSourceController);
                     #endregion
 
@@ -235,7 +235,7 @@ namespace SampleCompany.NodeManagers.Alarms
         /// </summary>
         private FolderState CreateFolder(NodeState parent, string path, string name)
         {
-            FolderState folder = new FolderState(parent) {
+            var folder = new FolderState(parent) {
                 SymbolicName = name,
                 ReferenceTypeId = ReferenceTypes.Organizes,
                 TypeDefinitionId = ObjectTypeIds.FolderType,
@@ -247,10 +247,7 @@ namespace SampleCompany.NodeManagers.Alarms
                 EventNotifier = EventNotifiers.None
             };
 
-            if (parent != null)
-            {
-                parent.AddChild(folder);
-            }
+            parent?.AddChild(folder);
 
             return folder;
         }
@@ -260,7 +257,7 @@ namespace SampleCompany.NodeManagers.Alarms
         /// </summary>
         private MethodState CreateMethod(NodeState parent, string path, string name)
         {
-            MethodState method = new MethodState(parent) {
+            var method = new MethodState(parent) {
                 SymbolicName = name,
                 ReferenceTypeId = ReferenceTypeIds.HasComponent,
                 NodeId = new NodeId(path, NamespaceIndex),
@@ -272,10 +269,7 @@ namespace SampleCompany.NodeManagers.Alarms
                 UserExecutable = true
             };
 
-            if (parent != null)
-            {
-                parent.AddChild(method);
-            }
+            parent?.AddChild(method);
 
             return method;
         }
@@ -293,13 +287,13 @@ namespace SampleCompany.NodeManagers.Alarms
                     {
                         foreach (SourceController controller in triggerMap_.Values)
                         {
-                            bool updated = controller.Controller.Update(SystemContext);
+                            var updated = controller.Controller.Update(SystemContext);
 
                             IList<IReference> references = new List<IReference>();
                             controller.Source.GetReferences(SystemContext, references, ReferenceTypes.HasCondition, false);
                             foreach (IReference reference in references)
                             {
-                                string identifier = (string)reference.TargetId.ToString();
+                                var identifier = (string)reference.TargetId.ToString();
                                 if (alarms_.ContainsKey(identifier))
                                 {
                                     AlarmHolder holder = alarms_[identifier];
@@ -368,13 +362,13 @@ namespace SampleCompany.NodeManagers.Alarms
                         sourceController.Source.GetReferences(SystemContext, references, ReferenceTypes.HasCondition, false);
                         foreach (IReference reference in references)
                         {
-                            string identifier = (string)reference.TargetId.ToString();
+                            var identifier = (string)reference.TargetId.ToString();
                             if (alarms_.ContainsKey(identifier))
                             {
                                 AlarmHolder holder = alarms_[identifier];
                                 holder.SetBranching(false);
                                 holder.Start(seconds);
-                                bool updated = holder.Controller.Update(SystemContext);
+                                var updated = holder.Controller.Update(SystemContext);
                                 holder.Update(updated);
                             }
                         }
@@ -427,13 +421,13 @@ namespace SampleCompany.NodeManagers.Alarms
                         sourceController.Source.GetReferences(SystemContext, references, ReferenceTypes.HasCondition, false);
                         foreach (IReference reference in references)
                         {
-                            string identifier = (string)reference.TargetId.ToString();
+                            var identifier = (string)reference.TargetId.ToString();
                             if (alarms_.ContainsKey(identifier))
                             {
                                 AlarmHolder holder = alarms_[identifier];
                                 holder.SetBranching(true);
                                 holder.Start(seconds);
-                                bool updated = holder.Controller.Update(SystemContext);
+                                var updated = holder.Controller.Update(SystemContext);
                                 holder.Update(updated);
                             }
                         }
@@ -470,7 +464,7 @@ namespace SampleCompany.NodeManagers.Alarms
                         sourceController.Source.GetReferences(SystemContext, references, ReferenceTypes.HasCondition, false);
                         foreach (IReference reference in references)
                         {
-                            string identifier = (string)reference.TargetId.ToString();
+                            var identifier = (string)reference.TargetId.ToString();
                             if (alarms_.ContainsKey(identifier))
                             {
                                 AlarmHolder holder = alarms_[identifier];
@@ -521,7 +515,7 @@ namespace SampleCompany.NodeManagers.Alarms
                     sourceController.Source.GetReferences(SystemContext, references, ReferenceTypes.HasCondition, false);
                     foreach (IReference reference in references)
                     {
-                        string identifier = (string)reference.TargetId.ToString();
+                        var identifier = (string)reference.TargetId.ToString();
                         if (alarms_.ContainsKey(identifier))
                         {
                             AlarmHolder holder = alarms_[identifier];
@@ -550,15 +544,15 @@ namespace SampleCompany.NodeManagers.Alarms
             Type nodeIdType = node.Identifier.GetType();
             if (nodeIdType.Name == "String")
             {
-                string unmodifiedName = node.Identifier.ToString();
+                var unmodifiedName = node.Identifier.ToString();
 
                 // This is bad, but I'm not sure why the NodeName is being attached with an underscore, it messes with this lookup.
-                string name = unmodifiedName.Replace("Alarms_", "Alarms.");
+                var name = unmodifiedName.Replace("Alarms_", "Alarms.");
 
-                string mapName = name;
+                var mapName = name;
                 if (name.EndsWith(AlarmConstants.TriggerExtension) || name.EndsWith(AlarmConstants.AlarmExtension))
                 {
-                    int lastDot = name.LastIndexOf(".");
+                    var lastDot = name.LastIndexOf(".");
                     mapName = name.Substring(0, lastDot);
                 }
 
@@ -594,12 +588,12 @@ namespace SampleCompany.NodeManagers.Alarms
 
         public string GetUnitFromNodeId(NodeId nodeId)
         {
-            string unit = "";
+            var unit = "";
 
             if (nodeId.IdType == IdType.String)
             {
-                string nodeIdString = (string)nodeId.Identifier;
-                string[] splitString = nodeIdString.Split('.');
+                var nodeIdString = (string)nodeId.Identifier;
+                var splitString = nodeIdString.Split('.');
                 // Alarms.UnitName.MethodName
                 if (splitString.Length >= 1)
                 {
@@ -614,7 +608,7 @@ namespace SampleCompany.NodeManagers.Alarms
         {
             SourceController sourceController = null;
 
-            string name = GetSourceNameFromNodeState(nodeState);
+            var name = GetSourceNameFromNodeState(nodeState);
             if (map.ContainsKey(name))
             {
                 sourceController = map[name];
@@ -630,12 +624,12 @@ namespace SampleCompany.NodeManagers.Alarms
 
         public string GetSourceNameFromNodeId(NodeId nodeId)
         {
-            string sourceName = "";
+            var sourceName = "";
 
             if (nodeId.IdType == IdType.String)
             {
-                string nodeIdString = (string)nodeId.Identifier;
-                string[] splitString = nodeIdString.Split('.');
+                var nodeIdString = (string)nodeId.Identifier;
+                var splitString = nodeIdString.Split('.');
                 // Alarms.UnitName.AnalogSource
                 if (splitString.Length >= 2)
                 {
@@ -684,13 +678,13 @@ namespace SampleCompany.NodeManagers.Alarms
             UaServerContext systemContext = SystemContext.Copy(context);
             IDictionary<NodeId, NodeState> operationCache = new NodeIdDictionary<NodeState>();
 
-            bool didRefresh = false;
+            var didRefresh = false;
 
-            for (int ii = 0; ii < methodsToCall.Count; ii++)
+            for (var ii = 0; ii < methodsToCall.Count; ii++)
             {
                 CallMethodRequest methodToCall = methodsToCall[ii];
 
-                bool refreshMethod = methodToCall.MethodId.Equals(MethodIds.ConditionType_ConditionRefresh) ||
+                var refreshMethod = methodToCall.MethodId.Equals(MethodIds.ConditionType_ConditionRefresh) ||
                     methodToCall.MethodId.Equals(MethodIds.ConditionType_ConditionRefresh2);
 
                 if (refreshMethod)
@@ -707,13 +701,13 @@ namespace SampleCompany.NodeManagers.Alarms
                     }
                 }
 
-                bool ackMethod = methodToCall.MethodId.Equals(MethodIds.AcknowledgeableConditionType_Acknowledge);
-                bool confirmMethod = methodToCall.MethodId.Equals(MethodIds.AcknowledgeableConditionType_Confirm);
-                bool commentMethod = methodToCall.MethodId.Equals(MethodIds.ConditionType_AddComment);
-                bool ackConfirmMethod = ackMethod || confirmMethod || commentMethod;
+                var ackMethod = methodToCall.MethodId.Equals(MethodIds.AcknowledgeableConditionType_Acknowledge);
+                var confirmMethod = methodToCall.MethodId.Equals(MethodIds.AcknowledgeableConditionType_Confirm);
+                var commentMethod = methodToCall.MethodId.Equals(MethodIds.ConditionType_AddComment);
+                var ackConfirmMethod = ackMethod || confirmMethod || commentMethod;
 
                 // Need to try to capture any calls to ConditionType::Acknowledge
-                if (methodToCall.ObjectId.Equals(ObjectTypeIds.ConditionType) && (ackConfirmMethod))
+                if (methodToCall.ObjectId.Equals(ObjectTypeIds.ConditionType) && ackConfirmMethod)
                 {
                     // Mantis Issue 6944 which is a duplicate of 5544 - result is Confirm should be Bad_NodeIdInvalid
                     // Override any other errors that may be there, even if this is 'Processed'
@@ -801,18 +795,18 @@ namespace SampleCompany.NodeManagers.Alarms
         {
             UaServerContext systemContext = SystemContext.Copy(context);
 
-            for (int ii = 0; ii < monitoredItems.Count; ii++)
+            for (var ii = 0; ii < monitoredItems.Count; ii++)
             {
                 // the IEventMonitoredItem should always be MonitoredItems since they are created by the MasterNodeManager.
-                UaMonitoredItem monitoredItem = monitoredItems[ii] as UaMonitoredItem;
+                var monitoredItem = monitoredItems[ii] as UaMonitoredItem;
 
                 if (monitoredItem == null)
                 {
                     continue;
                 }
 
-                List<IFilterTarget> events = new List<IFilterTarget>();
-                List<NodeState> nodesToRefresh = new List<NodeState>();
+                var events = new List<IFilterTarget>();
+                var nodesToRefresh = new List<NodeState>();
 
                 lock (Lock)
                 {
@@ -840,7 +834,7 @@ namespace SampleCompany.NodeManagers.Alarms
                 }
 
                 // block and wait for the refresh.
-                for (int jj = 0; jj < nodesToRefresh.Count; jj++)
+                for (var jj = 0; jj < nodesToRefresh.Count; jj++)
                 {
                     nodesToRefresh[jj].ConditionRefresh(systemContext, events, true);
                 }
@@ -852,7 +846,7 @@ namespace SampleCompany.NodeManagers.Alarms
                 }
 
                 // queue the events.
-                for (int jj = 0; jj < events.Count; jj++)
+                for (var jj = 0; jj < events.Count; jj++)
                 {
                     monitoredItem.QueueEvent(events[jj]);
                 }
@@ -877,7 +871,7 @@ namespace SampleCompany.NodeManagers.Alarms
 
                     if (holder.HasBranches())
                     {
-                        byte[] eventId = GetEventIdFromAckConfirmMethod(methodToCall);
+                        var eventId = GetEventIdFromAckConfirmMethod(methodToCall);
 
                         if (eventId != null)
                         {
@@ -885,11 +879,11 @@ namespace SampleCompany.NodeManagers.Alarms
 
                             if (state != null)
                             {
-                                nodeHandle = new UaNodeHandle();
-
-                                nodeHandle.NodeId = methodToCall.ObjectId;
-                                nodeHandle.Node = state;
-                                nodeHandle.Validated = true;
+                                nodeHandle = new UaNodeHandle {
+                                    NodeId = methodToCall.ObjectId,
+                                    Node = state,
+                                    Validated = true
+                                };
                             }
                         }
                     }
@@ -912,7 +906,7 @@ namespace SampleCompany.NodeManagers.Alarms
         #region Private Methods
         private bool IsAckConfirm(NodeId methodId)
         {
-            bool isAckConfirm = false;
+            var isAckConfirm = false;
             if (methodId.Equals(MethodIds.AcknowledgeableConditionType_Acknowledge) ||
                  methodId.Equals(MethodIds.AcknowledgeableConditionType_Confirm))
             {
