@@ -28,9 +28,6 @@
 #endregion Copyright (c) 2011-2024 Technosoftware GmbH. All rights reserved
 
 #region Using Directives
-using System;
-using System.Collections.Generic;
-using System.Text;
 #endregion
 
 namespace SampleCompany.SampleServer

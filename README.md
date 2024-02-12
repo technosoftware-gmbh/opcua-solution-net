@@ -48,6 +48,7 @@ Documentation of the Model Compiler can be found [here](https://github.com/OPCFo
  * [Distribution Guide](./documentation/Distribution.md)
  * [OPC UA Development](./documentation/Development.md)
  * [OPC UA Client Development](./documentation/ClientDevelopment.md)
+ * [OPC UA Server Development](./documentation/ServerDevelopment.md)
  
 ### Online Help
 

@@ -231,15 +231,14 @@ namespace SampleCompany.SampleServer
         public ServerProperties OnGetServerProperties()
         {
             Utils.Trace(Utils.TraceMasks.Information, "OnGetServerProperties(): Request some standard information of the server}.");
-            var properties = new ServerProperties
-                                {
-                                    ManufacturerName = "SampleCompany",
-                                    ProductName = "SampleCompany OPC UA Sample Server",
-                                    ProductUri = "http://samplecompany.com/SampleServer/v1.0",
-                                    SoftwareVersion = GetAssemblySoftwareVersion(),
-                                    BuildNumber = GetAssemblyBuildNumber(),
-                                    BuildDate = GetAssemblyTimestamp()
-                                };
+            var properties = new ServerProperties {
+                ManufacturerName = "SampleCompany",
+                ProductName = "SampleCompany OPC UA Sample Server",
+                ProductUri = "http://samplecompany.com/SampleServer/v1.0",
+                SoftwareVersion = GetAssemblySoftwareVersion(),
+                BuildNumber = GetAssemblyBuildNumber(),
+                BuildDate = GetAssemblyTimestamp()
+            };
 
             return properties;
         }
@@ -333,12 +332,8 @@ namespace SampleCompany.SampleServer
         /// </summary>
         private static string GetAssemblySoftwareVersion()
         {
-            var version = Assembly.GetCallingAssembly().GetName().Version;
-            if (version != null)
-            {
-                return Format("{0}.{1}", version.Major, version.Minor);
-            }
-            return Format("1.0");
+            Version version = Assembly.GetCallingAssembly().GetName().Version;
+            return version != null ? Format("{0}.{1}", version.Major, version.Minor) : Format("1.0");
         }
 
         /// <summary>
@@ -346,12 +341,8 @@ namespace SampleCompany.SampleServer
         /// </summary>
         private static string GetAssemblyBuildNumber()
         {
-            var version = Assembly.GetCallingAssembly().GetName().Version;
-            if (version != null)
-            {
-                return Format("{0}.{1}", version.Build, (version.MajorRevision << 16) + version.MinorRevision);
-            }
-            return Format("1.0");
+            Version version = Assembly.GetCallingAssembly().GetName().Version;
+            return version != null ? Format("{0}.{1}", version.Build, (version.MajorRevision << 16) + version.MinorRevision) : Format("1.0");
         }
 
         /// <summary>

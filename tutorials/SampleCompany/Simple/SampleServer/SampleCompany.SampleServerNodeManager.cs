@@ -1,4 +1,4 @@
-﻿#region Copyright (c) 2011-2024 Technosoftware GmbH. All rights reserved
+#region Copyright (c) 2011-2024 Technosoftware GmbH. All rights reserved
 //-----------------------------------------------------------------------------
 // Copyright (c) 2011-2024 Technosoftware GmbH. All rights reserved
 // Web: https://technosoftware.com 
@@ -38,8 +38,6 @@ using Opc.Ua;
 using SampleCompany.SampleServer.Model;
 using Technosoftware.UaServer;
 using Technosoftware.UaBaseServer;
-
-using BrowseNames = Opc.Ua.BrowseNames;
 using DataTypeIds = Opc.Ua.DataTypeIds;
 using ObjectIds = Opc.Ua.ObjectIds;
 
@@ -154,7 +152,7 @@ namespace SampleCompany.SampleServer
         {
             // We know the model name to load but because this project is compiled for different environments we don't know
             // the assembly it is in. Therefor we search for it:
-            var assembly = this.GetType().GetTypeInfo().Assembly;
+            Assembly assembly = this.GetType().GetTypeInfo().Assembly;
             var names = assembly.GetManifestResourceNames();
             var resourcePath = String.Empty;
 
@@ -194,7 +192,7 @@ namespace SampleCompany.SampleServer
             {
                 dynamicNodes_ = new List<BaseDataVariableState>();
 
-                if (!externalReferences.TryGetValue(ObjectIds.ObjectsFolder, out var references))
+                if (!externalReferences.TryGetValue(ObjectIds.ObjectsFolder, out IList<IReference> references))
                 {
                     externalReferences[ObjectIds.ObjectsFolder] = References = new List<IReference>();
                 }
@@ -206,17 +204,17 @@ namespace SampleCompany.SampleServer
                 LoadPredefinedNodes(SystemContext, externalReferences);
 
                 // Create the root folder for all nodes of this server
-                var root = CreateFolderState(null, "My Data", new LocalizedText("en", "My Data"),
+                FolderState root = CreateFolderState(null, "My Data", new LocalizedText("en", "My Data"),
                     new LocalizedText("en", "Root folder of the Sample Server. All nodes must be placed under this root."));
 
                 try
                 {
                     #region Scalar_Static
                     ResetRandomGenerator(1);
-                    var scalarFolder = CreateFolderState(root, "Scalar", "Scalar", null);
-                    var scalarInstructions = CreateBaseDataVariableState(scalarFolder, "Scalar_Instructions", "Scalar_Instructions", null, DataTypeIds.String, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+                    FolderState scalarFolder = CreateFolderState(root, "Scalar", "Scalar", null);
+                    BaseDataVariableState scalarInstructions = CreateBaseDataVariableState(scalarFolder, "Scalar_Instructions", "Scalar_Instructions", null, DataTypeIds.String, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
                     scalarInstructions.Value = "A library of Variables of different data-types.";
-                    var staticFolder = CreateFolderState(scalarFolder, "Scalar_Static", "Scalar_Static", null);
+                    FolderState staticFolder = CreateFolderState(scalarFolder, "Scalar_Static", "Scalar_Static", null);
                     const string scalarStatic = "Scalar_Static_";
                     _ = CreateBaseDataVariableState(staticFolder, scalarStatic + "Boolean", "Boolean", null, DataTypeIds.Boolean, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
                     _ = CreateBaseDataVariableState(staticFolder, scalarStatic + "Byte", "Byte", null, DataTypeIds.Byte, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
@@ -245,19 +243,19 @@ namespace SampleCompany.SampleServer
                     _ = CreateBaseDataVariableState(staticFolder, scalarStatic + "Variant", "Variant", null, BuiltInType.Variant, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
                     _ = CreateBaseDataVariableState(staticFolder, scalarStatic + "XmlElement", "XmlElement", null, DataTypeIds.XmlElement, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
 
-                    var decimalVariable = CreateBaseDataVariableState(staticFolder, scalarStatic + "Decimal", "Decimal", null, DataTypeIds.DecimalDataType, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+                    BaseDataVariableState decimalVariable = CreateBaseDataVariableState(staticFolder, scalarStatic + "Decimal", "Decimal", null, DataTypeIds.DecimalDataType, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
                     // Set an arbitrary precision decimal value.
                     var largeInteger = BigInteger.Parse("1234567890123546789012345678901234567890123456789012345");
-                    var decimalValue = new DecimalDataType
-                    {
-                        Scale = 100, Value = largeInteger.ToByteArray()
+                    var decimalValue = new DecimalDataType {
+                        Scale = 100,
+                        Value = largeInteger.ToByteArray()
                     };
                     decimalVariable.Value = decimalValue;
                     #endregion
 
                     #region Scalar_Simulation
                     ResetRandomGenerator(6);
-                    var simulationFolder = CreateFolderState(scalarFolder, "Scalar_Simulation", "Simulation", null);
+                    FolderState simulationFolder = CreateFolderState(scalarFolder, "Scalar_Simulation", "Simulation", null);
                     const string scalarSimulation = "Scalar_Simulation_";
                     _ = CreateDynamicVariable(simulationFolder, scalarSimulation + "Boolean", "Boolean", null, DataTypeIds.Boolean, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
                     _ = CreateDynamicVariable(simulationFolder, scalarSimulation + "Byte", "Byte", null, DataTypeIds.Byte, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
@@ -286,48 +284,48 @@ namespace SampleCompany.SampleServer
                     _ = CreateDynamicVariable(simulationFolder, scalarSimulation + "Variant", "Variant", null, BuiltInType.Variant, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
                     _ = CreateDynamicVariable(simulationFolder, scalarSimulation + "XmlElement", "XmlElement", null, DataTypeIds.XmlElement, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
 
-                    var intervalVariable = CreateBaseDataVariableState(simulationFolder, scalarSimulation + "Interval", "Interval", null, DataTypeIds.UInt16, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+                    BaseDataVariableState intervalVariable = CreateBaseDataVariableState(simulationFolder, scalarSimulation + "Interval", "Interval", null, DataTypeIds.UInt16, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
                     intervalVariable.Value = simulationInterval_;
                     intervalVariable.OnSimpleWriteValue = OnWriteInterval;
 
-                    var enabledVariable = CreateBaseDataVariableState(simulationFolder, scalarSimulation + "Enabled", "Enabled", null, DataTypeIds.Boolean, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+                    BaseDataVariableState enabledVariable = CreateBaseDataVariableState(simulationFolder, scalarSimulation + "Enabled", "Enabled", null, DataTypeIds.Boolean, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
                     enabledVariable.Value = simulationEnabled_;
                     enabledVariable.OnSimpleWriteValue = OnWriteEnabled;
                     #endregion
 
                     #region Methods
-                    var methodsFolder = CreateFolderState(root, "Methods", "Methods", null);
+                    FolderState methodsFolder = CreateFolderState(root, "Methods", "Methods", null);
                     const string methods = "Methods_";
 
-                    var methodsInstructions = CreateBaseDataVariableState(methodsFolder, methods + "Instructions", "Instructions", null, DataTypeIds.String, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+                    BaseDataVariableState methodsInstructions = CreateBaseDataVariableState(methodsFolder, methods + "Instructions", "Instructions", null, DataTypeIds.String, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
                     methodsInstructions.Value = "Contains methods with varying parameter definitions.";
 
                     #region Hello Method
-                    var helloMethod = CreateMethodState(methodsFolder, methods + "Hello", "Hello", OnHelloCall);
+                    MethodState helloMethod = CreateMethodState(methodsFolder, methods + "Hello", "Hello", OnHelloCall);
                     // set input arguments
-                    var inputArgument1 = CreateArgument("String value","String value",BuiltInType.String,ValueRanks.Scalar);
+                    Argument inputArgument1 = CreateArgument("String value", "String value", BuiltInType.String, ValueRanks.Scalar);
                     _ = AddInputArguments(helloMethod, new[] { inputArgument1 });
 
                     // set output arguments
-                    var outputArgument1 = CreateArgument("Hello Result", "Hello Result", BuiltInType.String, ValueRanks.Scalar);
+                    Argument outputArgument1 = CreateArgument("Hello Result", "Hello Result", BuiltInType.String, ValueRanks.Scalar);
                     _ = AddOutputArguments(helloMethod, new[] { outputArgument1 });
                     #endregion
 
                     #endregion
 
                     #region Access Rights Handling
-                    var folderAccessRights = CreateFolderState(root, "AccessRights", "AccessRights", null);
+                    FolderState folderAccessRights = CreateFolderState(root, "AccessRights", "AccessRights", null);
                     const string accessRights = "AccessRights_";
-                    var accessRightsInstructions = CreateBaseDataVariableState(folderAccessRights, accessRights + "Instructions", "Instructions", null, DataTypeIds.String, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+                    BaseDataVariableState accessRightsInstructions = CreateBaseDataVariableState(folderAccessRights, accessRights + "Instructions", "Instructions", null, DataTypeIds.String, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
                     accessRightsInstructions.Value = "This folder will be accessible to all authenticated users who enter, but contents therein will be secured.";
 
 
                     #region Access Rights Operator Handling
                     // sub-folder for "AccessOperator"
-                    var folderAccessRightsAccessOperator = CreateFolderState(folderAccessRights, "AccessRights_AccessOperator", "AccessOperator", null);
+                    FolderState folderAccessRightsAccessOperator = CreateFolderState(folderAccessRights, "AccessRights_AccessOperator", "AccessOperator", null);
                     const string accessRightsAccessOperator = "AccessRights_AccessOperator_";
 
-                    var arOperatorRW = CreateBaseDataVariableState(folderAccessRightsAccessOperator, accessRightsAccessOperator + "OperatorUsable", "OperatorUsable", null, BuiltInType.Int16, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+                    BaseDataVariableState arOperatorRW = CreateBaseDataVariableState(folderAccessRightsAccessOperator, accessRightsAccessOperator + "OperatorUsable", "OperatorUsable", null, BuiltInType.Int16, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
                     arOperatorRW.AccessLevel = AccessLevels.CurrentReadOrWrite;
                     arOperatorRW.UserAccessLevel = AccessLevels.CurrentReadOrWrite;
                     arOperatorRW.OnReadUserAccessLevel = OnReadOperatorUserAccessLevel;
@@ -338,10 +336,10 @@ namespace SampleCompany.SampleServer
 
                     #region Access Rights Administrator Handling
                     // sub-folder for "AccessAdministrator"
-                    var folderAccessRightsAccessAdministrator = CreateFolderState(folderAccessRights, "AccessRights_AccessAdministrator", "AccessAdministrator", null);
+                    FolderState folderAccessRightsAccessAdministrator = CreateFolderState(folderAccessRights, "AccessRights_AccessAdministrator", "AccessAdministrator", null);
                     const string accessRightsAccessAdministrator = "AccessRights_AccessAdministrator_";
 
-                    var arAdministratorRW = CreateBaseDataVariableState(folderAccessRightsAccessAdministrator, accessRightsAccessAdministrator + "AdministratorOnly", "AdministratorOnly", null, BuiltInType.Int16, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+                    BaseDataVariableState arAdministratorRW = CreateBaseDataVariableState(folderAccessRightsAccessAdministrator, accessRightsAccessAdministrator + "AdministratorOnly", "AdministratorOnly", null, BuiltInType.Int16, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
                     arAdministratorRW.AccessLevel = AccessLevels.CurrentReadOrWrite;
                     arAdministratorRW.UserAccessLevel = AccessLevels.CurrentReadOrWrite;
                     arAdministratorRW.OnReadUserAccessLevel = OnReadAdministratorUserAccessLevel;
@@ -440,7 +438,7 @@ namespace SampleCompany.SampleServer
             {
                 if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.UserName)
                 {
-                    if (context.UserIdentity.GetIdentityToken() is UserNameIdentityToken user && 
+                    if (context.UserIdentity.GetIdentityToken() is UserNameIdentityToken user &&
                         ((user.UserName == "operator") || (user.UserName == "administrator")))
                     {
                         value = AccessLevels.CurrentReadOrWrite;
@@ -483,7 +481,7 @@ namespace SampleCompany.SampleServer
 
             if (context.UserIdentity != null && context.UserIdentity.TokenType == UserTokenType.UserName)
             {
-                if (context.UserIdentity.GetIdentityToken() is UserNameIdentityToken user && 
+                if (context.UserIdentity.GetIdentityToken() is UserNameIdentityToken user &&
                     (user.UserName != "operator") && (user.UserName != "administrator"))
                 {
                     return StatusCodes.BadUserAccessDenied;
@@ -601,14 +599,14 @@ namespace SampleCompany.SampleServer
         /// </summary>
         private BaseDataVariableState CreateDynamicVariable(NodeState parent, string path, string name, string description, NodeId dataType, int valueRank, byte accessLevel, object initialValue)
         {
-            var variable = CreateBaseDataVariableState(parent, path, name, description, dataType, valueRank, accessLevel, initialValue);
+            BaseDataVariableState variable = CreateBaseDataVariableState(parent, path, name, description, dataType, valueRank, accessLevel, initialValue);
             dynamicNodes_.Add(variable);
             return variable;
         }
 
         private BaseDataVariableState CreateDynamicVariable(NodeState parent, string path, string name, string description, BuiltInType dataType, int valueRank, byte accessLevel, object initialValue)
         {
-            var variable = CreateBaseDataVariableState(parent, path, name, description, dataType, valueRank, accessLevel, initialValue);
+            BaseDataVariableState variable = CreateBaseDataVariableState(parent, path, name, description, dataType, valueRank, accessLevel, initialValue);
             dynamicNodes_.Add(variable);
             return variable;
         }
@@ -619,7 +617,7 @@ namespace SampleCompany.SampleServer
             {
                 lock (Lock)
                 {
-                    foreach (var variable in dynamicNodes_)
+                    foreach (BaseDataVariableState variable in dynamicNodes_)
                     {
                         _ = opcServer_.WriteBaseVariable(variable, GetNewValue(variable), StatusCodes.Good, DateTime.UtcNow);
                     }
@@ -659,7 +657,7 @@ namespace SampleCompany.SampleServer
                     _ = e.SetChildValue(SystemContext, new QualifiedName(Model.BrowseNames.CycleId, NamespaceIndex),
                         cycleId_.ToString(), false);
 
-                    var step = new CycleStepDataType {Name = "Step 1", Duration = 1000};
+                    var step = new CycleStepDataType { Name = "Step 1", Duration = 1000 };
 
                     _ = e.SetChildValue(SystemContext,
                         new QualifiedName(Model.BrowseNames.CurrentStep, NamespaceIndex), step, false);

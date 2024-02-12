@@ -28,14 +28,9 @@
 #endregion Copyright (c) 2011-2024 Technosoftware GmbH. All rights reserved
 
 #region Using Directives
-using System;
-using System.Diagnostics;
 using System.Reflection;
 
-using Opc.Ua;
-
 using Technosoftware.UaServer;
-using Technosoftware.UaServer.Sessions;
 using Technosoftware.UaBaseServer;
 #endregion
 

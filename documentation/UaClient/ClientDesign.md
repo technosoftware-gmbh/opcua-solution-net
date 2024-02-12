@@ -2,12 +2,12 @@
 
 The Client API is designed to ease client development by handling the standard tasks which all clients need to do. The tasks include:
 
--   sending the session keep alive requests.
--   managing the publishing pipeline.
--   keeping track of the status for subscription and monitored items.
--   managing a client-side node cache
--   processing and caching incoming data change and event notifications.
--   saving and restoring the session state including the subscriptions and monitored items.
+-  sending the session keep alive requests.
+-  managing the publishing pipeline.
+-  keeping track of the status for subscription and monitored items.
+-  managing a client-side node cache
+-  processing and caching incoming data change and event notifications.
+-  saving and restoring the session state including the subscriptions and monitored items.
 
 The figure below shows the main classes a client developer can use:
 
@@ -161,9 +161,9 @@ Remote servers can be discovered by specifying a Uri object like shown below:
 
 There are only a few classes required by an UA client to handle operations with a UA server. In general, an UA client
 
--   creates one or more Sessions by using the Session class.
--   creates one or more Subscriptions within a Session by using the Subscription class.
--   adding one or more MonitoredItems within a Subscription by using the MonitoredItem class
+-  creates one or more Sessions by using the Session class.
+-  creates one or more Subscriptions within a Session by using the Subscription class.
+-  adding one or more MonitoredItems within a Subscription by using the MonitoredItem class
 
 ### Session
 
@@ -171,9 +171,9 @@ The Session class inherits from the SessionClient which means all the UA service
 
 The Session object provides several helper methods including a Session.CreateAsync() method which Creates and Opens the Session. The process required when establishing a session with a Server is as follows:
 
--   The Client application must choose the EndpointDescription to use. This can be done manually or by getting a list of available EndpointDescriptions by using the Discover.GetEndpointDescriptions() method.
--   The client can also use the Discover.SelectEndpoint() method which choose the best match for the current settings.
--   The Client takes the EndpointDescription and uses it to Create the Session object by using the Session.CreateAsync() method. If Session.CreateAsync() succeeds the client application will be able to call other methods.
+-  The Client application must choose the EndpointDescription to use. This can be done manually or by getting a list of available EndpointDescriptions by using the Discover.GetEndpointDescriptions() method.
+-  The client can also use the Discover.SelectEndpoint() method which choose the best match for the current settings.
+-  The Client takes the EndpointDescription and uses it to Create the Session object by using the Session.CreateAsync() method. If Session.CreateAsync() succeeds the client application will be able to call other methods.
 
 Example from the SampleClient (MyUaClient.cs):
 
@@ -285,15 +285,15 @@ Now the client gets updated with the keep alive events and can easily add a reco
 As soon as the session keep alive event handler (OnSessionKeepAlive) detects that a reconnect must be done a reconnect handler is called to begin the reconnect. In the above sample the following lines are doing this:
 
 ```
-				SessionReconnectHandler.ReconnectState state = reconnectHandler_.BeginReconnect(Session, ReconnectPeriod, OnReconnectComplete);
-				if (state == SessionReconnectHandler.ReconnectState.Triggered)
-				{
-					Utils.LogInfo("KeepAlive status {0}, reconnect status {1}, reconnect period {2}ms.", e.Status, state, ReconnectPeriod);
-				}
-				else
-				{
-					Utils.LogInfo("KeepAlive status {0}, reconnect status {1}.", e.Status, state);
-				}
+	SessionReconnectHandler.ReconnectState state = reconnectHandler_.BeginReconnect(Session, ReconnectPeriod, OnReconnectComplete);
+	if (state == SessionReconnectHandler.ReconnectState.Triggered)
+	{
+		Utils.LogInfo("KeepAlive status {0}, reconnect status {1}, reconnect period {2}ms.", e.Status, state, ReconnectPeriod);
+	}
+	else
+	{
+		Utils.LogInfo("KeepAlive status {0}, reconnect status {1}.", e.Status, state);
+	}
 ```
 
 As soon as the OPC UA stack reconnected to the OPC UA Server the OnReconnectComplete handler is called and can then finish the client-side actions.
@@ -342,15 +342,15 @@ The following sample is taken from the Simple SampleClient (MyUaClient.cs) and s
 Important in the OnServerReconnectComplete handler are the following lines:
 
 ```
-				// ensure only a new instance is disposed
-				// after reactivate, the same session instance may be returned
-				if (!ReferenceEquals(Session, reconnectHandler_.Session))
-				{
-					output_.WriteLine("--- RECONNECTED TO NEW SESSION --- {0}", reconnectHandler_.Session.SessionId);
-					IUaSession session = Session;
-					Session = (Session)reconnectHandler_.Session;
-					Utils.SilentDispose(session);
-				}
+	// ensure only a new instance is disposed
+	// after reactivate, the same session instance may be returned
+	if (!ReferenceEquals(Session, reconnectHandler_.Session))
+	{
+		output_.WriteLine("--- RECONNECTED TO NEW SESSION --- {0}", reconnectHandler_.Session.SessionId);
+		IUaSession session = Session;
+		Session = (Session)reconnectHandler_.Session;
+		Utils.SilentDispose(session);
+	}
 ```
 
 The session used up to now must be replaced with the new session provided by the reconnect handler. The client itself does not need to create a new session, subscriptions or MonitoredItems. That’s all done by the OPC UA stack. So with taking the session provided by the reconnect handler all subriptions and MonitoredItems are then still valid and functional.
@@ -369,9 +369,9 @@ The Find() method is used during Browse of the address space.
 
 The Session object is responsible for sending and processing the Publish requests. Client applications can receive events whenever a new NotificationMessage is received by subscribing to the SessionNotificationEvent event.
 
--   The SessionPublishErrorEvent event is raised whenever a Publish response reports an error.
--   The SubscriptionsChangedEvent event indicates when a Subscription is added or removed.
--   The SessionClosingEvent event indicates that the Session is about to be closed.
+-  The SessionPublishErrorEvent event is raised whenever a Publish response reports an error.
+-  The SubscriptionsChangedEvent event indicates when a Subscription is added or removed.
+-  The SessionClosingEvent event indicates that the Session is about to be closed.
 
 **Important**: The Simple Sample doesn’t show the usage of these features.
 
@@ -433,9 +433,9 @@ In the solution, the address space is accessed through the Browser class. You ca
 The ObjectIds.Server node represents the root folder of the server node, so starting from the root folder can be done with the following call:
 
 ```
-			// Call Browse service
-			output_.WriteLine("Browsing {0} node...", nodeToBrowse);
-			ReferenceDescriptionCollection browseResults = browser.Browse(nodeToBrowse);
+	// Call Browse service
+	output_.WriteLine("Browsing {0} node...", nodeToBrowse);
+	ReferenceDescriptionCollection browseResults = browser.Browse(nodeToBrowse);
 
 ```
 
@@ -702,8 +702,8 @@ The Advanced Sample client uses the following code to create a MonitoredItem:
 
 The Subscription class stores the client-side state for a Subscription with a Server. It maintains two sets of properties:
 
--   the values requested when the Subscription is/was created and
--   the current values based on the revised values returned by the Server.
+-  the values requested when the Subscription is/was created and
+-  the current values based on the revised values returned by the Server.
 
 The Subscription object is designed for batch operations. This means the subscription parameters and the MonitoredItem can be updated several times but the changes to the Subscription on the Server do not happen until the ApplyChanges() method is called. After the changes are complete the SubscriptionStatusChangedEvent event is reported with a bit mask indicating what was updated.
 
