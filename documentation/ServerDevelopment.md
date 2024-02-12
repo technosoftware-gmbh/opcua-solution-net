@@ -37,8 +37,4 @@ This document gives a short overview of the functionality of the OPC UA .NET sol
 
 ## [Sample Application](./UaServer/SampleApplication.md)
 
-## [Configuration](./UaServer/Configuration.md)
-
-## [Certificate Management and Validation](./UaServer/CertificateManagement.md)
-
-## [Client Design](./UaServer/ServerDesign.md)
+## [Server Design based opn UaBaseServer](./UaServer/UaBaseServerDesign.md)

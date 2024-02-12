@@ -21,8 +21,8 @@ The DLLs are delivered as local NuGet Packages. The OPC UA Server .NET uses the 
 | **Technosoftware.UaSolution.UaBindings.Https** | The OPC UA Https Binding Library.                                                                  |
 | **Technosoftware.UaSolution.UaConfiguration**  | Contains configuration related classes like, e.g. ApplicationInstance.                             |
 | **Technosoftware.UaSolution.UaServer**         | The OPC UA Server Class library containing the classes and methods usable for server development.  |
-| **Technosoftware.UaSolution.UaBaseServer**     | The OPC UA Base Server Class library used by the samples explained in chapter 4                    |
-| **Technosoftware.UaSolution.UaStandardServer** | The OPC UA Standard Server Class library used by the samples explained in chapter 5.               |
+| **Technosoftware.UaSolution.UaBaseServer**     | The OPC UA Base Server Class library used by the samples explained in [Server Design based on UaBaseServer](./UaBaseServerDesign.md).                    |
+| **Technosoftware.UaSolution.UaStandardServer** | The OPC UA Standard Server Class library used by the samples explained in [Server Design based on UaStandardServer](./UaStandardServerDesign.md).               |
 
 ## Directory Structure
 
