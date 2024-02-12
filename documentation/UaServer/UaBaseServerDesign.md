@@ -174,85 +174,51 @@ The UaServerPlugin class can return a custom UaBaseNodeManager and UaBaseServer 
 Open the UaServerPlugin.cs file with Visual Studio 2022 and verify the following shown methods:
 
 ```
-public class UaServerPlugin : IUaServerPlugin, IUaOptionalServerPlugin,   
- IUaReverseConnectServerPlugin, IDisposable
+    public class UaServerPlugin : IUaServerPlugin, IUaOptionalServerPlugin, IUaReverseConnectServerPlugin, IDisposable
+    {
 
-{
+        #region Optional Server Plugin methods
+        public UaBaseServer OnGetServer()
+        {
+            Utils.Trace(Utils.TraceMasks.Information, "OnGetServer(): Request the instance of the server.");
+            return new SampleServer();
+        }
 
-\#region Optional Server Plugin methods
-
-public UaBaseServer OnGetServer()
-
-{
-
-return new SampleServer();
-
-}
-
-public UaBaseNodeManager OnGetNodeManager(IUaServer opcServer, IUaServerData uaServer,  
- ApplicationConfiguration configuration, params string[] namespaceUris)
-
-{
-
-return new SampleServerNodeManager(opcServer, this, uaServer, configuration, namespaceUris);
-
-}
-
-\#endregion  
- }
+        public UaBaseNodeManager OnGetNodeManager(IUaServer opcServer, IUaServerData uaServer, ApplicationConfiguration configuration, params string[] namespaceUris)
+        {
+            Utils.Trace(Utils.TraceMasks.Information, "OnGetNodeManager(): Request the instance of the node manager.");
+            return new SampleServerNodeManager(opcServer, this, uaServer, configuration, namespaceUris);
+        }
+        #endregion
+    }
 ```
 Using a custom UaBaseNodeManager means that the OnCreateAddressSpace method of the UaServerPlugin class is no longer called. Instead, the custom UaBaseNodeManager must override the CreateAddressSpace method as shown in the next chapter.
 
 Another changes/checks are required in the method:
 
 ```
-public ServerProperties OnGetServerProperties()
-
-{
-
-var properties = new ServerProperties
-
-{
-
-ManufacturerName = "SampleCompany",
-
-ProductName = "SampleCompany OPC UA Sample Server",
-
-ProductUri = "http://samplecompany.com/SampleServer/v1.0",
-
-SoftwareVersion = GetAssemblySoftwareVersion(),
-
-BuildNumber = GetAssemblyBuildNumber(),
-
-BuildDate = GetAssemblyTimestamp()
-
-};
-
-return properties;
-
-}
-
-/// \<summary\>
-
-/// Defines namespaces used by the application.
-
-/// \</summary\>
-
-/// \<returns\>Array of namespaces that are used by the application.\</returns\>
-
-public string[] OnGetNamespaceUris()
-
-{
-
-// set one namespace for the type model.
-
-var namespaceUrls = new string[1];
-
-namespaceUrls[0] = Namespaces.SampleServer;
-
-return namespaceUrls;
-
-}
+    public ServerProperties OnGetServerProperties()
+    {
+        Utils.Trace(Utils.TraceMasks.Information, "OnGetServerProperties(): Request some standard information of the server}.");
+        var properties = new ServerProperties {
+            ManufacturerName = "SampleCompany",
+            ProductName = "SampleCompany OPC UA Sample Server",
+            ProductUri = "http://samplecompany.com/SampleServer/v1.0",
+            SoftwareVersion = GetAssemblySoftwareVersion(),
+            BuildNumber = GetAssemblyBuildNumber(),
+            BuildDate = GetAssemblyTimestamp()
+        };
+        return properties;
+    }
+		
+    public string[] OnGetNamespaceUris()
+    {
+        Utils.Trace(Utils.TraceMasks.Information, "OnGetNamespaceUris(): Request the supported namespace Uris.");
+        // set one namespace for the type model.
+        var namespaceUrls = new string[1];
+        namespaceUrls[0] = Model.Namespaces.SampleServer;
+        return namespaceUrls;
+    }
 ```
 
 #### SampleCompany.SampleServerNodeManager Customization
@@ -268,194 +234,143 @@ using System.Threading;
 Add private variables under:
 
 ```
-\#region Private Fields  
- private Opc.Ua.Test.DataGenerator generator_;  
- private Timer simulationTimer_;  
- private UInt16 simulationInterval\_ = 1000;  
- private bool simulationEnabled\_ = true;  
- private List\<BaseDataVariableState\> dynamicNodes_;
+    #region Private Fields 
+    private Timer simulationTimer_;
+    private ushort simulationInterval_ = 1000;
+    private bool simulationEnabled_ = true;
+    private List<BaseDataVariableState> dynamicNodes_;
+    private int cycleId_;
 ```
 
 Add the following event handlers:
 
 ```
-\#region Event Handlers
+	#region Event Handlers
+	private ServiceResult OnWriteInterval(ISystemContext context, NodeState node, ref object value)
+	{
+		try
+		{
+			simulationInterval_ = (ushort)value;
 
-private ServiceResult OnWriteInterval(ISystemContext context, NodeState node, ref object value)
+			if (simulationEnabled_)
+			{
+				_ = simulationTimer_.Change(100, simulationInterval_);
+			}
 
-{
+			return ServiceResult.Good;
+		}
+		catch (Exception e)
+		{
+			Utils.Trace(e, "Error writing Interval variable.");
+			return ServiceResult.Create(e, StatusCodes.Bad, "Error writing Interval variable.");
+		}
+	}
 
-try
+	private ServiceResult OnWriteEnabled(ISystemContext context, NodeState node, ref object value)
+	{
+		try
+		{
+			simulationEnabled_ = (bool)value;
 
-{
+			_ = simulationTimer_.Change(100, simulationEnabled_ ? simulationInterval_ : 0);
 
-simulationInterval\_ = (ushort)value;
-
-if (simulationEnabled_)
-
-{
-
-simulationTimer_.Change(100, simulationInterval_);
-
-}
-
-return ServiceResult.Good;
-
-}
-
-catch (Exception e)
-
-{
-
-Utils.Trace(e, "Error writing Interval variable.");
-
-return ServiceResult.Create(e, StatusCodes.Bad, "Error writing Interval variable.");
-
-}
-
-}
-
-private ServiceResult OnWriteEnabled(ISystemContext context, NodeState node, ref object value)
-
-{
-
-try
-
-{
-
-simulationEnabled\_ = (bool)value;
-
-if (simulationEnabled_)
-
-{
-
-simulationTimer_.Change(100, simulationInterval_);
-
-}
-
-else
-
-{
-
-simulationTimer_.Change(100, 0);
-
-}
-
-return ServiceResult.Good;
-
-}
-
-catch (Exception e)
-
-{
-
-Utils.Trace(e, "Error writing Enabled variable.");
-
-return ServiceResult.Create(e, StatusCodes.Bad, "Error writing Enabled variable.");
-
-}
-
-}
-
-\#endregion
+			return ServiceResult.Good;
+		}
+		catch (Exception e)
+		{
+			Utils.Trace(e, "Error writing Enabled variable.");
+			return ServiceResult.Create(e, StatusCodes.Bad, "Error writing Enabled variable.");
+		}
+	}
 ```
 
 These event handlers are called if an OPC UA client changes the value of the interval variable (OnWriteInterval) or the enabled variable (OnWriteEnabled). Within the address space creation these event handlers are assigned with
 
 ```
-intervalVariable.OnSimpleWriteValue = OnWriteInterval;
-
-intervalVariable.OnSimpleWriteValue = OnWriteInterval;
+    intervalVariable.OnSimpleWriteValue = OnWriteInterval;
+    intervalVariable.OnSimpleWriteValue = OnWriteInterval;
 ```
 
 Add the following helper methods:
 
 ```
-\#region Helper Methods
+    #region Helper Methods
+    private BaseDataVariableState CreateDynamicVariable(NodeState parent, string path, string name, string description, NodeId dataType, int valueRank, byte accessLevel, object initialValue)
+    {
+	    BaseDataVariableState variable = CreateBaseDataVariableState(parent, path, name, description, dataType, valueRank, accessLevel, initialValue);
+	    dynamicNodes_.Add(variable);
+	    return variable;
+    }
 
-/// \<summary\>
+    private BaseDataVariableState CreateDynamicVariable(NodeState parent, string path, string name, string description, BuiltInType dataType, int valueRank, byte accessLevel, object initialValue)
+    {
+	    BaseDataVariableState variable = CreateBaseDataVariableState(parent, path, name, description, dataType, valueRank, accessLevel, initialValue);
+	    dynamicNodes_.Add(variable);
+	    return variable;
+    }
 
-/// Creates a new variable.
+    private void DoSimulation(object state)
+    {
+	    try
+	    {
+		    lock (Lock)
+		    {
+			    foreach (BaseDataVariableState variable in dynamicNodes_)
+			    {
+				    _ = opcServer_.WriteBaseVariable(variable, GetNewValue(variable), StatusCodes.Good, DateTime.UtcNow);
+			    }
+			    OnRaiseSystemEvents();
+		    }
+	    }
+	    catch (Exception e)
+	    {
+	 	   Utils.Trace(e, "Unexpected error doing simulation.");
+	    }
+    }
 
-/// \</summary\>
+    private void OnRaiseSystemEvents()
+    {
+	    try
+	    {
+		   for (var ii = 1; ii < 3; ii++)
+		   {
+		 	    // construct translation object with default text.
+	 		    var info = new TranslationInfo(
+			 	    "SystemCycleStarted",
+				    "en-US",
+				    "The system cycle '{0}' has started.",
+				    ++cycleId_);
 
-private BaseDataVariableState CreateDynamicVariable(NodeState parent, string path, string name, string description, NodeId dataType, int valueRank, byte accessLevel, object initialValue)
+			    // construct the event.
+			    var e = new SystemCycleStartedEventState(null);
 
-{
+			    e.Initialize(
+				    SystemContext,
+				    null,
+				    (EventSeverity)ii,
+				    new LocalizedText(info));
 
-var variable = CreateBaseDataVariableState(parent, path, name, description, dataType, valueRank, accessLevel, initialValue);
+			    _ = e.SetChildValue(SystemContext, Opc.Ua.BrowseNames.SourceName, "System", false);
+			    _ = e.SetChildValue(SystemContext, Opc.Ua.BrowseNames.SourceNode, ObjectIds.Server, false);
+			    _ = e.SetChildValue(SystemContext, new QualifiedName(Model.BrowseNames.CycleId, NamespaceIndex),
+				                    cycleId_.ToString(), false);
 
-dynamicNodes_.Add(variable);
+			    var step = new CycleStepDataType { Name = "Step 1", Duration = 1000 };
 
-return variable;
+			    _ = e.SetChildValue(SystemContext,
+				                    new QualifiedName(Model.BrowseNames.CurrentStep, NamespaceIndex), step, false);
+			    _ = e.SetChildValue(SystemContext, new QualifiedName(Model.BrowseNames.Steps, NamespaceIndex),
+				                    new[] { step, step }, false);
 
-}
-
-private object GetNewValue(BaseVariableState variable)
-
-{
-
-if (generator\_ == null)
-
-{
-
-generator\_ = new Opc.Ua.Test.DataGenerator(null) {BoundaryValueFrequency = 0};
-
-}
-
-object value = null;
-
-var retryCount = 0;
-
-while (value == null && retryCount \< 10)
-
-{
-
-value = generator_.GetRandom(variable.DataType, variable.ValueRank, new uint[] { 10 }, opcServer_.NodeManager.ServerData.TypeTree);
-
-retryCount++;
-
-}
-
-return value;
-
-}
-
-private void DoSimulation(object state)
-
-{
-
-try
-
-{
-
-lock (Lock)
-
-{
-
-foreach (var variable in dynamicNodes_)
-
-{
-
-opcServer_.WriteBaseVariable(variable, GetNewValue(variable), StatusCodes.Good, DateTime.UtcNow);
-
-}
-
-}
-
-}
-
-catch (Exception e)
-
-{
-
-Utils.Trace(e, "Unexpected error doing simulation.");
-
-}
-
-}
-
-\#endregion
+			    ServerData.ReportEvent(e);
+		    }
+	    }
+	    catch (Exception e)
+	    {
+		    Utils.Trace(e, "Unexpected error in OnRaiseSystemEvents");
+	    }
+    }
+    #endregion
 ```
 
 The DoSimulation method loops through all simulated values (in this tutorial just one) and uses WriteBaseVariable of the base OPC UA server implementation (opcServer_) to write a new value to it.
@@ -463,98 +378,185 @@ The DoSimulation method loops through all simulated values (in this tutorial jus
 Replace the CreateAddressSpace with the one shown below:
 
 ```
-public override void CreateAddressSpace(IDictionary\<NodeId, IList\<IReference\>\> externalReferences)
+	public override void CreateAddressSpace(IDictionary<NodeId, IList<IReference>> externalReferences)
+	{
+		lock (Lock)
+		{
+			dynamicNodes_ = new List<BaseDataVariableState>();
 
-{
+			if (!externalReferences.TryGetValue(ObjectIds.ObjectsFolder, out IList<IReference> references))
+			{
+				externalReferences[ObjectIds.ObjectsFolder] = References = new List<IReference>();
+			}
+			else
+			{
+				References = references;
+			}
 
-lock (Lock)
+			LoadPredefinedNodes(SystemContext, externalReferences);
 
-{
+			// Create the root folder for all nodes of this server
+			FolderState root = CreateFolderState(null, "My Data", new LocalizedText("en", "My Data"),
+				new LocalizedText("en", "Root folder of the Sample Server. All nodes must be placed under this root."));
 
-dynamicNodes\_ = new List\<BaseDataVariableState\>();
+			try
+			{
+				#region Scalar_Static
+				ResetRandomGenerator(1);
+				FolderState scalarFolder = CreateFolderState(root, "Scalar", "Scalar", null);
+				BaseDataVariableState scalarInstructions = CreateBaseDataVariableState(scalarFolder, "Scalar_Instructions", "Scalar_Instructions", null, DataTypeIds.String, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				scalarInstructions.Value = "A library of Variables of different data-types.";
+				FolderState staticFolder = CreateFolderState(scalarFolder, "Scalar_Static", "Scalar_Static", null);
+				const string scalarStatic = "Scalar_Static_";
+				_ = CreateBaseDataVariableState(staticFolder, scalarStatic + "Boolean", "Boolean", null, DataTypeIds.Boolean, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateBaseDataVariableState(staticFolder, scalarStatic + "Byte", "Byte", null, DataTypeIds.Byte, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateBaseDataVariableState(staticFolder, scalarStatic + "ByteString", "ByteString", null, DataTypeIds.ByteString, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateBaseDataVariableState(staticFolder, scalarStatic + "DateTime", "DateTime", null, DataTypeIds.DateTime, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateBaseDataVariableState(staticFolder, scalarStatic + "Double", "Double", null, DataTypeIds.Double, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateBaseDataVariableState(staticFolder, scalarStatic + "Duration", "Duration", null, DataTypeIds.Duration, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateBaseDataVariableState(staticFolder, scalarStatic + "Float", "Float", null, DataTypeIds.Float, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateBaseDataVariableState(staticFolder, scalarStatic + "Guid", "Guid", null, DataTypeIds.Guid, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateBaseDataVariableState(staticFolder, scalarStatic + "Int16", "Int16", null, DataTypeIds.Int16, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateBaseDataVariableState(staticFolder, scalarStatic + "Int32", "Int32", null, DataTypeIds.Int32, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateBaseDataVariableState(staticFolder, scalarStatic + "Int64", "Int64", null, DataTypeIds.Int64, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateBaseDataVariableState(staticFolder, scalarStatic + "Integer", "Integer", null, DataTypeIds.Integer, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateBaseDataVariableState(staticFolder, scalarStatic + "LocaleId", "LocaleId", null, DataTypeIds.LocaleId, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateBaseDataVariableState(staticFolder, scalarStatic + "LocalizedText", "LocalizedText", null, DataTypeIds.LocalizedText, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateBaseDataVariableState(staticFolder, scalarStatic + "NodeId", "NodeId", null, DataTypeIds.NodeId, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateBaseDataVariableState(staticFolder, scalarStatic + "Number", "Number", null, DataTypeIds.Number, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateBaseDataVariableState(staticFolder, scalarStatic + "QualifiedName", "QualifiedName", null, DataTypeIds.QualifiedName, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateBaseDataVariableState(staticFolder, scalarStatic + "SByte", "SByte", null, DataTypeIds.SByte, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateBaseDataVariableState(staticFolder, scalarStatic + "String", "String", null, DataTypeIds.String, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateBaseDataVariableState(staticFolder, scalarStatic + "UInt16", "UInt16", null, DataTypeIds.UInt16, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateBaseDataVariableState(staticFolder, scalarStatic + "UInt32", "UInt32", null, DataTypeIds.UInt32, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateBaseDataVariableState(staticFolder, scalarStatic + "UInt64", "UInt64", null, DataTypeIds.UInt64, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateBaseDataVariableState(staticFolder, scalarStatic + "UInteger", "UInteger", null, DataTypeIds.UInteger, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateBaseDataVariableState(staticFolder, scalarStatic + "UtcTime", "UtcTime", null, DataTypeIds.UtcTime, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateBaseDataVariableState(staticFolder, scalarStatic + "Variant", "Variant", null, BuiltInType.Variant, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateBaseDataVariableState(staticFolder, scalarStatic + "XmlElement", "XmlElement", null, DataTypeIds.XmlElement, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
 
-if (!externalReferences.TryGetValue(ObjectIds.ObjectsFolder, out var references))
+				BaseDataVariableState decimalVariable = CreateBaseDataVariableState(staticFolder, scalarStatic + "Decimal", "Decimal", null, DataTypeIds.DecimalDataType, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				// Set an arbitrary precision decimal value.
+				var largeInteger = BigInteger.Parse("1234567890123546789012345678901234567890123456789012345");
+				var decimalValue = new DecimalDataType {
+					Scale = 100,
+					Value = largeInteger.ToByteArray()
+				};
+				decimalVariable.Value = decimalValue;
+				#endregion
 
-{
+				#region Scalar_Simulation
+				ResetRandomGenerator(6);
+				FolderState simulationFolder = CreateFolderState(scalarFolder, "Scalar_Simulation", "Simulation", null);
+				const string scalarSimulation = "Scalar_Simulation_";
+				_ = CreateDynamicVariable(simulationFolder, scalarSimulation + "Boolean", "Boolean", null, DataTypeIds.Boolean, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateDynamicVariable(simulationFolder, scalarSimulation + "Byte", "Byte", null, DataTypeIds.Byte, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateDynamicVariable(simulationFolder, scalarSimulation + "ByteString", "ByteString", null, DataTypeIds.ByteString, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateDynamicVariable(simulationFolder, scalarSimulation + "DateTime", "DateTime", null, DataTypeIds.DateTime, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateDynamicVariable(simulationFolder, scalarSimulation + "Double", "Double", null, DataTypeIds.Double, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateDynamicVariable(simulationFolder, scalarSimulation + "Duration", "Duration", null, DataTypeIds.Duration, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateDynamicVariable(simulationFolder, scalarSimulation + "Float", "Float", null, DataTypeIds.Float, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateDynamicVariable(simulationFolder, scalarSimulation + "Guid", "Guid", null, DataTypeIds.Guid, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateDynamicVariable(simulationFolder, scalarSimulation + "Int16", "Int16", null, DataTypeIds.Int16, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateDynamicVariable(simulationFolder, scalarSimulation + "Int32", "Int32", null, DataTypeIds.Int32, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateDynamicVariable(simulationFolder, scalarSimulation + "Int64", "Int64", null, DataTypeIds.Int64, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateDynamicVariable(simulationFolder, scalarSimulation + "Integer", "Integer", null, DataTypeIds.Integer, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateDynamicVariable(simulationFolder, scalarSimulation + "LocaleId", "LocaleId", null, DataTypeIds.LocaleId, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateDynamicVariable(simulationFolder, scalarSimulation + "LocalizedText", "LocalizedText", null, DataTypeIds.LocalizedText, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateDynamicVariable(simulationFolder, scalarSimulation + "NodeId", "NodeId", null, DataTypeIds.NodeId, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateDynamicVariable(simulationFolder, scalarSimulation + "Number", "Number", null, DataTypeIds.Number, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateDynamicVariable(simulationFolder, scalarSimulation + "QualifiedName", "QualifiedName", null, DataTypeIds.QualifiedName, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateDynamicVariable(simulationFolder, scalarSimulation + "SByte", "SByte", null, DataTypeIds.SByte, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateDynamicVariable(simulationFolder, scalarSimulation + "String", "String", null, DataTypeIds.String, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateDynamicVariable(simulationFolder, scalarSimulation + "UInt16", "UInt16", null, DataTypeIds.UInt16, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateDynamicVariable(simulationFolder, scalarSimulation + "UInt32", "UInt32", null, DataTypeIds.UInt32, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateDynamicVariable(simulationFolder, scalarSimulation + "UInt64", "UInt64", null, DataTypeIds.UInt64, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateDynamicVariable(simulationFolder, scalarSimulation + "UInteger", "UInteger", null, DataTypeIds.UInteger, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateDynamicVariable(simulationFolder, scalarSimulation + "UtcTime", "UtcTime", null, DataTypeIds.UtcTime, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateDynamicVariable(simulationFolder, scalarSimulation + "Variant", "Variant", null, BuiltInType.Variant, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				_ = CreateDynamicVariable(simulationFolder, scalarSimulation + "XmlElement", "XmlElement", null, DataTypeIds.XmlElement, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
 
-externalReferences[ObjectIds.ObjectsFolder] = References = new List\<IReference\>();
+				BaseDataVariableState intervalVariable = CreateBaseDataVariableState(simulationFolder, scalarSimulation + "Interval", "Interval", null, DataTypeIds.UInt16, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				intervalVariable.Value = simulationInterval_;
+				intervalVariable.OnSimpleWriteValue = OnWriteInterval;
 
-}
+				BaseDataVariableState enabledVariable = CreateBaseDataVariableState(simulationFolder, scalarSimulation + "Enabled", "Enabled", null, DataTypeIds.Boolean, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				enabledVariable.Value = simulationEnabled_;
+				enabledVariable.OnSimpleWriteValue = OnWriteEnabled;
+				#endregion
 
-else
+				#region Methods
+				FolderState methodsFolder = CreateFolderState(root, "Methods", "Methods", null);
+				const string methods = "Methods_";
 
-{
+				BaseDataVariableState methodsInstructions = CreateBaseDataVariableState(methodsFolder, methods + "Instructions", "Instructions", null, DataTypeIds.String, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				methodsInstructions.Value = "Contains methods with varying parameter definitions.";
 
-References = references;
+				#region Hello Method
+				MethodState helloMethod = CreateMethodState(methodsFolder, methods + "Hello", "Hello", OnHelloCall);
+				// set input arguments
+				Argument inputArgument1 = CreateArgument("String value", "String value", BuiltInType.String, ValueRanks.Scalar);
+				_ = AddInputArguments(helloMethod, new[] { inputArgument1 });
 
-}
+				// set output arguments
+				Argument outputArgument1 = CreateArgument("Hello Result", "Hello Result", BuiltInType.String, ValueRanks.Scalar);
+				_ = AddOutputArguments(helloMethod, new[] { outputArgument1 });
+				#endregion
 
-var root = CreateFolderState(null, "My Data", new LocalizedText("en", "My Data"),
+				#endregion
 
-new LocalizedText("en", "Root folder of the Sample Server"));
+				#region Access Rights Handling
+				FolderState folderAccessRights = CreateFolderState(root, "AccessRights", "AccessRights", null);
+				const string accessRights = "AccessRights_";
+				BaseDataVariableState accessRightsInstructions = CreateBaseDataVariableState(folderAccessRights, accessRights + "Instructions", "Instructions", null, DataTypeIds.String, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				accessRightsInstructions.Value = "This folder will be accessible to all authenticated users who enter, but contents therein will be secured.";
 
-References.Add(new NodeStateReference(ReferenceTypes.Organizes, false, root.NodeId));
 
-root.EventNotifier = EventNotifiers.SubscribeToEvents;
+				#region Access Rights Operator Handling
+				// sub-folder for "AccessOperator"
+				FolderState folderAccessRightsAccessOperator = CreateFolderState(folderAccessRights, "AccessRights_AccessOperator", "AccessOperator", null);
+				const string accessRightsAccessOperator = "AccessRights_AccessOperator_";
 
-opcServer_.AddRootNotifier(root);
+				BaseDataVariableState arOperatorRW = CreateBaseDataVariableState(folderAccessRightsAccessOperator, accessRightsAccessOperator + "OperatorUsable", "OperatorUsable", null, BuiltInType.Int16, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				arOperatorRW.AccessLevel = AccessLevels.CurrentReadOrWrite;
+				arOperatorRW.UserAccessLevel = AccessLevels.CurrentReadOrWrite;
+				arOperatorRW.OnReadUserAccessLevel = OnReadOperatorUserAccessLevel;
+				arOperatorRW.OnSimpleWriteValue = OnWriteOperatorValue;
+				arOperatorRW.OnReadValue = OnReadOperatorValue;
+				dynamicNodes_.Add(arOperatorRW);
+				#endregion
 
-try
+				#region Access Rights Administrator Handling
+				// sub-folder for "AccessAdministrator"
+				FolderState folderAccessRightsAccessAdministrator = CreateFolderState(folderAccessRights, "AccessRights_AccessAdministrator", "AccessAdministrator", null);
+				const string accessRightsAccessAdministrator = "AccessRights_AccessAdministrator_";
 
-{
-
-\#region Static
-
-var staticFolder = CreateFolderState(root, "Static", "Static", "A folder with a sample static variable.");
-
-const string scalarStatic = "Static_";
-
-CreateBaseDataVariableState(staticFolder, scalarStatic + "String", "String", null, DataTypeIds.String, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
-
-\#endregion
-
-\#region Simulation
-
-var simulationFolder = CreateFolderState(root, "Simulation", "Simulation", "A folder with simulated variables.");
-
-const string simulation = "Simulation_";
-
-var simulatedVariable = CreateDynamicVariable(simulationFolder, simulation + "Double", "Double", "A simulated variable of type Double. If Enabled is true this value changes based on the defined Interval.", DataTypeIds.Double, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
-
-var intervalVariable = CreateBaseDataVariableState(simulationFolder, simulation + "Interval", "Interval", "The Interval used for changing the simulated values.", DataTypeIds.UInt16, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, simulationInterval_);
-
-intervalVariable.OnSimpleWriteValue = OnWriteInterval;
-
-var enabledVariable = CreateBaseDataVariableState(simulationFolder, simulation + "Enabled", "Enabled", "Specifies whether the simulation is enabled (true) or disabled (false).", DataTypeIds.Boolean, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, simulationEnabled_);
-
-enabledVariable.OnSimpleWriteValue = OnWriteEnabled;
-
-\#endregion
-
-}
-
-catch (Exception e)
-
-{
-
-Utils.Trace(e, "Error creating the address space.");
-
-}
-
-AddPredefinedNode(SystemContext, root);
-
-simulationTimer\_ = new Timer(DoSimulation, null, 1000, 1000);
-
-}
-
-}
+				BaseDataVariableState arAdministratorRW = CreateBaseDataVariableState(folderAccessRightsAccessAdministrator, accessRightsAccessAdministrator + "AdministratorOnly", "AdministratorOnly", null, BuiltInType.Int16, ValueRanks.Scalar, AccessLevels.CurrentReadOrWrite, null);
+				arAdministratorRW.AccessLevel = AccessLevels.CurrentReadOrWrite;
+				arAdministratorRW.UserAccessLevel = AccessLevels.CurrentReadOrWrite;
+				arAdministratorRW.OnReadUserAccessLevel = OnReadAdministratorUserAccessLevel;
+				arAdministratorRW.OnSimpleWriteValue = OnWriteAdministratorValue;
+				arAdministratorRW.OnReadValue = OnReadAdministratorValue;
+				dynamicNodes_.Add(arAdministratorRW);
+				#endregion
+				#endregion
+			}
+			catch (Exception e)
+			{
+				Utils.Trace(e, "Error creating the address space.");
+			}
+			// Add all nodes under root to the server
+			AddPredefinedNode(SystemContext, root);
+			simulationTimer_ = new Timer(DoSimulation, null, 1000, 1000);
+		}
+	}
 ```
 
 ### Testing your OPC UA server
 
 You should now be able to build and start your first OPC UA server. Using the Unified Automation UaExpert you can use to connect to the OPC UA server and should see the following address space:
 
-![Ein Bild, das Text enthält. Automatisch generierte Beschreibung](media/25a30ef5878780d3f1c85c7f3a363be5.png)
+![](../images/SimpleServerAddressSpace.png)
 
 You can drag&drop the variables “Double”, “Enabled” and “Interval” to the Data Access View and see the value of the “Double” variable changing. By changing the “Interval” the update interval of the “Double” should chang and with setting “Enabled” to false no more changes should happen to the “Double” variable.
 
