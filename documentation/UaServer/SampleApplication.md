@@ -1,26 +1,28 @@
 # Sample Application
 
-The OPC UA Client .NET contains two sample client applications, you can find it them in 
+The OPC UA Server .NET contains two sample Server applications, you can find it them in 
 
-- [Simple Sample Application](/tutorials/SampleCompany/Simple/SampleClient)
-  This sample client shows the basics of a client application.
-- [Advanced Sample Application](/tutorials/SampleCompany/Advanced/SampleClient)
-  This sample client shows advanced technics for a client application.
+- [Simple Sample Application](/tutorials/SampleCompany/Simple/SampleServer)
+  This sample Server shows the basics of a Server application.
+- [Advanced Sample Application](/tutorials/SampleCompany/Advanced/SampleServer)
+  This sample Server shows advanced technics for a Server application.
 
 ## Required NuGet packages
 
-The OPC UA CLient .NET is divided into several DLL’s as shown in the picture below:
+The OPC UA Server .NET is divided into several DLL’s as shown in the picture below:
 
 ![](../images/OPCUANETArchitecture.png)
 
-The DLLs are delivered as local NuGet Packages. The OPC UA Client .NET uses the following packages:
+The DLLs are delivered as local NuGet Packages. The OPC UA Server .NET uses the following packages:
 
 | **Name**                                       | **Description**                                                                                    |
-|:-----------------------------------------------|:---------------------------------------------------------------------------------------------------|
+|:-----------------------------------------------|:--------------------------------------------------------------------------------------------------:|
 | **Technosoftware.UaSolution.UaCore**           | The OPC UA Core Class Library.                                                                     |
 | **Technosoftware.UaSolution.UaBindings.Https** | The OPC UA Https Binding Library.                                                                  |
 | **Technosoftware.UaSolution.UaConfiguration**  | Contains configuration related classes like, e.g. ApplicationInstance.                             |
-| **Technosoftware.UaSolution.UaClient**         | The OPC UA Client Class library containing the classes and methods usable for server development.  |
+| **Technosoftware.UaSolution.UaServer**         | The OPC UA Server Class library containing the classes and methods usable for server development.  |
+| **Technosoftware.UaSolution.UaBaseServer**     | The OPC UA Base Server Class library used by the samples explained in [Server Design based on UaBaseServer](./UaBaseServerDesign.md).                    |
+| **Technosoftware.UaSolution.UaStandardServer** | The OPC UA Standard Server Class library used by the samples explained in [Server Design based on UaStandardServer](./UaStandardServerDesign.md).               |
 
 ## Directory Structure
 
@@ -32,7 +34,7 @@ The main OPC UA Solution can be found in the root of the repository and is named
 
 - Tutorials.sln
 
-The solution contains two sample clients, as well as two sample servers used by these clients.
+The solution contains two sample Servers, as well as two sample servers used by these Servers.
 
 ## Prerequisites
 

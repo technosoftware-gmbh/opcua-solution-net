@@ -212,8 +212,7 @@ namespace SampleCompany.SampleServer
             var quitEvent = new ManualResetEvent(false);
             try
             {
-                Console.CancelKeyPress += (sender, eArgs) =>
-                {
+                Console.CancelKeyPress += (sender, eArgs) => {
                     _ = quitEvent.Set();
                     eArgs.Cancel = true;
                 };
@@ -230,7 +229,7 @@ namespace SampleCompany.SampleServer
             {
                 Console.WriteLine("Server stopped. Waiting for exit...");
 
-                using (var server = uaServer_)
+                using (UaServer server = uaServer_)
                 {
                     // Stop status thread
                     uaServer_ = null;
@@ -272,12 +271,12 @@ namespace SampleCompany.SampleServer
                 uaServer_.BaseServer.AddReverseConnection(ReverseConnectUrl);
             }
 
-            var reverseConnections = uaServer_.BaseServer.GetReverseConnections();
+            System.Collections.ObjectModel.ReadOnlyDictionary<Uri, UaReverseConnectProperty> reverseConnections = uaServer_.BaseServer.GetReverseConnections();
             if (reverseConnections?.Count > 0)
             {
                 // print reverse connect info
                 Console.WriteLine("Reverse Connect Clients:");
-                foreach (var connection in reverseConnections)
+                foreach (KeyValuePair<Uri, UaReverseConnectProperty> connection in reverseConnections)
                 {
                     Console.WriteLine(connection.Key);
                 }
@@ -285,7 +284,7 @@ namespace SampleCompany.SampleServer
 
             // print endpoint info
             Console.WriteLine("Server Endpoints:");
-            var endpoints = uaServer_.BaseServer.GetEndpoints().Select(e => e.EndpointUrl).Distinct();
+            IEnumerable<string> endpoints = uaServer_.BaseServer.GetEndpoints().Select(e => e.EndpointUrl).Distinct();
             foreach (var endpoint in endpoints)
             {
                 Console.WriteLine(endpoint);
@@ -336,8 +335,8 @@ namespace SampleCompany.SampleServer
             {
                 if (DateTime.UtcNow - LastEventTime > TimeSpan.FromMilliseconds(6000))
                 {
-                    var sessions = uaServer_.BaseServer.CurrentInstance.SessionManager.GetSessions();
-                    foreach (var session in sessions)
+                    IList<Session> sessions = uaServer_.BaseServer.CurrentInstance.SessionManager.GetSessions();
+                    foreach (Session session in sessions)
                     {
                         PrintSessionStatus(session, "-Status-", true);
                     }

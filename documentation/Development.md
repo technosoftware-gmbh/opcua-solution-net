@@ -8,8 +8,8 @@ For general information about the OPC UA Solution .NET Development we highly rec
 
 ## OPC UA Client Development
 
-For a detailed introduction into OPC UA Client Development we highly recommend to start with the sample client in **tutorials\SampleCompany\Simulation\SampleClient**.
+For a detailed introduction into OPC UA Client Development we highly recommend to start with the simple sample client in **tutorials\SampleCompany\Simple\SampleClient**.
 
 ## OPC UA Server Development
 
-For a detailed introduction into OPC UA Server Development we highly recommend to start with the sample server in **tutorials\SampleCompany\Simulation\SampleServer**.
+For a detailed introduction into OPC UA Server Development we highly recommend to start with the simple sample server in **tutorials\SampleCompany\Simple\SampleServer**.
