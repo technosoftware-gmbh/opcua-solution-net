@@ -40,7 +40,7 @@ namespace Technosoftware.UaClient
             SubscriptionAcknowledgementCollection acknowledgementsToSend,
             SubscriptionAcknowledgementCollection deferredAcknowledgementsToSend)
         {
-            acknowledgementsToSend_ = acknowledgementsToSend;
+            AcknowledgementsToSend = acknowledgementsToSend;
             deferredAcknowledgementsToSend_ = deferredAcknowledgementsToSend;
         }
         #endregion
@@ -53,7 +53,7 @@ namespace Technosoftware.UaClient
         /// A client may also chose to remove an acknowledgement from this list to add it back
         /// to the list in a subsequent callback when the request is fully processed.
         /// </remarks>
-        public SubscriptionAcknowledgementCollection AcknowledgementsToSend => acknowledgementsToSend_;
+        public SubscriptionAcknowledgementCollection AcknowledgementsToSend { get; }
 
         /// <summary>
         /// The deferred list of acknowledgements.
@@ -66,7 +66,6 @@ namespace Technosoftware.UaClient
         #endregion
 
         #region Private Fields
-        private readonly SubscriptionAcknowledgementCollection acknowledgementsToSend_;
         private readonly SubscriptionAcknowledgementCollection deferredAcknowledgementsToSend_;
         #endregion
     }

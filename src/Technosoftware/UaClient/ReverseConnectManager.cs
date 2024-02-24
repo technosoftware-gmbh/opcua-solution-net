@@ -225,7 +225,7 @@ namespace Technosoftware.UaClient
         {
             try
             {
-                var configuration = await ApplicationConfiguration.Load(
+                ApplicationConfiguration configuration = await ApplicationConfiguration.Load(
                     new FileInfo(args.FilePath),
                     applicationType_,
                     configType_).ConfigureAwait(false);
@@ -278,9 +278,9 @@ namespace Technosoftware.UaClient
 
                 if (configuration?.ClientEndpoints != null)
                 {
-                    foreach (var endpoint in configuration.ClientEndpoints)
+                    foreach (ReverseConnectClientEndpoint endpoint in configuration.ClientEndpoints)
                     {
-                        var uri = Utils.ParseUri(endpoint.EndpointUrl);
+                        Uri uri = Utils.ParseUri(endpoint.EndpointUrl);
                         if (uri != null)
                         {
                             AddEndpointInternal(uri, true);
@@ -302,9 +302,9 @@ namespace Technosoftware.UaClient
         {
             lock (lock_)
             {
-                foreach (var host in endpointUrls_)
+                foreach (KeyValuePair<Uri, ReverseConnectInfo> host in endpointUrls_)
                 {
-                    var value = host.Value;
+                    ReverseConnectInfo value = host.Value;
                     try
                     {
                         if (host.Value.State < ReverseConnectHostState.Open)
@@ -329,9 +329,9 @@ namespace Technosoftware.UaClient
         {
             lock (lock_)
             {
-                foreach (var host in endpointUrls_)
+                foreach (KeyValuePair<Uri, ReverseConnectInfo> host in endpointUrls_)
                 {
-                    var value = host.Value;
+                    ReverseConnectInfo value = host.Value;
                     try
                     {
                         if (value.State == ReverseConnectHostState.Open)
@@ -472,10 +472,10 @@ namespace Technosoftware.UaClient
                 {
                     await Task.Delay(-1, cancellationToken).ContinueWith(tsk => { }).ConfigureAwait(false);
                 }
-                tcs.TrySetCanceled();
+                _ = tcs.TrySetCanceled();
             };
 
-            await Task.WhenAny(new Task[] {
+            _ = await Task.WhenAny(new Task[] {
                 tcs.Task,
                 listenForCancelTaskFnc()
             }).ConfigureAwait(false);
@@ -524,7 +524,7 @@ namespace Technosoftware.UaClient
             lock (registrationsLock_)
             {
                 Registration toRemove = null;
-                foreach (var registration in registrations_)
+                foreach (Registration registration in registrations_)
                 {
                     if (registration.GetHashCode() == hashCode)
                     {
@@ -534,7 +534,7 @@ namespace Technosoftware.UaClient
                 }
                 if (toRemove != null)
                 {
-                    registrations_.Remove(toRemove);
+                    _ = registrations_.Remove(toRemove);
                     CancelAndRenewTokenSource();
                 }
             }
@@ -571,7 +571,7 @@ namespace Technosoftware.UaClient
         private void ClearEndpoints(bool configEntry)
         {
             var newEndpointUrls = new Dictionary<Uri, ReverseConnectInfo>();
-            foreach (var endpoint in endpointUrls_)
+            foreach (KeyValuePair<Uri, ReverseConnectInfo> endpoint in endpointUrls_)
             {
                 if (endpoint.Value.ConfigEntry != configEntry)
                 {
@@ -611,8 +611,8 @@ namespace Technosoftware.UaClient
         /// </summary>
         private async Task OnConnectionWaiting(object sender, ConnectionWaitingEventArgs e)
         {
-            var startTime = DateTime.UtcNow;
-            var endTime = startTime + TimeSpan.FromMilliseconds(reverseConnectClientConfiguration_.HoldTime);
+            DateTime startTime = DateTime.UtcNow;
+            DateTime endTime = startTime + TimeSpan.FromMilliseconds(reverseConnectClientConfiguration_.HoldTime);
             var matched = MatchRegistration(sender, e);
             while (!matched)
             {
@@ -622,7 +622,7 @@ namespace Technosoftware.UaClient
                 {
                     ct = cts_.Token;
                 }
-                var delay = endTime - DateTime.UtcNow;
+                TimeSpan delay = endTime - DateTime.UtcNow;
                 if (delay.TotalMilliseconds > 0)
                 {
                     await Task.Delay(delay, ct).ContinueWith(tsk => {
@@ -659,7 +659,7 @@ namespace Technosoftware.UaClient
             lock (registrationsLock_)
             {
                 // first try to match single registrations
-                foreach (var registration in registrations_.Where(r => (r.ReverseConnectStrategy & ReverseConnectStrategy.Any) == 0))
+                foreach (Registration registration in registrations_.Where(r => (r.ReverseConnectStrategy & ReverseConnectStrategy.Any) == 0))
                 {
                     if (registration.EndpointUrl.Scheme.Equals(e.EndpointUrl.Scheme, StringComparison.InvariantCulture) &&
                        (registration.ServerUri == e.ServerUri ||
@@ -676,7 +676,7 @@ namespace Technosoftware.UaClient
                 // now try any registrations.
                 if (callbackRegistration == null)
                 {
-                    foreach (var registration in registrations_.Where(r => (r.ReverseConnectStrategy & ReverseConnectStrategy.Any) != 0))
+                    foreach (Registration registration in registrations_.Where(r => (r.ReverseConnectStrategy & ReverseConnectStrategy.Any) != 0))
                     {
                         if (registration.EndpointUrl.Scheme.Equals(e.EndpointUrl.Scheme, StringComparison.InvariantCulture))
                         {
@@ -693,7 +693,7 @@ namespace Technosoftware.UaClient
                 {
                     if ((callbackRegistration.ReverseConnectStrategy & ReverseConnectStrategy.Once) != 0)
                     {
-                        registrations_.Remove(callbackRegistration);
+                        _ = registrations_.Remove(callbackRegistration);
                     }
                 }
             }
@@ -716,7 +716,7 @@ namespace Technosoftware.UaClient
         /// </summary>
         private void CancelAndRenewTokenSource()
         {
-            var cts = cts_;
+            CancellationTokenSource cts = cts_;
             cts_ = new CancellationTokenSource();
             cts.Cancel();
             cts.Dispose();

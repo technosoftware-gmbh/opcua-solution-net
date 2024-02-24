@@ -37,18 +37,18 @@ namespace Technosoftware.UaClient
 
         private void Initialize()
         {
-            Id               = 0;
-            nodeId_           = null;
-            AttributeId      = Attributes.Value;
-            IndexRange       = null;
-            DataEncoding         = null; 
-            MonitoringMode   = MonitoringMode.Disabled;
-            clientHandle_     = 0;
-            samplingInterval_ = 0;
-            monitoringFilter_ = null;
+            Id = 0;
+            NodeId = null;
+            AttributeId = Attributes.Value;
+            IndexRange = null;
+            DataEncoding = null;
+            MonitoringMode = MonitoringMode.Disabled;
+            ClientHandle = 0;
+            SamplingInterval = 0;
+            Filter = null;
             filterResult_ = null;
-            QueueSize        = 0;
-            DiscardOldest    = true;
+            QueueSize = 0;
+            DiscardOldest = true;
         }
         #endregion
 
@@ -66,12 +66,12 @@ namespace Technosoftware.UaClient
         /// <summary>
         /// Any error condition associated with the monitored item.
         /// </summary>
-        public ServiceResult Error => serviceResult_;
+        public ServiceResult Error { get; private set; }
 
         /// <summary>
         /// The node id being monitored.
         /// </summary>
-        public NodeId NodeId => nodeId_;
+        public NodeId NodeId { get; private set; }
 
         /// <summary>
         /// The attribute being monitored.
@@ -96,17 +96,17 @@ namespace Technosoftware.UaClient
         /// <summary>
         /// The identifier assigned by the client.
         /// </summary>
-        public uint ClientHandle => clientHandle_;
+        public uint ClientHandle { get; private set; }
 
         /// <summary>
         /// The sampling interval.
         /// </summary>
-        public double SamplingInterval => samplingInterval_;
+        public double SamplingInterval { get; private set; }
 
         /// <summary>
         /// The filter to use to select values to return.
         /// </summary>
-        public MonitoringFilter Filter => monitoringFilter_;
+        public MonitoringFilter Filter { get; private set; }
 
         /// <summary>
         /// The result of applying the filter
@@ -138,9 +138,9 @@ namespace Technosoftware.UaClient
         /// </summary>
         internal void SetResolvePathResult(
             BrowsePathResult result,
-            ServiceResult    error)
+            ServiceResult error)
         {
-            serviceResult_ = error;
+            Error = error;
         }
 
         /// <summary>
@@ -148,35 +148,35 @@ namespace Technosoftware.UaClient
         /// </summary>
         internal void SetCreateResult(
             MonitoredItemCreateRequest request,
-            MonitoredItemCreateResult  result,
-            ServiceResult              error)
+            MonitoredItemCreateResult result,
+            ServiceResult error)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
-            if (result == null)  throw new ArgumentNullException(nameof(result));
+            if (result == null) throw new ArgumentNullException(nameof(result));
 
-            nodeId_           = request.ItemToMonitor.NodeId;
-            AttributeId      = request.ItemToMonitor.AttributeId;
-            IndexRange       = request.ItemToMonitor.IndexRange;
-            DataEncoding         = request.ItemToMonitor.DataEncoding;
-            MonitoringMode   = request.MonitoringMode;
-            clientHandle_     = request.RequestedParameters.ClientHandle;
-            samplingInterval_ = request.RequestedParameters.SamplingInterval;
-            QueueSize        = request.RequestedParameters.QueueSize;
-            DiscardOldest    = request.RequestedParameters.DiscardOldest;
-            monitoringFilter_           = null;
+            NodeId = request.ItemToMonitor.NodeId;
+            AttributeId = request.ItemToMonitor.AttributeId;
+            IndexRange = request.ItemToMonitor.IndexRange;
+            DataEncoding = request.ItemToMonitor.DataEncoding;
+            MonitoringMode = request.MonitoringMode;
+            ClientHandle = request.RequestedParameters.ClientHandle;
+            SamplingInterval = request.RequestedParameters.SamplingInterval;
+            QueueSize = request.RequestedParameters.QueueSize;
+            DiscardOldest = request.RequestedParameters.DiscardOldest;
+            Filter = null;
             filterResult_ = null;
-            serviceResult_            = error;
+            Error = error;
 
             if (request.RequestedParameters.Filter != null)
             {
-                monitoringFilter_ = Utils.Clone(request.RequestedParameters.Filter.Body) as MonitoringFilter;
+                Filter = Utils.Clone(request.RequestedParameters.Filter.Body) as MonitoringFilter;
             }
 
             if (ServiceResult.IsGood(error))
             {
-                Id               = result.MonitoredItemId;
-                samplingInterval_ = result.RevisedSamplingInterval;
-                QueueSize        = result.RevisedQueueSize; 
+                Id = result.MonitoredItemId;
+                SamplingInterval = result.RevisedSamplingInterval;
+                QueueSize = result.RevisedQueueSize;
 
                 if (result.FilterResult != null)
                 {
@@ -192,21 +192,21 @@ namespace Technosoftware.UaClient
         {
             if (monitoredItem == null) throw new ArgumentNullException(nameof(monitoredItem));
 
-            nodeId_ = monitoredItem.ResolvedNodeId;
+            NodeId = monitoredItem.ResolvedNodeId;
             AttributeId = monitoredItem.AttributeId;
             IndexRange = monitoredItem.IndexRange;
             DataEncoding = monitoredItem.Encoding;
             MonitoringMode = monitoredItem.MonitoringMode;
-            clientHandle_ = monitoredItem.ClientHandle;
-            samplingInterval_ = monitoredItem.SamplingInterval;
+            ClientHandle = monitoredItem.ClientHandle;
+            SamplingInterval = monitoredItem.SamplingInterval;
             QueueSize = monitoredItem.QueueSize;
             DiscardOldest = monitoredItem.DiscardOldest;
-            monitoringFilter_ = null;
+            Filter = null;
             filterResult_ = null;
 
             if (monitoredItem.Filter != null)
             {
-                monitoringFilter_ = Utils.Clone(monitoredItem.Filter) as MonitoringFilter;
+                Filter = Utils.Clone(monitoredItem.Filter) as MonitoringFilter;
             }
         }
 
@@ -215,29 +215,29 @@ namespace Technosoftware.UaClient
         /// </summary>
         internal void SetModifyResult(
             MonitoredItemModifyRequest request,
-            MonitoredItemModifyResult  result,
-            ServiceResult              error)
+            MonitoredItemModifyResult result,
+            ServiceResult error)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
-            if (result == null)  throw new ArgumentNullException(nameof(result));
+            if (result == null) throw new ArgumentNullException(nameof(result));
 
-            serviceResult_ = error;
+            Error = error;
 
             if (ServiceResult.IsGood(error))
             {
-                clientHandle_     = request.RequestedParameters.ClientHandle;
-                samplingInterval_ = request.RequestedParameters.SamplingInterval;
-                QueueSize        = request.RequestedParameters.QueueSize;
-                DiscardOldest    = request.RequestedParameters.DiscardOldest;
-                monitoringFilter_           = null;
+                ClientHandle = request.RequestedParameters.ClientHandle;
+                SamplingInterval = request.RequestedParameters.SamplingInterval;
+                QueueSize = request.RequestedParameters.QueueSize;
+                DiscardOldest = request.RequestedParameters.DiscardOldest;
+                Filter = null;
                 filterResult_ = null;
 
                 if (request.RequestedParameters.Filter != null)
                 {
-                    monitoringFilter_ = Utils.Clone(request.RequestedParameters.Filter.Body) as MonitoringFilter;
+                    Filter = Utils.Clone(request.RequestedParameters.Filter.Body) as MonitoringFilter;
                 }
 
-                samplingInterval_ = result.RevisedSamplingInterval;
+                SamplingInterval = result.RevisedSamplingInterval;
                 QueueSize = result.RevisedQueueSize;
 
                 if (result.FilterResult != null)
@@ -253,7 +253,7 @@ namespace Technosoftware.UaClient
         internal void SetDeleteResult(ServiceResult error)
         {
             Id = 0;
-            serviceResult_ = error;
+            Error = error;
         }
 
         /// <summary>
@@ -261,16 +261,11 @@ namespace Technosoftware.UaClient
         /// </summary>
         internal void SetError(ServiceResult error)
         {
-            serviceResult_ = error;
+            Error = error;
         }
         #endregion
 
         #region Private Fields
-        private ServiceResult serviceResult_;
-        private NodeId nodeId_;
-        private uint clientHandle_;
-        private double samplingInterval_;
-        private MonitoringFilter monitoringFilter_;
         private MonitoringFilterResult filterResult_;
         #endregion
     }

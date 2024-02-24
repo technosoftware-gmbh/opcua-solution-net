@@ -127,7 +127,7 @@ namespace Technosoftware.UaConfiguration
 
             if (ApplicationConfiguration == null)
             {
-                await LoadApplicationConfigurationAsync(false).ConfigureAwait(false);
+                _ = await LoadApplicationConfigurationAsync(false).ConfigureAwait(false);
             }
 
             server.Start(ApplicationConfiguration);
@@ -152,29 +152,24 @@ namespace Technosoftware.UaConfiguration
             bool applyTraceSettings,
             ICertificatePasswordProvider certificatePasswordProvider = null)
         {
-            Utils.LogInfo("Loading application configuration file. {0}", filePath);
+            LogInfo("Loading application configuration file. {0}", filePath);
 
             try
             {
                 // load the configuration file.
-                var configuration = await ApplicationConfiguration.Load(
-                    new System.IO.FileInfo(filePath),
+                ApplicationConfiguration configuration = await ApplicationConfiguration.Load(
+                    new FileInfo(filePath),
                     applicationType,
                     configurationType,
                     applyTraceSettings,
                     certificatePasswordProvider)
                     .ConfigureAwait(false);
 
-                if (configuration == null)
-                {
-                    return null;
-                }
-
-                return configuration;
+                return configuration ?? null;
             }
             catch (Exception e)
             {
-                Utils.LogError(e, "Could not load configuration file. {0}", filePath);
+                LogError(e, "Could not load configuration file. {0}", filePath);
 
                 // warn user.
                 if (!silent)
@@ -182,7 +177,7 @@ namespace Technosoftware.UaConfiguration
                     if (MessageDlg != null)
                     {
                         MessageDlg.Message("Load Application Configuration: " + e.Message);
-                        await MessageDlg.ShowAsync().ConfigureAwait(false);
+                        _ = await MessageDlg.ShowAsync().ConfigureAwait(false);
                     }
 
                     throw;
@@ -203,7 +198,7 @@ namespace Technosoftware.UaConfiguration
             bool applyTraceSettings,
             ICertificatePasswordProvider certificatePasswordProvider = null)
         {
-            Utils.LogInfo("Loading application from stream.");
+            LogInfo("Loading application from stream.");
 
             try
             {
@@ -216,16 +211,11 @@ namespace Technosoftware.UaConfiguration
                     certificatePasswordProvider)
                     .ConfigureAwait(false);
 
-                if (configuration == null)
-                {
-                    return null;
-                }
-
-                return configuration;
+                return configuration ?? null;
             }
             catch (Exception e)
             {
-                Utils.LogError(e, "Could not load configuration from stream.");
+                LogError(e, "Could not load configuration from stream.");
 
                 // warn user.
                 if (!silent)
@@ -233,7 +223,7 @@ namespace Technosoftware.UaConfiguration
                     if (MessageDlg != null)
                     {
                         MessageDlg.Message("Load Application Configuration: " + e.Message);
-                        await MessageDlg.ShowAsync().ConfigureAwait(false);
+                        _ = await MessageDlg.ShowAsync().ConfigureAwait(false);
                     }
 
                     throw;
@@ -302,7 +292,7 @@ namespace Technosoftware.UaConfiguration
         /// </summary>
         public async Task<ApplicationConfiguration> LoadApplicationConfigurationAsync(bool silent)
         {
-            string filePath = ApplicationConfiguration.GetFilePathFromAppConfig(ConfigSectionName);
+            var filePath = ApplicationConfiguration.GetFilePathFromAppConfig(ConfigSectionName);
 
             return await LoadApplicationConfigurationAsync(filePath, silent).ConfigureAwait(false);
         }
@@ -329,13 +319,13 @@ namespace Technosoftware.UaConfiguration
         public static ApplicationConfiguration FixupAppConfig(
             ApplicationConfiguration configuration)
         {
-            configuration.ApplicationUri = Utils.ReplaceLocalhost(configuration.ApplicationUri);
+            configuration.ApplicationUri = ReplaceLocalhost(configuration.ApplicationUri);
             if (configuration.ServerConfiguration != null)
             {
                 for (var i = 0; i < configuration.ServerConfiguration.BaseAddresses.Count; i++)
                 {
                     configuration.ServerConfiguration.BaseAddresses[i] =
-                        Utils.ReplaceLocalhost(configuration.ServerConfiguration.BaseAddresses[i]);
+                        ReplaceLocalhost(configuration.ServerConfiguration.BaseAddresses[i]);
                 }
             }
             return configuration;
@@ -350,15 +340,13 @@ namespace Technosoftware.UaConfiguration
             )
         {
             // App Uri and cert subject
-            ApplicationConfiguration = new ApplicationConfiguration
-            {
+            ApplicationConfiguration = new ApplicationConfiguration {
                 ApplicationName = ApplicationName,
                 ApplicationType = ApplicationType,
                 ApplicationUri = applicationUri,
                 ProductUri = productUri,
-                TraceConfiguration = new TraceConfiguration
-                {
-                    TraceMasks = Utils.TraceMasks.None
+                TraceConfiguration = new TraceConfiguration {
+                    TraceMasks = TraceMasks.None
                 },
                 TransportQuotas = new TransportQuotas()
             };
@@ -386,7 +374,11 @@ namespace Technosoftware.UaConfiguration
         /// </summary>
         public async Task DeleteApplicationInstanceCertificateAsync(CancellationToken ct = default)
         {
-            if (ApplicationConfiguration == null) throw new ArgumentException("Missing configuration.");
+            if (ApplicationConfiguration == null)
+            {
+                throw new ArgumentException("Missing configuration.");
+            }
+
             await DeleteApplicationInstanceCertificateAsync(ApplicationConfiguration, ct).ConfigureAwait(false);
         }
 
@@ -403,45 +395,40 @@ namespace Technosoftware.UaConfiguration
             ushort lifeTimeInMonths,
             CancellationToken ct = default)
         {
-            Utils.LogInfo("Checking application instance certificate.");
+            LogInfo("Checking application instance certificate.");
 
             if (ApplicationConfiguration == null)
             {
-                await LoadApplicationConfigurationAsync(silent).ConfigureAwait(false);
+                _ = await LoadApplicationConfigurationAsync(silent).ConfigureAwait(false);
             }
 
-            var configuration = ApplicationConfiguration;
+            ApplicationConfiguration configuration = ApplicationConfiguration;
 
             // find the existing certificate.
-            var id = configuration.SecurityConfiguration.ApplicationCertificate;
-
-            if (id == null)
-            {
-                throw ServiceResultException.Create(StatusCodes.BadConfigurationError,
+            CertificateIdentifier id = configuration.SecurityConfiguration.ApplicationCertificate ?? throw ServiceResultException.Create(StatusCodes.BadConfigurationError,
                     "Configuration file does not specify a certificate.");
-            }
 
             // reload the certificate from disk in the cache.
-            var passwordProvider = configuration.SecurityConfiguration.CertificatePasswordProvider;
-            await configuration.SecurityConfiguration.ApplicationCertificate.LoadPrivateKeyEx(passwordProvider).ConfigureAwait(false);
+            ICertificatePasswordProvider passwordProvider = configuration.SecurityConfiguration.CertificatePasswordProvider;
+            _ = await configuration.SecurityConfiguration.ApplicationCertificate.LoadPrivateKeyEx(passwordProvider).ConfigureAwait(false);
 
             // load the certificate
-            var certificate = await id.Find(true).ConfigureAwait(false);
+            X509Certificate2 certificate = await id.Find(true).ConfigureAwait(false);
 
             // check that it is ok.
             if (certificate != null)
             {
-                Utils.LogCertificate("Check certificate:", certificate);
+                LogCertificate("Check certificate:", certificate);
                 var certificateValid = await CheckApplicationInstanceCertificateAsync(configuration, certificate, silent, minimumKeySize, ct).ConfigureAwait(false);
 
                 if (!certificateValid)
                 {
                     var message = new StringBuilder();
-                    message.AppendLine("The certificate with subject {0} in the configuration is invalid.");
-                    message.AppendLine(" Please update or delete the certificate from this location:");
-                    message.AppendLine(" {1}");
+                    _ = message.AppendLine("The certificate with subject {0} in the configuration is invalid.");
+                    _ = message.AppendLine(" Please update or delete the certificate from this location:");
+                    _ = message.AppendLine(" {1}");
                     throw ServiceResultException.Create(StatusCodes.BadConfigurationError,
-                        message.ToString(), id.SubjectName, Utils.ReplaceSpecialFolderNames(id.StorePath)
+                        message.ToString(), id.SubjectName, ReplaceSpecialFolderNames(id.StorePath)
                         );
                 }
             }
@@ -461,9 +448,10 @@ namespace Technosoftware.UaConfiguration
                 {
                     if (!string.IsNullOrEmpty(id.SubjectName))
                     {
-                        var id2 = new CertificateIdentifier
-                        {
-                            StoreType = id.StoreType, StorePath = id.StorePath, SubjectName = id.SubjectName
+                        var id2 = new CertificateIdentifier {
+                            StoreType = id.StoreType,
+                            StorePath = id.StorePath,
+                            SubjectName = id.SubjectName
                         };
                         certificate = await id2.Find(true).ConfigureAwait(false);
                     }
@@ -471,12 +459,12 @@ namespace Technosoftware.UaConfiguration
                     if (certificate != null)
                     {
                         var message = new StringBuilder();
-                        message.AppendLine("Thumbprint was explicitly specified in the configuration.");
-                        message.AppendLine("Another certificate with the same subject name was found.");
-                        message.AppendLine("Use it instead?");
-                        message.AppendLine("Requested: {0}");
-                        message.AppendLine("Found: {1}");
-                        if (!await ApplicationInstance.ApproveMessageAsync(string.Format(message.ToString(), id.SubjectName, certificate.Subject), silent).ConfigureAwait(false))
+                        _ = message.AppendLine("Thumbprint was explicitly specified in the configuration.");
+                        _ = message.AppendLine("Another certificate with the same subject name was found.");
+                        _ = message.AppendLine("Use it instead?");
+                        _ = message.AppendLine("Requested: {0}");
+                        _ = message.AppendLine("Found: {1}");
+                        if (!await ApproveMessageAsync(Format(message.ToString(), id.SubjectName, certificate.Subject), silent).ConfigureAwait(false))
                         {
                             throw ServiceResultException.Create(StatusCodes.BadConfigurationError,
                                 message.ToString(), id.SubjectName, certificate.Subject);
@@ -485,8 +473,8 @@ namespace Technosoftware.UaConfiguration
                     else
                     {
                         var message = new StringBuilder();
-                        message.AppendLine("Thumbprint was explicitly specified in the configuration.");
-                        message.AppendLine("Cannot generate a new certificate.");
+                        _ = message.AppendLine("Thumbprint was explicitly specified in the configuration.");
+                        _ = message.AppendLine("Cannot generate a new certificate.");
                         throw ServiceResultException.Create(StatusCodes.BadConfigurationError, message.ToString());
                     }
                 }
@@ -501,16 +489,16 @@ namespace Technosoftware.UaConfiguration
                 }
                 else
                 {
-                    Utils.LogWarning("Application Instance certificate auto creation is disabled.");
+                    LogWarning("Application Instance certificate auto creation is disabled.");
                 }
 
                 if (certificate == null)
                 {
                     var message = new StringBuilder();
-                    message.AppendLine("There is no cert with subject {0} in the configuration.");
-                    message.AppendLine(" Please generate a cert for your application,");
-                    message.AppendLine(" then copy the new cert to this location:");
-                    message.AppendLine(" {1}");
+                    _ = message.AppendLine("There is no cert with subject {0} in the configuration.");
+                    _ = message.AppendLine(" Please generate a cert for your application,");
+                    _ = message.AppendLine(" then copy the new cert to this location:");
+                    _ = message.AppendLine(" {1}");
                     throw ServiceResultException.Create(StatusCodes.BadConfigurationError,
                         message.ToString(), id.SubjectName, id.StorePath
                         );
@@ -555,7 +543,7 @@ namespace Technosoftware.UaConfiguration
             {
                 if (ApprovedCodes.Contains(e.Error.StatusCode))
                 {
-                    Utils.LogWarning("Application Certificate Validation suppressed {0}", e.Error.StatusCode);
+                    LogWarning("Application Certificate Validation suppressed {0}", e.Error.StatusCode);
                     e.Accept = true;
                 }
             }
@@ -564,7 +552,7 @@ namespace Technosoftware.UaConfiguration
         /// <summary>
         /// Creates an application instance certificate if one does not already exist.
         /// </summary>
-        private async Task<bool> CheckApplicationInstanceCertificateAsync(
+        private static async Task<bool> CheckApplicationInstanceCertificateAsync(
             ApplicationConfiguration configuration,
             X509Certificate2 certificate,
             bool silent,
@@ -587,7 +575,7 @@ namespace Technosoftware.UaConfiguration
                     StatusCodes.BadCertificateIssuerRevocationUnknown,
                 });
 
-            Utils.LogCertificate("Check application instance certificate.", certificate);
+            LogCertificate("Check application instance certificate.", certificate);
 
             try
             {
@@ -597,9 +585,9 @@ namespace Technosoftware.UaConfiguration
             }
             catch (Exception ex)
             {
-                var message = Utils.Format(
+                var message = Format(
                     "Error validating certificate. Exception: {0}. Use certificate anyway?", ex.Message);
-                if (!await ApplicationInstance.ApproveMessageAsync(message, silent).ConfigureAwait(false))
+                if (!await ApproveMessageAsync(message, silent).ConfigureAwait(false))
                 {
                     return false;
                 }
@@ -613,12 +601,12 @@ namespace Technosoftware.UaConfiguration
             var keySize = X509Utils.GetRSAPublicKeySize(certificate);
             if (minimumKeySize > keySize)
             {
-                var message = Utils.Format(
+                var message = Format(
                     "The key size ({0}) in the certificate is less than the minimum allowed ({1}). Use certificate anyway?",
                     keySize,
                     minimumKeySize);
 
-                if (!await ApplicationInstance.ApproveMessageAsync(message, silent).ConfigureAwait(false))
+                if (!await ApproveMessageAsync(message, silent).ConfigureAwait(false))
                 {
                     return false;
                 }
@@ -627,7 +615,7 @@ namespace Technosoftware.UaConfiguration
             // check domains.
             if (configuration.ApplicationType != ApplicationType.Client)
             {
-                if (!await ApplicationInstance.CheckDomainsInCertificateAsync(configuration, certificate, silent, ct).ConfigureAwait(false))
+                if (!await CheckDomainsInCertificateAsync(configuration, certificate, silent, ct).ConfigureAwait(false))
                 {
                     return false;
                 }
@@ -639,18 +627,18 @@ namespace Technosoftware.UaConfiguration
             if (string.IsNullOrEmpty(applicationUri))
             {
                 var message = "The Application URI could not be read from the certificate. Use certificate anyway?";
-                if (!await ApplicationInstance.ApproveMessageAsync(message, silent).ConfigureAwait(false))
+                if (!await ApproveMessageAsync(message, silent).ConfigureAwait(false))
                 {
                     return false;
                 }
             }
             else if (!configuration.ApplicationUri.Equals(applicationUri, StringComparison.Ordinal))
             {
-                Utils.LogInfo("Updated the ApplicationUri: {0} --> {1}", configuration.ApplicationUri, applicationUri);
+                LogInfo("Updated the ApplicationUri: {0} --> {1}", configuration.ApplicationUri, applicationUri);
                 configuration.ApplicationUri = applicationUri;
             }
 
-            Utils.LogInfo("Using the ApplicationUri: {0}", applicationUri);
+            LogInfo("Using the ApplicationUri: {0}", applicationUri);
 
             // update configuration.
             configuration.SecurityConfiguration.ApplicationCertificate.Certificate = certificate;
@@ -667,40 +655,40 @@ namespace Technosoftware.UaConfiguration
             bool silent,
             CancellationToken ct)
         {
-            Utils.LogInfo("Check domains in certificate.");
+            LogInfo("Check domains in certificate.");
 
             var valid = true;
-            var serverDomainNames = configuration.GetServerDomainNames();
-            var certificateDomainNames = X509Utils.GetDomainsFromCertficate(certificate);
+            IList<string> serverDomainNames = configuration.GetServerDomainNames();
+            IList<string> certificateDomainNames = X509Utils.GetDomainsFromCertficate(certificate);
 
-            Utils.LogInfo("Server Domain names:");
+            LogInfo("Server Domain names:");
             foreach (var name in serverDomainNames)
             {
-                Utils.LogInfo(" {0}", name);
+                LogInfo(" {0}", name);
             }
 
-            Utils.LogInfo("Certificate Domain names:");
+            LogInfo("Certificate Domain names:");
             foreach (var name in certificateDomainNames)
             {
-                Utils.LogInfo(" {0}", name);
+                LogInfo(" {0}", name);
             }
 
             // get computer name.
-            var computerName = Utils.GetHostName();
+            var computerName = GetHostName();
 
             // get IP addresses.
             IPAddress[] addresses = null;
 
             foreach (var serverDomainName in serverDomainNames)
             {
-                if (Utils.FindStringIgnoreCase(certificateDomainNames, serverDomainName))
+                if (FindStringIgnoreCase(certificateDomainNames, serverDomainName))
                 {
                     continue;
                 }
 
                 if (string.Equals(serverDomainName, "localhost", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (Utils.FindStringIgnoreCase(certificateDomainNames, computerName))
+                    if (FindStringIgnoreCase(certificateDomainNames, computerName))
                     {
                         continue;
                     }
@@ -711,13 +699,13 @@ namespace Technosoftware.UaConfiguration
                     // get IP addresses only if necessary.
                     if (addresses == null)
                     {
-                        addresses = await Utils.GetHostAddressesAsync(computerName).ConfigureAwait(false);
+                        addresses = await GetHostAddressesAsync(computerName).ConfigureAwait(false);
                     }
 
                     // check for ip addresses.
-                    foreach (var address in addresses)
+                    foreach (IPAddress address in addresses)
                     {
-                        if (Utils.FindStringIgnoreCase(certificateDomainNames, address.ToString()))
+                        if (FindStringIgnoreCase(certificateDomainNames, address.ToString()))
                         {
                             found = true;
                             break;
@@ -730,13 +718,13 @@ namespace Technosoftware.UaConfiguration
                     }
                 }
 
-                var message = Utils.Format(
+                var message = Format(
                     "The server is configured to use domain '{0}' which does not appear in the certificate. Use certificate anyway?",
                     serverDomainName);
 
                 valid = false;
 
-                if (await ApplicationInstance.ApproveMessageAsync(message, silent).ConfigureAwait(false))
+                if (await ApproveMessageAsync(message, silent).ConfigureAwait(false))
                 {
                     valid = true;
                     continue;
@@ -765,26 +753,26 @@ namespace Technosoftware.UaConfiguration
             // delete any existing certificate.
             await DeleteApplicationInstanceCertificateAsync(configuration, ct).ConfigureAwait(false);
 
-            Utils.LogInfo("Creating application instance certificate.");
+            LogInfo("Creating application instance certificate.");
 
-            var id = configuration.SecurityConfiguration.ApplicationCertificate;
+            CertificateIdentifier id = configuration.SecurityConfiguration.ApplicationCertificate;
 
             // get the domains from the configuration file.
-            var serverDomainNames = configuration.GetServerDomainNames();
+            IList<string> serverDomainNames = configuration.GetServerDomainNames();
 
             if (serverDomainNames.Count == 0)
             {
-                serverDomainNames.Add(Utils.GetHostName());
+                serverDomainNames.Add(GetHostName());
             }
 
             // ensure the certificate store directory exists.
             if (id.StoreType == CertificateStoreType.Directory)
             {
-                Utils.GetAbsoluteDirectoryPath(id.StorePath, true, true, true);
+                _ = GetAbsoluteDirectoryPath(id.StorePath, true, true, true);
             }
 
-            var passwordProvider = configuration.SecurityConfiguration.CertificatePasswordProvider;
-            var certificate = CertificateFactory.CreateCertificate(
+            ICertificatePasswordProvider passwordProvider = configuration.SecurityConfiguration.CertificatePasswordProvider;
+            X509Certificate2 certificate = CertificateFactory.CreateCertificate(
                 configuration.ApplicationUri,
                 configuration.ApplicationName,
                 id.SubjectName,
@@ -795,7 +783,7 @@ namespace Technosoftware.UaConfiguration
 
             // need id for password provider
             id.Certificate = certificate;
-            await certificate.AddToStoreAsync(
+            _ = await certificate.AddToStoreAsync(
                     id.StoreType,
                 id.StorePath,
                 passwordProvider?.GetPassword(id),
@@ -812,7 +800,7 @@ namespace Technosoftware.UaConfiguration
 
             await configuration.CertificateValidator.Update(configuration.SecurityConfiguration).ConfigureAwait(false);
 
-            Utils.LogCertificate("Certificate created for {0}.", certificate, configuration.ApplicationUri);
+            LogCertificate("Certificate created for {0}.", certificate, configuration.ApplicationUri);
 
             // do not dispose temp cert, or X509Store certs become unusable
 
@@ -827,7 +815,7 @@ namespace Technosoftware.UaConfiguration
         private static async Task DeleteApplicationInstanceCertificateAsync(ApplicationConfiguration configuration, CancellationToken ct)
         {
             // create a default certificate id none specified.
-            var id = configuration.SecurityConfiguration.ApplicationCertificate;
+            CertificateIdentifier id = configuration.SecurityConfiguration.ApplicationCertificate;
 
             if (id == null)
             {
@@ -835,10 +823,10 @@ namespace Technosoftware.UaConfiguration
             }
 
             // delete certificate and private key.
-            var certificate = await id.Find().ConfigureAwait(false);
+            X509Certificate2 certificate = await id.Find().ConfigureAwait(false);
             if (certificate != null)
             {
-                Utils.LogCertificate(TraceMasks.Security, "Deleting application instance certificate and private key.", certificate);
+                LogCertificate(TraceMasks.Security, "Deleting application instance certificate and private key.", certificate);
             }
 
             // delete trusted peer certificate.
@@ -856,10 +844,10 @@ namespace Technosoftware.UaConfiguration
                 {
                     using (ICertificateStore store = configuration.SecurityConfiguration.TrustedPeerCertificates.OpenStore())
                     {
-                        bool deleted = await store.Delete(thumbprint).ConfigureAwait(false);
+                        var deleted = await store.Delete(thumbprint).ConfigureAwait(false);
                         if (deleted)
                         {
-                            Utils.LogInfo(TraceMasks.Security, "Application Instance Certificate [{0}] deleted from trusted store.", thumbprint);
+                            LogInfo(TraceMasks.Security, "Application Instance Certificate [{0}] deleted from trusted store.", thumbprint);
                         }
                     }
                 }
@@ -868,12 +856,12 @@ namespace Technosoftware.UaConfiguration
             // delete certificate and private key from owner store.
             if (certificate != null)
             {
-                using (var store = id.OpenStore())
+                using (ICertificateStore store = id.OpenStore())
                 {
-                    bool deleted = await store.Delete(certificate.Thumbprint).ConfigureAwait(false);
+                    var deleted = await store.Delete(certificate.Thumbprint).ConfigureAwait(false);
                     if (deleted)
                     {
-                        Utils.LogCertificate(TraceMasks.Security, "Application certificate and private key deleted.", certificate);
+                        LogCertificate(TraceMasks.Security, "Application certificate and private key deleted.", certificate);
                     }
                 }
             }
@@ -890,7 +878,10 @@ namespace Technosoftware.UaConfiguration
         /// <param name="ct">The cancellation token.</param>
         private static async Task AddToTrustedStoreAsync(ApplicationConfiguration configuration, X509Certificate2 certificate, CancellationToken ct)
         {
-            if (certificate == null) throw new ArgumentNullException(nameof(certificate));
+            if (certificate == null)
+            {
+                throw new ArgumentNullException(nameof(certificate));
+            }
 
             string storePath = null;
 
@@ -901,38 +892,38 @@ namespace Technosoftware.UaConfiguration
 
             if (string.IsNullOrEmpty(storePath))
             {
-                Utils.LogWarning("WARNING: Trusted peer store not specified.");
+                LogWarning("WARNING: Trusted peer store not specified.");
                 return;
             }
 
             try
             {
-                var store = configuration.SecurityConfiguration.TrustedPeerCertificates.OpenStore();
+                ICertificateStore store = configuration.SecurityConfiguration.TrustedPeerCertificates.OpenStore();
 
                 if (store == null)
                 {
-                    Utils.LogWarning("Could not open trusted peer store.");
+                    LogWarning("Could not open trusted peer store.");
                     return;
                 }
 
                 try
                 {
                     // check if it already exists.
-                    var existingCertificates = await store.FindByThumbprint(certificate.Thumbprint).ConfigureAwait(false);
+                    X509Certificate2Collection existingCertificates = await store.FindByThumbprint(certificate.Thumbprint).ConfigureAwait(false);
 
                     if (existingCertificates.Count > 0)
                     {
                         return;
                     }
 
-                    Utils.LogCertificate("Adding application certificate to trusted peer store.", certificate);
+                    LogCertificate("Adding application certificate to trusted peer store.", certificate);
 
-                    var subjectName = X509Utils.ParseDistinguishedName(certificate.Subject);
+                    List<string> subjectName = X509Utils.ParseDistinguishedName(certificate.Subject);
 
                     // check for old certificate.
-                    var certificates = await store.Enumerate().ConfigureAwait(false);
+                    X509Certificate2Collection certificates = await store.Enumerate().ConfigureAwait(false);
 
-                    foreach (var cert in certificates)
+                    foreach (X509Certificate2 cert in certificates)
                     {
                         if (X509Utils.CompareDistinguishedName(cert, subjectName))
                         {
@@ -941,9 +932,9 @@ namespace Technosoftware.UaConfiguration
                                 return;
                             }
 
-                            Utils.LogCertificate("Delete Certificate from trusted store.", certificate);
+                            LogCertificate("Delete Certificate from trusted store.", certificate);
 
-                            await store.Delete(cert.Thumbprint).ConfigureAwait(false);
+                            _ = await store.Delete(cert.Thumbprint).ConfigureAwait(false);
                             break;
                         }
                     }
@@ -952,7 +943,7 @@ namespace Technosoftware.UaConfiguration
                     var publicKey = new X509Certificate2(certificate.RawData);
                     await store.Add(publicKey).ConfigureAwait(false);
 
-                    Utils.LogInfo("Added application certificate to trusted peer store.");
+                    LogInfo("Added application certificate to trusted peer store.");
                 }
                 finally
                 {
@@ -961,7 +952,7 @@ namespace Technosoftware.UaConfiguration
             }
             catch (Exception e)
             {
-                Utils.LogError(e, "Could not add certificate to trusted peer store.");
+                LogError(e, "Could not add certificate to trusted peer store.");
             }
         }
 
@@ -980,7 +971,7 @@ namespace Technosoftware.UaConfiguration
             }
             else
             {
-                Utils.LogError(message);
+                LogError(message);
                 return false;
             }
         }

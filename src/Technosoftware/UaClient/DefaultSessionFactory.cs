@@ -111,7 +111,7 @@ namespace Technosoftware.UaClient
         {
             if (reverseConnectManager == null)
             {
-                return await this.CreateAsync(configuration, endpoint, updateBeforeConnect,
+                return await CreateAsync(configuration, endpoint, updateBeforeConnect,
                     checkDomain, sessionName, sessionTimeout, userIdentity, preferredLocales, ct).ConfigureAwait(false);
             }
 
@@ -175,33 +175,25 @@ namespace Technosoftware.UaClient
         /// <inheritdoc/>
         public virtual async Task<IUaSession> RecreateAsync(IUaSession sessionTemplate, CancellationToken ct = default)
         {
-            if (!(sessionTemplate is Session template))
-            {
-                throw new ArgumentOutOfRangeException(nameof(sessionTemplate), "The IUaSession provided is not of a supported type.");
-            }
-
-            return await Session.RecreateAsync(template, ct).ConfigureAwait(false);
+            return !(sessionTemplate is Session template)
+                ? throw new ArgumentOutOfRangeException(nameof(sessionTemplate), "The IUaSession provided is not of a supported type.")
+                : (IUaSession)await Session.RecreateAsync(template, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async Task<IUaSession> RecreateAsync(IUaSession sessionTemplate, ITransportWaitingConnection connection, CancellationToken ct = default)
         {
-            if (!(sessionTemplate is Session template))
-            {
-                throw new ArgumentOutOfRangeException(nameof(sessionTemplate), "The IUaSession provided is not of a supported type");
-            }
-
-            return await Session.RecreateAsync(template, connection, ct).ConfigureAwait(false);
+            return !(sessionTemplate is Session template)
+                ? throw new ArgumentOutOfRangeException(nameof(sessionTemplate), "The IUaSession provided is not of a supported type")
+                : (IUaSession)await Session.RecreateAsync(template, connection, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async Task<IUaSession> RecreateAsync(IUaSession sessionTemplate, ITransportChannel transportChannel, CancellationToken ct = default)
         {
-            if (!(sessionTemplate is Session template))
-            {
-                throw new ArgumentOutOfRangeException(nameof(sessionTemplate), "The IUaSession provided is not of a supported type");
-            }
-            return await Session.RecreateAsync(template, transportChannel, ct).ConfigureAwait(false);
+            return !(sessionTemplate is Session template)
+                ? throw new ArgumentOutOfRangeException(nameof(sessionTemplate), "The IUaSession provided is not of a supported type")
+                : (IUaSession)await Session.RecreateAsync(template, transportChannel, ct).ConfigureAwait(false);
         }
         #endregion
 

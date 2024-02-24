@@ -42,7 +42,7 @@ namespace Technosoftware.UaClient
         /// </summary>
         public IEncodeable NotificationValue { get; }
         #endregion
-        
+
         #region Private Fields
         #endregion
     }

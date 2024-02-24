@@ -245,8 +245,7 @@ namespace Technosoftware.UaClient
                 browseInProgress_ = true;
 
                 // construct request.
-                var nodeToBrowse = new BrowseDescription
-                {
+                var nodeToBrowse = new BrowseDescription {
                     NodeId = nodeId,
                     BrowseDirection = browseDirection_,
                     ReferenceTypeId = referenceTypeId_,
@@ -259,13 +258,13 @@ namespace Technosoftware.UaClient
                 var nodesToBrowse = new BrowseDescriptionCollection { nodeToBrowse };
 
                 // make the call to the server.
-                var responseHeader = session_.Browse(
+                ResponseHeader responseHeader = session_.Browse(
                     null,
                     view_,
                     maxReferencesReturned_,
                     nodesToBrowse,
-                    out var results,
-                    out var diagnosticInfos);
+                    out BrowseResultCollection results,
+                    out DiagnosticInfoCollection diagnosticInfos);
 
                 // ensure that the server returned valid results.
                 ClientBase.ValidateResponse(results, nodesToBrowse);
@@ -279,7 +278,7 @@ namespace Technosoftware.UaClient
 
                 // fetch initial set of references.
                 var continuationPoint = results[0].ContinuationPoint;
-                var references = results[0].References;
+                ReferenceDescriptionCollection references = results[0].References;
 
                 // process any continuation point.
                 while (continuationPoint != null)
@@ -292,14 +291,14 @@ namespace Technosoftware.UaClient
                         // cancel browser and return the references fetched so far.
                         if (args.Cancel)
                         {
-                            BrowseNext(ref continuationPoint, true);
+                            _ = BrowseNext(ref continuationPoint, true);
                             return references;
                         }
 
                         continueUntilDone_ = args.ContinueUntilDone;
                     }
 
-                    var additionalReferences = BrowseNext(ref continuationPoint, false);
+                    ReferenceDescriptionCollection additionalReferences = BrowseNext(ref continuationPoint, false);
                     if (additionalReferences != null && additionalReferences.Count > 0)
                     {
                         references.AddRange(additionalReferences);
@@ -341,15 +340,15 @@ namespace Technosoftware.UaClient
         /// <returns>The next batch of references</returns>
         private ReferenceDescriptionCollection BrowseNext(ref byte[] continuationPoint, bool cancel)
         {
-            var continuationPoints = new ByteStringCollection {continuationPoint};
+            var continuationPoints = new ByteStringCollection { continuationPoint };
 
             // make the call to the server.
-            var responseHeader = session_.BrowseNext(
+            ResponseHeader responseHeader = session_.BrowseNext(
                 null,
                 cancel,
                 continuationPoints,
-                out var results,
-                out var diagnosticInfos);
+                out BrowseResultCollection results,
+                out DiagnosticInfoCollection diagnosticInfos);
 
             // ensure that the server returned valid results.
             ClientBase.ValidateResponse(results, continuationPoints);

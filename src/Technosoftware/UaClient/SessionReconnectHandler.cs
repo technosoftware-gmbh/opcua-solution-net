@@ -130,7 +130,7 @@ namespace Technosoftware.UaClient
         /// Gets the session managed by the handler.
         /// </summary>
         /// <value>The session.</value>
-        public IUaSession Session => session_;
+        public IUaSession Session { get; private set; }
 
         /// <summary>
         /// The internal state of the reconnect handler.
@@ -141,11 +141,7 @@ namespace Technosoftware.UaClient
             {
                 lock (lock_)
                 {
-                    if (reconnectTimer_ == null)
-                    {
-                        return ReconnectState.Disposed;
-                    }
-                    return state_;
+                    return reconnectTimer_ == null ? ReconnectState.Disposed : state_;
                 }
             }
         }
@@ -164,7 +160,7 @@ namespace Technosoftware.UaClient
 
                 if (state_ == ReconnectState.Triggered)
                 {
-                    session_ = null;
+                    Session = null;
                     EnterReadyState();
                     return;
                 }
@@ -198,7 +194,7 @@ namespace Technosoftware.UaClient
                 {
                     if (state_ == ReconnectState.Triggered)
                     {
-                        session_ = null;
+                        Session = null;
                         EnterReadyState();
                         return state_;
                     }
@@ -213,13 +209,13 @@ namespace Technosoftware.UaClient
                 // ignore subsequent trigger requests
                 if (state_ == ReconnectState.Ready)
                 {
-                    session_ = session;
+                    Session = session;
                     baseReconnectPeriod_ = reconnectPeriod;
                     reconnectFailed_ = false;
                     cancelReconnect_ = false;
                     callback_ = callback;
                     reverseConnectManager_ = reverseConnectManager;
-                    reconnectTimer_.Change(JitteredReconnectPeriod(reconnectPeriod), Timeout.Infinite);
+                    _ = reconnectTimer_.Change(JitteredReconnectPeriod(reconnectPeriod), Timeout.Infinite);
                     reconnectPeriod_ = CheckedReconnectPeriod(reconnectPeriod, true);
                     state_ = ReconnectState.Triggered;
                     return state_;
@@ -229,13 +225,13 @@ namespace Technosoftware.UaClient
                 if (state_ == ReconnectState.Triggered && reconnectPeriod < baseReconnectPeriod_)
                 {
                     baseReconnectPeriod_ = reconnectPeriod;
-                    reconnectTimer_.Change(JitteredReconnectPeriod(reconnectPeriod), Timeout.Infinite);
+                    _ = reconnectTimer_.Change(JitteredReconnectPeriod(reconnectPeriod), Timeout.Infinite);
                     reconnectPeriod_ = CheckedReconnectPeriod(reconnectPeriod, true);
                 }
 
                 return state_;
             }
-            }
+        }
 
         /// <summary>
         /// Returns the reconnect period with a random jitter.
@@ -245,7 +241,7 @@ namespace Technosoftware.UaClient
             // The factors result in a jitter of 10%.
             const int JitterResolution = 1000;
             const int JitterFactor = 10;
-            int jitter = (reconnectPeriod * random_.Next(-JitterResolution, JitterResolution)) /
+            var jitter = (reconnectPeriod * random_.Next(-JitterResolution, JitterResolution)) /
                 (JitterResolution * JitterFactor);
             return reconnectPeriod + jitter;
         }
@@ -283,7 +279,7 @@ namespace Technosoftware.UaClient
                 // check for exit.
                 lock (lock_)
                 {
-                    if (reconnectTimer_ == null || session_ == null)
+                    if (reconnectTimer_ == null || Session == null)
                     {
                         return;
                     }
@@ -295,21 +291,21 @@ namespace Technosoftware.UaClient
                     state_ = ReconnectState.Reconnecting;
                 }
 
-                bool keepaliveRecovered = false;
+                var keepaliveRecovered = false;
 
                 // preserve legacy behavior if reconnectAbort is not set
-                if (session_ != null && reconnectAbort_ &&
-                    session_.Connected && !session_.KeepAliveStopped)
+                if (Session != null && reconnectAbort_ &&
+                    Session.Connected && !Session.KeepAliveStopped)
                 {
                     keepaliveRecovered = true;
                     // breaking change, the callback must only assign the new
                     // session if the property is != null
-                    session_ = null;
-                    Utils.LogInfo("Reconnect {0} aborted, KeepAlive recovered.", session_?.SessionId);
+                    Session = null;
+                    Utils.LogInfo("Reconnect {0} aborted, KeepAlive recovered.", Session?.SessionId);
                 }
                 else
                 {
-                    Utils.LogInfo("Reconnect {0}.", session_?.SessionId);
+                    Utils.LogInfo("Reconnect {0}.", Session?.SessionId);
                 }
 
                 // do the reconnect or recover state.
@@ -343,11 +339,11 @@ namespace Technosoftware.UaClient
                     }
                     else
                     {
-                        int elapsed = (int)DateTime.UtcNow.Subtract(reconnectStart).TotalMilliseconds;
+                        var elapsed = (int)DateTime.UtcNow.Subtract(reconnectStart).TotalMilliseconds;
                         Utils.LogInfo("Reconnect period is {0} ms, {1} ms elapsed in reconnect.", reconnectPeriod_, elapsed);
-                        int adjustedReconnectPeriod = CheckedReconnectPeriod(reconnectPeriod_ - elapsed);
+                        var adjustedReconnectPeriod = CheckedReconnectPeriod(reconnectPeriod_ - elapsed);
                         adjustedReconnectPeriod = JitteredReconnectPeriod(adjustedReconnectPeriod);
-                        reconnectTimer_.Change(adjustedReconnectPeriod, Timeout.Infinite);
+                        _ = reconnectTimer_.Change(adjustedReconnectPeriod, Timeout.Infinite);
                         Utils.LogInfo("Next adjusted reconnect scheduled in {0} ms.", adjustedReconnectPeriod);
                         reconnectPeriod_ = CheckedReconnectPeriod(reconnectPeriod_, true);
                         state_ = ReconnectState.Triggered;
@@ -362,27 +358,27 @@ namespace Technosoftware.UaClient
         private async Task<bool> DoReconnectAsync()
         {
             // helper to override operation timeout
-            int operationTimeout = session_.OperationTimeout;
-            int reconnectOperationTimeout = Math.Max(reconnectPeriod_, MinReconnectOperationTimeout);
+            var operationTimeout = Session.OperationTimeout;
+            var reconnectOperationTimeout = Math.Max(reconnectPeriod_, MinReconnectOperationTimeout);
 
             // try a reconnect.
             if (!reconnectFailed_)
             {
                 try
                 {
-                    session_.OperationTimeout = reconnectOperationTimeout;
+                    Session.OperationTimeout = reconnectOperationTimeout;
                     if (reverseConnectManager_ != null)
                     {
-                        var connection = await reverseConnectManager_.WaitForConnectionAsync(
-                                new Uri(session_.Endpoint.EndpointUrl),
-                                session_.Endpoint.Server.ApplicationUri
+                        ITransportWaitingConnection connection = await reverseConnectManager_.WaitForConnectionAsync(
+                                new Uri(Session.Endpoint.EndpointUrl),
+                                Session.Endpoint.Server.ApplicationUri
                             ).ConfigureAwait(false);
 
-                        await session_.ReconnectAsync(connection).ConfigureAwait(false);
+                        await Session.ReconnectAsync(connection).ConfigureAwait(false);
                     }
                     else
                     {
-                        await session_.ReconnectAsync().ConfigureAwait(false);
+                        await Session.ReconnectAsync().ConfigureAwait(false);
                     }
 
                     // monitored items should start updating on their own.
@@ -403,7 +399,7 @@ namespace Technosoftware.UaClient
                             sre.StatusCode == StatusCodes.BadTimeout)
                         {
                             // check if reactivating is still an option.
-                            TimeSpan timeout = session_.LastKeepAliveTime.AddMilliseconds(session_.SessionTimeout) - DateTime.UtcNow;
+                            TimeSpan timeout = Session.LastKeepAliveTime.AddMilliseconds(Session.SessionTimeout) - DateTime.UtcNow;
 
                             if (timeout.TotalMilliseconds > 0)
                             {
@@ -437,7 +433,7 @@ namespace Technosoftware.UaClient
                 }
                 finally
                 {
-                    session_.OperationTimeout = operationTimeout;
+                    Session.OperationTimeout = operationTimeout;
                 }
             }
 
@@ -445,20 +441,20 @@ namespace Technosoftware.UaClient
             try
             {
                 IUaSession session;
-                session_.OperationTimeout = reconnectOperationTimeout;
+                Session.OperationTimeout = reconnectOperationTimeout;
                 if (reverseConnectManager_ != null)
                 {
                     ITransportWaitingConnection connection;
                     do
                     {
                         connection = await reverseConnectManager_.WaitForConnectionAsync(
-                                new Uri(session_.Endpoint.EndpointUrl),
-                                session_.Endpoint.Server.ApplicationUri
+                                new Uri(Session.Endpoint.EndpointUrl),
+                                Session.Endpoint.Server.ApplicationUri
                             ).ConfigureAwait(false);
 
                         if (updateFromServer_)
                         {
-                            var endpoint = session_.ConfiguredEndpoint;
+                            ConfiguredEndpoint endpoint = Session.ConfiguredEndpoint;
                             await endpoint.UpdateFromServerAsync(
                                 endpoint.EndpointUrl, connection,
                                 endpoint.Description.SecurityMode,
@@ -468,13 +464,13 @@ namespace Technosoftware.UaClient
                         }
                     } while (connection == null);
 
-                    session = await session_.SessionFactory.RecreateAsync(session_, connection).ConfigureAwait(false);
+                    session = await Session.SessionFactory.RecreateAsync(Session, connection).ConfigureAwait(false);
                 }
                 else
                 {
                     if (updateFromServer_)
                     {
-                        var endpoint = session_.ConfiguredEndpoint;
+                        ConfiguredEndpoint endpoint = Session.ConfiguredEndpoint;
                         await endpoint.UpdateFromServerAsync(
                             endpoint.EndpointUrl,
                             endpoint.Description.SecurityMode,
@@ -482,11 +478,11 @@ namespace Technosoftware.UaClient
                         updateFromServer_ = false;
                     }
 
-                    session = await session_.SessionFactory.RecreateAsync(session_).ConfigureAwait(false);
+                    session = await Session.SessionFactory.RecreateAsync(Session).ConfigureAwait(false);
                 }
                 // note: the template session is not connected at this point
                 //       and must be disposed by the owner
-                session_ = session;
+                Session = session;
                 return true;
             }
             catch (ServiceResultException sre)
@@ -516,7 +512,7 @@ namespace Technosoftware.UaClient
             }
             finally
             {
-                session_.OperationTimeout = operationTimeout;
+                Session.OperationTimeout = operationTimeout;
             }
         }
 
@@ -525,7 +521,7 @@ namespace Technosoftware.UaClient
         /// </summary>
         private void EnterReadyState()
         {
-            reconnectTimer_.Change(Timeout.Infinite, Timeout.Infinite);
+            _ = reconnectTimer_.Change(Timeout.Infinite, Timeout.Infinite);
             state_ = ReconnectState.Ready;
             cancelReconnect_ = false;
             updateFromServer_ = false;
@@ -534,7 +530,6 @@ namespace Technosoftware.UaClient
 
         #region Private Fields
         private readonly object lock_ = new object();
-        private IUaSession session_;
         private ReconnectState state_;
         private Random random_;
         private bool reconnectFailed_;

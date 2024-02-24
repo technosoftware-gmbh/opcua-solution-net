@@ -39,7 +39,7 @@ namespace Technosoftware.UaClient
     /// Event source for high performance logging.
     /// </summary>
     [EventSource(Name = "Technosoftware.UAClient", Guid = "70A02853-C24D-4C36-8A3B-0AD181BE7D46")]
-    internal sealed class UaClientEventSource : EventSource
+    internal class UaClientEventSource : EventSource
     {
         private const int SubscriptionStateId = 1;
         private const int NotificationId = SubscriptionStateId + 1;
@@ -77,9 +77,9 @@ namespace Technosoftware.UaClient
                 WriteEvent(SubscriptionStateId, context, id, lastNotificationTime, goodPublishRequestCount,
                     currentPublishingInterval, currentKeepAliveCount, currentPublishingEnabled, monitoredItemCount);
             }
-            else if (Utils.Logger.IsEnabled(LogLevel.Information))
+            else if (Logger.IsEnabled(LogLevel.Information))
             {
-                Utils.LogInfo(subscriptionStateMessageEventId_, SubscriptionStateMessage,
+                LogInfo(subscriptionStateMessageEventId_, SubscriptionStateMessage,
                     context, id, lastNotificationTime, goodPublishRequestCount,
                     currentPublishingInterval, currentKeepAliveCount, currentPublishingEnabled, monitoredItemCount);
             }
@@ -104,9 +104,9 @@ namespace Technosoftware.UaClient
             {
                 WriteEvent(NotificationReceivedId, subscriptionId, sequenceNumber);
             }
-            else if (Utils.Logger.IsEnabled(LogLevel.Trace))
+            else if (Logger.IsEnabled(LogLevel.Trace))
             {
-                Utils.LogTrace(notificationReceivedEventId_, NotificationReceivedMessage,
+                LogTrace(notificationReceivedEventId_, NotificationReceivedMessage,
                     subscriptionId, sequenceNumber);
             }
         }
@@ -121,9 +121,9 @@ namespace Technosoftware.UaClient
             {
                 WriteEvent(PublishStartId, requestHandle);
             }
-            else if (Utils.Logger.IsEnabled(LogLevel.Trace))
+            else if (Logger.IsEnabled(LogLevel.Trace))
             {
-                Utils.LogTrace(publishStartEventId_, PublishStartMessage, requestHandle);
+                LogTrace(publishStartEventId_, PublishStartMessage, requestHandle);
             }
         }
 
@@ -137,9 +137,9 @@ namespace Technosoftware.UaClient
             {
                 WriteEvent(PublishStopId, requestHandle);
             }
-            else if (Utils.Logger.IsEnabled(LogLevel.Trace))
+            else if (Logger.IsEnabled(LogLevel.Trace))
             {
-                Utils.LogTrace(publishStopEventId_, PublishStopMessage, requestHandle);
+                LogTrace(publishStopEventId_, PublishStopMessage, requestHandle);
             }
         }
 
@@ -150,15 +150,15 @@ namespace Technosoftware.UaClient
         public void NotificationValue(uint clientHandle, Variant wrappedValue)
         {
             // expensive operation, only enable if tracemask set
-            if ((Utils.TraceMask & Utils.TraceMasks.OperationDetail) != 0)
+            if ((TraceMask & TraceMasks.OperationDetail) != 0)
             {
                 if (IsEnabled())
                 {
                     Notification((int)clientHandle, wrappedValue.ToString());
                 }
-                else if (Utils.Logger.IsEnabled(LogLevel.Trace))
+                else if (Logger.IsEnabled(LogLevel.Trace))
                 {
-                    Utils.LogTrace(notificationEventId_, NotificationMessage,
+                    LogTrace(notificationEventId_, NotificationMessage,
                         clientHandle, wrappedValue);
                 }
             }

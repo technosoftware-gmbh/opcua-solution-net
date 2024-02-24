@@ -20,7 +20,7 @@ using Opc.Ua;
 #endregion
 
 namespace Technosoftware.UaClient
-{ 
+{
     /// <summary>
     /// Saves the events received from the server.
     /// </summary>
@@ -32,7 +32,7 @@ namespace Technosoftware.UaClient
         /// </summary>
         public MonitoredItemEventCache(int queueSize)
         {
-            queueSize_ = queueSize;
+            QueueSize = queueSize;
             events_ = new Queue<EventFieldList>();
         }
         #endregion
@@ -41,12 +41,12 @@ namespace Technosoftware.UaClient
         /// <summary>
         /// The size of the queue to maintain.
         /// </summary>
-        public int QueueSize => queueSize_;
+        public int QueueSize { get; private set; }
 
         /// <summary>
         /// The last event received.
         /// </summary>
-        public EventFieldList LastEvent => lastEvent_;
+        public EventFieldList LastEvent { get; private set; }
 
         /// <summary>
         /// Returns all events in the queue.
@@ -69,11 +69,11 @@ namespace Technosoftware.UaClient
         public void OnNotification(EventFieldList notification)
         {
             events_.Enqueue(notification);
-            lastEvent_ = notification;
+            LastEvent = notification;
 
-            while (events_.Count > queueSize_)
+            while (events_.Count > QueueSize)
             {
-                events_.Dequeue();
+                _ = events_.Dequeue();
             }
         }
 
@@ -82,7 +82,7 @@ namespace Technosoftware.UaClient
         /// </summary>
         public void SetQueueSize(int queueSize)
         {
-            if (queueSize == queueSize_)
+            if (queueSize == QueueSize)
             {
                 return;
             }
@@ -92,18 +92,16 @@ namespace Technosoftware.UaClient
                 queueSize = 1;
             }
 
-            queueSize_ = queueSize;
+            QueueSize = queueSize;
 
-            while (events_.Count > queueSize_)
+            while (events_.Count > QueueSize)
             {
-                events_.Dequeue();
+                _ = events_.Dequeue();
             }
         }
         #endregion
 
         #region Private Fields
-        private int queueSize_;
-        private EventFieldList lastEvent_;
         private readonly Queue<EventFieldList> events_;
         #endregion
     }

@@ -102,7 +102,7 @@ namespace Technosoftware.UaClient
                 DefaultItem = (MonitoredItem)template.DefaultItem.Clone();
                 Handle = template.Handle;
                 DisableMonitoredItemCache = template.DisableMonitoredItemCache;
-                transferId_ = template.TransferId;
+                TransferId = template.TransferId;
 
                 if (copyEventHandlers)
                 {
@@ -114,10 +114,9 @@ namespace Technosoftware.UaClient
                 }
 
                 // copy the list of monitored items.
-                foreach (var monitoredItem in template.MonitoredItems)
+                foreach (MonitoredItem monitoredItem in template.MonitoredItems)
                 {
-                    var clone = new MonitoredItem(monitoredItem, copyEventHandlers, true)
-                    {
+                    var clone = new MonitoredItem(monitoredItem, copyEventHandlers, true) {
                         DisplayName = monitoredItem.DisplayName
                     };
                     AddItem(clone);
@@ -154,7 +153,7 @@ namespace Technosoftware.UaClient
         /// </summary>
         private void Initialize()
         {
-            transferId_ = Id = 0;
+            TransferId = Id = 0;
             DisplayName = "Subscription";
             PublishingInterval = 0;
             KeepAliveCount = 0;
@@ -211,7 +210,7 @@ namespace Technosoftware.UaClient
         /// <summary cref="ICloneable.Clone" />
         public virtual object Clone()
         {
-            return this.MemberwiseClone();
+            return MemberwiseClone();
         }
 
         /// <summary cref="Object.MemberwiseClone" />
@@ -245,15 +244,9 @@ namespace Technosoftware.UaClient
         /// </summary>
         public event EventHandler<PublishStateChangedEventArgs> PublishStatusChangedEvent
         {
-            add
-            {
-                PublishStatusChangedEventHandler += value;
-            }
+            add => PublishStatusChangedEventHandler += value;
 
-            remove
-            {
-                PublishStatusChangedEventHandler -= value;
-            }
+            remove => PublishStatusChangedEventHandler -= value;
         }
         #endregion
 
@@ -314,10 +307,7 @@ namespace Technosoftware.UaClient
         [DataMember(Order = 9)]
         public int MaxMessageCount
         {
-            get
-            {
-                return maxMessageCount_;
-            }
+            get => maxMessageCount_;
 
             set
             {
@@ -366,10 +356,7 @@ namespace Technosoftware.UaClient
         [DataMember(Order = 14)]
         public bool SequentialPublishing
         {
-            get
-            {
-                return sequentialPublishing_;
-            }
+            get => sequentialPublishing_;
             set
             {
                 // synchronize with message list processing
@@ -392,7 +379,7 @@ namespace Technosoftware.UaClient
         [DataMember(Name = "RepublishAfterTransfer", Order = 15)]
         public bool RepublishAfterTransfer
         {
-            get { return republishAfterTransfer_; }
+            get => republishAfterTransfer_;
             set { lock (cache_) { republishAfterTransfer_ = value; } }
         }
 
@@ -400,11 +387,7 @@ namespace Technosoftware.UaClient
         /// The unique identifier assigned by the server which can be used to transfer a session.
         /// </summary>
         [DataMember(Name = "TransferId", Order = 16)]
-        public uint TransferId
-        {
-            get => transferId_;
-            set => transferId_ = value;
-        }
+        public uint TransferId { get; set; }
 
         /// <summary>
         /// Gets or sets the fast data change callback.
@@ -464,7 +447,7 @@ namespace Technosoftware.UaClient
 
             set
             {
-                if (this.Created)
+                if (Created)
                 {
                     throw new InvalidOperationException("Cannot update a subscription that has been created on the server.");
                 }
@@ -473,7 +456,7 @@ namespace Technosoftware.UaClient
                 {
                     monitoredItems_.Clear();
 
-                    foreach (var monitoredItem in value)
+                    foreach (MonitoredItem monitoredItem in value)
                     {
                         AddItem(monitoredItem);
                     }
@@ -655,12 +638,7 @@ namespace Technosoftware.UaClient
             {
                 lock (cache_)
                 {
-                    if (messageCache_.Count > 0)
-                    {
-                        return messageCache_.Last.Value;
-                    }
-
-                    return null;
+                    return messageCache_.Count > 0 ? messageCache_.Last.Value : null;
                 }
             }
         }
@@ -713,13 +691,8 @@ namespace Technosoftware.UaClient
         {
             get
             {
-                TimeSpan timeSinceLastNotification = TimeSpan.FromTicks(DateTime.UtcNow.Ticks - Interlocked.Read(ref lastNotificationTime_));
-                if (timeSinceLastNotification.TotalMilliseconds > m_keepAliveInterval + KeepAliveTimerMargin)
-                {
-                    return true;
-                }
-
-                return false;
+                var timeSinceLastNotification = TimeSpan.FromTicks(DateTime.UtcNow.Ticks - Interlocked.Read(ref lastNotificationTime_));
+                return timeSinceLastNotification.TotalMilliseconds > m_keepAliveInterval + KeepAliveTimerMargin;
             }
         }
         #endregion
@@ -738,7 +711,7 @@ namespace Technosoftware.UaClient
 
             AdjustCounts(ref revisedKeepAliveCount, ref revisedLifetimeCounter);
 
-            Session.CreateSubscription(
+            _ = Session.CreateSubscription(
                 null,
                 PublishingInterval,
                 revisedLifetimeCounter,
@@ -753,7 +726,7 @@ namespace Technosoftware.UaClient
 
             CreateSubscription(subscriptionId, revisedPublishingInterval, revisedKeepAliveCount, revisedLifetimeCounter);
 
-            CreateItems();
+            _ = CreateItems();
 
             ChangesCompleted();
 
@@ -784,8 +757,8 @@ namespace Technosoftware.UaClient
                 }
 
                 // remove default subscription template which was copied in Session.Create()
-                var subscriptionsToRemove = session.Subscriptions.Where(s => !s.Created && s.TransferId == this.Id).ToList();
-                session.RemoveSubscriptions(subscriptionsToRemove);
+                var subscriptionsToRemove = session.Subscriptions.Where(s => !s.Created && s.TransferId == Id).ToList();
+                _ = session.RemoveSubscriptions(subscriptionsToRemove);
 
                 // add transferred subscription to session
                 if (!session.AddSubscription(this))
@@ -816,7 +789,7 @@ namespace Technosoftware.UaClient
                 Id = id;
                 TransferItems(serverHandles, clientHandles, out IList<MonitoredItem> itemsToModify);
 
-                ModifyItems();
+                _ = ModifyItems();
             }
 
             // add available sequence numbers to incoming 
@@ -857,8 +830,8 @@ namespace Technosoftware.UaClient
                 }
 
                 // remove default subscription template which was copied in Session.Create()
-                var subscriptionsToRemove = session.Subscriptions.Where(s => !s.Created && s.TransferId == this.Id).ToList();
-                await session.RemoveSubscriptionsAsync(subscriptionsToRemove, ct).ConfigureAwait(false);
+                var subscriptionsToRemove = session.Subscriptions.Where(s => !s.Created && s.TransferId == Id).ToList();
+                _ = await session.RemoveSubscriptionsAsync(subscriptionsToRemove, ct).ConfigureAwait(false);
 
                 // add transferred subscription to session
                 if (!session.AddSubscription(this))
@@ -893,7 +866,7 @@ namespace Technosoftware.UaClient
                 Id = id;
                 TransferItems(serverHandles, clientHandles, out IList<MonitoredItem> itemsToModify);
 
-                await ModifyItemsAsync(ct).ConfigureAwait(false);
+                _ = await ModifyItemsAsync(ct).ConfigureAwait(false);
             }
 
             // add available sequence numbers to incoming 
@@ -920,7 +893,7 @@ namespace Technosoftware.UaClient
             }
 
             // nothing to do if not created.
-            if (!this.Created)
+            if (!Created)
             {
                 return;
             }
@@ -937,11 +910,11 @@ namespace Technosoftware.UaClient
                 // delete the subscription.
                 UInt32Collection subscriptionIds = new[] { Id };
 
-                var responseHeader = Session.DeleteSubscriptions(
+                ResponseHeader responseHeader = Session.DeleteSubscriptions(
                     null,
                     subscriptionIds,
-                    out var results,
-                    out var diagnosticInfos);
+                    out StatusCodeCollection results,
+                    out DiagnosticInfoCollection diagnosticInfos);
 
                 // validate response.
                 ClientBase.ValidateResponse(results, subscriptionIds);
@@ -984,7 +957,7 @@ namespace Technosoftware.UaClient
 
             AdjustCounts(ref revisedKeepAliveCount, ref revisedLifetimeCounter);
 
-            Session.ModifySubscription(
+            _ = Session.ModifySubscription(
                 null,
                 Id,
                 PublishingInterval,
@@ -1017,12 +990,12 @@ namespace Technosoftware.UaClient
             // modify the subscription.
             UInt32Collection subscriptionIds = new[] { Id };
 
-            var responseHeader = Session.SetPublishingMode(
+            ResponseHeader responseHeader = Session.SetPublishingMode(
                 null,
                 enabled,
                 new[] { Id },
-                out var results,
-                out var diagnosticInfos);
+                out StatusCodeCollection results,
+                out DiagnosticInfoCollection diagnosticInfos);
 
             // validate response.
             ClientBase.ValidateResponse(results, subscriptionIds);
@@ -1049,11 +1022,11 @@ namespace Technosoftware.UaClient
         {
             VerifySubscriptionState(true);
 
-            Session.Republish(
+            _ = Session.Republish(
                 null,
                 Id,
                 sequenceNumber,
-                out var message);
+                out NotificationMessage message);
 
             return message;
         }
@@ -1063,9 +1036,9 @@ namespace Technosoftware.UaClient
         /// </summary>
         public void ApplyChanges()
         {
-            DeleteItems();
-            ModifyItems();
-            CreateItems();
+            _ = DeleteItems();
+            _ = ModifyItems();
+            _ = CreateItems();
         }
 
         /// <summary>
@@ -1089,11 +1062,11 @@ namespace Technosoftware.UaClient
             }
 
             // translate browse paths.
-            var responseHeader = Session.TranslateBrowsePathsToNodeIds(
+            ResponseHeader responseHeader = Session.TranslateBrowsePathsToNodeIds(
                 null,
                 browsePaths,
-                out var results,
-                out var diagnosticInfos);
+                out BrowsePathResultCollection results,
+                out DiagnosticInfoCollection diagnosticInfos);
 
             ClientBase.ValidateResponse(results, browsePaths);
             ClientBase.ValidateDiagnosticInfos(diagnosticInfos, browsePaths);
@@ -1121,13 +1094,13 @@ namespace Technosoftware.UaClient
             }
 
             // create monitored items.
-            var responseHeader = Session.CreateMonitoredItems(
+            ResponseHeader responseHeader = Session.CreateMonitoredItems(
                 null,
                 Id,
                 TimestampsToReturn,
                 requestItems,
-                out var results,
-                out var diagnosticInfos);
+                out MonitoredItemCreateResultCollection results,
+                out DiagnosticInfoCollection diagnosticInfos);
 
             ClientBase.ValidateResponse(results, itemsToCreate);
             ClientBase.ValidateDiagnosticInfos(diagnosticInfos, itemsToCreate);
@@ -1163,13 +1136,13 @@ namespace Technosoftware.UaClient
             }
 
             // modify the subscription.
-            var responseHeader = Session.ModifyMonitoredItems(
+            ResponseHeader responseHeader = Session.ModifyMonitoredItems(
                 null,
                 Id,
                 TimestampsToReturn,
                 requestItems,
-                out var results,
-                out var diagnosticInfos);
+                out MonitoredItemModifyResultCollection results,
+                out DiagnosticInfoCollection diagnosticInfos);
 
             ClientBase.ValidateResponse(results, itemsToModify);
             ClientBase.ValidateDiagnosticInfos(diagnosticInfos, itemsToModify);
@@ -1199,22 +1172,22 @@ namespace Technosoftware.UaClient
                 return new List<MonitoredItem>();
             }
 
-            var itemsToDelete = deletedItems_;
+            List<MonitoredItem> itemsToDelete = deletedItems_;
             deletedItems_ = new List<MonitoredItem>();
 
             var monitoredItemIds = new UInt32Collection();
 
-            foreach (var monitoredItem in itemsToDelete)
+            foreach (MonitoredItem monitoredItem in itemsToDelete)
             {
                 monitoredItemIds.Add(monitoredItem.Status.Id);
             }
 
-            var responseHeader = Session.DeleteMonitoredItems(
+            ResponseHeader responseHeader = Session.DeleteMonitoredItems(
                 null,
                 Id,
                 monitoredItemIds,
-                out var results,
-                out var diagnosticInfos);
+                out StatusCodeCollection results,
+                out DiagnosticInfoCollection diagnosticInfos);
 
             ClientBase.ValidateResponse(results, monitoredItemIds);
             ClientBase.ValidateDiagnosticInfos(diagnosticInfos, monitoredItemIds);
@@ -1251,25 +1224,25 @@ namespace Technosoftware.UaClient
             // get list of items to update.
             var monitoredItemIds = new UInt32Collection();
 
-            foreach (var monitoredItem in monitoredItems)
+            foreach (MonitoredItem monitoredItem in monitoredItems)
             {
                 monitoredItemIds.Add(monitoredItem.Status.Id);
             }
 
-            var responseHeader = Session.SetMonitoringMode(
+            ResponseHeader responseHeader = Session.SetMonitoringMode(
                 null,
                 Id,
                 monitoringMode,
                 monitoredItemIds,
-                out var results,
-                out var diagnosticInfos);
+                out StatusCodeCollection results,
+                out DiagnosticInfoCollection diagnosticInfos);
 
             ClientBase.ValidateResponse(results, monitoredItemIds);
             ClientBase.ValidateDiagnosticInfos(diagnosticInfos, monitoredItemIds);
 
             // update results.
-            List<ServiceResult> errors = new List<ServiceResult>();
-            bool noErrors = UpdateMonitoringMode(
+            var errors = new List<ServiceResult>();
+            var noErrors = UpdateMonitoringMode(
                 monitoredItems, errors, results,
                 diagnosticInfos, responseHeader,
                 monitoringMode);
@@ -1279,12 +1252,7 @@ namespace Technosoftware.UaClient
             ChangesCompleted();
 
             // return null list if no errors occurred.
-            if (noErrors)
-            {
-                return null;
-            }
-
-            return errors;
+            return noErrors ? null : errors;
         }
 
         /// <summary>
@@ -1317,7 +1285,7 @@ namespace Technosoftware.UaClient
                 }
 
                 DateTime now = DateTime.UtcNow;
-                Interlocked.Exchange(ref lastNotificationTime_, now.Ticks);
+                _ = Interlocked.Exchange(ref lastNotificationTime_, now.Ticks);
 
                 // save the string table that came with notification.
                 message.StringTable = new List<string>(stringTable);
@@ -1349,7 +1317,8 @@ namespace Technosoftware.UaClient
                     if (next != null && next.Value.SequenceNumber > entry.SequenceNumber + 1)
                     {
                         var placeholder = new IncomingMessage {
-                            SequenceNumber = entry.SequenceNumber + 1, Timestamp = now
+                            SequenceNumber = entry.SequenceNumber + 1,
+                            Timestamp = now
                         };
                         node = incomingMessages_.AddAfter(node, placeholder);
                         continue;
@@ -1364,7 +1333,7 @@ namespace Technosoftware.UaClient
                 while (node != null)
                 {
                     entry = node.Value;
-                    var next = node.Next;
+                    LinkedListNode<IncomingMessage> next = node.Next;
 
                     // can only pull off processed or expired messages.
                     if (!entry.Processed && !(entry.Republished && entry.Timestamp.AddSeconds(10) < now))
@@ -1405,8 +1374,8 @@ namespace Technosoftware.UaClient
                 }
             }
 
-                // process messages.
-                messageWorkerEvent_.Set();
+            // process messages.
+            messageWorkerEvent_.Set();
         }
 
         /// <summary>
@@ -1443,7 +1412,7 @@ namespace Technosoftware.UaClient
         {
             if (monitoredItems == null) throw new ArgumentNullException(nameof(monitoredItems));
 
-            bool added = false;
+            var added = false;
 
             lock (cache_)
             {
@@ -1498,7 +1467,7 @@ namespace Technosoftware.UaClient
         {
             if (monitoredItems == null) throw new ArgumentNullException(nameof(monitoredItems));
 
-            bool changed = false;
+            var changed = false;
 
             lock (cache_)
             {
@@ -1534,12 +1503,7 @@ namespace Technosoftware.UaClient
             {
                 MonitoredItem monitoredItem = null;
 
-                if (monitoredItems_.TryGetValue(clientHandle, out monitoredItem))
-                {
-                    return monitoredItem;
-                }
-
-                return null;
+                return monitoredItems_.TryGetValue(clientHandle, out monitoredItem) ? monitoredItem : null;
             }
         }
 
@@ -1552,7 +1516,7 @@ namespace Technosoftware.UaClient
 
             try
             {
-                Session.Call(
+                _ = Session.Call(
                     ObjectTypeIds.ConditionType,
                     MethodIds.ConditionType_ConditionRefresh,
                     Id);
@@ -1575,7 +1539,7 @@ namespace Technosoftware.UaClient
 
             try
             {
-                Session.Call(ObjectIds.Server, MethodIds.Server_ResendData, Id);
+                _ = Session.Call(ObjectIds.Server, MethodIds.Server_ResendData, Id);
                 return true;
             }
             catch (ServiceResultException sre)
@@ -1628,18 +1592,18 @@ namespace Technosoftware.UaClient
                     // only republish consecutive sequence numbers
                     // triggers the republish mechanism immediately,
                     // if event is in the past
-                    var now = DateTime.UtcNow.AddSeconds(-5);
-                    uint lastSequenceNumberToRepublish = lastSequenceNumberProcessed_ - 1;
-                    int availableNumbers = availableSequenceNumbers.Count;
-                    int republishMessages = 0;
-                    for (int i = 0; i < availableNumbers; i++)
+                    DateTime now = DateTime.UtcNow.AddSeconds(-5);
+                    var lastSequenceNumberToRepublish = lastSequenceNumberProcessed_ - 1;
+                    var availableNumbers = availableSequenceNumbers.Count;
+                    var republishMessages = 0;
+                    for (var i = 0; i < availableNumbers; i++)
                     {
-                        bool found = false;
+                        var found = false;
                         foreach (var sequenceNumber in availableSequenceNumbers)
                         {
                             if (lastSequenceNumberToRepublish == sequenceNumber)
                             {
-                                FindOrCreateEntry(now, sequenceNumber);
+                                _ = FindOrCreateEntry(now, sequenceNumber);
                                 found = true;
                                 break;
                             }
@@ -1648,7 +1612,7 @@ namespace Technosoftware.UaClient
                         if (found)
                         {
                             // remove sequence number handled for republish
-                            availableSequenceNumbers.Remove(lastSequenceNumberToRepublish);
+                            _ = availableSequenceNumbers.Remove(lastSequenceNumberToRepublish);
                             lastSequenceNumberToRepublish--;
                             republishMessages++;
                         }
@@ -1675,7 +1639,7 @@ namespace Technosoftware.UaClient
             clientHandles = new UInt32Collection();
             try
             {
-                var outputArguments = Session.Call(ObjectIds.Server, MethodIds.Server_GetMonitoredItems, transferId_);
+                IList<object> outputArguments = Session.Call(ObjectIds.Server, MethodIds.Server_GetMonitoredItems, TransferId);
                 if (outputArguments != null && outputArguments.Count == 2)
                 {
                     serverHandles.AddRange((uint[])outputArguments[0]);
@@ -1699,7 +1663,7 @@ namespace Technosoftware.UaClient
             var clientHandles = new UInt32Collection();
             try
             {
-                var outputArguments = await Session.CallAsync(ObjectIds.Server, MethodIds.Server_GetMonitoredItems, ct, transferId_).ConfigureAwait(false);
+                IList<object> outputArguments = await Session.CallAsync(ObjectIds.Server, MethodIds.Server_GetMonitoredItems, ct, TransferId).ConfigureAwait(false);
                 if (outputArguments != null && outputArguments.Count == 2)
                 {
                     serverHandles.AddRange((uint[])outputArguments[0]);
@@ -1744,7 +1708,7 @@ namespace Technosoftware.UaClient
                 {
                     Utils.SilentDispose(m_messageWorkerCts);
                     m_messageWorkerCts = new CancellationTokenSource();
-                    var ct = m_messageWorkerCts.Token;
+                    CancellationToken ct = m_messageWorkerCts.Token;
                     messageWorkerTask_ = Task.Run(() => {
                         return PublishResponseMessageWorkerAsync(ct);
                     });
@@ -1794,7 +1758,7 @@ namespace Technosoftware.UaClient
             // check if a publish has arrived.
             EventHandler<PublishStateChangedEventArgs> callback = PublishStatusChangedEventHandler;
 
-            Interlocked.Increment(ref publishLateCount_);
+            _ = Interlocked.Increment(ref publishLateCount_);
 
             TraceState("PUBLISHING STOPPED");
 
@@ -1811,7 +1775,7 @@ namespace Technosoftware.UaClient
             }
 
             // try to send a publish to recover stopped publishing.
-            Session?.BeginPublish(BeginPublishTimeout());
+            _ = (Session?.BeginPublish(BeginPublishTimeout()));
         }
 
         /// <summary>
@@ -1918,7 +1882,7 @@ namespace Technosoftware.UaClient
             else
             {
                 CurrentPublishingEnabled = PublishingEnabled;
-                transferId_ = Id = subscriptionId;
+                TransferId = Id = subscriptionId;
                 StartKeepAliveTimer();
                 changeMask_ |= SubscriptionChangeMask.Created;
             }
@@ -1958,7 +1922,7 @@ namespace Technosoftware.UaClient
         /// </summary>
         private void DeleteSubscription()
         {
-            transferId_ = Id = 0;
+            TransferId = Id = 0;
             CurrentPublishingInterval = 0;
             CurrentKeepAliveCount = 0;
             CurrentPublishingEnabled = false;
@@ -2003,7 +1967,7 @@ namespace Technosoftware.UaClient
                         MinLifetimeInterval, Session.SessionTimeout, Id);
                 }
 
-                uint minLifetimeCount = (uint)(MinLifetimeInterval / PublishingInterval);
+                var minLifetimeCount = (uint)(MinLifetimeInterval / PublishingInterval);
 
                 if (lifetimeCount < minLifetimeCount)
                 {
@@ -2034,7 +1998,7 @@ namespace Technosoftware.UaClient
             }
 
             // validate spec: lifetimecount shall be at least 3*keepAliveCount
-            uint minLifeTimeCount = 3 * keepAliveCount;
+            var minLifeTimeCount = 3 * keepAliveCount;
             if (lifetimeCount < minLifeTimeCount)
             {
                 Utils.LogInfo("Adjusted LifetimeCount from value={0}, to value={1}, for subscription {2}. ",
@@ -2179,9 +2143,7 @@ namespace Technosoftware.UaClient
                         {
                             foreach (ExtensionObject notificationData in message.NotificationData)
                             {
-                                var datachange = notificationData.Body as DataChangeNotification;
-
-                                if (datachange != null)
+                                if (notificationData.Body is DataChangeNotification datachange)
                                 {
                                     datachange.PublishTime = message.PublishTime;
                                     datachange.SequenceNumber = message.SequenceNumber;
@@ -2199,9 +2161,8 @@ namespace Technosoftware.UaClient
                                     }
                                 }
 
-                                var events = notificationData.Body as EventNotificationList;
 
-                                if (events != null)
+                                if (notificationData.Body is EventNotificationList events)
                                 {
                                     events.PublishTime = message.PublishTime;
                                     events.SequenceNumber = message.SequenceNumber;
@@ -2219,9 +2180,8 @@ namespace Technosoftware.UaClient
                                     }
                                 }
 
-                                StatusChangeNotification statusChanged = notificationData.Body as StatusChangeNotification;
 
-                                if (statusChanged != null)
+                                if (notificationData.Body is StatusChangeNotification statusChanged)
                                 {
                                     statusChanged.PublishTime = message.PublishTime;
                                     statusChanged.SequenceNumber = message.SequenceNumber;
@@ -2268,9 +2228,9 @@ namespace Technosoftware.UaClient
                 // do any re-publishes.
                 if (messagesToRepublish != null && session != null && subscriptionId != 0)
                 {
-                    for (int ii = 0; ii < messagesToRepublish.Count; ii++)
+                    for (var ii = 0; ii < messagesToRepublish.Count; ii++)
                     {
-                        (bool success, _) = await session.RepublishAsync(subscriptionId, messagesToRepublish[ii].SequenceNumber, ct).ConfigureAwait(false);
+                        (var success, _) = await session.RepublishAsync(subscriptionId, messagesToRepublish[ii].SequenceNumber, ct).ConfigureAwait(false);
                         if (!success)
                         {
                             messagesToRepublish[ii].Republished = false;
@@ -2296,11 +2256,16 @@ namespace Technosoftware.UaClient
             if (created && Id == 0)
             {
                 throw new ServiceResultException(StatusCodes.BadInvalidState, "Subscription has not been created.");
-                }
+            }
 
             if (!created && Id != 0)
             {
-                throw new ServiceResultException(StatusCodes.BadInvalidState, "Subscription has alredy been created.");
+                throw new ServiceResultException(StatusCodes.BadInvalidState, "Subscription has already been created.");
+            }
+
+            if (!created && Session is null) // Occurs only on Create() and CreateAsync()
+            {
+                throw new ServiceResultException(StatusCodes.BadInvalidState, "Subscription has not been assigned to a Session");
             }
         }
 
@@ -2323,26 +2288,26 @@ namespace Technosoftware.UaClient
         /// </summary>
         private bool UpdateMonitoringMode(
             IList<MonitoredItem> monitoredItems,
-            IList<ServiceResult> errors,
+            List<ServiceResult> errors,
             StatusCodeCollection results,
             DiagnosticInfoCollection diagnosticInfos,
             ResponseHeader responseHeader,
             MonitoringMode monitoringMode)
         {
             // update results.
-            bool noErrors = true;
+            var noErrors = true;
 
-            for (int ii = 0; ii < results.Count; ii++)
+            for (var ii = 0; ii < results.Count; ii++)
             {
                 ServiceResult error = null;
 
                 if (StatusCode.IsBad(results[ii]))
-            {
+                {
                     error = ClientBase.GetResult(results[ii], ii, diagnosticInfos, responseHeader);
                     noErrors = false;
                 }
                 else
-                    {
+                {
                     monitoredItems[ii].MonitoringMode = monitoringMode;
                     monitoredItems[ii].Status.SetMonitoringMode(monitoringMode);
                 }
@@ -2362,7 +2327,7 @@ namespace Technosoftware.UaClient
 
             ResolveItemNodeIds();
 
-            MonitoredItemCreateRequestCollection requestItems = new MonitoredItemCreateRequestCollection();
+            var requestItems = new MonitoredItemCreateRequestCollection();
             itemsToCreate = new List<MonitoredItem>();
 
             lock (cache_)
@@ -2371,12 +2336,12 @@ namespace Technosoftware.UaClient
                 {
                     // ignore items that have been created.
                     if (monitoredItem.Status.Created)
-                {
+                    {
                         continue;
-                }
+                    }
 
                     // build item request.
-                    MonitoredItemCreateRequest request = new MonitoredItemCreateRequest();
+                    var request = new MonitoredItemCreateRequest();
 
                     request.ItemToMonitor.NodeId = monitoredItem.ResolvedNodeId;
                     request.ItemToMonitor.AttributeId = monitoredItem.AttributeId;
@@ -2391,9 +2356,9 @@ namespace Technosoftware.UaClient
                     request.RequestedParameters.DiscardOldest = monitoredItem.DiscardOldest;
 
                     if (monitoredItem.Filter != null)
-            {
+                    {
                         request.RequestedParameters.Filter = new ExtensionObject(monitoredItem.Filter);
-            }
+                    }
 
                     requestItems.Add(request);
                     itemsToCreate.Add(monitoredItem);
@@ -2408,11 +2373,11 @@ namespace Technosoftware.UaClient
         /// </summary>
         private void PrepareItemsToModify(
             MonitoredItemModifyRequestCollection requestItems,
-            IList<MonitoredItem> itemsToModify)
+            List<MonitoredItem> itemsToModify)
         {
             lock (cache_)
             {
-                foreach (var monitoredItem in monitoredItems_.Values)
+                foreach (MonitoredItem monitoredItem in monitoredItems_.Values)
                 {
                     // ignore items that have been created or modified.
                     if (!monitoredItem.Status.Created || !monitoredItem.AttributesModified)
@@ -2421,7 +2386,7 @@ namespace Technosoftware.UaClient
                     }
 
                     // build item request.
-                    MonitoredItemModifyRequest request = new MonitoredItemModifyRequest();
+                    var request = new MonitoredItemModifyRequest();
 
                     request.MonitoredItemId = monitoredItem.Status.Id;
                     request.RequestedParameters.ClientHandle = monitoredItem.ClientHandle;
@@ -2478,39 +2443,39 @@ namespace Technosoftware.UaClient
         /// </summary>
         private void PrepareResolveItemNodeIds(
             BrowsePathCollection browsePaths,
-            IList<MonitoredItem> itemsToBrowse)
+            List<MonitoredItem> itemsToBrowse)
         {
             lock (cache_)
             {
                 foreach (MonitoredItem monitoredItem in monitoredItems_.Values)
-        {
+                {
                     if (!String.IsNullOrEmpty(monitoredItem.RelativePath) && NodeId.IsNull(monitoredItem.ResolvedNodeId))
-            {
+                    {
                         // cannot change the relative path after an item is created.
                         if (monitoredItem.Created)
-                {
+                        {
                             throw new ServiceResultException(StatusCodes.BadInvalidState, "Cannot modify item path after it is created.");
-                }
+                        }
 
-                        BrowsePath browsePath = new BrowsePath();
+                        var browsePath = new BrowsePath();
 
                         browsePath.StartingNode = monitoredItem.StartNodeId;
 
                         // parse the relative path.
                         try
-        {
+                        {
                             browsePath.RelativePath = RelativePath.Parse(monitoredItem.RelativePath, Session.TypeTree);
-        }
+                        }
                         catch (Exception e)
-        {
+                        {
                             monitoredItem.SetError(new ServiceResult(e));
                             continue;
-            }
+                        }
 
                         browsePaths.Add(browsePath);
                         itemsToBrowse.Add(monitoredItem);
                     }
-            }
+                }
             }
         }
 
@@ -2526,34 +2491,34 @@ namespace Technosoftware.UaClient
                 return;
             }
 
-            for (int ii = 0; ii < notifications.MonitoredItems.Count; ii++)
-                {
+            for (var ii = 0; ii < notifications.MonitoredItems.Count; ii++)
+            {
                 MonitoredItemNotification notification = notifications.MonitoredItems[ii];
 
-                    // lookup monitored item,
+                // lookup monitored item,
                 MonitoredItem monitoredItem = null;
 
                 lock (cache_)
-                    {
+                {
                     if (!monitoredItems_.TryGetValue(notification.ClientHandle, out monitoredItem))
-                        {
-                        Utils.LogWarning("Publish response contains invalid MonitoredItem. SubscriptionId = {0}, ClientHandle = {1}", Id, notification.ClientHandle);
-                            continue;
-                        }
-                    }
-
-                    // save the message.
-                    notification.Message = message;
-
-                    // get diagnostic info.
-                    if (notifications.DiagnosticInfos.Count > ii)
                     {
-                        notification.DiagnosticInfo = notifications.DiagnosticInfos[ii];
+                        Utils.LogWarning("Publish response contains invalid MonitoredItem. SubscriptionId = {0}, ClientHandle = {1}", Id, notification.ClientHandle);
+                        continue;
                     }
-
-                    // save in cache.
-                    monitoredItem.SaveValueInCache(notification);
                 }
+
+                // save the message.
+                notification.Message = message;
+
+                // get diagnostic info.
+                if (notifications.DiagnosticInfos.Count > ii)
+                {
+                    notification.DiagnosticInfo = notifications.DiagnosticInfos[ii];
+                }
+
+                // save in cache.
+                monitoredItem.SaveValueInCache(notification);
+            }
         }
 
         /// <summary>
@@ -2561,7 +2526,7 @@ namespace Technosoftware.UaClient
         /// </summary>
         private void SaveEvents(NotificationMessage message, EventNotificationList notifications, IList<string> stringTable)
         {
-            foreach (var eventFields in notifications.Events)
+            foreach (EventFieldList eventFields in notifications.Events)
             {
                 MonitoredItem monitoredItem;
 
@@ -2608,7 +2573,7 @@ namespace Technosoftware.UaClient
                     entry = new IncomingMessage();
                     entry.SequenceNumber = sequenceNumber;
                     entry.Timestamp = utcNow;
-                    incomingMessages_.AddAfter(node, entry);
+                    _ = incomingMessages_.AddAfter(node, entry);
                     break;
                 }
 
@@ -2621,7 +2586,7 @@ namespace Technosoftware.UaClient
                 entry = new IncomingMessage();
                 entry.SequenceNumber = sequenceNumber;
                 entry.Timestamp = utcNow;
-                incomingMessages_.AddLast(entry);
+                _ = incomingMessages_.AddLast(entry);
             }
 
             return entry;
@@ -2638,7 +2603,6 @@ namespace Technosoftware.UaClient
 #else
         private Timer publishTimer_;
 #endif
-        private uint transferId_;
         private long lastNotificationTime_;
         private int m_keepAliveInterval;
         private int publishLateCount_;
@@ -2837,7 +2801,7 @@ namespace Technosoftware.UaClient
         /// </summary>
         internal PublishStateChangedEventArgs(PublishStateChangedMask changeMask)
         {
-            changeMask_ = changeMask;
+            Status = changeMask;
         }
         #endregion
 
@@ -2845,11 +2809,10 @@ namespace Technosoftware.UaClient
         /// <summary>
         /// The publish state changes.
         /// </summary>
-        public PublishStateChangedMask Status => changeMask_;
+        public PublishStateChangedMask Status { get; }
         #endregion
 
         #region Private Fields
-        private readonly PublishStateChangedMask changeMask_;
         #endregion
     }
     #endregion
@@ -2883,13 +2846,13 @@ namespace Technosoftware.UaClient
         /// <summary cref="ICloneable.Clone" />
         public virtual object Clone()
         {
-            return (SubscriptionCollection)this.MemberwiseClone();
+            return (SubscriptionCollection)MemberwiseClone();
         }
 
         /// <summary cref="Object.MemberwiseClone" />
         public new object MemberwiseClone()
         {
-            SubscriptionCollection clone = new SubscriptionCollection();
+            var clone = new SubscriptionCollection();
             clone.AddRange(this.Select(item => (Subscription)item.Clone()));
             return clone;
         }
@@ -2900,7 +2863,7 @@ namespace Technosoftware.UaClient
         /// </summary>
         public virtual SubscriptionCollection CloneSubscriptions(bool copyEventhandlers)
         {
-            SubscriptionCollection clone = new SubscriptionCollection();
+            var clone = new SubscriptionCollection();
             clone.AddRange(this.Select(item => (Subscription)item.CloneSubscription(copyEventhandlers)));
             return clone;
         }
