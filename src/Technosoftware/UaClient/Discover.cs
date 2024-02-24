@@ -69,10 +69,10 @@ namespace Technosoftware.UaClient
             // Connect to the local discovery server and find the available servers.
             using (var client = DiscoveryClient.Create(new Uri(Utils.Format(Utils.DiscoveryUrls[0], "localhost")), endpointConfiguration))
             {
-                var servers = client.FindServers(null);
+                ApplicationDescriptionCollection servers = client.FindServers(null);
 
                 // populate the drop down list with the discovery URLs for the available servers.
-                foreach (var applicationDescription in servers)
+                foreach (ApplicationDescription applicationDescription in servers)
                 {
                     if (applicationDescription.ApplicationType == ApplicationType.DiscoveryServer)
                     {
@@ -126,14 +126,14 @@ namespace Technosoftware.UaClient
             int discoverTimeout
             )
         {
-            var url = GetDiscoveryUrl(discoveryUrl);
+            Uri url = GetDiscoveryUrl(discoveryUrl);
             var endpointConfiguration = EndpointConfiguration.Create();
             endpointConfiguration.OperationTimeout = discoverTimeout;
 
             // Connect to the server's discovery endpoint and find the available configuration.
             using (var client = DiscoveryClient.Create(url, endpointConfiguration))
             {
-                var endpoints = client.GetEndpoints(null);
+                EndpointDescriptionCollection endpoints = client.GetEndpoints(null);
                 return SelectEndpoint(url, endpoints, useSecurity);
             }
         }
@@ -166,7 +166,7 @@ namespace Technosoftware.UaClient
             using (var client = DiscoveryClient.Create(application, connection, endpointConfiguration))
             {
                 var url = new Uri(client.Endpoint.EndpointUrl);
-                var endpoints = client.GetEndpoints(null);
+                EndpointDescriptionCollection endpoints = client.GetEndpoints(null);
                 return SelectEndpoint(url, endpoints, useSecurity);
             }
         }
@@ -201,7 +201,7 @@ namespace Technosoftware.UaClient
             int discoverTimeout
             )
         {
-            var uri = GetDiscoveryUrl(discoveryUrl);
+            Uri uri = GetDiscoveryUrl(discoveryUrl);
             var endpointConfiguration = EndpointConfiguration.Create();
             endpointConfiguration.OperationTimeout = discoverTimeout;
 
@@ -209,10 +209,10 @@ namespace Technosoftware.UaClient
             {
                 // Connect to the server's discovery endpoint and find the available configuration.
                 var url = new Uri(client.Endpoint.EndpointUrl);
-                var endpoints = client.GetEndpoints(null);
-                var selectedEndpoint = SelectEndpoint(url, endpoints, useSecurity);
+                EndpointDescriptionCollection endpoints = client.GetEndpoints(null);
+                EndpointDescription selectedEndpoint = SelectEndpoint(url, endpoints, useSecurity);
 
-                var endpointUrl = Utils.ParseUri(selectedEndpoint.EndpointUrl);
+                Uri endpointUrl = Utils.ParseUri(selectedEndpoint.EndpointUrl);
                 if (endpointUrl != null && endpointUrl.Scheme == uri.Scheme)
                 {
                     var builder = new UriBuilder(endpointUrl) { Host = uri.DnsSafeHost, Port = uri.Port };
@@ -239,7 +239,7 @@ namespace Technosoftware.UaClient
             EndpointDescription selectedEndpoint = null;
 
             // select the best endpoint to use based on the selected URL and the UseSecurity checkbox. 
-            foreach (var endpoint in endpoints)
+            foreach (EndpointDescription endpoint in endpoints)
             {
                 // check for a match on the URL scheme.
                 if (endpoint.EndpointUrl.StartsWith(url.Scheme))
@@ -289,7 +289,7 @@ namespace Technosoftware.UaClient
             // pick the first available endpoint by default.
             if (selectedEndpoint == null && endpoints.Count > 0)
             {
-                selectedEndpoint = endpoints.FirstOrDefault(e => e.EndpointUrl?.StartsWith(url.Scheme) == true);
+                selectedEndpoint = endpoints.FirstOrDefault(e => e.EndpointUrl?.StartsWith(url.Scheme, StringComparison.Ordinal) == true);
             }
 
             // return the selected endpoint.
@@ -370,11 +370,11 @@ namespace Technosoftware.UaClient
             // process each url.
             foreach (var discoveryUrl in urlsToUse)
             {
-                var url = Utils.ParseUri(discoveryUrl);
+                Uri url = Utils.ParseUri(discoveryUrl);
 
                 if (url != null)
                 {
-                    var servers = GetUaServers(applicationConfiguration, url);
+                    List<string> servers = GetUaServers(applicationConfiguration, url);
                     foreach (var server in servers)
                     {
                         // ensure duplicates do not get added.
@@ -411,9 +411,9 @@ namespace Technosoftware.UaClient
                     uri,
                     EndpointConfiguration.Create(applicationConfiguration));
 
-                var servers = client.FindServers(null);
+                ApplicationDescriptionCollection servers = client.FindServers(null);
                 foreach (
-                    var t in servers.Where(t => t.ApplicationType != ApplicationType.DiscoveryServer)
+                    ApplicationDescription t in servers.Where(t => t.ApplicationType != ApplicationType.DiscoveryServer)
                     )
                 {
                     foreach (var t1 in t.DiscoveryUrls)
@@ -445,7 +445,7 @@ namespace Technosoftware.UaClient
             }
             finally
             {
-                client?.Close();
+                _ = (client?.Close());
             }
             return serverList;
         }
@@ -489,7 +489,7 @@ namespace Technosoftware.UaClient
             // Connect to the server's discovery endpoint and find the available configuration.
             using (var client = DiscoveryClient.Create(uri))
             {
-                var endpoints = client.GetEndpoints(null);
+                EndpointDescriptionCollection endpoints = client.GetEndpoints(null);
 
                 endpointDescriptions.AddRange(endpoints);
             }
@@ -549,7 +549,7 @@ namespace Technosoftware.UaClient
             // get a list of well known discovery urls to use.
             var urlsToUse = new StringCollection();
 
-            var url = Utils.ParseUri(discoveryUrl_);
+            Uri url = Utils.ParseUri(discoveryUrl_);
 
             if (url == null)
             {
@@ -580,15 +580,15 @@ namespace Technosoftware.UaClient
 
                 if (url != null)
                 {
-                    var uaServers = GetServerDescriptions(applicationConfiguration, url);
-                    foreach (var server in uaServers)
+                    ApplicationDescriptionCollection uaServers = GetServerDescriptions(applicationConfiguration, url);
+                    foreach (ApplicationDescription server in uaServers)
                     {
                         // ensure duplicates do not get added.
                         if (!serverList.Contains(server) &&
                             server.ApplicationType != ApplicationType.DiscoveryServer)
                         {
                             var alreadyAdded = false;
-                            foreach (var addedServer in serverList)
+                            foreach (ApplicationDescription addedServer in serverList)
                             {
                                 if (addedServer.ApplicationUri == server.ApplicationUri)
                                 {
@@ -644,7 +644,7 @@ namespace Technosoftware.UaClient
             }
             finally
             {
-                client?.Close();
+                _ = (client?.Close());
             }
             return servers;
         }

@@ -31,7 +31,7 @@ namespace Technosoftware.UaClient
         /// <summary>
         /// Creates a new instance.
         /// </summary>
-        internal SessionNotificationEventArgs(
+        public SessionNotificationEventArgs(
             Subscription subscription,
             NotificationMessage notificationMessage,
             IList<string> stringTable)

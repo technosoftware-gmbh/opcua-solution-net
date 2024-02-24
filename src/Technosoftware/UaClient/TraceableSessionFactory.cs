@@ -205,14 +205,9 @@ namespace Technosoftware.UaClient
         {
             if (!(sessionTemplate is Session session))
             {
-                if (sessionTemplate is TraceableSession template)
-                {
-                    session = (Session)template.Session;
-                }
-                else
-                {
-                    throw new ArgumentOutOfRangeException(nameof(sessionTemplate), "The IUaSession provided is not of a supported type.");
-                }
+                session = sessionTemplate is TraceableSession template
+                    ? (Session)template.Session
+                    : throw new ArgumentOutOfRangeException(nameof(sessionTemplate), "The IUaSession provided is not of a supported type.");
             }
             return session;
         }

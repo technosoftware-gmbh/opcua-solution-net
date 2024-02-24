@@ -40,7 +40,7 @@ namespace Technosoftware.UaClient
         /// </summary>
         public TraceableSession(IUaSession session)
         {
-            session_ = session;
+            Session = session;
         }
         #endregion
 
@@ -55,218 +55,213 @@ namespace Technosoftware.UaClient
         public static ActivitySource ActivitySource => activitySource_.Value;
         private static readonly Lazy<ActivitySource> activitySource_ = new Lazy<ActivitySource>(() => new ActivitySource(ActivitySourceName, "1.0.0"));
 
-        /// <summary>
-        /// The IUaSession which is being traced.
-        /// </summary>
-        private readonly IUaSession session_;
-
         /// <inheritdoc/>
-        public IUaSession Session => session_;
+        public IUaSession Session { get; }
 
         #region IUaSession interface
         /// <inheritdoc/>
         public event EventHandler<SessionKeepAliveEventArgs> SessionKeepAliveEvent
         {
-            add => session_.SessionKeepAliveEvent += value;
-            remove => session_.SessionKeepAliveEvent -= value;
+            add => Session.SessionKeepAliveEvent += value;
+            remove => Session.SessionKeepAliveEvent -= value;
         }
 
         /// <inheritdoc/>
         public event EventHandler<SessionNotificationEventArgs> SessionNotificationEvent
         {
-            add => session_.SessionNotificationEvent += value;
-            remove => session_.SessionNotificationEvent -= value;
+            add => Session.SessionNotificationEvent += value;
+            remove => Session.SessionNotificationEvent -= value;
         }
 
         /// <inheritdoc/>
         public event EventHandler<SessionPublishErrorEventArgs> SessionPublishErrorEvent
         {
-            add => session_.SessionPublishErrorEvent += value;
-            remove => session_.SessionPublishErrorEvent -= value;
+            add => Session.SessionPublishErrorEvent += value;
+            remove => Session.SessionPublishErrorEvent -= value;
         }
 
         /// <inheritdoc/>
         public event EventHandler<PublishSequenceNumbersToAcknowledgeEventArgs> PublishSequenceNumbersToAcknowledgeEvent
         {
-            add => session_.PublishSequenceNumbersToAcknowledgeEvent += value;
-            remove => session_.PublishSequenceNumbersToAcknowledgeEvent -= value;
+            add => Session.PublishSequenceNumbersToAcknowledgeEvent += value;
+            remove => Session.PublishSequenceNumbersToAcknowledgeEvent -= value;
         }
 
         /// <inheritdoc/>
         public event EventHandler SubscriptionsChangedEvent
         {
-            add => session_.SubscriptionsChangedEvent += value;
-            remove => session_.SubscriptionsChangedEvent -= value;
+            add => Session.SubscriptionsChangedEvent += value;
+            remove => Session.SubscriptionsChangedEvent -= value;
         }
 
         /// <inheritdoc/>
         public event EventHandler SessionClosingEvent
         {
-            add => session_.SessionClosingEvent += value;
-            remove => session_.SessionClosingEvent -= value;
+            add => Session.SessionClosingEvent += value;
+            remove => Session.SessionClosingEvent -= value;
         }
 
         /// <inheritdoc/>
         public event EventHandler SessionConfigurationChangedEvent
         {
-            add => session_.SessionConfigurationChangedEvent += value;
-            remove => session_.SessionConfigurationChangedEvent -= value;
+            add => Session.SessionConfigurationChangedEvent += value;
+            remove => Session.SessionConfigurationChangedEvent -= value;
         }
 
         /// <inheritdoc/>
         public event RenewUserIdentity RenewUserIdentityEvent
         {
-            add => session_.RenewUserIdentityEvent += value;
-            remove => session_.RenewUserIdentityEvent -= value;
+            add => Session.RenewUserIdentityEvent += value;
+            remove => Session.RenewUserIdentityEvent -= value;
         }
 
         /// <inheritdoc/>
         public IUaSessionFactory SessionFactory => TraceableSessionFactory.Instance;
 
         /// <inheritdoc/>
-        public ConfiguredEndpoint ConfiguredEndpoint => session_.ConfiguredEndpoint;
+        public ConfiguredEndpoint ConfiguredEndpoint => Session.ConfiguredEndpoint;
 
         /// <inheritdoc/>
-        public string SessionName => session_.SessionName;
+        public string SessionName => Session.SessionName;
 
         /// <inheritdoc/>
-        public double SessionTimeout => session_.SessionTimeout;
+        public double SessionTimeout => Session.SessionTimeout;
 
         /// <inheritdoc/>
-        public object Handle => session_.Handle;
+        public object Handle => Session.Handle;
 
         /// <inheritdoc/>
-        public IUserIdentity Identity => session_.Identity;
+        public IUserIdentity Identity => Session.Identity;
 
         /// <inheritdoc/>
-        public IEnumerable<IUserIdentity> IdentityHistory => session_.IdentityHistory;
+        public IEnumerable<IUserIdentity> IdentityHistory => Session.IdentityHistory;
 
         /// <inheritdoc/>
-        public NamespaceTable NamespaceUris => session_.NamespaceUris;
+        public NamespaceTable NamespaceUris => Session.NamespaceUris;
 
         /// <inheritdoc/>
-        public StringTable ServerUris => session_.ServerUris;
+        public StringTable ServerUris => Session.ServerUris;
 
         /// <inheritdoc/>
-        public ISystemContext SystemContext => session_.SystemContext;
+        public ISystemContext SystemContext => Session.SystemContext;
 
         /// <inheritdoc/>
-        public IEncodeableFactory Factory => session_.Factory;
+        public IEncodeableFactory Factory => Session.Factory;
 
         /// <inheritdoc/>
-        public ITypeTable TypeTree => session_.TypeTree;
+        public ITypeTable TypeTree => Session.TypeTree;
 
         /// <inheritdoc/>
-        public IUaNodeCache NodeCache => session_.NodeCache;
+        public IUaNodeCache NodeCache => Session.NodeCache;
 
         /// <inheritdoc/>
-        public FilterContext FilterContext => session_.FilterContext;
+        public FilterContext FilterContext => Session.FilterContext;
 
         /// <inheritdoc/>
-        public StringCollection PreferredLocales => session_.PreferredLocales;
+        public StringCollection PreferredLocales => Session.PreferredLocales;
 
         /// <inheritdoc/>
-        public IReadOnlyDictionary<NodeId, DataDictionary> DataTypeSystem => session_.DataTypeSystem;
+        public IReadOnlyDictionary<NodeId, DataDictionary> DataTypeSystem => Session.DataTypeSystem;
 
         /// <inheritdoc/>
-        public IEnumerable<Subscription> Subscriptions => session_.Subscriptions;
+        public IEnumerable<Subscription> Subscriptions => Session.Subscriptions;
 
         /// <inheritdoc/>
-        public int SubscriptionCount => session_.SubscriptionCount;
+        public int SubscriptionCount => Session.SubscriptionCount;
 
         /// <inheritdoc/>
         public bool DeleteSubscriptionsOnClose
         {
-            get => session_.DeleteSubscriptionsOnClose;
-            set => session_.DeleteSubscriptionsOnClose = value;
+            get => Session.DeleteSubscriptionsOnClose;
+            set => Session.DeleteSubscriptionsOnClose = value;
         }
 
         /// <inheritdoc/>
         public Subscription DefaultSubscription
         {
-            get => session_.DefaultSubscription;
-            set => session_.DefaultSubscription = value;
+            get => Session.DefaultSubscription;
+            set => Session.DefaultSubscription = value;
         }
 
         /// <inheritdoc/>
         public int KeepAliveInterval
         {
-            get => session_.KeepAliveInterval;
-            set => session_.KeepAliveInterval = value;
+            get => Session.KeepAliveInterval;
+            set => Session.KeepAliveInterval = value;
         }
 
         /// <inheritdoc/>
-        public bool KeepAliveStopped => session_.KeepAliveStopped;
+        public bool KeepAliveStopped => Session.KeepAliveStopped;
 
         /// <inheritdoc/>
-        public DateTime LastKeepAliveTime => session_.LastKeepAliveTime;
+        public DateTime LastKeepAliveTime => Session.LastKeepAliveTime;
 
         /// <inheritdoc/>
-        public int OutstandingRequestCount => session_.OutstandingRequestCount;
+        public int OutstandingRequestCount => Session.OutstandingRequestCount;
 
         /// <inheritdoc/>
-        public int DefunctRequestCount => session_.DefunctRequestCount;
+        public int DefunctRequestCount => Session.DefunctRequestCount;
 
         /// <inheritdoc/>
-        public int GoodPublishRequestCount => session_.GoodPublishRequestCount;
+        public int GoodPublishRequestCount => Session.GoodPublishRequestCount;
 
         /// <inheritdoc/>
         public int MinPublishRequestCount
         {
-            get => session_.MinPublishRequestCount;
-            set => session_.MinPublishRequestCount = value;
+            get => Session.MinPublishRequestCount;
+            set => Session.MinPublishRequestCount = value;
         }
 
         /// <inheritdoc/>
-        public OperationLimits OperationLimits => session_.OperationLimits;
+        public OperationLimits OperationLimits => Session.OperationLimits;
 
         /// <inheritdoc/>
         public bool TransferSubscriptionsOnReconnect
         {
-            get => session_.TransferSubscriptionsOnReconnect;
-            set => session_.TransferSubscriptionsOnReconnect = value;
+            get => Session.TransferSubscriptionsOnReconnect;
+            set => Session.TransferSubscriptionsOnReconnect = value;
         }
 
         /// <inheritdoc/>
-        public NodeId SessionId => session_.SessionId;
+        public NodeId SessionId => Session.SessionId;
 
         /// <inheritdoc/>
-        public bool Connected => session_.Connected;
+        public bool Connected => Session.Connected;
 
         /// <inheritdoc/>
-        public EndpointDescription Endpoint => session_.Endpoint;
+        public EndpointDescription Endpoint => Session.Endpoint;
 
         /// <inheritdoc/>
-        public EndpointConfiguration EndpointConfiguration => session_.EndpointConfiguration;
+        public EndpointConfiguration EndpointConfiguration => Session.EndpointConfiguration;
 
         /// <inheritdoc/>
-        public IServiceMessageContext MessageContext => session_.MessageContext;
+        public IServiceMessageContext MessageContext => Session.MessageContext;
 
         /// <inheritdoc/>
-        public ITransportChannel NullableTransportChannel => session_.NullableTransportChannel;
+        public ITransportChannel NullableTransportChannel => Session.NullableTransportChannel;
 
         /// <inheritdoc/>
-        public ITransportChannel TransportChannel => session_.TransportChannel;
+        public ITransportChannel TransportChannel => Session.TransportChannel;
 
         /// <inheritdoc/>
         public DiagnosticsMasks ReturnDiagnostics
         {
-            get => session_.ReturnDiagnostics;
-            set => session_.ReturnDiagnostics = value;
+            get => Session.ReturnDiagnostics;
+            set => Session.ReturnDiagnostics = value;
         }
 
         /// <inheritdoc/>
         public int OperationTimeout
         {
-            get => session_.OperationTimeout;
-            set => session_.OperationTimeout = value;
+            get => Session.OperationTimeout;
+            set => Session.OperationTimeout = value;
         }
 
         /// <inheritdoc/>
-        public bool Disposed => session_.Disposed;
+        public bool Disposed => Session.Disposed;
 
         /// <inheritdoc/>
-        public bool CheckDomain => session_.CheckDomain;
+        public bool CheckDomain => Session.CheckDomain;
 
         /// <inheritdoc/>
         public override bool Equals(object obj)
@@ -274,14 +269,13 @@ namespace Technosoftware.UaClient
             if (ReferenceEquals(this, obj)) return true;
             // Presume that the wrapper is being compared to the
             // wrapped object, e.g. in a keep alive callback.
-            if (ReferenceEquals(session_, obj)) return true;
-            return session_?.Equals(obj) ?? false;
+            return ReferenceEquals(Session, obj) ? true : Session?.Equals(obj) ?? false;
         }
 
         /// <inheritdoc/>
         public override int GetHashCode()
         {
-            return session_?.GetHashCode() ?? base.GetHashCode();
+            return Session?.GetHashCode() ?? base.GetHashCode();
         }
 
         /// <inheritdoc/>
@@ -289,7 +283,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                session_.Reconnect();
+                Session.Reconnect();
             }
         }
 
@@ -298,7 +292,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                session_.Reconnect(connection);
+                Session.Reconnect(connection);
             }
         }
 
@@ -307,7 +301,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                session_.Reconnect(channel);
+                Session.Reconnect(channel);
             }
         }
 
@@ -316,7 +310,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                await session_.ReconnectAsync(ct).ConfigureAwait(false);
+                await Session.ReconnectAsync(ct).ConfigureAwait(false);
             }
         }
 
@@ -325,7 +319,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                await session_.ReconnectAsync(connection, ct).ConfigureAwait(false);
+                await Session.ReconnectAsync(connection, ct).ConfigureAwait(false);
             }
         }
 
@@ -334,7 +328,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                await session_.ReconnectAsync(channel, ct).ConfigureAwait(false);
+                await Session.ReconnectAsync(channel, ct).ConfigureAwait(false);
             }
         }
 
@@ -343,7 +337,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                session_.Save(filePath, knownTypes);
+                Session.Save(filePath, knownTypes);
             }
         }
 
@@ -352,7 +346,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                session_.Save(stream, subscriptions, knownTypes);
+                Session.Save(stream, subscriptions, knownTypes);
             }
         }
 
@@ -361,7 +355,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                session_.Save(filePath, subscriptions, knownTypes);
+                Session.Save(filePath, subscriptions, knownTypes);
             }
         }
 
@@ -370,7 +364,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.Load(stream, transferSubscriptions, knownTypes);
+                return Session.Load(stream, transferSubscriptions, knownTypes);
             }
         }
 
@@ -379,7 +373,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.Load(filePath, transferSubscriptions, knownTypes);
+                return Session.Load(filePath, transferSubscriptions, knownTypes);
             }
         }
 
@@ -388,7 +382,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                session_.FetchNamespaceTables();
+                Session.FetchNamespaceTables();
             }
         }
 
@@ -397,7 +391,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                session_.FetchTypeTree(typeId);
+                Session.FetchTypeTree(typeId);
             }
         }
 
@@ -406,7 +400,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                session_.FetchTypeTree(typeIds);
+                Session.FetchTypeTree(typeIds);
             }
         }
 
@@ -415,7 +409,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                await session_.FetchTypeTreeAsync(typeId, ct).ConfigureAwait(false);
+                await Session.FetchTypeTreeAsync(typeId, ct).ConfigureAwait(false);
             }
         }
 
@@ -424,7 +418,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                await session_.FetchTypeTreeAsync(typeIds, ct).ConfigureAwait(false);
+                await Session.FetchTypeTreeAsync(typeIds, ct).ConfigureAwait(false);
             }
         }
 
@@ -433,7 +427,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.ReadAvailableEncodings(variableId);
+                return Session.ReadAvailableEncodings(variableId);
             }
         }
 
@@ -442,7 +436,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.FindDataDescription(encodingId);
+                return Session.FindDataDescription(encodingId);
             }
         }
 
@@ -451,7 +445,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.FindDataDictionaryAsync(descriptionId, ct).ConfigureAwait(false);
+                return await Session.FindDataDictionaryAsync(descriptionId, ct).ConfigureAwait(false);
             }
         }
 
@@ -460,7 +454,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.LoadDataDictionary(dictionaryNode, forceReload);
+                return Session.LoadDataDictionary(dictionaryNode, forceReload);
             }
         }
 
@@ -469,7 +463,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.LoadDataTypeSystemAsync(dataTypeSystem, ct).ConfigureAwait(false);
+                return await Session.LoadDataTypeSystemAsync(dataTypeSystem, ct).ConfigureAwait(false);
             }
         }
 
@@ -478,7 +472,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.ReadNode(nodeId);
+                return Session.ReadNode(nodeId);
             }
         }
 
@@ -487,7 +481,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.ReadNode(nodeId, nodeClass, optionalAttributes);
+                return Session.ReadNode(nodeId, nodeClass, optionalAttributes);
             }
         }
 
@@ -496,7 +490,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                session_.ReadNodes(nodeIds, out nodeCollection, out errors, optionalAttributes);
+                Session.ReadNodes(nodeIds, out nodeCollection, out errors, optionalAttributes);
             }
         }
 
@@ -505,7 +499,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                session_.ReadNodes(nodeIds, nodeClass, out nodeCollection, out errors, optionalAttributes);
+                Session.ReadNodes(nodeIds, nodeClass, out nodeCollection, out errors, optionalAttributes);
             }
         }
 
@@ -514,7 +508,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.ReadValue(nodeId);
+                return Session.ReadValue(nodeId);
             }
         }
 
@@ -523,7 +517,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.ReadValue(nodeId, expectedType);
+                return Session.ReadValue(nodeId, expectedType);
             }
         }
 
@@ -532,7 +526,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                session_.ReadValues(nodeIds, out values, out errors);
+                Session.ReadValues(nodeIds, out values, out errors);
             }
         }
 
@@ -541,7 +535,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.FetchReferences(nodeId);
+                return Session.FetchReferences(nodeId);
             }
         }
 
@@ -550,7 +544,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                session_.FetchReferences(nodeIds, out referenceDescriptions, out errors);
+                Session.FetchReferences(nodeIds, out referenceDescriptions, out errors);
             }
         }
 
@@ -559,7 +553,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.FetchReferencesAsync(nodeId, ct).ConfigureAwait(false);
+                return await Session.FetchReferencesAsync(nodeId, ct).ConfigureAwait(false);
             }
         }
 
@@ -568,7 +562,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.FetchReferencesAsync(nodeIds, ct).ConfigureAwait(false);
+                return await Session.FetchReferencesAsync(nodeIds, ct).ConfigureAwait(false);
             }
         }
 
@@ -577,7 +571,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                session_.Open(sessionName, identity);
+                Session.Open(sessionName, identity);
             }
         }
 
@@ -586,7 +580,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                session_.Open(sessionName, sessionTimeout, identity, preferredLocales);
+                Session.Open(sessionName, sessionTimeout, identity, preferredLocales);
             }
         }
 
@@ -595,7 +589,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                session_.Open(sessionName, sessionTimeout, identity, preferredLocales, checkDomain);
+                Session.Open(sessionName, sessionTimeout, identity, preferredLocales, checkDomain);
             }
         }
 
@@ -604,7 +598,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                session_.ChangePreferredLocales(preferredLocales);
+                Session.ChangePreferredLocales(preferredLocales);
             }
         }
 
@@ -613,7 +607,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                session_.UpdateSession(identity, preferredLocales);
+                Session.UpdateSession(identity, preferredLocales);
             }
         }
 
@@ -622,7 +616,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                session_.FindComponentIds(instanceId, componentPaths, out componentIds, out errors);
+                Session.FindComponentIds(instanceId, componentPaths, out componentIds, out errors);
             }
         }
 
@@ -631,7 +625,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                session_.ReadValues(variableIds, expectedTypes, out values, out errors);
+                Session.ReadValues(variableIds, expectedTypes, out values, out errors);
             }
         }
 
@@ -640,7 +634,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                session_.ReadDisplayName(nodeIds, out displayNames, out errors);
+                Session.ReadDisplayName(nodeIds, out displayNames, out errors);
             }
         }
 
@@ -649,7 +643,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                await session_.OpenAsync(sessionName, identity, ct).ConfigureAwait(false);
+                await Session.OpenAsync(sessionName, identity, ct).ConfigureAwait(false);
             }
         }
 
@@ -658,7 +652,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                await session_.OpenAsync(sessionName, sessionTimeout, identity, preferredLocales, ct).ConfigureAwait(false);
+                await Session.OpenAsync(sessionName, sessionTimeout, identity, preferredLocales, ct).ConfigureAwait(false);
             }
         }
 
@@ -667,7 +661,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                await session_.OpenAsync(sessionName, sessionTimeout, identity, preferredLocales, checkDomain, ct).ConfigureAwait(false);
+                await Session.OpenAsync(sessionName, sessionTimeout, identity, preferredLocales, checkDomain, ct).ConfigureAwait(false);
             }
         }
 
@@ -677,7 +671,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                await session_.FetchNamespaceTablesAsync(ct).ConfigureAwait(false);
+                await Session.FetchNamespaceTablesAsync(ct).ConfigureAwait(false);
             }
         }
 
@@ -686,7 +680,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.ReadNodesAsync(nodeIds, nodeClass, optionalAttributes, ct).ConfigureAwait(false);
+                return await Session.ReadNodesAsync(nodeIds, nodeClass, optionalAttributes, ct).ConfigureAwait(false);
             }
         }
 
@@ -695,7 +689,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.ReadValueAsync(nodeId, ct).ConfigureAwait(false);
+                return await Session.ReadValueAsync(nodeId, ct).ConfigureAwait(false);
             }
         }
 
@@ -704,7 +698,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.ReadNodeAsync(nodeId, ct).ConfigureAwait(false);
+                return await Session.ReadNodeAsync(nodeId, ct).ConfigureAwait(false);
             }
         }
 
@@ -713,7 +707,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.ReadNodeAsync(nodeId, nodeClass, optionalAttributes, ct).ConfigureAwait(false);
+                return await Session.ReadNodeAsync(nodeId, nodeClass, optionalAttributes, ct).ConfigureAwait(false);
             }
         }
 
@@ -722,7 +716,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.ReadNodesAsync(nodeIds, optionalAttributes, ct).ConfigureAwait(false);
+                return await Session.ReadNodesAsync(nodeIds, optionalAttributes, ct).ConfigureAwait(false);
             }
         }
 
@@ -731,7 +725,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.ReadValuesAsync(nodeIds, ct).ConfigureAwait(false);
+                return await Session.ReadValuesAsync(nodeIds, ct).ConfigureAwait(false);
             }
         }
 
@@ -740,7 +734,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.Close(timeout);
+                return Session.Close(timeout);
             }
         }
 
@@ -749,7 +743,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.Close(closeChannel);
+                return Session.Close(closeChannel);
             }
         }
 
@@ -758,7 +752,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.Close(timeout, closeChannel);
+                return Session.Close(timeout, closeChannel);
             }
         }
 
@@ -767,7 +761,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.CloseAsync(ct).ConfigureAwait(false);
+                return await Session.CloseAsync(ct).ConfigureAwait(false);
             }
         }
 
@@ -776,7 +770,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.CloseAsync(closeChannel, ct).ConfigureAwait(false);
+                return await Session.CloseAsync(closeChannel, ct).ConfigureAwait(false);
             }
         }
 
@@ -785,7 +779,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.CloseAsync(timeout, ct).ConfigureAwait(false);
+                return await Session.CloseAsync(timeout, ct).ConfigureAwait(false);
             }
         }
 
@@ -794,7 +788,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.CloseAsync(timeout, closeChannel, ct).ConfigureAwait(false);
+                return await Session.CloseAsync(timeout, closeChannel, ct).ConfigureAwait(false);
             }
         }
 
@@ -803,7 +797,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.AddSubscription(subscription);
+                return Session.AddSubscription(subscription);
             }
         }
 
@@ -812,7 +806,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.RemoveSubscription(subscription);
+                return Session.RemoveSubscription(subscription);
             }
         }
 
@@ -821,7 +815,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.RemoveSubscriptions(subscriptions);
+                return Session.RemoveSubscriptions(subscriptions);
             }
         }
 
@@ -830,7 +824,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.TransferSubscriptions(subscriptions, sendInitialValues);
+                return Session.TransferSubscriptions(subscriptions, sendInitialValues);
             }
         }
 
@@ -839,7 +833,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.RemoveTransferredSubscription(subscription);
+                return Session.RemoveTransferredSubscription(subscription);
             }
         }
 
@@ -848,7 +842,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.RemoveSubscriptionAsync(subscription).ConfigureAwait(false);
+                return await Session.RemoveSubscriptionAsync(subscription).ConfigureAwait(false);
             }
         }
 
@@ -857,7 +851,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.RemoveSubscriptionsAsync(subscriptions).ConfigureAwait(false);
+                return await Session.RemoveSubscriptionsAsync(subscriptions).ConfigureAwait(false);
             }
         }
 
@@ -866,20 +860,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.Browse(requestHeader, view, nodeToBrowse, maxResultsToReturn, browseDirection, referenceTypeId, includeSubtypes, nodeClassMask, out continuationPoint, out references);
+                return Session.Browse(requestHeader, view, nodeToBrowse, maxResultsToReturn, browseDirection, referenceTypeId, includeSubtypes, nodeClassMask, out continuationPoint, out references);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginBrowse(RequestHeader requestHeader, ViewDescription view, NodeId nodeToBrowse, uint maxResultsToReturn, BrowseDirection browseDirection, NodeId referenceTypeId, bool includeSubtypes, uint nodeClassMask, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginBrowse(requestHeader, view, nodeToBrowse, maxResultsToReturn, browseDirection, referenceTypeId, includeSubtypes, nodeClassMask, callback, asyncState);
+            return Session.BeginBrowse(requestHeader, view, nodeToBrowse, maxResultsToReturn, browseDirection, referenceTypeId, includeSubtypes, nodeClassMask, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndBrowse(IAsyncResult result, out byte[] continuationPoint, out ReferenceDescriptionCollection references)
         {
-            return session_.EndBrowse(result, out continuationPoint, out references);
+            return Session.EndBrowse(result, out continuationPoint, out references);
         }
 
         /// <inheritdoc/>
@@ -887,20 +881,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.BrowseNext(requestHeader, releaseContinuationPoint, continuationPoint, out revisedContinuationPoint, out references);
+                return Session.BrowseNext(requestHeader, releaseContinuationPoint, continuationPoint, out revisedContinuationPoint, out references);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginBrowseNext(RequestHeader requestHeader, bool releaseContinuationPoint, byte[] continuationPoint, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginBrowseNext(requestHeader, releaseContinuationPoint, continuationPoint, callback, asyncState);
+            return Session.BeginBrowseNext(requestHeader, releaseContinuationPoint, continuationPoint, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndBrowseNext(IAsyncResult result, out byte[] revisedContinuationPoint, out ReferenceDescriptionCollection references)
         {
-            return session_.EndBrowseNext(result, out revisedContinuationPoint, out references);
+            return Session.EndBrowseNext(result, out revisedContinuationPoint, out references);
         }
 
         /// <inheritdoc/>
@@ -908,14 +902,14 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.Call(objectId, methodId, args);
+                return Session.Call(objectId, methodId, args);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginPublish(int timeout)
         {
-            return session_.BeginPublish(timeout);
+            return Session.BeginPublish(timeout);
         }
 
         /// <inheritdoc/>
@@ -923,7 +917,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                session_.StartPublishing(timeout, fullQueue);
+                Session.StartPublishing(timeout, fullQueue);
             }
         }
 
@@ -932,7 +926,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.Republish(subscriptionId, sequenceNumber, out error);
+                return Session.Republish(subscriptionId, sequenceNumber, out error);
             }
         }
 
@@ -941,7 +935,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.RepublishAsync(subscriptionId, sequenceNumber, ct).ConfigureAwait(false);
+                return await Session.RepublishAsync(subscriptionId, sequenceNumber, ct).ConfigureAwait(false);
             }
         }
 
@@ -950,20 +944,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.CreateSession(requestHeader, clientDescription, serverUri, endpointUrl, sessionName, clientNonce, clientCertificate, requestedSessionTimeout, maxResponseMessageSize, out sessionId, out authenticationToken, out revisedSessionTimeout, out serverNonce, out serverCertificate, out serverEndpoints, out serverSoftwareCertificates, out serverSignature, out maxRequestMessageSize);
+                return Session.CreateSession(requestHeader, clientDescription, serverUri, endpointUrl, sessionName, clientNonce, clientCertificate, requestedSessionTimeout, maxResponseMessageSize, out sessionId, out authenticationToken, out revisedSessionTimeout, out serverNonce, out serverCertificate, out serverEndpoints, out serverSoftwareCertificates, out serverSignature, out maxRequestMessageSize);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginCreateSession(RequestHeader requestHeader, ApplicationDescription clientDescription, string serverUri, string endpointUrl, string sessionName, byte[] clientNonce, byte[] clientCertificate, double requestedSessionTimeout, uint maxResponseMessageSize, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginCreateSession(requestHeader, clientDescription, serverUri, endpointUrl, sessionName, clientNonce, clientCertificate, requestedSessionTimeout, maxResponseMessageSize, callback, asyncState);
+            return Session.BeginCreateSession(requestHeader, clientDescription, serverUri, endpointUrl, sessionName, clientNonce, clientCertificate, requestedSessionTimeout, maxResponseMessageSize, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndCreateSession(IAsyncResult result, out NodeId sessionId, out NodeId authenticationToken, out double revisedSessionTimeout, out byte[] serverNonce, out byte[] serverCertificate, out EndpointDescriptionCollection serverEndpoints, out SignedSoftwareCertificateCollection serverSoftwareCertificates, out SignatureData serverSignature, out uint maxRequestMessageSize)
         {
-            return session_.EndCreateSession(result, out sessionId, out authenticationToken, out revisedSessionTimeout, out serverNonce, out serverCertificate, out serverEndpoints, out serverSoftwareCertificates, out serverSignature, out maxRequestMessageSize);
+            return Session.EndCreateSession(result, out sessionId, out authenticationToken, out revisedSessionTimeout, out serverNonce, out serverCertificate, out serverEndpoints, out serverSoftwareCertificates, out serverSignature, out maxRequestMessageSize);
         }
 
         /// <inheritdoc/>
@@ -971,7 +965,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.CreateSessionAsync(requestHeader, clientDescription, serverUri, endpointUrl, sessionName, clientNonce, clientCertificate, requestedSessionTimeout, maxResponseMessageSize, ct).ConfigureAwait(false);
+                return await Session.CreateSessionAsync(requestHeader, clientDescription, serverUri, endpointUrl, sessionName, clientNonce, clientCertificate, requestedSessionTimeout, maxResponseMessageSize, ct).ConfigureAwait(false);
             }
         }
 
@@ -980,20 +974,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.ActivateSession(requestHeader, clientSignature, clientSoftwareCertificates, localeIds, userIdentityToken, userTokenSignature, out serverNonce, out results, out diagnosticInfos);
+                return Session.ActivateSession(requestHeader, clientSignature, clientSoftwareCertificates, localeIds, userIdentityToken, userTokenSignature, out serverNonce, out results, out diagnosticInfos);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginActivateSession(RequestHeader requestHeader, SignatureData clientSignature, SignedSoftwareCertificateCollection clientSoftwareCertificates, StringCollection localeIds, ExtensionObject userIdentityToken, SignatureData userTokenSignature, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginActivateSession(requestHeader, clientSignature, clientSoftwareCertificates, localeIds, userIdentityToken, userTokenSignature, callback, asyncState);
+            return Session.BeginActivateSession(requestHeader, clientSignature, clientSoftwareCertificates, localeIds, userIdentityToken, userTokenSignature, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndActivateSession(IAsyncResult result, out byte[] serverNonce, out StatusCodeCollection results, out DiagnosticInfoCollection diagnosticInfos)
         {
-            return session_.EndActivateSession(result, out serverNonce, out results, out diagnosticInfos);
+            return Session.EndActivateSession(result, out serverNonce, out results, out diagnosticInfos);
         }
 
         /// <inheritdoc/>
@@ -1001,7 +995,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.ActivateSessionAsync(requestHeader, clientSignature, clientSoftwareCertificates, localeIds, userIdentityToken, userTokenSignature, ct).ConfigureAwait(false);
+                return await Session.ActivateSessionAsync(requestHeader, clientSignature, clientSoftwareCertificates, localeIds, userIdentityToken, userTokenSignature, ct).ConfigureAwait(false);
             }
         }
 
@@ -1010,20 +1004,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.CloseSession(requestHeader, deleteSubscriptions);
+                return Session.CloseSession(requestHeader, deleteSubscriptions);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginCloseSession(RequestHeader requestHeader, bool deleteSubscriptions, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginCloseSession(requestHeader, deleteSubscriptions, callback, asyncState);
+            return Session.BeginCloseSession(requestHeader, deleteSubscriptions, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndCloseSession(IAsyncResult result)
         {
-            return session_.EndCloseSession(result);
+            return Session.EndCloseSession(result);
         }
 
         /// <inheritdoc/>
@@ -1031,7 +1025,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.CloseSessionAsync(requestHeader, deleteSubscriptions, ct).ConfigureAwait(false);
+                return await Session.CloseSessionAsync(requestHeader, deleteSubscriptions, ct).ConfigureAwait(false);
             }
         }
 
@@ -1040,20 +1034,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.Cancel(requestHeader, requestHandle, out cancelCount);
+                return Session.Cancel(requestHeader, requestHandle, out cancelCount);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginCancel(RequestHeader requestHeader, uint requestHandle, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginCancel(requestHeader, requestHandle, callback, asyncState);
+            return Session.BeginCancel(requestHeader, requestHandle, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndCancel(IAsyncResult result, out uint cancelCount)
         {
-            return session_.EndCancel(result, out cancelCount);
+            return Session.EndCancel(result, out cancelCount);
         }
 
         /// <inheritdoc/>
@@ -1061,7 +1055,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.CancelAsync(requestHeader, requestHandle, ct).ConfigureAwait(false);
+                return await Session.CancelAsync(requestHeader, requestHandle, ct).ConfigureAwait(false);
             }
         }
 
@@ -1070,20 +1064,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.AddNodes(requestHeader, nodesToAdd, out results, out diagnosticInfos);
+                return Session.AddNodes(requestHeader, nodesToAdd, out results, out diagnosticInfos);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginAddNodes(RequestHeader requestHeader, AddNodesItemCollection nodesToAdd, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginAddNodes(requestHeader, nodesToAdd, callback, asyncState);
+            return Session.BeginAddNodes(requestHeader, nodesToAdd, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndAddNodes(IAsyncResult result, out AddNodesResultCollection results, out DiagnosticInfoCollection diagnosticInfos)
         {
-            return session_.EndAddNodes(result, out results, out diagnosticInfos);
+            return Session.EndAddNodes(result, out results, out diagnosticInfos);
         }
 
         /// <inheritdoc/>
@@ -1091,7 +1085,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.AddNodesAsync(requestHeader, nodesToAdd, ct).ConfigureAwait(false);
+                return await Session.AddNodesAsync(requestHeader, nodesToAdd, ct).ConfigureAwait(false);
             }
         }
 
@@ -1100,20 +1094,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.AddReferences(requestHeader, referencesToAdd, out results, out diagnosticInfos);
+                return Session.AddReferences(requestHeader, referencesToAdd, out results, out diagnosticInfos);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginAddReferences(RequestHeader requestHeader, AddReferencesItemCollection referencesToAdd, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginAddReferences(requestHeader, referencesToAdd, callback, asyncState);
+            return Session.BeginAddReferences(requestHeader, referencesToAdd, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndAddReferences(IAsyncResult result, out StatusCodeCollection results, out DiagnosticInfoCollection diagnosticInfos)
         {
-            return session_.EndAddReferences(result, out results, out diagnosticInfos);
+            return Session.EndAddReferences(result, out results, out diagnosticInfos);
         }
 
         /// <inheritdoc/>
@@ -1121,7 +1115,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.AddReferencesAsync(requestHeader, referencesToAdd, ct).ConfigureAwait(false);
+                return await Session.AddReferencesAsync(requestHeader, referencesToAdd, ct).ConfigureAwait(false);
             }
         }
 
@@ -1130,20 +1124,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.DeleteNodes(requestHeader, nodesToDelete, out results, out diagnosticInfos);
+                return Session.DeleteNodes(requestHeader, nodesToDelete, out results, out diagnosticInfos);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginDeleteNodes(RequestHeader requestHeader, DeleteNodesItemCollection nodesToDelete, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginDeleteNodes(requestHeader, nodesToDelete, callback, asyncState);
+            return Session.BeginDeleteNodes(requestHeader, nodesToDelete, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndDeleteNodes(IAsyncResult result, out StatusCodeCollection results, out DiagnosticInfoCollection diagnosticInfos)
         {
-            return session_.EndDeleteNodes(result, out results, out diagnosticInfos);
+            return Session.EndDeleteNodes(result, out results, out diagnosticInfos);
         }
 
         /// <inheritdoc/>
@@ -1151,7 +1145,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.DeleteNodesAsync(requestHeader, nodesToDelete, ct).ConfigureAwait(false);
+                return await Session.DeleteNodesAsync(requestHeader, nodesToDelete, ct).ConfigureAwait(false);
             }
         }
 
@@ -1160,20 +1154,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.DeleteReferences(requestHeader, referencesToDelete, out results, out diagnosticInfos);
+                return Session.DeleteReferences(requestHeader, referencesToDelete, out results, out diagnosticInfos);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginDeleteReferences(RequestHeader requestHeader, DeleteReferencesItemCollection referencesToDelete, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginDeleteReferences(requestHeader, referencesToDelete, callback, asyncState);
+            return Session.BeginDeleteReferences(requestHeader, referencesToDelete, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndDeleteReferences(IAsyncResult result, out StatusCodeCollection results, out DiagnosticInfoCollection diagnosticInfos)
         {
-            return session_.EndDeleteReferences(result, out results, out diagnosticInfos);
+            return Session.EndDeleteReferences(result, out results, out diagnosticInfos);
         }
 
         /// <inheritdoc/>
@@ -1181,7 +1175,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.DeleteReferencesAsync(requestHeader, referencesToDelete, ct).ConfigureAwait(false);
+                return await Session.DeleteReferencesAsync(requestHeader, referencesToDelete, ct).ConfigureAwait(false);
             }
         }
 
@@ -1190,20 +1184,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.Browse(requestHeader, view, requestedMaxReferencesPerNode, nodesToBrowse, out results, out diagnosticInfos);
+                return Session.Browse(requestHeader, view, requestedMaxReferencesPerNode, nodesToBrowse, out results, out diagnosticInfos);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginBrowse(RequestHeader requestHeader, ViewDescription view, uint requestedMaxReferencesPerNode, BrowseDescriptionCollection nodesToBrowse, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginBrowse(requestHeader, view, requestedMaxReferencesPerNode, nodesToBrowse, callback, asyncState);
+            return Session.BeginBrowse(requestHeader, view, requestedMaxReferencesPerNode, nodesToBrowse, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndBrowse(IAsyncResult result, out BrowseResultCollection results, out DiagnosticInfoCollection diagnosticInfos)
         {
-            return session_.EndBrowse(result, out results, out diagnosticInfos);
+            return Session.EndBrowse(result, out results, out diagnosticInfos);
         }
 
         /// <inheritdoc/>
@@ -1211,7 +1205,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.BrowseAsync(requestHeader, view, requestedMaxReferencesPerNode, nodesToBrowse, ct).ConfigureAwait(false);
+                return await Session.BrowseAsync(requestHeader, view, requestedMaxReferencesPerNode, nodesToBrowse, ct).ConfigureAwait(false);
             }
         }
 
@@ -1220,20 +1214,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.BrowseNext(requestHeader, releaseContinuationPoints, continuationPoints, out results, out diagnosticInfos);
+                return Session.BrowseNext(requestHeader, releaseContinuationPoints, continuationPoints, out results, out diagnosticInfos);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginBrowseNext(RequestHeader requestHeader, bool releaseContinuationPoints, ByteStringCollection continuationPoints, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginBrowseNext(requestHeader, releaseContinuationPoints, continuationPoints, callback, asyncState);
+            return Session.BeginBrowseNext(requestHeader, releaseContinuationPoints, continuationPoints, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndBrowseNext(IAsyncResult result, out BrowseResultCollection results, out DiagnosticInfoCollection diagnosticInfos)
         {
-            return session_.EndBrowseNext(result, out results, out diagnosticInfos);
+            return Session.EndBrowseNext(result, out results, out diagnosticInfos);
         }
 
         /// <inheritdoc/>
@@ -1241,7 +1235,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.BrowseNextAsync(requestHeader, releaseContinuationPoints, continuationPoints, ct).ConfigureAwait(false);
+                return await Session.BrowseNextAsync(requestHeader, releaseContinuationPoints, continuationPoints, ct).ConfigureAwait(false);
             }
         }
 
@@ -1250,20 +1244,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.TranslateBrowsePathsToNodeIds(requestHeader, browsePaths, out results, out diagnosticInfos);
+                return Session.TranslateBrowsePathsToNodeIds(requestHeader, browsePaths, out results, out diagnosticInfos);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginTranslateBrowsePathsToNodeIds(RequestHeader requestHeader, BrowsePathCollection browsePaths, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginTranslateBrowsePathsToNodeIds(requestHeader, browsePaths, callback, asyncState);
+            return Session.BeginTranslateBrowsePathsToNodeIds(requestHeader, browsePaths, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndTranslateBrowsePathsToNodeIds(IAsyncResult result, out BrowsePathResultCollection results, out DiagnosticInfoCollection diagnosticInfos)
         {
-            return session_.EndTranslateBrowsePathsToNodeIds(result, out results, out diagnosticInfos);
+            return Session.EndTranslateBrowsePathsToNodeIds(result, out results, out diagnosticInfos);
         }
 
         /// <inheritdoc/>
@@ -1271,7 +1265,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.TranslateBrowsePathsToNodeIdsAsync(requestHeader, browsePaths, ct).ConfigureAwait(false);
+                return await Session.TranslateBrowsePathsToNodeIdsAsync(requestHeader, browsePaths, ct).ConfigureAwait(false);
             }
         }
 
@@ -1280,20 +1274,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.RegisterNodes(requestHeader, nodesToRegister, out registeredNodeIds);
+                return Session.RegisterNodes(requestHeader, nodesToRegister, out registeredNodeIds);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginRegisterNodes(RequestHeader requestHeader, NodeIdCollection nodesToRegister, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginRegisterNodes(requestHeader, nodesToRegister, callback, asyncState);
+            return Session.BeginRegisterNodes(requestHeader, nodesToRegister, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndRegisterNodes(IAsyncResult result, out NodeIdCollection registeredNodeIds)
         {
-            return session_.EndRegisterNodes(result, out registeredNodeIds);
+            return Session.EndRegisterNodes(result, out registeredNodeIds);
         }
 
         /// <inheritdoc/>
@@ -1301,7 +1295,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.RegisterNodesAsync(requestHeader, nodesToRegister, ct).ConfigureAwait(false);
+                return await Session.RegisterNodesAsync(requestHeader, nodesToRegister, ct).ConfigureAwait(false);
             }
         }
 
@@ -1310,20 +1304,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.UnregisterNodes(requestHeader, nodesToUnregister);
+                return Session.UnregisterNodes(requestHeader, nodesToUnregister);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginUnregisterNodes(RequestHeader requestHeader, NodeIdCollection nodesToUnregister, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginUnregisterNodes(requestHeader, nodesToUnregister, callback, asyncState);
+            return Session.BeginUnregisterNodes(requestHeader, nodesToUnregister, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndUnregisterNodes(IAsyncResult result)
         {
-            return session_.EndUnregisterNodes(result);
+            return Session.EndUnregisterNodes(result);
         }
 
         /// <inheritdoc/>
@@ -1331,7 +1325,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.UnregisterNodesAsync(requestHeader, nodesToUnregister, ct).ConfigureAwait(false);
+                return await Session.UnregisterNodesAsync(requestHeader, nodesToUnregister, ct).ConfigureAwait(false);
             }
         }
 
@@ -1340,20 +1334,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.QueryFirst(requestHeader, view, nodeTypes, filter, maxDataSetsToReturn, maxReferencesToReturn, out queryDataSets, out continuationPoint, out parsingResults, out diagnosticInfos, out filterResult);
+                return Session.QueryFirst(requestHeader, view, nodeTypes, filter, maxDataSetsToReturn, maxReferencesToReturn, out queryDataSets, out continuationPoint, out parsingResults, out diagnosticInfos, out filterResult);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginQueryFirst(RequestHeader requestHeader, ViewDescription view, NodeTypeDescriptionCollection nodeTypes, ContentFilter filter, uint maxDataSetsToReturn, uint maxReferencesToReturn, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginQueryFirst(requestHeader, view, nodeTypes, filter, maxDataSetsToReturn, maxReferencesToReturn, callback, asyncState);
+            return Session.BeginQueryFirst(requestHeader, view, nodeTypes, filter, maxDataSetsToReturn, maxReferencesToReturn, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndQueryFirst(IAsyncResult result, out QueryDataSetCollection queryDataSets, out byte[] continuationPoint, out ParsingResultCollection parsingResults, out DiagnosticInfoCollection diagnosticInfos, out ContentFilterResult filterResult)
         {
-            return session_.EndQueryFirst(result, out queryDataSets, out continuationPoint, out parsingResults, out diagnosticInfos, out filterResult);
+            return Session.EndQueryFirst(result, out queryDataSets, out continuationPoint, out parsingResults, out diagnosticInfos, out filterResult);
         }
 
         /// <inheritdoc/>
@@ -1361,7 +1355,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.QueryFirstAsync(requestHeader, view, nodeTypes, filter, maxDataSetsToReturn, maxReferencesToReturn, ct).ConfigureAwait(false);
+                return await Session.QueryFirstAsync(requestHeader, view, nodeTypes, filter, maxDataSetsToReturn, maxReferencesToReturn, ct).ConfigureAwait(false);
             }
         }
 
@@ -1370,20 +1364,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.QueryNext(requestHeader, releaseContinuationPoint, continuationPoint, out queryDataSets, out revisedContinuationPoint);
+                return Session.QueryNext(requestHeader, releaseContinuationPoint, continuationPoint, out queryDataSets, out revisedContinuationPoint);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginQueryNext(RequestHeader requestHeader, bool releaseContinuationPoint, byte[] continuationPoint, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginQueryNext(requestHeader, releaseContinuationPoint, continuationPoint, callback, asyncState);
+            return Session.BeginQueryNext(requestHeader, releaseContinuationPoint, continuationPoint, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndQueryNext(IAsyncResult result, out QueryDataSetCollection queryDataSets, out byte[] revisedContinuationPoint)
         {
-            return session_.EndQueryNext(result, out queryDataSets, out revisedContinuationPoint);
+            return Session.EndQueryNext(result, out queryDataSets, out revisedContinuationPoint);
         }
 
         /// <inheritdoc/>
@@ -1391,7 +1385,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.QueryNextAsync(requestHeader, releaseContinuationPoint, continuationPoint, ct).ConfigureAwait(false);
+                return await Session.QueryNextAsync(requestHeader, releaseContinuationPoint, continuationPoint, ct).ConfigureAwait(false);
             }
         }
 
@@ -1400,20 +1394,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.Read(requestHeader, maxAge, timestampsToReturn, nodesToRead, out results, out diagnosticInfos);
+                return Session.Read(requestHeader, maxAge, timestampsToReturn, nodesToRead, out results, out diagnosticInfos);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginRead(RequestHeader requestHeader, double maxAge, TimestampsToReturn timestampsToReturn, ReadValueIdCollection nodesToRead, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginRead(requestHeader, maxAge, timestampsToReturn, nodesToRead, callback, asyncState);
+            return Session.BeginRead(requestHeader, maxAge, timestampsToReturn, nodesToRead, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndRead(IAsyncResult result, out DataValueCollection results, out DiagnosticInfoCollection diagnosticInfos)
         {
-            return session_.EndRead(result, out results, out diagnosticInfos);
+            return Session.EndRead(result, out results, out diagnosticInfos);
         }
 
         /// <inheritdoc/>
@@ -1421,7 +1415,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.ReadAsync(requestHeader, maxAge, timestampsToReturn, nodesToRead, ct).ConfigureAwait(false);
+                return await Session.ReadAsync(requestHeader, maxAge, timestampsToReturn, nodesToRead, ct).ConfigureAwait(false);
             }
         }
 
@@ -1430,20 +1424,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.HistoryRead(requestHeader, historyReadDetails, timestampsToReturn, releaseContinuationPoints, nodesToRead, out results, out diagnosticInfos);
+                return Session.HistoryRead(requestHeader, historyReadDetails, timestampsToReturn, releaseContinuationPoints, nodesToRead, out results, out diagnosticInfos);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginHistoryRead(RequestHeader requestHeader, ExtensionObject historyReadDetails, TimestampsToReturn timestampsToReturn, bool releaseContinuationPoints, HistoryReadValueIdCollection nodesToRead, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginHistoryRead(requestHeader, historyReadDetails, timestampsToReturn, releaseContinuationPoints, nodesToRead, callback, asyncState);
+            return Session.BeginHistoryRead(requestHeader, historyReadDetails, timestampsToReturn, releaseContinuationPoints, nodesToRead, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndHistoryRead(IAsyncResult result, out HistoryReadResultCollection results, out DiagnosticInfoCollection diagnosticInfos)
         {
-            return session_.EndHistoryRead(result, out results, out diagnosticInfos);
+            return Session.EndHistoryRead(result, out results, out diagnosticInfos);
         }
 
         /// <inheritdoc/>
@@ -1451,7 +1445,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.HistoryReadAsync(requestHeader, historyReadDetails, timestampsToReturn, releaseContinuationPoints, nodesToRead, ct).ConfigureAwait(false);
+                return await Session.HistoryReadAsync(requestHeader, historyReadDetails, timestampsToReturn, releaseContinuationPoints, nodesToRead, ct).ConfigureAwait(false);
             }
         }
 
@@ -1460,20 +1454,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.Write(requestHeader, nodesToWrite, out results, out diagnosticInfos);
+                return Session.Write(requestHeader, nodesToWrite, out results, out diagnosticInfos);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginWrite(RequestHeader requestHeader, WriteValueCollection nodesToWrite, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginWrite(requestHeader, nodesToWrite, callback, asyncState);
+            return Session.BeginWrite(requestHeader, nodesToWrite, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndWrite(IAsyncResult result, out StatusCodeCollection results, out DiagnosticInfoCollection diagnosticInfos)
         {
-            return session_.EndWrite(result, out results, out diagnosticInfos);
+            return Session.EndWrite(result, out results, out diagnosticInfos);
         }
 
         /// <inheritdoc/>
@@ -1481,7 +1475,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.WriteAsync(requestHeader, nodesToWrite, ct).ConfigureAwait(false);
+                return await Session.WriteAsync(requestHeader, nodesToWrite, ct).ConfigureAwait(false);
             }
         }
 
@@ -1490,20 +1484,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.HistoryUpdate(requestHeader, historyUpdateDetails, out results, out diagnosticInfos);
+                return Session.HistoryUpdate(requestHeader, historyUpdateDetails, out results, out diagnosticInfos);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginHistoryUpdate(RequestHeader requestHeader, ExtensionObjectCollection historyUpdateDetails, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginHistoryUpdate(requestHeader, historyUpdateDetails, callback, asyncState);
+            return Session.BeginHistoryUpdate(requestHeader, historyUpdateDetails, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndHistoryUpdate(IAsyncResult result, out HistoryUpdateResultCollection results, out DiagnosticInfoCollection diagnosticInfos)
         {
-            return session_.EndHistoryUpdate(result, out results, out diagnosticInfos);
+            return Session.EndHistoryUpdate(result, out results, out diagnosticInfos);
         }
 
         /// <inheritdoc/>
@@ -1511,7 +1505,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.HistoryUpdateAsync(requestHeader, historyUpdateDetails, ct).ConfigureAwait(false);
+                return await Session.HistoryUpdateAsync(requestHeader, historyUpdateDetails, ct).ConfigureAwait(false);
             }
         }
 
@@ -1520,20 +1514,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.Call(requestHeader, methodsToCall, out results, out diagnosticInfos);
+                return Session.Call(requestHeader, methodsToCall, out results, out diagnosticInfos);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginCall(RequestHeader requestHeader, CallMethodRequestCollection methodsToCall, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginCall(requestHeader, methodsToCall, callback, asyncState);
+            return Session.BeginCall(requestHeader, methodsToCall, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndCall(IAsyncResult result, out CallMethodResultCollection results, out DiagnosticInfoCollection diagnosticInfos)
         {
-            return session_.EndCall(result, out results, out diagnosticInfos);
+            return Session.EndCall(result, out results, out diagnosticInfos);
         }
 
         /// <inheritdoc/>
@@ -1541,7 +1535,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.CallAsync(requestHeader, methodsToCall, ct).ConfigureAwait(false);
+                return await Session.CallAsync(requestHeader, methodsToCall, ct).ConfigureAwait(false);
             }
         }
 
@@ -1550,20 +1544,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.CreateMonitoredItems(requestHeader, subscriptionId, timestampsToReturn, itemsToCreate, out results, out diagnosticInfos);
+                return Session.CreateMonitoredItems(requestHeader, subscriptionId, timestampsToReturn, itemsToCreate, out results, out diagnosticInfos);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginCreateMonitoredItems(RequestHeader requestHeader, uint subscriptionId, TimestampsToReturn timestampsToReturn, MonitoredItemCreateRequestCollection itemsToCreate, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginCreateMonitoredItems(requestHeader, subscriptionId, timestampsToReturn, itemsToCreate, callback, asyncState);
+            return Session.BeginCreateMonitoredItems(requestHeader, subscriptionId, timestampsToReturn, itemsToCreate, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndCreateMonitoredItems(IAsyncResult result, out MonitoredItemCreateResultCollection results, out DiagnosticInfoCollection diagnosticInfos)
         {
-            return session_.EndCreateMonitoredItems(result, out results, out diagnosticInfos);
+            return Session.EndCreateMonitoredItems(result, out results, out diagnosticInfos);
         }
 
         /// <inheritdoc/>
@@ -1571,7 +1565,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.CreateMonitoredItemsAsync(requestHeader, subscriptionId, timestampsToReturn, itemsToCreate, ct).ConfigureAwait(false);
+                return await Session.CreateMonitoredItemsAsync(requestHeader, subscriptionId, timestampsToReturn, itemsToCreate, ct).ConfigureAwait(false);
             }
         }
 
@@ -1580,20 +1574,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.ModifyMonitoredItems(requestHeader, subscriptionId, timestampsToReturn, itemsToModify, out results, out diagnosticInfos);
+                return Session.ModifyMonitoredItems(requestHeader, subscriptionId, timestampsToReturn, itemsToModify, out results, out diagnosticInfos);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginModifyMonitoredItems(RequestHeader requestHeader, uint subscriptionId, TimestampsToReturn timestampsToReturn, MonitoredItemModifyRequestCollection itemsToModify, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginModifyMonitoredItems(requestHeader, subscriptionId, timestampsToReturn, itemsToModify, callback, asyncState);
+            return Session.BeginModifyMonitoredItems(requestHeader, subscriptionId, timestampsToReturn, itemsToModify, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndModifyMonitoredItems(IAsyncResult result, out MonitoredItemModifyResultCollection results, out DiagnosticInfoCollection diagnosticInfos)
         {
-            return session_.EndModifyMonitoredItems(result, out results, out diagnosticInfos);
+            return Session.EndModifyMonitoredItems(result, out results, out diagnosticInfos);
         }
 
         /// <inheritdoc/>
@@ -1601,7 +1595,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.ModifyMonitoredItemsAsync(requestHeader, subscriptionId, timestampsToReturn, itemsToModify, ct).ConfigureAwait(false);
+                return await Session.ModifyMonitoredItemsAsync(requestHeader, subscriptionId, timestampsToReturn, itemsToModify, ct).ConfigureAwait(false);
             }
         }
 
@@ -1610,20 +1604,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.SetMonitoringMode(requestHeader, subscriptionId, monitoringMode, monitoredItemIds, out results, out diagnosticInfos);
+                return Session.SetMonitoringMode(requestHeader, subscriptionId, monitoringMode, monitoredItemIds, out results, out diagnosticInfos);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginSetMonitoringMode(RequestHeader requestHeader, uint subscriptionId, MonitoringMode monitoringMode, UInt32Collection monitoredItemIds, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginSetMonitoringMode(requestHeader, subscriptionId, monitoringMode, monitoredItemIds, callback, asyncState);
+            return Session.BeginSetMonitoringMode(requestHeader, subscriptionId, monitoringMode, monitoredItemIds, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndSetMonitoringMode(IAsyncResult result, out StatusCodeCollection results, out DiagnosticInfoCollection diagnosticInfos)
         {
-            return session_.EndSetMonitoringMode(result, out results, out diagnosticInfos);
+            return Session.EndSetMonitoringMode(result, out results, out diagnosticInfos);
         }
 
         /// <inheritdoc/>
@@ -1631,7 +1625,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.SetMonitoringModeAsync(requestHeader, subscriptionId, monitoringMode, monitoredItemIds, ct).ConfigureAwait(false);
+                return await Session.SetMonitoringModeAsync(requestHeader, subscriptionId, monitoringMode, monitoredItemIds, ct).ConfigureAwait(false);
             }
         }
 
@@ -1640,20 +1634,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.SetTriggering(requestHeader, subscriptionId, triggeringItemId, linksToAdd, linksToRemove, out addResults, out addDiagnosticInfos, out removeResults, out removeDiagnosticInfos);
+                return Session.SetTriggering(requestHeader, subscriptionId, triggeringItemId, linksToAdd, linksToRemove, out addResults, out addDiagnosticInfos, out removeResults, out removeDiagnosticInfos);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginSetTriggering(RequestHeader requestHeader, uint subscriptionId, uint triggeringItemId, UInt32Collection linksToAdd, UInt32Collection linksToRemove, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginSetTriggering(requestHeader, subscriptionId, triggeringItemId, linksToAdd, linksToRemove, callback, asyncState);
+            return Session.BeginSetTriggering(requestHeader, subscriptionId, triggeringItemId, linksToAdd, linksToRemove, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndSetTriggering(IAsyncResult result, out StatusCodeCollection addResults, out DiagnosticInfoCollection addDiagnosticInfos, out StatusCodeCollection removeResults, out DiagnosticInfoCollection removeDiagnosticInfos)
         {
-            return session_.EndSetTriggering(result, out addResults, out addDiagnosticInfos, out removeResults, out removeDiagnosticInfos);
+            return Session.EndSetTriggering(result, out addResults, out addDiagnosticInfos, out removeResults, out removeDiagnosticInfos);
         }
 
         /// <inheritdoc/>
@@ -1661,7 +1655,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.SetTriggeringAsync(requestHeader, subscriptionId, triggeringItemId, linksToAdd, linksToRemove, ct).ConfigureAwait(false);
+                return await Session.SetTriggeringAsync(requestHeader, subscriptionId, triggeringItemId, linksToAdd, linksToRemove, ct).ConfigureAwait(false);
             }
         }
 
@@ -1670,20 +1664,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.DeleteMonitoredItems(requestHeader, subscriptionId, monitoredItemIds, out results, out diagnosticInfos);
+                return Session.DeleteMonitoredItems(requestHeader, subscriptionId, monitoredItemIds, out results, out diagnosticInfos);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginDeleteMonitoredItems(RequestHeader requestHeader, uint subscriptionId, UInt32Collection monitoredItemIds, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginDeleteMonitoredItems(requestHeader, subscriptionId, monitoredItemIds, callback, asyncState);
+            return Session.BeginDeleteMonitoredItems(requestHeader, subscriptionId, monitoredItemIds, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndDeleteMonitoredItems(IAsyncResult result, out StatusCodeCollection results, out DiagnosticInfoCollection diagnosticInfos)
         {
-            return session_.EndDeleteMonitoredItems(result, out results, out diagnosticInfos);
+            return Session.EndDeleteMonitoredItems(result, out results, out diagnosticInfos);
         }
 
         /// <inheritdoc/>
@@ -1691,7 +1685,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.DeleteMonitoredItemsAsync(requestHeader, subscriptionId, monitoredItemIds, ct).ConfigureAwait(false);
+                return await Session.DeleteMonitoredItemsAsync(requestHeader, subscriptionId, monitoredItemIds, ct).ConfigureAwait(false);
             }
         }
 
@@ -1700,20 +1694,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.CreateSubscription(requestHeader, requestedPublishingInterval, requestedLifetimeCount, requestedMaxKeepAliveCount, maxNotificationsPerPublish, publishingEnabled, priority, out subscriptionId, out revisedPublishingInterval, out revisedLifetimeCount, out revisedMaxKeepAliveCount);
+                return Session.CreateSubscription(requestHeader, requestedPublishingInterval, requestedLifetimeCount, requestedMaxKeepAliveCount, maxNotificationsPerPublish, publishingEnabled, priority, out subscriptionId, out revisedPublishingInterval, out revisedLifetimeCount, out revisedMaxKeepAliveCount);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginCreateSubscription(RequestHeader requestHeader, double requestedPublishingInterval, uint requestedLifetimeCount, uint requestedMaxKeepAliveCount, uint maxNotificationsPerPublish, bool publishingEnabled, byte priority, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginCreateSubscription(requestHeader, requestedPublishingInterval, requestedLifetimeCount, requestedMaxKeepAliveCount, maxNotificationsPerPublish, publishingEnabled, priority, callback, asyncState);
+            return Session.BeginCreateSubscription(requestHeader, requestedPublishingInterval, requestedLifetimeCount, requestedMaxKeepAliveCount, maxNotificationsPerPublish, publishingEnabled, priority, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndCreateSubscription(IAsyncResult result, out uint subscriptionId, out double revisedPublishingInterval, out uint revisedLifetimeCount, out uint revisedMaxKeepAliveCount)
         {
-            return session_.EndCreateSubscription(result, out subscriptionId, out revisedPublishingInterval, out revisedLifetimeCount, out revisedMaxKeepAliveCount);
+            return Session.EndCreateSubscription(result, out subscriptionId, out revisedPublishingInterval, out revisedLifetimeCount, out revisedMaxKeepAliveCount);
         }
 
         /// <inheritdoc/>
@@ -1721,7 +1715,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.CreateSubscriptionAsync(requestHeader, requestedPublishingInterval, requestedLifetimeCount, requestedMaxKeepAliveCount, maxNotificationsPerPublish, publishingEnabled, priority, ct).ConfigureAwait(false);
+                return await Session.CreateSubscriptionAsync(requestHeader, requestedPublishingInterval, requestedLifetimeCount, requestedMaxKeepAliveCount, maxNotificationsPerPublish, publishingEnabled, priority, ct).ConfigureAwait(false);
             }
         }
 
@@ -1730,20 +1724,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.ModifySubscription(requestHeader, subscriptionId, requestedPublishingInterval, requestedLifetimeCount, requestedMaxKeepAliveCount, maxNotificationsPerPublish, priority, out revisedPublishingInterval, out revisedLifetimeCount, out revisedMaxKeepAliveCount);
+                return Session.ModifySubscription(requestHeader, subscriptionId, requestedPublishingInterval, requestedLifetimeCount, requestedMaxKeepAliveCount, maxNotificationsPerPublish, priority, out revisedPublishingInterval, out revisedLifetimeCount, out revisedMaxKeepAliveCount);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginModifySubscription(RequestHeader requestHeader, uint subscriptionId, double requestedPublishingInterval, uint requestedLifetimeCount, uint requestedMaxKeepAliveCount, uint maxNotificationsPerPublish, byte priority, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginModifySubscription(requestHeader, subscriptionId, requestedPublishingInterval, requestedLifetimeCount, requestedMaxKeepAliveCount, maxNotificationsPerPublish, priority, callback, asyncState);
+            return Session.BeginModifySubscription(requestHeader, subscriptionId, requestedPublishingInterval, requestedLifetimeCount, requestedMaxKeepAliveCount, maxNotificationsPerPublish, priority, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndModifySubscription(IAsyncResult result, out double revisedPublishingInterval, out uint revisedLifetimeCount, out uint revisedMaxKeepAliveCount)
         {
-            return session_.EndModifySubscription(result, out revisedPublishingInterval, out revisedLifetimeCount, out revisedMaxKeepAliveCount);
+            return Session.EndModifySubscription(result, out revisedPublishingInterval, out revisedLifetimeCount, out revisedMaxKeepAliveCount);
         }
 
         /// <inheritdoc/>
@@ -1751,7 +1745,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.ModifySubscriptionAsync(requestHeader, subscriptionId, requestedPublishingInterval, requestedLifetimeCount, requestedMaxKeepAliveCount, maxNotificationsPerPublish, priority, ct).ConfigureAwait(false);
+                return await Session.ModifySubscriptionAsync(requestHeader, subscriptionId, requestedPublishingInterval, requestedLifetimeCount, requestedMaxKeepAliveCount, maxNotificationsPerPublish, priority, ct).ConfigureAwait(false);
             }
         }
 
@@ -1760,20 +1754,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.SetPublishingMode(requestHeader, publishingEnabled, subscriptionIds, out results, out diagnosticInfos);
+                return Session.SetPublishingMode(requestHeader, publishingEnabled, subscriptionIds, out results, out diagnosticInfos);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginSetPublishingMode(RequestHeader requestHeader, bool publishingEnabled, UInt32Collection subscriptionIds, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginSetPublishingMode(requestHeader, publishingEnabled, subscriptionIds, callback, asyncState);
+            return Session.BeginSetPublishingMode(requestHeader, publishingEnabled, subscriptionIds, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndSetPublishingMode(IAsyncResult result, out StatusCodeCollection results, out DiagnosticInfoCollection diagnosticInfos)
         {
-            return session_.EndSetPublishingMode(result, out results, out diagnosticInfos);
+            return Session.EndSetPublishingMode(result, out results, out diagnosticInfos);
         }
 
         /// <inheritdoc/>
@@ -1781,7 +1775,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.SetPublishingModeAsync(requestHeader, publishingEnabled, subscriptionIds, ct).ConfigureAwait(false);
+                return await Session.SetPublishingModeAsync(requestHeader, publishingEnabled, subscriptionIds, ct).ConfigureAwait(false);
             }
         }
 
@@ -1790,20 +1784,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.Publish(requestHeader, subscriptionAcknowledgements, out subscriptionId, out availableSequenceNumbers, out moreNotifications, out notificationMessage, out results, out diagnosticInfos);
+                return Session.Publish(requestHeader, subscriptionAcknowledgements, out subscriptionId, out availableSequenceNumbers, out moreNotifications, out notificationMessage, out results, out diagnosticInfos);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginPublish(RequestHeader requestHeader, SubscriptionAcknowledgementCollection subscriptionAcknowledgements, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginPublish(requestHeader, subscriptionAcknowledgements, callback, asyncState);
+            return Session.BeginPublish(requestHeader, subscriptionAcknowledgements, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndPublish(IAsyncResult result, out uint subscriptionId, out UInt32Collection availableSequenceNumbers, out bool moreNotifications, out NotificationMessage notificationMessage, out StatusCodeCollection results, out DiagnosticInfoCollection diagnosticInfos)
         {
-            return session_.EndPublish(result, out subscriptionId, out availableSequenceNumbers, out moreNotifications, out notificationMessage, out results, out diagnosticInfos);
+            return Session.EndPublish(result, out subscriptionId, out availableSequenceNumbers, out moreNotifications, out notificationMessage, out results, out diagnosticInfos);
         }
 
         /// <inheritdoc/>
@@ -1811,7 +1805,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.PublishAsync(requestHeader, subscriptionAcknowledgements, ct).ConfigureAwait(false);
+                return await Session.PublishAsync(requestHeader, subscriptionAcknowledgements, ct).ConfigureAwait(false);
             }
         }
 
@@ -1820,20 +1814,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.Republish(requestHeader, subscriptionId, retransmitSequenceNumber, out notificationMessage);
+                return Session.Republish(requestHeader, subscriptionId, retransmitSequenceNumber, out notificationMessage);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginRepublish(RequestHeader requestHeader, uint subscriptionId, uint retransmitSequenceNumber, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginRepublish(requestHeader, subscriptionId, retransmitSequenceNumber, callback, asyncState);
+            return Session.BeginRepublish(requestHeader, subscriptionId, retransmitSequenceNumber, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndRepublish(IAsyncResult result, out NotificationMessage notificationMessage)
         {
-            return session_.EndRepublish(result, out notificationMessage);
+            return Session.EndRepublish(result, out notificationMessage);
         }
 
         /// <inheritdoc/>
@@ -1841,7 +1835,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.RepublishAsync(requestHeader, subscriptionId, retransmitSequenceNumber, ct).ConfigureAwait(false);
+                return await Session.RepublishAsync(requestHeader, subscriptionId, retransmitSequenceNumber, ct).ConfigureAwait(false);
             }
         }
 
@@ -1850,20 +1844,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.TransferSubscriptions(requestHeader, subscriptionIds, sendInitialValues, out results, out diagnosticInfos);
+                return Session.TransferSubscriptions(requestHeader, subscriptionIds, sendInitialValues, out results, out diagnosticInfos);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginTransferSubscriptions(RequestHeader requestHeader, UInt32Collection subscriptionIds, bool sendInitialValues, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginTransferSubscriptions(requestHeader, subscriptionIds, sendInitialValues, callback, asyncState);
+            return Session.BeginTransferSubscriptions(requestHeader, subscriptionIds, sendInitialValues, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndTransferSubscriptions(IAsyncResult result, out TransferResultCollection results, out DiagnosticInfoCollection diagnosticInfos)
         {
-            return session_.EndTransferSubscriptions(result, out results, out diagnosticInfos);
+            return Session.EndTransferSubscriptions(result, out results, out diagnosticInfos);
         }
 
         /// <inheritdoc/>
@@ -1871,7 +1865,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.TransferSubscriptionsAsync(requestHeader, subscriptionIds, sendInitialValues, ct).ConfigureAwait(false);
+                return await Session.TransferSubscriptionsAsync(requestHeader, subscriptionIds, sendInitialValues, ct).ConfigureAwait(false);
             }
         }
 
@@ -1880,20 +1874,20 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.DeleteSubscriptions(requestHeader, subscriptionIds, out results, out diagnosticInfos);
+                return Session.DeleteSubscriptions(requestHeader, subscriptionIds, out results, out diagnosticInfos);
             }
         }
 
         /// <inheritdoc/>
         public IAsyncResult BeginDeleteSubscriptions(RequestHeader requestHeader, UInt32Collection subscriptionIds, AsyncCallback callback, object asyncState)
         {
-            return session_.BeginDeleteSubscriptions(requestHeader, subscriptionIds, callback, asyncState);
+            return Session.BeginDeleteSubscriptions(requestHeader, subscriptionIds, callback, asyncState);
         }
 
         /// <inheritdoc/>
         public ResponseHeader EndDeleteSubscriptions(IAsyncResult result, out StatusCodeCollection results, out DiagnosticInfoCollection diagnosticInfos)
         {
-            return session_.EndDeleteSubscriptions(result, out results, out diagnosticInfos);
+            return Session.EndDeleteSubscriptions(result, out results, out diagnosticInfos);
         }
 
         /// <inheritdoc/>
@@ -1901,7 +1895,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.DeleteSubscriptionsAsync(requestHeader, subscriptionIds, ct).ConfigureAwait(false);
+                return await Session.DeleteSubscriptionsAsync(requestHeader, subscriptionIds, ct).ConfigureAwait(false);
             }
         }
 
@@ -1910,7 +1904,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                session_.AttachChannel(channel);
+                Session.AttachChannel(channel);
             }
         }
 
@@ -1919,7 +1913,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                session_.DetachChannel();
+                Session.DetachChannel();
             }
         }
 
@@ -1928,14 +1922,14 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.Close();
+                return Session.Close();
             }
         }
 
         /// <inheritdoc/>
         public uint NewRequestHandle()
         {
-            return session_.NewRequestHandle();
+            return Session.NewRequestHandle();
         }
 
         /// <summary>
@@ -1947,7 +1941,7 @@ namespace Technosoftware.UaClient
             {
                 // note: do not null the session here,
                 // properties may still be accessed after dispose.
-                Utils.SilentDispose(session_);
+                Utils.SilentDispose(Session);
             }
         }
 
@@ -1964,7 +1958,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.SaveSessionConfiguration(stream);
+                return Session.SaveSessionConfiguration(stream);
             }
         }
 
@@ -1973,7 +1967,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.ApplySessionConfiguration(sessionConfiguration);
+                return Session.ApplySessionConfiguration(sessionConfiguration);
             }
         }
 
@@ -1982,7 +1976,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.ReactivateSubscriptions(subscriptions, sendInitialValues);
+                return Session.ReactivateSubscriptions(subscriptions, sendInitialValues);
             }
         }
 
@@ -1991,7 +1985,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.RemoveSubscriptionAsync(subscription, ct).ConfigureAwait(false);
+                return await Session.RemoveSubscriptionAsync(subscription, ct).ConfigureAwait(false);
             }
         }
 
@@ -2000,7 +1994,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.RemoveSubscriptionsAsync(subscriptions, ct).ConfigureAwait(false);
+                return await Session.RemoveSubscriptionsAsync(subscriptions, ct).ConfigureAwait(false);
             }
         }
 
@@ -2009,7 +2003,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.ReactivateSubscriptionsAsync(subscriptions, sendInitialValues, ct).ConfigureAwait(false);
+                return await Session.ReactivateSubscriptionsAsync(subscriptions, sendInitialValues, ct).ConfigureAwait(false);
             }
         }
 
@@ -2018,7 +2012,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.TransferSubscriptionsAsync(subscriptions, sendInitialValues, ct).ConfigureAwait(false);
+                return await Session.TransferSubscriptionsAsync(subscriptions, sendInitialValues, ct).ConfigureAwait(false);
             }
         }
 
@@ -2027,7 +2021,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.CallAsync(objectId, methodId, ct, args).ConfigureAwait(false);
+                return await Session.CallAsync(objectId, methodId, ct, args).ConfigureAwait(false);
             }
         }
 
@@ -2036,7 +2030,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity(nameof(ResendData)))
             {
-                return session_.ResendData(subscriptions, out errors);
+                return Session.ResendData(subscriptions, out errors);
             }
         }
 
@@ -2045,7 +2039,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return await session_.ResendDataAsync(subscriptions, ct).ConfigureAwait(false);
+                return await Session.ResendDataAsync(subscriptions, ct).ConfigureAwait(false);
             }
         }
 
@@ -2059,7 +2053,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.BeginReadValues(variableIds, maxAge, timestampsToReturn, callback, userData);
+                return Session.BeginReadValues(variableIds, maxAge, timestampsToReturn, callback, userData);
             }
         }
 
@@ -2069,7 +2063,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.EndReadValues(result);
+                return Session.EndReadValues(result);
             }
         }
 
@@ -2078,7 +2072,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.WriteValue(nodeId, value);
+                return Session.WriteValue(nodeId, value);
             }
         }
 
@@ -2087,7 +2081,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.WriteValues(nodeIds, dataValues);
+                return Session.WriteValues(nodeIds, dataValues);
             }
         }
 
@@ -2100,7 +2094,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.BeginWriteValues(nodeIds, dataValues, callback, userData);
+                return Session.BeginWriteValues(nodeIds, dataValues, callback, userData);
             }
 
         }
@@ -2111,7 +2105,7 @@ namespace Technosoftware.UaClient
         {
             using (Activity activity = ActivitySource.StartActivity())
             {
-                return session_.EndWriteValues(result);
+                return Session.EndWriteValues(result);
             }
         }
         #endregion

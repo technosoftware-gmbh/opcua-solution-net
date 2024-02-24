@@ -14,7 +14,6 @@
 #endregion Copyright (c) 2011-2023 Technosoftware GmbH. All rights reserved
 
 #region Using Directives
-using System;
 using System.Collections.Generic;
 
 using Opc.Ua;
@@ -31,23 +30,23 @@ namespace Technosoftware.UaClient
         /// <summary>
         /// The NodeId for the Area that is subscribed to (the entire ServerData if not specified).
         /// </summary>
-        public NodeId AreaId;
+        public NodeId AreaId { get; set; }
 
         /// <summary>
         /// The minimum severity for the events of interest.
         /// </summary>
-        public EventSeverity Severity;
-        
+        public EventSeverity Severity { get; set; }
+
         /// <summary>
         /// The types for the events of interest.
         /// </summary>
-        public IList<NodeId> EventTypes;
-        
+        public IList<NodeId> EventTypes { get; set; }
+
         /// <summary>
         /// The select clauses to use with the filter.
         /// </summary>
-        public SimpleAttributeOperandCollection SelectClauses;
-        
+        public SimpleAttributeOperandCollection SelectClauses { get; set; }
+
         /// <summary>
         /// Creates the monitored item based on the current definition.
         /// </summary>
@@ -61,8 +60,7 @@ namespace Technosoftware.UaClient
             }
 
             // create the item with the filter.
-            var monitoredItem = new MonitoredItem
-            {
+            var monitoredItem = new MonitoredItem {
                 DisplayName = null,
                 StartNodeId = AreaId,
                 RelativePath = null,
@@ -106,8 +104,7 @@ namespace Technosoftware.UaClient
 
             // must always request the NodeId for the condition instances.
             // this can be done by specifying an operand with an empty browse path.
-            var operand = new SimpleAttributeOperand
-            {
+            var operand = new SimpleAttributeOperand {
                 TypeDefinitionId = ObjectTypeIds.BaseEventType,
                 AttributeId = Attributes.NodeId,
                 BrowsePath = new QualifiedNameCollection()
@@ -139,8 +136,7 @@ namespace Technosoftware.UaClient
         /// <returns>The event filter.</returns>
         public EventFilter ConstructFilter()
         {
-            var filter = new EventFilter
-            {
+            var filter = new EventFilter {
                 // the select clauses specify the values returned with each event notification.
                 SelectClauses = SelectClauses
             };
@@ -158,16 +154,14 @@ namespace Technosoftware.UaClient
             if (Severity > EventSeverity.Min)
             {
                 // select the Severity property of the event.
-                var operand1 = new SimpleAttributeOperand
-                {
+                var operand1 = new SimpleAttributeOperand {
                     TypeDefinitionId = ObjectTypeIds.BaseEventType
                 };
                 operand1.BrowsePath.Add(BrowseNames.Severity);
                 operand1.AttributeId = Attributes.Value;
 
                 // specify the value to compare the Severity property with.
-                var operand2 = new LiteralOperand
-                {
+                var operand2 = new LiteralOperand {
                     Value = new Variant((ushort)Severity)
                 };
 
@@ -184,27 +178,19 @@ namespace Technosoftware.UaClient
                 for (var ii = 0; ii < EventTypes.Count; ii++)
                 {
                     // for this example uses the 'OfType' operator to limit events to thoses with specified event type. 
-                    var operand1 = new LiteralOperand
-                    {
+                    var operand1 = new LiteralOperand {
                         Value = new Variant(EventTypes[ii])
                     };
-                    var element3 = whereClause.Push(FilterOperator.OfType, operand1);
+                    ContentFilterElement element3 = whereClause.Push(FilterOperator.OfType, operand1);
 
                     // need to chain multiple types together with an OR clause.
-                    if (element2 != null)
-                    {
-                        element2 = whereClause.Push(FilterOperator.Or, element2, element3);
-                    }
-                    else
-                    {
-                        element2 = element3;
-                    }
+                    element2 = element2 != null ? whereClause.Push(FilterOperator.Or, element2, element3) : element3;
                 }
 
                 // need to link the set of event types with the previous filters.
                 if (element1 != null)
                 {
-                    whereClause.Push(FilterOperator.And, element1, element2);
+                    _ = whereClause.Push(FilterOperator.And, element1, element2);
                 }
             }
 
@@ -214,7 +200,7 @@ namespace Technosoftware.UaClient
             return filter;
         }
         #endregion
-        
+
         #region Private Methods
         /// <summary>
         /// Collects the fields for the event type.
@@ -225,7 +211,7 @@ namespace Technosoftware.UaClient
         private void CollectFields(IUaSession session, NodeId eventTypeId, SimpleAttributeOperandCollection eventFields)
         {
             // get the supertypes.
-            var supertypes = EventUtils.BrowseSuperTypes(session, eventTypeId, false);
+            ReferenceDescriptionCollection supertypes = EventUtils.BrowseSuperTypes(session, eventTypeId, false);
 
             if (supertypes == null)
             {
@@ -236,7 +222,7 @@ namespace Technosoftware.UaClient
             var foundNodes = new Dictionary<NodeId, QualifiedNameCollection>();
             var parentPath = new QualifiedNameCollection();
 
-            for (var ii = supertypes.Count-1; ii >= 0; ii--)
+            for (var ii = supertypes.Count - 1; ii >= 0; ii--)
             {
                 CollectFields(session, (NodeId)supertypes[ii].NodeId, parentPath, eventFields, foundNodes);
             }
@@ -261,8 +247,7 @@ namespace Technosoftware.UaClient
             Dictionary<NodeId, QualifiedNameCollection> foundNodes)
         {
             // find all of the children of the field.
-            var nodeToBrowse = new BrowseDescription
-            {
+            var nodeToBrowse = new BrowseDescription {
                 NodeId = nodeId,
                 BrowseDirection = BrowseDirection.Forward,
                 ReferenceTypeId = ReferenceTypeIds.Aggregates,
@@ -271,7 +256,7 @@ namespace Technosoftware.UaClient
                 ResultMask = (uint)BrowseResultMask.All
             };
 
-            var children = EventUtils.Browse(session, nodeToBrowse, false);
+            ReferenceDescriptionCollection children = EventUtils.Browse(session, nodeToBrowse, false);
 
             if (children == null)
             {
@@ -281,7 +266,7 @@ namespace Technosoftware.UaClient
             // process the children.
             for (var ii = 0; ii < children.Count; ii++)
             {
-                var child = children[ii];
+                ReferenceDescription child = children[ii];
 
                 if (child.NodeId.IsAbsolute)
                 {
@@ -295,10 +280,9 @@ namespace Technosoftware.UaClient
                 };
 
                 // check if the browse path is already in the list.
-                if (!EventFilterDefinition.ContainsPath(eventFields, browsePath))
+                if (!ContainsPath(eventFields, browsePath))
                 {
-                    var field = new SimpleAttributeOperand
-                    {
+                    var field = new SimpleAttributeOperand {
                         TypeDefinitionId = ObjectTypeIds.BaseEventType,
                         BrowsePath = browsePath,
                         AttributeId = (child.NodeClass == NodeClass.Variable) ? Attributes.Value : Attributes.NodeId
@@ -331,7 +315,7 @@ namespace Technosoftware.UaClient
         {
             for (var ii = 0; ii < selectClause.Count; ii++)
             {
-                var field = selectClause[ii];
+                SimpleAttributeOperand field = selectClause[ii];
 
                 if (field.BrowsePath.Count != browsePath.Count)
                 {

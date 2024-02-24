@@ -20,7 +20,7 @@ using Opc.Ua;
 #endregion
 
 namespace Technosoftware.UaClient
-{   
+{
     /// <summary>
     /// An item in the cache
     /// </summary>
@@ -76,10 +76,10 @@ namespace Technosoftware.UaClient
 
             while (values_.Count > QueueSize)
             {
-                values_.Dequeue();
+                _ = values_.Dequeue();
             }
         }
-        
+
         /// <summary>
         /// Changes the queue size.
         /// </summary>
@@ -99,7 +99,7 @@ namespace Technosoftware.UaClient
 
             while (values_.Count > QueueSize)
             {
-                values_.Dequeue();
+                _ = values_.Dequeue();
             }
         }
         #endregion

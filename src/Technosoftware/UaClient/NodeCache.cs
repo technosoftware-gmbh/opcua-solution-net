@@ -95,7 +95,7 @@ namespace Technosoftware.UaClient
             {
                 cacheLock_.EnterReadLock();
 
-                // check if node alredy exists.
+                // check if node already exists.
                 node = nodes_.Find(nodeId);
             }
             finally
@@ -134,7 +134,7 @@ namespace Technosoftware.UaClient
                 return new List<INode>();
             }
 
-            int count = nodeIds.Count;
+            var count = nodeIds.Count;
             IList<INode> nodes = new List<INode>(count);
             var fetchNodeIds = new ExpandedNodeIdCollection();
 
@@ -215,8 +215,7 @@ namespace Technosoftware.UaClient
             QualifiedName browseName)
         {
             // find the source.
-            var source = Find(sourceId) as Node;
-            if (source == null)
+            if (!(Find(sourceId) is Node source))
             {
                 return null;
             }
@@ -235,9 +234,9 @@ namespace Technosoftware.UaClient
             }
 
 
-            foreach (var reference in references)
+            foreach (IReference reference in references)
             {
-                var target = Find(reference.TargetId);
+                INode target = Find(reference.TargetId);
 
                 if (target == null)
                 {
@@ -264,9 +263,8 @@ namespace Technosoftware.UaClient
             var hits = new List<INode>();
 
             // find the source.
-            var source = Find(sourceId) as Node;
 
-            if (source == null)
+            if (!(Find(sourceId) is Node source))
             {
                 return hits;
             }
@@ -285,9 +283,9 @@ namespace Technosoftware.UaClient
             }
 
 
-            foreach (var reference in references)
+            foreach (IReference reference in references)
             {
-                var target = Find(reference.TargetId);
+                INode target = Find(reference.TargetId);
 
                 if (target == null)
                 {
@@ -305,7 +303,7 @@ namespace Technosoftware.UaClient
         /// <inheritdoc/>
         public bool IsKnown(ExpandedNodeId typeId)
         {
-            var type = Find(typeId);
+            INode type = Find(typeId);
 
             if (type == null)
             {
@@ -327,7 +325,7 @@ namespace Technosoftware.UaClient
         /// <inheritdoc/>
         public bool IsKnown(NodeId typeId)
         {
-            var type = Find(typeId);
+            INode type = Find(typeId);
 
             if (type == null)
             {
@@ -349,7 +347,7 @@ namespace Technosoftware.UaClient
         /// <inheritdoc/>
         public NodeId FindSuperType(ExpandedNodeId typeId)
         {
-            var type = Find(typeId);
+            INode type = Find(typeId);
 
             if (type == null)
             {
@@ -372,7 +370,7 @@ namespace Technosoftware.UaClient
         /// <inheritdoc/>
         public NodeId FindSuperType(NodeId typeId)
         {
-            var type = Find(typeId);
+            INode type = Find(typeId);
 
             if (type == null)
             {
@@ -395,9 +393,7 @@ namespace Technosoftware.UaClient
         /// <inheritdoc/>
         public IList<NodeId> FindSubTypes(ExpandedNodeId typeId)
         {
-            var type = Find(typeId) as ILocalNode;
-
-            if (type == null)
+            if (!(Find(typeId) is ILocalNode type))
             {
                 return new List<NodeId>();
             }
@@ -415,7 +411,7 @@ namespace Technosoftware.UaClient
                 cacheLock_.ExitReadLock();
             }
 
-            foreach (var reference in references)
+            foreach (IReference reference in references)
             {
                 if (!reference.TargetId.IsAbsolute)
                 {
@@ -434,14 +430,13 @@ namespace Technosoftware.UaClient
                 return true;
             }
 
-            var subtype = Find(subTypeId) as ILocalNode;
 
-            if (subtype == null)
+            if (!(Find(subTypeId) is ILocalNode subtype))
             {
                 return false;
             }
 
-            var superType = subtype;
+            ILocalNode superType = subtype;
 
             while (superType != null)
             {
@@ -476,14 +471,13 @@ namespace Technosoftware.UaClient
                 return true;
             }
 
-            var subtype = Find(subTypeId) as ILocalNode;
 
-            if (subtype == null)
+            if (!(Find(subTypeId) is ILocalNode subtype))
             {
                 return false;
             }
 
-            var superType = subtype;
+            ILocalNode superType = subtype;
 
             while (superType != null)
             {
@@ -543,9 +537,7 @@ namespace Technosoftware.UaClient
         /// <inheritdoc/>
         public bool IsEncodingOf(ExpandedNodeId encodingId, ExpandedNodeId datatypeId)
         {
-            var encoding = Find(encodingId) as ILocalNode;
-
-            if (encoding == null)
+            if (!(Find(encodingId) is ILocalNode encoding))
             {
                 return false;
             }
@@ -562,7 +554,7 @@ namespace Technosoftware.UaClient
                 cacheLock_.ExitReadLock();
             }
 
-            foreach (var reference in references)
+            foreach (IReference reference in references)
             {
                 if (reference.TargetId == datatypeId)
                 {
@@ -590,9 +582,8 @@ namespace Technosoftware.UaClient
             }
 
             // find the encoding.
-            var encoding = Find(value.TypeId) as ILocalNode;
 
-            if (encoding == null)
+            if (!(Find(value.TypeId) is ILocalNode encoding))
             {
                 return false;
             }
@@ -610,7 +601,7 @@ namespace Technosoftware.UaClient
             }
 
             // find data type.
-            foreach (var reference in references)
+            foreach (IReference reference in references)
             {
                 if (reference.TargetId == expectedTypeId)
                 {
@@ -638,7 +629,7 @@ namespace Technosoftware.UaClient
             }
 
             // get the actual datatype.
-            var actualTypeId = Opc.Ua.TypeInfo.GetDataTypeId(value);
+            NodeId actualTypeId = Opc.Ua.TypeInfo.GetDataTypeId(value);
 
             // value is valid if the expected datatype is same as or a supertype of the actual datatype
             // for example: expected datatype of 'Integer' matches an actual datatype of 'UInt32'.
@@ -663,7 +654,7 @@ namespace Technosoftware.UaClient
             // every element in an array must match.
             if (value is ExtensionObject[] extensions)
             {
-                foreach (var extensionObject in extensions)
+                foreach (ExtensionObject extensionObject in extensions)
                 {
                     if (!IsEncodingFor(expectedTypeId, extensionObject))
                     {
@@ -681,9 +672,7 @@ namespace Technosoftware.UaClient
         /// <inheritdoc/>
         public NodeId FindDataTypeId(ExpandedNodeId encodingId)
         {
-            var encoding = Find(encodingId) as ILocalNode;
-
-            if (encoding == null)
+            if (!(Find(encodingId) is ILocalNode encoding))
             {
                 return NodeId.Null;
             }
@@ -700,20 +689,13 @@ namespace Technosoftware.UaClient
                 cacheLock_.ExitReadLock();
             }
 
-            if (references.Count > 0)
-            {
-                return ExpandedNodeId.ToNodeId(references[0].TargetId, session_.NamespaceUris);
-            }
-
-            return NodeId.Null;
+            return references.Count > 0 ? ExpandedNodeId.ToNodeId(references[0].TargetId, session_.NamespaceUris) : NodeId.Null;
         }
 
         /// <inheritdoc/>
         public NodeId FindDataTypeId(NodeId encodingId)
         {
-            var encoding = Find(encodingId) as ILocalNode;
-
-            if (encoding == null)
+            if (!(Find(encodingId) is ILocalNode encoding))
             {
                 return NodeId.Null;
             }
@@ -730,12 +712,7 @@ namespace Technosoftware.UaClient
                 cacheLock_.ExitReadLock();
             }
 
-            if (references.Count > 0)
-            {
-                return ExpandedNodeId.ToNodeId(references[0].TargetId, session_.NamespaceUris);
-            }
-
-            return NodeId.Null;
+            return references.Count > 0 ? ExpandedNodeId.ToNodeId(references[0].TargetId, session_.NamespaceUris) : NodeId.Null;
         }
         #endregion
 
@@ -750,18 +727,16 @@ namespace Technosoftware.UaClient
 
             var predefinedNodes = new NodeStateCollection();
 
-            var assembly = typeof(ArgumentCollection).GetTypeInfo().Assembly;
+            Assembly assembly = typeof(ArgumentCollection).GetTypeInfo().Assembly;
             predefinedNodes.LoadFromBinaryResource(context, "Opc.Ua.Stack.Generated.Opc.Ua.PredefinedNodes.uanodes", assembly, true);
 
             try
             {
                 cacheLock_.EnterWriteLock();
 
-                for (int ii = 0; ii < predefinedNodes.Count; ii++)
+                for (var ii = 0; ii < predefinedNodes.Count; ii++)
                 {
-                    BaseTypeState type = predefinedNodes[ii] as BaseTypeState;
-
-                    if (type == null)
+                    if (!(predefinedNodes[ii] is BaseTypeState type))
                     {
                         continue;
                     }
@@ -803,12 +778,12 @@ namespace Technosoftware.UaClient
             }
 
             // fetch node from server.
-            var source = session_.ReadNode(localId);
+            Node source = session_.ReadNode(localId);
 
             try
             {
                 // fetch references from server.
-                var references = session_.FetchReferences(localId);
+                ReferenceDescriptionCollection references = session_.FetchReferences(localId);
 
                 try
                 {
@@ -825,7 +800,7 @@ namespace Technosoftware.UaClient
                                 reference.NodeId = ExpandedNodeId.ToNodeId(reference.NodeId, NamespaceUris);
                             }
 
-                            Node target = new Node(reference);
+                            var target = new Node(reference);
 
                             InternalWriteLockedAttach(target);
                         }
@@ -852,20 +827,20 @@ namespace Technosoftware.UaClient
         /// <inheritdoc/>
         public IList<Node> FetchNodes(IList<ExpandedNodeId> nodeIds)
         {
-            int count = nodeIds.Count;
+            var count = nodeIds.Count;
             if (count == 0)
             {
                 return new List<Node>();
             }
 
-            NodeIdCollection localIds = new NodeIdCollection(
+            var localIds = new NodeIdCollection(
                 nodeIds.Select(nodeId => ExpandedNodeId.ToNodeId(nodeId, session_.NamespaceUris)));
 
             // fetch nodes and references from server.
             session_.ReadNodes(localIds, out IList<Node> sourceNodes, out IList<ServiceResult> readErrors);
             session_.FetchReferences(localIds, out IList<ReferenceDescriptionCollection> referenceCollectionList, out IList<ServiceResult> fetchErrors);
 
-            int ii = 0;
+            var ii = 0;
             for (ii = 0; ii < count; ii++)
             {
                 if (ServiceResult.IsBad(readErrors[ii]))
@@ -893,7 +868,7 @@ namespace Technosoftware.UaClient
                                     reference.NodeId = ExpandedNodeId.ToNodeId(reference.NodeId, NamespaceUris);
                                 }
 
-                                Node target = new Node(reference);
+                                var target = new Node(reference);
 
                                 InternalWriteLockedAttach(target);
                             }
@@ -918,21 +893,20 @@ namespace Technosoftware.UaClient
         public void FetchSuperTypes(ExpandedNodeId nodeId)
         {
             // find the target node,
-            var source = Find(nodeId) as ILocalNode;
 
-            if (source == null)
+            if (!(Find(nodeId) is ILocalNode source))
             {
                 return;
             }
 
             // follow the tree.
-            var subType = source;
+            ILocalNode subType = source;
 
             while (subType != null)
             {
                 ILocalNode superType = null;
 
-                var references = subType.References.Find(ReferenceTypeIds.HasSubtype, true, true, this);
+                IList<IReference> references = subType.References.Find(ReferenceTypeIds.HasSubtype, true, true, this);
 
                 if (references != null && references.Count > 0)
                 {
@@ -952,9 +926,8 @@ namespace Technosoftware.UaClient
         {
             IList<INode> targets = new List<INode>();
 
-            var source = Find(nodeId) as Node;
 
-            if (source == null)
+            if (!(Find(nodeId) is Node source))
             {
                 return targets;
             }
@@ -998,7 +971,7 @@ namespace Technosoftware.UaClient
             {
                 return targets;
             }
-            ExpandedNodeIdCollection targetIds = new ExpandedNodeIdCollection();
+            var targetIds = new ExpandedNodeIdCollection();
             IList<INode> sources = Find(nodeIds);
             foreach (INode source in sources)
             {
@@ -1007,7 +980,7 @@ namespace Technosoftware.UaClient
                     continue;
                 }
 
-                foreach (var referenceTypeId in referenceTypeIds)
+                foreach (NodeId referenceTypeId in referenceTypeIds)
                 {
                     IList<IReference> references;
                     try
@@ -1048,9 +1021,8 @@ namespace Technosoftware.UaClient
             }
 
             // check for remote node.
-            var target = node as Node;
 
-            if (target == null)
+            if (!(node is Node target))
             {
                 return node.ToString();
             }
@@ -1058,7 +1030,7 @@ namespace Technosoftware.UaClient
             string displayText = null;
 
             // use the modelling rule to determine which parent to follow.
-            var modellingRule = target.ModellingRule;
+            NodeId modellingRule = target.ModellingRule;
 
             IList<IReference> references;
             try
@@ -1072,7 +1044,7 @@ namespace Technosoftware.UaClient
                 cacheLock_.ExitReadLock();
             }
 
-            foreach (var reference in references)
+            foreach (IReference reference in references)
             {
                 var parent = Find(reference.TargetId) as Node;
 
@@ -1109,14 +1081,9 @@ namespace Technosoftware.UaClient
                 return String.Empty;
             }
 
-            var node = Find(nodeId);
+            INode node = Find(nodeId);
 
-            if (node != null)
-            {
-                return GetDisplayText(node);
-            }
-
-            return Utils.Format("{0}", nodeId);
+            return node != null ? GetDisplayText(node) : Utils.Format("{0}", nodeId);
         }
 
         /// <inheritdoc/>
@@ -1127,14 +1094,9 @@ namespace Technosoftware.UaClient
                 return String.Empty;
             }
 
-            var node = Find(reference.NodeId);
+            INode node = Find(reference.NodeId);
 
-            if (node != null)
-            {
-                return GetDisplayText(node);
-            }
-
-            return reference.ToString();
+            return node != null ? GetDisplayText(node) : reference.ToString();
         }
         #endregion
 

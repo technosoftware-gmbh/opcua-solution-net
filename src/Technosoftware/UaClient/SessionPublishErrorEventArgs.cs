@@ -29,7 +29,7 @@ namespace Technosoftware.UaClient
         /// <summary>
         /// Creates a new instance.
         /// </summary>
-        internal SessionPublishErrorEventArgs(ServiceResult status)
+        public SessionPublishErrorEventArgs(ServiceResult status)
         {
             Status = status;
         }
@@ -37,7 +37,7 @@ namespace Technosoftware.UaClient
         /// <summary>
         /// Creates a new instance.
         /// </summary>
-        internal SessionPublishErrorEventArgs(ServiceResult status, uint subscriptionId, uint sequenceNumber)
+        public SessionPublishErrorEventArgs(ServiceResult status, uint subscriptionId, uint sequenceNumber)
         {
             Status = status;
             SubscriptionId = subscriptionId;

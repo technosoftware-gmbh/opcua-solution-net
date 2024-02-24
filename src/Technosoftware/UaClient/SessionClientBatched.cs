@@ -51,14 +51,7 @@ namespace Technosoftware.UaClient
             get => operationLimits_;
             protected internal set
             {
-                if (value == null)
-                {
-                    operationLimits_ = new OperationLimits();
-                }
-                else
-                {
-                    operationLimits_ = value;
-                };
+                operationLimits_ = value == null ? new OperationLimits() : value; ;
             }
         }
         #endregion
@@ -73,13 +66,13 @@ namespace Technosoftware.UaClient
         {
             ResponseHeader responseHeader = null;
 
-            uint operationLimit = OperationLimits.MaxNodesPerNodeManagement;
+            var operationLimit = OperationLimits.MaxNodesPerNodeManagement;
             InitResponseCollections<AddNodesResult, AddNodesResultCollection>(
-                out results, out diagnosticInfos, out var stringTable,
+                out results, out diagnosticInfos, out StringCollection stringTable,
                 nodesToAdd.Count, operationLimit
                 );
 
-            foreach (var batchNodesToAdd in
+            foreach (AddNodesItemCollection batchNodesToAdd in
                 nodesToAdd.Batch<AddNodesItem, AddNodesItemCollection>(operationLimit))
             {
                 if (requestHeader != null)
@@ -92,8 +85,8 @@ namespace Technosoftware.UaClient
                     out AddNodesResultCollection batchResults,
                     out DiagnosticInfoCollection batchDiagnosticInfos);
 
-                ClientBase.ValidateResponse(batchResults, batchNodesToAdd);
-                ClientBase.ValidateDiagnosticInfos(batchDiagnosticInfos, batchNodesToAdd);
+                ValidateResponse(batchResults, batchNodesToAdd);
+                ValidateDiagnosticInfos(batchDiagnosticInfos, batchNodesToAdd);
 
                 AddResponses<AddNodesResult, AddNodesResultCollection>(
                     ref results, ref diagnosticInfos, ref stringTable, batchResults, batchDiagnosticInfos, responseHeader.StringTable);
@@ -111,13 +104,13 @@ namespace Technosoftware.UaClient
         {
             AddNodesResponse response = null;
 
-            uint operationLimit = OperationLimits.MaxNodesPerNodeManagement;
+            var operationLimit = OperationLimits.MaxNodesPerNodeManagement;
             InitResponseCollections<AddNodesResult, AddNodesResultCollection>(
-                out var results, out var diagnosticInfos, out var stringTable,
+                out AddNodesResultCollection results, out DiagnosticInfoCollection diagnosticInfos, out StringCollection stringTable,
                 nodesToAdd.Count, operationLimit
                 );
 
-            foreach (var batchNodesToAdd in
+            foreach (AddNodesItemCollection batchNodesToAdd in
                 nodesToAdd.Batch<AddNodesItem, AddNodesItemCollection>(operationLimit))
             {
                 if (requestHeader != null)
@@ -130,8 +123,8 @@ namespace Technosoftware.UaClient
                 AddNodesResultCollection batchResults = response.Results;
                 DiagnosticInfoCollection batchDiagnosticInfos = response.DiagnosticInfos;
 
-                ClientBase.ValidateResponse(batchResults, batchNodesToAdd);
-                ClientBase.ValidateDiagnosticInfos(batchDiagnosticInfos, batchNodesToAdd);
+                ValidateResponse(batchResults, batchNodesToAdd);
+                ValidateDiagnosticInfos(batchDiagnosticInfos, batchNodesToAdd);
 
                 AddResponses<AddNodesResult, AddNodesResultCollection>(
                     ref results, ref diagnosticInfos, ref stringTable, batchResults, batchDiagnosticInfos, response.ResponseHeader.StringTable);
@@ -155,13 +148,13 @@ namespace Technosoftware.UaClient
         {
             ResponseHeader responseHeader = null;
 
-            uint operationLimit = OperationLimits.MaxNodesPerNodeManagement;
+            var operationLimit = OperationLimits.MaxNodesPerNodeManagement;
             InitResponseCollections<StatusCode, StatusCodeCollection>(
-                out results, out diagnosticInfos, out var stringTable,
+                out results, out diagnosticInfos, out StringCollection stringTable,
                 referencesToAdd.Count, operationLimit
                 );
 
-            foreach (var batchReferencesToAdd in
+            foreach (AddReferencesItemCollection batchReferencesToAdd in
                 referencesToAdd.Batch<AddReferencesItem, AddReferencesItemCollection>(operationLimit))
             {
                 if (requestHeader != null)
@@ -174,8 +167,8 @@ namespace Technosoftware.UaClient
                     out StatusCodeCollection batchResults,
                     out DiagnosticInfoCollection batchDiagnosticInfos);
 
-                ClientBase.ValidateResponse(batchResults, batchReferencesToAdd);
-                ClientBase.ValidateDiagnosticInfos(batchDiagnosticInfos, batchReferencesToAdd);
+                ValidateResponse(batchResults, batchReferencesToAdd);
+                ValidateDiagnosticInfos(batchDiagnosticInfos, batchReferencesToAdd);
 
                 AddResponses<StatusCode, StatusCodeCollection>(
                     ref results, ref diagnosticInfos, ref stringTable, batchResults, batchDiagnosticInfos, responseHeader.StringTable);
@@ -193,13 +186,13 @@ namespace Technosoftware.UaClient
         {
             AddReferencesResponse response = null;
 
-            uint operationLimit = OperationLimits.MaxNodesPerNodeManagement;
+            var operationLimit = OperationLimits.MaxNodesPerNodeManagement;
             InitResponseCollections<StatusCode, StatusCodeCollection>(
-                out var results, out var diagnosticInfos, out var stringTable,
+                out StatusCodeCollection results, out DiagnosticInfoCollection diagnosticInfos, out StringCollection stringTable,
                 referencesToAdd.Count, operationLimit
                 );
 
-            foreach (var batchReferencesToAdd in
+            foreach (AddReferencesItemCollection batchReferencesToAdd in
                 referencesToAdd.Batch<AddReferencesItem, AddReferencesItemCollection>(operationLimit))
             {
                 if (requestHeader != null)
@@ -212,8 +205,8 @@ namespace Technosoftware.UaClient
                 StatusCodeCollection batchResults = response.Results;
                 DiagnosticInfoCollection batchDiagnosticInfos = response.DiagnosticInfos;
 
-                ClientBase.ValidateResponse(batchResults, batchReferencesToAdd);
-                ClientBase.ValidateDiagnosticInfos(batchDiagnosticInfos, batchReferencesToAdd);
+                ValidateResponse(batchResults, batchReferencesToAdd);
+                ValidateDiagnosticInfos(batchDiagnosticInfos, batchReferencesToAdd);
 
                 AddResponses<StatusCode, StatusCodeCollection>(
                     ref results, ref diagnosticInfos, ref stringTable, batchResults, batchDiagnosticInfos, response.ResponseHeader.StringTable);
@@ -237,13 +230,13 @@ namespace Technosoftware.UaClient
         {
             ResponseHeader responseHeader = null;
 
-            uint operationLimit = OperationLimits.MaxNodesPerNodeManagement;
+            var operationLimit = OperationLimits.MaxNodesPerNodeManagement;
             InitResponseCollections<StatusCode, StatusCodeCollection>(
-                out results, out diagnosticInfos, out var stringTable,
+                out results, out diagnosticInfos, out StringCollection stringTable,
                 nodesToDelete.Count, operationLimit
                 );
 
-            foreach (var batchNodesToDelete in
+            foreach (DeleteNodesItemCollection batchNodesToDelete in
                 nodesToDelete.Batch<DeleteNodesItem, DeleteNodesItemCollection>(operationLimit))
             {
                 if (requestHeader != null)
@@ -256,8 +249,8 @@ namespace Technosoftware.UaClient
                     out StatusCodeCollection batchResults,
                     out DiagnosticInfoCollection batchDiagnosticInfos);
 
-                ClientBase.ValidateResponse(batchResults, batchNodesToDelete);
-                ClientBase.ValidateDiagnosticInfos(batchDiagnosticInfos, batchNodesToDelete);
+                ValidateResponse(batchResults, batchNodesToDelete);
+                ValidateDiagnosticInfos(batchDiagnosticInfos, batchNodesToDelete);
 
                 AddResponses<StatusCode, StatusCodeCollection>(
                     ref results, ref diagnosticInfos, ref stringTable, batchResults, batchDiagnosticInfos, responseHeader.StringTable);
@@ -275,13 +268,13 @@ namespace Technosoftware.UaClient
         {
             DeleteNodesResponse response = null;
 
-            uint operationLimit = OperationLimits.MaxNodesPerNodeManagement;
+            var operationLimit = OperationLimits.MaxNodesPerNodeManagement;
             InitResponseCollections<StatusCode, StatusCodeCollection>(
-                out var results, out var diagnosticInfos, out var stringTable,
+                out StatusCodeCollection results, out DiagnosticInfoCollection diagnosticInfos, out StringCollection stringTable,
                 nodesToDelete.Count, operationLimit
                 );
 
-            foreach (var batchNodesToDelete in
+            foreach (DeleteNodesItemCollection batchNodesToDelete in
                 nodesToDelete.Batch<DeleteNodesItem, DeleteNodesItemCollection>(operationLimit))
             {
                 if (requestHeader != null)
@@ -295,8 +288,8 @@ namespace Technosoftware.UaClient
                 StatusCodeCollection batchResults = response.Results;
                 DiagnosticInfoCollection batchDiagnosticInfos = response.DiagnosticInfos;
 
-                ClientBase.ValidateResponse(batchResults, batchNodesToDelete);
-                ClientBase.ValidateDiagnosticInfos(batchDiagnosticInfos, batchNodesToDelete);
+                ValidateResponse(batchResults, batchNodesToDelete);
+                ValidateDiagnosticInfos(batchDiagnosticInfos, batchNodesToDelete);
 
                 AddResponses<StatusCode, StatusCodeCollection>(
                     ref results, ref diagnosticInfos, ref stringTable, batchResults, batchDiagnosticInfos, response.ResponseHeader.StringTable);
@@ -320,13 +313,13 @@ namespace Technosoftware.UaClient
         {
             ResponseHeader responseHeader = null;
 
-            uint operationLimit = OperationLimits.MaxNodesPerNodeManagement;
+            var operationLimit = OperationLimits.MaxNodesPerNodeManagement;
             InitResponseCollections<StatusCode, StatusCodeCollection>(
-                out results, out diagnosticInfos, out var stringTable,
+                out results, out diagnosticInfos, out StringCollection stringTable,
                 referencesToDelete.Count, operationLimit
                 );
 
-            foreach (var batchReferencesToDelete in
+            foreach (DeleteReferencesItemCollection batchReferencesToDelete in
                 referencesToDelete.Batch<DeleteReferencesItem, DeleteReferencesItemCollection>(operationLimit))
             {
                 if (requestHeader != null)
@@ -339,8 +332,8 @@ namespace Technosoftware.UaClient
                     out StatusCodeCollection batchResults,
                     out DiagnosticInfoCollection batchDiagnosticInfos);
 
-                ClientBase.ValidateResponse(batchResults, batchReferencesToDelete);
-                ClientBase.ValidateDiagnosticInfos(batchDiagnosticInfos, batchReferencesToDelete);
+                ValidateResponse(batchResults, batchReferencesToDelete);
+                ValidateDiagnosticInfos(batchDiagnosticInfos, batchReferencesToDelete);
 
                 AddResponses<StatusCode, StatusCodeCollection>(
                     ref results, ref diagnosticInfos, ref stringTable, batchResults, batchDiagnosticInfos, responseHeader.StringTable);
@@ -358,13 +351,13 @@ namespace Technosoftware.UaClient
         {
             DeleteReferencesResponse response = null;
 
-            uint operationLimit = OperationLimits.MaxNodesPerNodeManagement;
+            var operationLimit = OperationLimits.MaxNodesPerNodeManagement;
             InitResponseCollections<StatusCode, StatusCodeCollection>(
-                out var results, out var diagnosticInfos, out var stringTable,
+                out StatusCodeCollection results, out DiagnosticInfoCollection diagnosticInfos, out StringCollection stringTable,
                 referencesToDelete.Count, operationLimit
                 );
 
-            foreach (var batchReferencesToDelete in
+            foreach (DeleteReferencesItemCollection batchReferencesToDelete in
                 referencesToDelete.Batch<DeleteReferencesItem, DeleteReferencesItemCollection>(operationLimit))
             {
                 if (requestHeader != null)
@@ -378,8 +371,8 @@ namespace Technosoftware.UaClient
                 StatusCodeCollection batchResults = response.Results;
                 DiagnosticInfoCollection batchDiagnosticInfos = response.DiagnosticInfos;
 
-                ClientBase.ValidateResponse(batchResults, batchReferencesToDelete);
-                ClientBase.ValidateDiagnosticInfos(batchDiagnosticInfos, batchReferencesToDelete);
+                ValidateResponse(batchResults, batchReferencesToDelete);
+                ValidateDiagnosticInfos(batchDiagnosticInfos, batchReferencesToDelete);
 
                 AddResponses<StatusCode, StatusCodeCollection>(
                     ref results, ref diagnosticInfos, ref stringTable, batchResults, batchDiagnosticInfos, response.ResponseHeader.StringTable);
@@ -405,13 +398,13 @@ namespace Technosoftware.UaClient
         {
             ResponseHeader responseHeader = null;
 
-            uint operationLimit = OperationLimits.MaxNodesPerBrowse;
+            var operationLimit = OperationLimits.MaxNodesPerBrowse;
             InitResponseCollections<BrowseResult, BrowseResultCollection>(
-                out results, out diagnosticInfos, out var stringTable,
+                out results, out diagnosticInfos, out StringCollection stringTable,
                 nodesToBrowse.Count, operationLimit
                 );
 
-            foreach (var nodesToBrowseBatch in
+            foreach (BrowseDescriptionCollection nodesToBrowseBatch in
                 nodesToBrowse.Batch<BrowseDescription, BrowseDescriptionCollection>(operationLimit))
             {
                 if (requestHeader != null)
@@ -426,8 +419,8 @@ namespace Technosoftware.UaClient
                     out BrowseResultCollection batchResults,
                     out DiagnosticInfoCollection batchDiagnosticInfos);
 
-                ClientBase.ValidateResponse(batchResults, nodesToBrowseBatch);
-                ClientBase.ValidateDiagnosticInfos(batchDiagnosticInfos, nodesToBrowseBatch);
+                ValidateResponse(batchResults, nodesToBrowseBatch);
+                ValidateDiagnosticInfos(batchDiagnosticInfos, nodesToBrowseBatch);
 
                 AddResponses<BrowseResult, BrowseResultCollection>(
                     ref results, ref diagnosticInfos, ref stringTable, batchResults, batchDiagnosticInfos, responseHeader.StringTable);
@@ -447,13 +440,13 @@ namespace Technosoftware.UaClient
         {
             BrowseResponse response = null;
 
-            uint operationLimit = OperationLimits.MaxNodesPerBrowse;
+            var operationLimit = OperationLimits.MaxNodesPerBrowse;
             InitResponseCollections<BrowseResult, BrowseResultCollection>(
-                out var results, out var diagnosticInfos, out var stringTable,
+                out BrowseResultCollection results, out DiagnosticInfoCollection diagnosticInfos, out StringCollection stringTable,
                 nodesToBrowse.Count, operationLimit
                 );
 
-            foreach (var nodesToBrowseBatch in
+            foreach (BrowseDescriptionCollection nodesToBrowseBatch in
                 nodesToBrowse.Batch<BrowseDescription, BrowseDescriptionCollection>(operationLimit))
             {
                 if (requestHeader != null)
@@ -470,8 +463,8 @@ namespace Technosoftware.UaClient
                 BrowseResultCollection batchResults = response.Results;
                 DiagnosticInfoCollection batchDiagnosticInfos = response.DiagnosticInfos;
 
-                ClientBase.ValidateResponse(batchResults, nodesToBrowseBatch);
-                ClientBase.ValidateDiagnosticInfos(batchDiagnosticInfos, nodesToBrowseBatch);
+                ValidateResponse(batchResults, nodesToBrowseBatch);
+                ValidateDiagnosticInfos(batchDiagnosticInfos, nodesToBrowseBatch);
 
                 AddResponses<BrowseResult, BrowseResultCollection>(
                     ref results, ref diagnosticInfos, ref stringTable, batchResults, batchDiagnosticInfos, response.ResponseHeader.StringTable);
@@ -495,13 +488,13 @@ namespace Technosoftware.UaClient
         {
             ResponseHeader responseHeader = null;
 
-            uint operationLimit = OperationLimits.MaxNodesPerTranslateBrowsePathsToNodeIds;
+            var operationLimit = OperationLimits.MaxNodesPerTranslateBrowsePathsToNodeIds;
             InitResponseCollections<BrowsePathResult, BrowsePathResultCollection>(
-                out results, out diagnosticInfos, out var stringTable,
+                out results, out diagnosticInfos, out StringCollection stringTable,
                 browsePaths.Count, operationLimit
                 );
 
-            foreach (var batchBrowsePaths in
+            foreach (BrowsePathCollection batchBrowsePaths in
                 browsePaths.Batch<BrowsePath, BrowsePathCollection>(operationLimit))
             {
                 if (requestHeader != null)
@@ -514,8 +507,8 @@ namespace Technosoftware.UaClient
                     out BrowsePathResultCollection batchResults,
                     out DiagnosticInfoCollection batchDiagnosticInfos);
 
-                ClientBase.ValidateResponse(batchResults, batchBrowsePaths);
-                ClientBase.ValidateDiagnosticInfos(batchDiagnosticInfos, batchBrowsePaths);
+                ValidateResponse(batchResults, batchBrowsePaths);
+                ValidateDiagnosticInfos(batchDiagnosticInfos, batchBrowsePaths);
 
                 AddResponses<BrowsePathResult, BrowsePathResultCollection>(
                     ref results, ref diagnosticInfos, ref stringTable, batchResults, batchDiagnosticInfos, responseHeader.StringTable);
@@ -533,13 +526,13 @@ namespace Technosoftware.UaClient
         {
             TranslateBrowsePathsToNodeIdsResponse response = null;
 
-            uint operationLimit = OperationLimits.MaxNodesPerTranslateBrowsePathsToNodeIds;
+            var operationLimit = OperationLimits.MaxNodesPerTranslateBrowsePathsToNodeIds;
             InitResponseCollections<BrowsePathResult, BrowsePathResultCollection>(
-                out var results, out var diagnosticInfos, out var stringTable,
+                out BrowsePathResultCollection results, out DiagnosticInfoCollection diagnosticInfos, out StringCollection stringTable,
                 browsePaths.Count, operationLimit
                 );
 
-            foreach (var batchBrowsePaths in
+            foreach (BrowsePathCollection batchBrowsePaths in
                 browsePaths.Batch<BrowsePath, BrowsePathCollection>(operationLimit))
             {
                 if (requestHeader != null)
@@ -555,8 +548,8 @@ namespace Technosoftware.UaClient
                 BrowsePathResultCollection batchResults = response.Results;
                 DiagnosticInfoCollection batchDiagnosticInfos = response.DiagnosticInfos;
 
-                ClientBase.ValidateResponse(batchResults, batchBrowsePaths);
-                ClientBase.ValidateDiagnosticInfos(batchDiagnosticInfos, batchBrowsePaths);
+                ValidateResponse(batchResults, batchBrowsePaths);
+                ValidateDiagnosticInfos(batchDiagnosticInfos, batchBrowsePaths);
 
                 AddResponses<BrowsePathResult, BrowsePathResultCollection>(
                     ref results, ref diagnosticInfos, ref stringTable, batchResults, batchDiagnosticInfos, response.ResponseHeader.StringTable);
@@ -580,7 +573,7 @@ namespace Technosoftware.UaClient
             ResponseHeader responseHeader = null;
             registeredNodeIds = new NodeIdCollection();
 
-            foreach (var batchNodesToRegister in
+            foreach (NodeIdCollection batchNodesToRegister in
                 nodesToRegister.Batch<NodeId, NodeIdCollection>(OperationLimits.MaxNodesPerRegisterNodes))
             {
                 if (requestHeader != null)
@@ -593,7 +586,7 @@ namespace Technosoftware.UaClient
                     batchNodesToRegister,
                     out NodeIdCollection batchRegisteredNodeIds);
 
-                ClientBase.ValidateResponse(batchRegisteredNodeIds, batchNodesToRegister);
+                ValidateResponse(batchRegisteredNodeIds, batchNodesToRegister);
 
                 registeredNodeIds.AddRange(batchRegisteredNodeIds);
             }
@@ -610,7 +603,7 @@ namespace Technosoftware.UaClient
             RegisterNodesResponse response = null;
             var registeredNodeIds = new NodeIdCollection();
 
-            foreach (var batchNodesToRegister in
+            foreach (NodeIdCollection batchNodesToRegister in
                 nodesToRegister.Batch<NodeId, NodeIdCollection>(OperationLimits.MaxNodesPerRegisterNodes))
             {
                 if (requestHeader != null)
@@ -624,7 +617,7 @@ namespace Technosoftware.UaClient
 
                 NodeIdCollection batchRegisteredNodeIds = response.RegisteredNodeIds;
 
-                ClientBase.ValidateResponse(batchRegisteredNodeIds, batchNodesToRegister);
+                ValidateResponse(batchRegisteredNodeIds, batchNodesToRegister);
 
                 registeredNodeIds.AddRange(batchRegisteredNodeIds);
             }
@@ -643,7 +636,7 @@ namespace Technosoftware.UaClient
         {
             ResponseHeader responseHeader = null;
 
-            foreach (var batchNodesToUnregister in
+            foreach (NodeIdCollection batchNodesToUnregister in
                 nodesToUnregister.Batch<NodeId, NodeIdCollection>(OperationLimits.MaxNodesPerRegisterNodes))
             {
                 if (requestHeader != null)
@@ -665,7 +658,7 @@ namespace Technosoftware.UaClient
         {
             UnregisterNodesResponse response = null;
 
-            foreach (var batchNodesToUnregister in
+            foreach (NodeIdCollection batchNodesToUnregister in
                 nodesToUnregister.Batch<NodeId, NodeIdCollection>(OperationLimits.MaxNodesPerRegisterNodes))
             {
                 if (requestHeader != null)
@@ -692,13 +685,13 @@ namespace Technosoftware.UaClient
         {
             ResponseHeader responseHeader = null;
 
-            uint operationLimit = OperationLimits.MaxNodesPerRead;
+            var operationLimit = OperationLimits.MaxNodesPerRead;
             InitResponseCollections<DataValue, DataValueCollection>(
-                out results, out diagnosticInfos, out var stringTable,
+                out results, out diagnosticInfos, out StringCollection stringTable,
                 nodesToRead.Count, operationLimit
                 );
 
-            foreach (var batchAttributesToRead in
+            foreach (ReadValueIdCollection batchAttributesToRead in
                             nodesToRead.Batch<ReadValueId, ReadValueIdCollection>(operationLimit))
             {
                 if (requestHeader != null)
@@ -714,8 +707,8 @@ namespace Technosoftware.UaClient
                     out DataValueCollection batchResults,
                     out DiagnosticInfoCollection batchDiagnosticInfos);
 
-                ClientBase.ValidateResponse(batchResults, batchAttributesToRead);
-                ClientBase.ValidateDiagnosticInfos(batchDiagnosticInfos, batchAttributesToRead);
+                ValidateResponse(batchResults, batchAttributesToRead);
+                ValidateDiagnosticInfos(batchDiagnosticInfos, batchAttributesToRead);
 
                 AddResponses<DataValue, DataValueCollection>(
                     ref results, ref diagnosticInfos, ref stringTable, batchResults, batchDiagnosticInfos, responseHeader.StringTable);
@@ -735,13 +728,13 @@ namespace Technosoftware.UaClient
         {
             ReadResponse response = null;
 
-            uint operationLimit = OperationLimits.MaxNodesPerRead;
+            var operationLimit = OperationLimits.MaxNodesPerRead;
             InitResponseCollections<DataValue, DataValueCollection>(
-                out var results, out var diagnosticInfos, out var stringTable,
+                out DataValueCollection results, out DiagnosticInfoCollection diagnosticInfos, out StringCollection stringTable,
                 nodesToRead.Count, operationLimit
                 );
 
-            foreach (var batchAttributesToRead in
+            foreach (ReadValueIdCollection batchAttributesToRead in
                 nodesToRead.Batch<ReadValueId, ReadValueIdCollection>(operationLimit))
             {
                 if (requestHeader != null)
@@ -758,8 +751,8 @@ namespace Technosoftware.UaClient
                 DataValueCollection batchResults = response.Results;
                 DiagnosticInfoCollection batchDiagnosticInfos = response.DiagnosticInfos;
 
-                ClientBase.ValidateResponse(batchResults, batchAttributesToRead);
-                ClientBase.ValidateDiagnosticInfos(batchDiagnosticInfos, batchAttributesToRead);
+                ValidateResponse(batchResults, batchAttributesToRead);
+                ValidateDiagnosticInfos(batchDiagnosticInfos, batchAttributesToRead);
 
                 AddResponses<DataValue, DataValueCollection>(
                     ref results, ref diagnosticInfos, ref stringTable, batchResults, batchDiagnosticInfos, response.ResponseHeader.StringTable);
@@ -786,18 +779,18 @@ namespace Technosoftware.UaClient
         {
             ResponseHeader responseHeader = null;
 
-            uint operationLimit = OperationLimits.MaxNodesPerHistoryReadData;
+            var operationLimit = OperationLimits.MaxNodesPerHistoryReadData;
             if (historyReadDetails?.Body is ReadEventDetails)
             {
                 operationLimit = OperationLimits.MaxNodesPerHistoryReadEvents;
             }
 
             InitResponseCollections<HistoryReadResult, HistoryReadResultCollection>(
-                out results, out diagnosticInfos, out var stringTable,
+                out results, out diagnosticInfos, out StringCollection stringTable,
                 nodesToRead.Count, operationLimit
                 );
 
-            foreach (var batchNodesToRead in
+            foreach (HistoryReadValueIdCollection batchNodesToRead in
                 nodesToRead.Batch<HistoryReadValueId, HistoryReadValueIdCollection>(operationLimit))
             {
                 if (requestHeader != null)
@@ -813,8 +806,8 @@ namespace Technosoftware.UaClient
                     out HistoryReadResultCollection batchResults,
                     out DiagnosticInfoCollection batchDiagnosticInfos);
 
-                ClientBase.ValidateResponse(batchResults, batchNodesToRead);
-                ClientBase.ValidateDiagnosticInfos(batchDiagnosticInfos, batchNodesToRead);
+                ValidateResponse(batchResults, batchNodesToRead);
+                ValidateDiagnosticInfos(batchDiagnosticInfos, batchNodesToRead);
 
                 AddResponses<HistoryReadResult, HistoryReadResultCollection>(
                     ref results, ref diagnosticInfos, ref stringTable, batchResults, batchDiagnosticInfos, responseHeader.StringTable);
@@ -835,18 +828,18 @@ namespace Technosoftware.UaClient
         {
             HistoryReadResponse response = null;
 
-            uint operationLimit = OperationLimits.MaxNodesPerHistoryReadData;
+            var operationLimit = OperationLimits.MaxNodesPerHistoryReadData;
             if (historyReadDetails?.Body is ReadEventDetails)
             {
                 operationLimit = OperationLimits.MaxNodesPerHistoryReadEvents;
             }
 
             InitResponseCollections<HistoryReadResult, HistoryReadResultCollection>(
-                out var results, out var diagnosticInfos, out var stringTable,
+                out HistoryReadResultCollection results, out DiagnosticInfoCollection diagnosticInfos, out StringCollection stringTable,
                 nodesToRead.Count, operationLimit
                 );
 
-            foreach (var batchNodesToRead in
+            foreach (HistoryReadValueIdCollection batchNodesToRead in
                 nodesToRead.Batch<HistoryReadValueId, HistoryReadValueIdCollection>(operationLimit))
             {
                 if (requestHeader != null)
@@ -863,8 +856,8 @@ namespace Technosoftware.UaClient
                 HistoryReadResultCollection batchResults = response.Results;
                 DiagnosticInfoCollection batchDiagnosticInfos = response.DiagnosticInfos;
 
-                ClientBase.ValidateResponse(batchResults, batchNodesToRead);
-                ClientBase.ValidateDiagnosticInfos(batchDiagnosticInfos, batchNodesToRead);
+                ValidateResponse(batchResults, batchNodesToRead);
+                ValidateDiagnosticInfos(batchDiagnosticInfos, batchNodesToRead);
 
                 AddResponses<HistoryReadResult, HistoryReadResultCollection>(
                     ref results, ref diagnosticInfos, ref stringTable, batchResults, batchDiagnosticInfos, response.ResponseHeader.StringTable);
@@ -888,13 +881,13 @@ namespace Technosoftware.UaClient
         {
             ResponseHeader responseHeader = null;
 
-            uint operationLimit = OperationLimits.MaxNodesPerWrite;
+            var operationLimit = OperationLimits.MaxNodesPerWrite;
             InitResponseCollections<StatusCode, StatusCodeCollection>(
-                out results, out diagnosticInfos, out var stringTable,
+                out results, out diagnosticInfos, out StringCollection stringTable,
                 nodesToWrite.Count, operationLimit
                 );
 
-            foreach (var batchNodesToWrite in
+            foreach (WriteValueCollection batchNodesToWrite in
                 nodesToWrite.Batch<WriteValue, WriteValueCollection>(operationLimit))
             {
                 if (requestHeader != null)
@@ -907,8 +900,8 @@ namespace Technosoftware.UaClient
                     out StatusCodeCollection batchResults,
                     out DiagnosticInfoCollection batchDiagnosticInfos);
 
-                ClientBase.ValidateResponse(batchResults, batchNodesToWrite);
-                ClientBase.ValidateDiagnosticInfos(batchDiagnosticInfos, batchNodesToWrite);
+                ValidateResponse(batchResults, batchNodesToWrite);
+                ValidateDiagnosticInfos(batchDiagnosticInfos, batchNodesToWrite);
 
                 AddResponses<StatusCode, StatusCodeCollection>(
                     ref results, ref diagnosticInfos, ref stringTable, batchResults, batchDiagnosticInfos, responseHeader.StringTable);
@@ -926,13 +919,13 @@ namespace Technosoftware.UaClient
         {
             WriteResponse response = null;
 
-            uint operationLimit = OperationLimits.MaxNodesPerWrite;
+            var operationLimit = OperationLimits.MaxNodesPerWrite;
             InitResponseCollections<StatusCode, StatusCodeCollection>(
-                out var results, out var diagnosticInfos, out var stringTable,
+                out StatusCodeCollection results, out DiagnosticInfoCollection diagnosticInfos, out StringCollection stringTable,
                 nodesToWrite.Count, operationLimit
                 );
 
-            foreach (var batchNodesToWrite in
+            foreach (WriteValueCollection batchNodesToWrite in
                 nodesToWrite.Batch<WriteValue, WriteValueCollection>(operationLimit))
             {
                 if (requestHeader != null)
@@ -946,8 +939,8 @@ namespace Technosoftware.UaClient
                 StatusCodeCollection batchResults = response.Results;
                 DiagnosticInfoCollection batchDiagnosticInfos = response.DiagnosticInfos;
 
-                ClientBase.ValidateResponse(batchResults, batchNodesToWrite);
-                ClientBase.ValidateDiagnosticInfos(batchDiagnosticInfos, batchNodesToWrite);
+                ValidateResponse(batchResults, batchNodesToWrite);
+                ValidateDiagnosticInfos(batchDiagnosticInfos, batchNodesToWrite);
 
                 AddResponses<StatusCode, StatusCodeCollection>(
                     ref results, ref diagnosticInfos, ref stringTable, batchResults, batchDiagnosticInfos, response.ResponseHeader.StringTable);
@@ -975,7 +968,7 @@ namespace Technosoftware.UaClient
             // history update of event, data or annotations should be called individually.
             // Mixed arrays have unpredicatble results, only the first entry is checked and taken
             // as operation limit source
-            uint operationLimit = OperationLimits.MaxNodesPerHistoryUpdateData;
+            var operationLimit = OperationLimits.MaxNodesPerHistoryUpdateData;
             if (historyUpdateDetails.Count > 0 &&
                 historyUpdateDetails[0]?.Body is UpdateEventDetails)
             {
@@ -983,11 +976,11 @@ namespace Technosoftware.UaClient
             }
 
             InitResponseCollections<HistoryUpdateResult, HistoryUpdateResultCollection>(
-                out results, out diagnosticInfos, out var stringTable,
+                out results, out diagnosticInfos, out StringCollection stringTable,
                 historyUpdateDetails.Count, operationLimit
                 );
 
-            foreach (var batchHistoryUpdateDetails in
+            foreach (ExtensionObjectCollection batchHistoryUpdateDetails in
                 historyUpdateDetails.Batch<ExtensionObject, ExtensionObjectCollection>(operationLimit))
             {
                 if (requestHeader != null)
@@ -1000,8 +993,8 @@ namespace Technosoftware.UaClient
                     out HistoryUpdateResultCollection batchResults,
                     out DiagnosticInfoCollection batchDiagnosticInfos);
 
-                ClientBase.ValidateResponse(batchResults, batchHistoryUpdateDetails);
-                ClientBase.ValidateDiagnosticInfos(batchDiagnosticInfos, batchHistoryUpdateDetails);
+                ValidateResponse(batchResults, batchHistoryUpdateDetails);
+                ValidateDiagnosticInfos(batchDiagnosticInfos, batchHistoryUpdateDetails);
 
                 AddResponses<HistoryUpdateResult, HistoryUpdateResultCollection>(
                     ref results, ref diagnosticInfos, ref stringTable, batchResults, batchDiagnosticInfos, responseHeader.StringTable);
@@ -1019,7 +1012,7 @@ namespace Technosoftware.UaClient
         {
             HistoryUpdateResponse response = null;
 
-            uint operationLimit = OperationLimits.MaxNodesPerHistoryUpdateData;
+            var operationLimit = OperationLimits.MaxNodesPerHistoryUpdateData;
             if (historyUpdateDetails.Count > 0 &&
                 historyUpdateDetails[0].TypeId == DataTypeIds.UpdateEventDetails)
             {
@@ -1027,11 +1020,11 @@ namespace Technosoftware.UaClient
             }
 
             InitResponseCollections<HistoryUpdateResult, HistoryUpdateResultCollection>(
-                out var results, out var diagnosticInfos, out var stringTable,
+                out HistoryUpdateResultCollection results, out DiagnosticInfoCollection diagnosticInfos, out StringCollection stringTable,
                 historyUpdateDetails.Count, operationLimit
                 );
 
-            foreach (var batchHistoryUpdateDetails in
+            foreach (ExtensionObjectCollection batchHistoryUpdateDetails in
                 historyUpdateDetails.Batch<ExtensionObject, ExtensionObjectCollection>(operationLimit))
             {
                 if (requestHeader != null)
@@ -1044,8 +1037,8 @@ namespace Technosoftware.UaClient
                 HistoryUpdateResultCollection batchResults = response.Results;
                 DiagnosticInfoCollection batchDiagnosticInfos = response.DiagnosticInfos;
 
-                ClientBase.ValidateResponse(batchResults, batchHistoryUpdateDetails);
-                ClientBase.ValidateDiagnosticInfos(batchDiagnosticInfos, batchHistoryUpdateDetails);
+                ValidateResponse(batchResults, batchHistoryUpdateDetails);
+                ValidateDiagnosticInfos(batchDiagnosticInfos, batchHistoryUpdateDetails);
 
                 AddResponses<HistoryUpdateResult, HistoryUpdateResultCollection>(
                     ref results, ref diagnosticInfos, ref stringTable, batchResults, batchDiagnosticInfos, response.ResponseHeader.StringTable);
@@ -1069,13 +1062,13 @@ namespace Technosoftware.UaClient
         {
             ResponseHeader responseHeader = null;
 
-            uint operationLimit = OperationLimits.MaxNodesPerMethodCall;
+            var operationLimit = OperationLimits.MaxNodesPerMethodCall;
             InitResponseCollections<CallMethodResult, CallMethodResultCollection>(
-                out results, out diagnosticInfos, out var stringTable,
+                out results, out diagnosticInfos, out StringCollection stringTable,
                 methodsToCall.Count, operationLimit
                 );
 
-            foreach (var batchMethodsToCall in
+            foreach (CallMethodRequestCollection batchMethodsToCall in
                 methodsToCall.Batch<CallMethodRequest, CallMethodRequestCollection>(operationLimit))
             {
                 if (requestHeader != null)
@@ -1088,8 +1081,8 @@ namespace Technosoftware.UaClient
                     out CallMethodResultCollection batchResults,
                     out DiagnosticInfoCollection batchDiagnosticInfos);
 
-                ClientBase.ValidateResponse(batchResults, batchMethodsToCall);
-                ClientBase.ValidateDiagnosticInfos(batchDiagnosticInfos, batchMethodsToCall);
+                ValidateResponse(batchResults, batchMethodsToCall);
+                ValidateDiagnosticInfos(batchDiagnosticInfos, batchMethodsToCall);
 
                 AddResponses<CallMethodResult, CallMethodResultCollection>(
                     ref results, ref diagnosticInfos, ref stringTable, batchResults, batchDiagnosticInfos, responseHeader.StringTable);
@@ -1107,13 +1100,13 @@ namespace Technosoftware.UaClient
         {
             CallResponse response = null;
 
-            uint operationLimit = OperationLimits.MaxNodesPerMethodCall;
+            var operationLimit = OperationLimits.MaxNodesPerMethodCall;
             InitResponseCollections<CallMethodResult, CallMethodResultCollection>(
-                out var results, out var diagnosticInfos, out var stringTable,
+                out CallMethodResultCollection results, out DiagnosticInfoCollection diagnosticInfos, out StringCollection stringTable,
                 methodsToCall.Count, operationLimit
                 );
 
-            foreach (var batchMethodsToCall in
+            foreach (CallMethodRequestCollection batchMethodsToCall in
                 methodsToCall.Batch<CallMethodRequest, CallMethodRequestCollection>(operationLimit))
             {
                 if (requestHeader != null)
@@ -1127,8 +1120,8 @@ namespace Technosoftware.UaClient
                 CallMethodResultCollection batchResults = response.Results;
                 DiagnosticInfoCollection batchDiagnosticInfos = response.DiagnosticInfos;
 
-                ClientBase.ValidateResponse(batchResults, batchMethodsToCall);
-                ClientBase.ValidateDiagnosticInfos(batchDiagnosticInfos, batchMethodsToCall);
+                ValidateResponse(batchResults, batchMethodsToCall);
+                ValidateDiagnosticInfos(batchDiagnosticInfos, batchMethodsToCall);
 
                 AddResponses<CallMethodResult, CallMethodResultCollection>(
                     ref results, ref diagnosticInfos, ref stringTable, batchResults, batchDiagnosticInfos, response.ResponseHeader.StringTable);
@@ -1154,13 +1147,13 @@ namespace Technosoftware.UaClient
         {
             ResponseHeader responseHeader = null;
 
-            uint operationLimit = OperationLimits.MaxMonitoredItemsPerCall;
+            var operationLimit = OperationLimits.MaxMonitoredItemsPerCall;
             InitResponseCollections<MonitoredItemCreateResult, MonitoredItemCreateResultCollection>(
-                out results, out diagnosticInfos, out var stringTable,
+                out results, out diagnosticInfos, out StringCollection stringTable,
                 itemsToCreate.Count, operationLimit
                 );
 
-            foreach (var batchItemsToCreate in
+            foreach (MonitoredItemCreateRequestCollection batchItemsToCreate in
                 itemsToCreate.Batch<MonitoredItemCreateRequest, MonitoredItemCreateRequestCollection>(operationLimit))
             {
                 if (requestHeader != null)
@@ -1175,8 +1168,8 @@ namespace Technosoftware.UaClient
                     out MonitoredItemCreateResultCollection batchResults,
                     out DiagnosticInfoCollection batchDiagnosticInfos);
 
-                ClientBase.ValidateResponse(batchResults, batchItemsToCreate);
-                ClientBase.ValidateDiagnosticInfos(batchDiagnosticInfos, batchItemsToCreate);
+                ValidateResponse(batchResults, batchItemsToCreate);
+                ValidateDiagnosticInfos(batchDiagnosticInfos, batchItemsToCreate);
 
                 AddResponses<MonitoredItemCreateResult, MonitoredItemCreateResultCollection>(
                     ref results, ref diagnosticInfos, ref stringTable, batchResults, batchDiagnosticInfos, responseHeader.StringTable);
@@ -1196,13 +1189,13 @@ namespace Technosoftware.UaClient
         {
             CreateMonitoredItemsResponse response = null;
 
-            uint operationLimit = OperationLimits.MaxMonitoredItemsPerCall;
+            var operationLimit = OperationLimits.MaxMonitoredItemsPerCall;
             InitResponseCollections<MonitoredItemCreateResult, MonitoredItemCreateResultCollection>(
-                out var results, out var diagnosticInfos, out var stringTable,
+                out MonitoredItemCreateResultCollection results, out DiagnosticInfoCollection diagnosticInfos, out StringCollection stringTable,
                 itemsToCreate.Count, operationLimit
                 );
 
-            foreach (var batchItemsToCreate in
+            foreach (MonitoredItemCreateRequestCollection batchItemsToCreate in
                 itemsToCreate.Batch<MonitoredItemCreateRequest, MonitoredItemCreateRequestCollection>(operationLimit))
             {
                 if (requestHeader != null)
@@ -1218,8 +1211,8 @@ namespace Technosoftware.UaClient
                 MonitoredItemCreateResultCollection batchResults = response.Results;
                 DiagnosticInfoCollection batchDiagnosticInfos = response.DiagnosticInfos;
 
-                ClientBase.ValidateResponse(batchResults, batchItemsToCreate);
-                ClientBase.ValidateDiagnosticInfos(batchDiagnosticInfos, batchItemsToCreate);
+                ValidateResponse(batchResults, batchItemsToCreate);
+                ValidateDiagnosticInfos(batchDiagnosticInfos, batchItemsToCreate);
 
                 AddResponses<MonitoredItemCreateResult, MonitoredItemCreateResultCollection>(
                     ref results, ref diagnosticInfos, ref stringTable, batchResults, batchDiagnosticInfos, response.ResponseHeader.StringTable);
@@ -1245,13 +1238,13 @@ namespace Technosoftware.UaClient
         {
             ResponseHeader responseHeader = null;
 
-            uint operationLimit = OperationLimits.MaxMonitoredItemsPerCall;
+            var operationLimit = OperationLimits.MaxMonitoredItemsPerCall;
             InitResponseCollections<MonitoredItemModifyResult, MonitoredItemModifyResultCollection>(
-                out results, out diagnosticInfos, out var stringTable,
+                out results, out diagnosticInfos, out StringCollection stringTable,
                 itemsToModify.Count, operationLimit
                 );
 
-            foreach (var batchItemsToModify in
+            foreach (MonitoredItemModifyRequestCollection batchItemsToModify in
                 itemsToModify.Batch<MonitoredItemModifyRequest, MonitoredItemModifyRequestCollection>(operationLimit))
             {
                 if (requestHeader != null)
@@ -1266,8 +1259,8 @@ namespace Technosoftware.UaClient
                     out MonitoredItemModifyResultCollection batchResults,
                     out DiagnosticInfoCollection batchDiagnosticInfos);
 
-                ClientBase.ValidateResponse(batchResults, batchItemsToModify);
-                ClientBase.ValidateDiagnosticInfos(batchDiagnosticInfos, batchItemsToModify);
+                ValidateResponse(batchResults, batchItemsToModify);
+                ValidateDiagnosticInfos(batchDiagnosticInfos, batchItemsToModify);
 
                 AddResponses<MonitoredItemModifyResult, MonitoredItemModifyResultCollection>(
                     ref results, ref diagnosticInfos, ref stringTable, batchResults, batchDiagnosticInfos, responseHeader.StringTable);
@@ -1287,13 +1280,13 @@ namespace Technosoftware.UaClient
         {
             ModifyMonitoredItemsResponse response = null;
 
-            uint operationLimit = OperationLimits.MaxMonitoredItemsPerCall;
+            var operationLimit = OperationLimits.MaxMonitoredItemsPerCall;
             InitResponseCollections<MonitoredItemModifyResult, MonitoredItemModifyResultCollection>(
-                out var results, out var diagnosticInfos, out var stringTable,
+                out MonitoredItemModifyResultCollection results, out DiagnosticInfoCollection diagnosticInfos, out StringCollection stringTable,
                 itemsToModify.Count, operationLimit
                 );
 
-            foreach (var batchItemsToModify in
+            foreach (MonitoredItemModifyRequestCollection batchItemsToModify in
                 itemsToModify.Batch<MonitoredItemModifyRequest, MonitoredItemModifyRequestCollection>(operationLimit))
             {
                 if (requestHeader != null)
@@ -1309,8 +1302,8 @@ namespace Technosoftware.UaClient
                 MonitoredItemModifyResultCollection batchResults = response.Results;
                 DiagnosticInfoCollection batchDiagnosticInfos = response.DiagnosticInfos;
 
-                ClientBase.ValidateResponse(batchResults, batchItemsToModify);
-                ClientBase.ValidateDiagnosticInfos(batchDiagnosticInfos, batchItemsToModify);
+                ValidateResponse(batchResults, batchItemsToModify);
+                ValidateDiagnosticInfos(batchDiagnosticInfos, batchItemsToModify);
 
                 AddResponses<MonitoredItemModifyResult, MonitoredItemModifyResultCollection>(
                     ref results, ref diagnosticInfos, ref stringTable, batchResults, batchDiagnosticInfos, response.ResponseHeader.StringTable);
@@ -1336,13 +1329,13 @@ namespace Technosoftware.UaClient
         {
             ResponseHeader responseHeader = null;
 
-            uint operationLimit = OperationLimits.MaxMonitoredItemsPerCall;
+            var operationLimit = OperationLimits.MaxMonitoredItemsPerCall;
             InitResponseCollections<StatusCode, StatusCodeCollection>(
-                out results, out diagnosticInfos, out var stringTable,
+                out results, out diagnosticInfos, out StringCollection stringTable,
                 monitoredItemIds.Count, operationLimit
                 );
 
-            foreach (var batchMonitoredItemIds in
+            foreach (UInt32Collection batchMonitoredItemIds in
                 monitoredItemIds.Batch<UInt32, UInt32Collection>(operationLimit))
             {
                 if (requestHeader != null)
@@ -1357,8 +1350,8 @@ namespace Technosoftware.UaClient
                     out StatusCodeCollection batchResults,
                     out DiagnosticInfoCollection batchDiagnosticInfos);
 
-                ClientBase.ValidateResponse(batchResults, batchMonitoredItemIds);
-                ClientBase.ValidateDiagnosticInfos(batchDiagnosticInfos, batchMonitoredItemIds);
+                ValidateResponse(batchResults, batchMonitoredItemIds);
+                ValidateDiagnosticInfos(batchDiagnosticInfos, batchMonitoredItemIds);
 
                 AddResponses<StatusCode, StatusCodeCollection>(
                     ref results, ref diagnosticInfos, ref stringTable, batchResults, batchDiagnosticInfos, responseHeader.StringTable);
@@ -1378,13 +1371,13 @@ namespace Technosoftware.UaClient
         {
             SetMonitoringModeResponse response = null;
 
-            uint operationLimit = OperationLimits.MaxMonitoredItemsPerCall;
+            var operationLimit = OperationLimits.MaxMonitoredItemsPerCall;
             InitResponseCollections<StatusCode, StatusCodeCollection>(
-                out var results, out var diagnosticInfos, out var stringTable,
+                out StatusCodeCollection results, out DiagnosticInfoCollection diagnosticInfos, out StringCollection stringTable,
                 monitoredItemIds.Count, operationLimit
                 );
 
-            foreach (var batchMonitoredItemIds in
+            foreach (UInt32Collection batchMonitoredItemIds in
                 monitoredItemIds.Batch<UInt32, UInt32Collection>(operationLimit))
             {
                 if (requestHeader != null)
@@ -1400,8 +1393,8 @@ namespace Technosoftware.UaClient
                 StatusCodeCollection batchResults = response.Results;
                 DiagnosticInfoCollection batchDiagnosticInfos = response.DiagnosticInfos;
 
-                ClientBase.ValidateResponse(batchResults, batchMonitoredItemIds);
-                ClientBase.ValidateDiagnosticInfos(batchDiagnosticInfos, batchMonitoredItemIds);
+                ValidateResponse(batchResults, batchMonitoredItemIds);
+                ValidateDiagnosticInfos(batchDiagnosticInfos, batchMonitoredItemIds);
 
                 AddResponses<StatusCode, StatusCodeCollection>(
                     ref results, ref diagnosticInfos, ref stringTable, batchResults, batchDiagnosticInfos, response.ResponseHeader.StringTable);
@@ -1430,9 +1423,9 @@ namespace Technosoftware.UaClient
         {
             ResponseHeader responseHeader = null;
 
-            uint operationLimit = OperationLimits.MaxMonitoredItemsPerCall;
+            var operationLimit = OperationLimits.MaxMonitoredItemsPerCall;
             InitResponseCollections<StatusCode, StatusCodeCollection>(
-                out addResults, out addDiagnosticInfos, out var stringTable,
+                out addResults, out addDiagnosticInfos, out StringCollection stringTable,
                 linksToAdd.Count, operationLimit
                 );
 
@@ -1441,7 +1434,7 @@ namespace Technosoftware.UaClient
                 linksToRemove.Count, operationLimit
                 );
 
-            foreach (var batchLinksToAdd in
+            foreach (UInt32Collection batchLinksToAdd in
                 linksToAdd.Batch<UInt32, UInt32Collection>(operationLimit))
             {
                 UInt32Collection batchLinksToRemove;
@@ -1476,10 +1469,10 @@ namespace Technosoftware.UaClient
                     out DiagnosticInfoCollection batchRemoveDiagnosticInfos
                     );
 
-                ClientBase.ValidateResponse(batchAddResults, batchLinksToAdd);
-                ClientBase.ValidateDiagnosticInfos(batchAddDiagnosticInfos, batchLinksToAdd);
-                ClientBase.ValidateResponse(batchRemoveResults, batchLinksToRemove);
-                ClientBase.ValidateDiagnosticInfos(batchRemoveDiagnosticInfos, batchLinksToRemove);
+                ValidateResponse(batchAddResults, batchLinksToAdd);
+                ValidateDiagnosticInfos(batchAddDiagnosticInfos, batchLinksToAdd);
+                ValidateResponse(batchRemoveResults, batchLinksToRemove);
+                ValidateDiagnosticInfos(batchRemoveDiagnosticInfos, batchLinksToRemove);
 
                 AddResponses<StatusCode, StatusCodeCollection>(
                     ref addResults, ref addDiagnosticInfos, ref stringTable, batchAddResults, batchAddDiagnosticInfos, responseHeader.StringTable);
@@ -1490,7 +1483,7 @@ namespace Technosoftware.UaClient
 
             if (linksToRemove.Count > 0)
             {
-                foreach (var batchLinksToRemove in
+                foreach (UInt32Collection batchLinksToRemove in
                     linksToRemove.Batch<UInt32, UInt32Collection>(operationLimit))
                 {
                     if (requestHeader != null)
@@ -1510,10 +1503,10 @@ namespace Technosoftware.UaClient
                         out DiagnosticInfoCollection batchRemoveDiagnosticInfos
                         );
 
-                    ClientBase.ValidateResponse(batchAddResults, batchLinksToAdd);
-                    ClientBase.ValidateDiagnosticInfos(batchAddDiagnosticInfos, batchLinksToAdd);
-                    ClientBase.ValidateResponse(batchRemoveResults, batchLinksToRemove);
-                    ClientBase.ValidateDiagnosticInfos(batchRemoveDiagnosticInfos, batchLinksToRemove);
+                    ValidateResponse(batchAddResults, batchLinksToAdd);
+                    ValidateDiagnosticInfos(batchAddDiagnosticInfos, batchLinksToAdd);
+                    ValidateResponse(batchRemoveResults, batchLinksToRemove);
+                    ValidateDiagnosticInfos(batchRemoveDiagnosticInfos, batchLinksToRemove);
 
                     AddResponses<StatusCode, StatusCodeCollection>(
                         ref addResults, ref addDiagnosticInfos, ref stringTable, batchAddResults, batchAddDiagnosticInfos, responseHeader.StringTable);
@@ -1538,18 +1531,18 @@ namespace Technosoftware.UaClient
         {
             SetTriggeringResponse response = null;
 
-            uint operationLimit = OperationLimits.MaxMonitoredItemsPerCall;
+            var operationLimit = OperationLimits.MaxMonitoredItemsPerCall;
             InitResponseCollections<StatusCode, StatusCodeCollection>(
-                out var addResults, out var addDiagnosticInfos, out var stringTable,
+                out StatusCodeCollection addResults, out DiagnosticInfoCollection addDiagnosticInfos, out StringCollection stringTable,
                 linksToAdd.Count, operationLimit
                 );
 
             InitResponseCollections<StatusCode, StatusCodeCollection>(
-                out var removeResults, out var removeDiagnosticInfos, out _,
+                out StatusCodeCollection removeResults, out DiagnosticInfoCollection removeDiagnosticInfos, out _,
                 linksToRemove.Count, operationLimit
                 );
 
-            foreach (var batchLinksToAdd in
+            foreach (UInt32Collection batchLinksToAdd in
                 linksToAdd.Batch<UInt32, UInt32Collection>(operationLimit))
             {
                 UInt32Collection batchLinksToRemove;
@@ -1585,10 +1578,10 @@ namespace Technosoftware.UaClient
                 StatusCodeCollection batchRemoveResults = response.RemoveResults;
                 DiagnosticInfoCollection batchRemoveDiagnosticInfos = response.RemoveDiagnosticInfos;
 
-                ClientBase.ValidateResponse(batchAddResults, batchLinksToAdd);
-                ClientBase.ValidateDiagnosticInfos(batchAddDiagnosticInfos, batchLinksToAdd);
-                ClientBase.ValidateResponse(batchRemoveResults, batchLinksToRemove);
-                ClientBase.ValidateDiagnosticInfos(batchRemoveDiagnosticInfos, batchLinksToRemove);
+                ValidateResponse(batchAddResults, batchLinksToAdd);
+                ValidateDiagnosticInfos(batchAddDiagnosticInfos, batchLinksToAdd);
+                ValidateResponse(batchRemoveResults, batchLinksToRemove);
+                ValidateDiagnosticInfos(batchRemoveDiagnosticInfos, batchLinksToRemove);
 
                 AddResponses<StatusCode, StatusCodeCollection>(
                     ref addResults, ref addDiagnosticInfos, ref stringTable, batchAddResults, batchAddDiagnosticInfos, response.ResponseHeader.StringTable);
@@ -1599,7 +1592,7 @@ namespace Technosoftware.UaClient
 
             if (linksToRemove.Count > 0)
             {
-                foreach (var batchLinksToRemove in
+                foreach (UInt32Collection batchLinksToRemove in
                     linksToRemove.Batch<UInt32, UInt32Collection>(operationLimit))
                 {
                     if (requestHeader != null)
@@ -1620,10 +1613,10 @@ namespace Technosoftware.UaClient
                     StatusCodeCollection batchRemoveResults = response.RemoveResults;
                     DiagnosticInfoCollection batchRemoveDiagnosticInfos = response.RemoveDiagnosticInfos;
 
-                    ClientBase.ValidateResponse(batchAddResults, batchLinksToAdd);
-                    ClientBase.ValidateDiagnosticInfos(batchAddDiagnosticInfos, batchLinksToAdd);
-                    ClientBase.ValidateResponse(batchRemoveResults, batchLinksToRemove);
-                    ClientBase.ValidateDiagnosticInfos(batchRemoveDiagnosticInfos, batchLinksToRemove);
+                    ValidateResponse(batchAddResults, batchLinksToAdd);
+                    ValidateDiagnosticInfos(batchAddDiagnosticInfos, batchLinksToAdd);
+                    ValidateResponse(batchRemoveResults, batchLinksToRemove);
+                    ValidateDiagnosticInfos(batchRemoveDiagnosticInfos, batchLinksToRemove);
 
                     AddResponses<StatusCode, StatusCodeCollection>(
                         ref addResults, ref addDiagnosticInfos, ref stringTable, batchAddResults, batchAddDiagnosticInfos, response.ResponseHeader.StringTable);
@@ -1654,13 +1647,13 @@ namespace Technosoftware.UaClient
         {
             ResponseHeader responseHeader = null;
 
-            uint operationLimit = OperationLimits.MaxMonitoredItemsPerCall;
+            var operationLimit = OperationLimits.MaxMonitoredItemsPerCall;
             InitResponseCollections<StatusCode, StatusCodeCollection>(
-                out results, out diagnosticInfos, out var stringTable,
+                out results, out diagnosticInfos, out StringCollection stringTable,
                 monitoredItemIds.Count, operationLimit
                 );
 
-            foreach (var batchMonitoredItemIds in
+            foreach (UInt32Collection batchMonitoredItemIds in
                 monitoredItemIds.Batch<UInt32, UInt32Collection>(operationLimit))
             {
                 if (requestHeader != null)
@@ -1674,8 +1667,8 @@ namespace Technosoftware.UaClient
                     out StatusCodeCollection batchResults,
                     out DiagnosticInfoCollection batchDiagnosticInfos);
 
-                ClientBase.ValidateResponse(batchResults, batchMonitoredItemIds);
-                ClientBase.ValidateDiagnosticInfos(batchDiagnosticInfos, batchMonitoredItemIds);
+                ValidateResponse(batchResults, batchMonitoredItemIds);
+                ValidateDiagnosticInfos(batchDiagnosticInfos, batchMonitoredItemIds);
 
                 AddResponses<StatusCode, StatusCodeCollection>(
                     ref results, ref diagnosticInfos, ref stringTable, batchResults, batchDiagnosticInfos, responseHeader.StringTable);
@@ -1694,13 +1687,13 @@ namespace Technosoftware.UaClient
         {
             DeleteMonitoredItemsResponse response = null;
 
-            uint operationLimit = OperationLimits.MaxMonitoredItemsPerCall;
+            var operationLimit = OperationLimits.MaxMonitoredItemsPerCall;
             InitResponseCollections<StatusCode, StatusCodeCollection>(
-                out var results, out var diagnosticInfos, out var stringTable,
+                out StatusCodeCollection results, out DiagnosticInfoCollection diagnosticInfos, out StringCollection stringTable,
                 monitoredItemIds.Count, operationLimit
                 );
 
-            foreach (var batchMonitoredItemIds in
+            foreach (UInt32Collection batchMonitoredItemIds in
                 monitoredItemIds.Batch<UInt32, UInt32Collection>(operationLimit))
             {
                 if (requestHeader != null)
@@ -1716,8 +1709,8 @@ namespace Technosoftware.UaClient
                 StatusCodeCollection batchResults = response.Results;
                 DiagnosticInfoCollection batchDiagnosticInfos = response.DiagnosticInfos;
 
-                ClientBase.ValidateResponse(batchResults, batchMonitoredItemIds);
-                ClientBase.ValidateDiagnosticInfos(batchDiagnosticInfos, batchMonitoredItemIds);
+                ValidateResponse(batchResults, batchMonitoredItemIds);
+                ValidateDiagnosticInfos(batchDiagnosticInfos, batchMonitoredItemIds);
 
                 AddResponses<StatusCode, StatusCodeCollection>(
                     ref results, ref diagnosticInfos, ref stringTable, batchResults, batchDiagnosticInfos, response.ResponseHeader.StringTable);
@@ -1787,10 +1780,10 @@ namespace Technosoftware.UaClient
             }
             else
             {
-                bool hasDiagnosticInfos = diagnosticInfos.Count > 0;
-                bool hasEmptyDiagnosticInfos = diagnosticInfos.Count == 0 && results.Count > 0;
-                bool hasBatchDiagnosticInfos = batchedDiagnosticInfos.Count > 0;
-                int correctionCount = 0;
+                var hasDiagnosticInfos = diagnosticInfos.Count > 0;
+                var hasEmptyDiagnosticInfos = diagnosticInfos.Count == 0 && results.Count > 0;
+                var hasBatchDiagnosticInfos = batchedDiagnosticInfos.Count > 0;
+                var correctionCount = 0;
                 if (hasBatchDiagnosticInfos && hasEmptyDiagnosticInfos)
                 {
                     correctionCount = results.Count;
@@ -1802,7 +1795,7 @@ namespace Technosoftware.UaClient
                 if (correctionCount > 0)
                 {
                     // fill missing diagnostics infos with null entries
-                    for (int i = 0; i < correctionCount; i++)
+                    for (var i = 0; i < correctionCount; i++)
                     {
                         diagnosticInfos.Add(null);
                     }
@@ -1810,12 +1803,12 @@ namespace Technosoftware.UaClient
                 else if (batchedStringTable.Count > 0)
                 {
                     // correct indexes in the string table
-                    int stringTableOffset = stringTable.Count;
+                    var stringTableOffset = stringTable.Count;
                     foreach (DiagnosticInfo diagnosticInfo in batchedDiagnosticInfos)
                     {
                         UpdateDiagnosticInfoIndexes(diagnosticInfo, stringTableOffset);
                     }
-            }
+                }
                 results.AddRange(batchedResults);
                 diagnosticInfos.AddRange(batchedDiagnosticInfos);
                 stringTable.AddRange(batchedStringTable);
@@ -1826,7 +1819,7 @@ namespace Technosoftware.UaClient
             DiagnosticInfo diagnosticInfo,
             int stringTableOffset)
         {
-            int depth = 0;
+            var depth = 0;
             while (diagnosticInfo != null && depth++ < DiagnosticInfo.MaxInnerDepth)
             {
                 if (diagnosticInfo.LocalizedText >= 0)
@@ -1879,7 +1872,7 @@ namespace Technosoftware.UaClient
             }
             else
             {
-                C nextbatch = new C {
+                var nextbatch = new C {
                     Capacity = (int)batchSize
                 };
                 foreach (T item in collection)

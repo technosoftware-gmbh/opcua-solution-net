@@ -30,7 +30,7 @@ namespace Technosoftware.UaClient
         /// <summary>
         /// Creates a new instance.
         /// </summary>
-        internal SessionKeepAliveEventArgs(
+        public SessionKeepAliveEventArgs(
             ServiceResult status,
             ServerState currentState,
             DateTime currentTime)

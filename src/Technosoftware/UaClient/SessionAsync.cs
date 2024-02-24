@@ -64,11 +64,11 @@ namespace Technosoftware.UaClient
             bool checkDomain,
             CancellationToken ct)
         {
-            OpenValidateIdentity(ref identity, out var identityToken, out var identityPolicy, out string securityPolicyUri, out bool requireEncryption);
+            OpenValidateIdentity(ref identity, out UserIdentityToken identityToken, out UserTokenPolicy identityPolicy, out var securityPolicyUri, out var requireEncryption);
 
             // validate the server certificate /certificate chain.
             X509Certificate2 serverCertificate = null;
-            byte[] certificateData = ConfiguredEndpoint.Description.ServerCertificate;
+            var certificateData = ConfiguredEndpoint.Description.ServerCertificate;
 
             if (certificateData != null && certificateData.Length > 0)
             {
@@ -90,18 +90,18 @@ namespace Technosoftware.UaClient
                         await configuration_.CertificateValidator.ValidateAsync(serverCertificateChain, ct).ConfigureAwait(false);
                     }
                     // save for reconnect
-                    checkDomain_ = checkDomain;
+                    CheckDomain = checkDomain;
                 }
             }
 
             // create a nonce.
-            uint length = (uint)configuration_.SecurityConfiguration.NonceLength;
-            byte[] clientNonce = Utils.Nonce.CreateNonce(length);
+            var length = (uint)configuration_.SecurityConfiguration.NonceLength;
+            var clientNonce = Utils.Nonce.CreateNonce(length);
 
             // send the application instance certificate for the client.
-            BuildCertificateData(out byte[] clientCertificateData, out byte[] clientCertificateChainData);
+            BuildCertificateData(out var clientCertificateData, out var clientCertificateChainData);
 
-            ApplicationDescription clientDescription = new ApplicationDescription {
+            var clientDescription = new ApplicationDescription {
                 ApplicationUri = configuration_.ApplicationUri,
                 ApplicationName = configuration_.ApplicationName,
                 ApplicationType = ApplicationType.Client,
@@ -113,7 +113,7 @@ namespace Technosoftware.UaClient
                 sessionTimeout = (uint)configuration_.ClientConfiguration.DefaultSessionTimeout;
             }
 
-            bool successCreateSession = false;
+            var successCreateSession = false;
             CreateSessionResponse response = null;
 
             //if security none, first try to connect without certificate
@@ -160,8 +160,8 @@ namespace Technosoftware.UaClient
 
             NodeId sessionId = response.SessionId;
             NodeId sessionCookie = response.AuthenticationToken;
-            byte[] serverNonce = response.ServerNonce;
-            byte[] serverCertificateData = response.ServerCertificate;
+            var serverNonce = response.ServerNonce;
+            var serverCertificateData = response.ServerCertificate;
             SignatureData serverSignature = response.ServerSignature;
             EndpointDescriptionCollection serverEndpoints = response.ServerEndpoints;
             SignedSoftwareCertificateCollection serverSoftwareCertificates = response.ServerSoftwareCertificates;
@@ -193,7 +193,7 @@ namespace Technosoftware.UaClient
                 HandleSignedSoftwareCertificates(serverSoftwareCertificates);
 
                 // create the client signature.
-                byte[] dataToSign = Utils.Append(serverCertificate != null ? serverCertificate.RawData : null, serverNonce);
+                var dataToSign = Utils.Append(serverCertificate != null ? serverCertificate.RawData : null, serverNonce);
                 SignatureData clientSignature = SecurityPolicies.Sign(instanceCertificate_, securityPolicyUri, dataToSign);
 
                 // select the security policy for the user token.
@@ -205,7 +205,7 @@ namespace Technosoftware.UaClient
                 }
 
                 // save previous nonce
-                byte[] previousServerNonce = GetCurrentTokenServerNonce();
+                var previousServerNonce = GetCurrentTokenServerNonce();
 
                 // validate server nonce and security parameters for user identity.
                 ValidateServerNonce(
@@ -227,7 +227,7 @@ namespace Technosoftware.UaClient
                 // copy the preferred locales if provided.
                 if (preferredLocales != null && preferredLocales.Count > 0)
                 {
-                    preferredLocales_ = new StringCollection(preferredLocales);
+                    PreferredLocales = new StringCollection(preferredLocales);
                 }
 
                 // activate session.
@@ -235,7 +235,7 @@ namespace Technosoftware.UaClient
                     null,
                     clientSignature,
                     clientSoftwareCertificates,
-                    preferredLocales_,
+                    PreferredLocales,
                     new ExtensionObject(identityToken),
                     userTokenSignature,
                     ct).ConfigureAwait(false);
@@ -246,7 +246,7 @@ namespace Technosoftware.UaClient
 
                 if (certificateResults != null)
                 {
-                    for (int i = 0; i < certificateResults.Count; i++)
+                    for (var i = 0; i < certificateResults.Count; i++)
                     {
                         Utils.LogInfo("ActivateSession result[{0}] = {1}", i, certificateResults[i]);
                     }
@@ -270,8 +270,8 @@ namespace Technosoftware.UaClient
                     serverCertificate_ = serverCertificate;
 
                     // update system context.
-                    systemContext_.PreferredLocales = preferredLocales_;
-                    systemContext_.SessionId = this.SessionId;
+                    systemContext_.PreferredLocales = PreferredLocales;
+                    systemContext_.SessionId = SessionId;
                     systemContext_.UserIdentity = identity;
                 }
 
@@ -291,7 +291,7 @@ namespace Technosoftware.UaClient
             {
                 try
                 {
-                    await base.CloseSessionAsync(null, false, CancellationToken.None).ConfigureAwait(false);
+                    _ = await base.CloseSessionAsync(null, false, CancellationToken.None).ConfigureAwait(false);
                     await CloseChannelAsync(CancellationToken.None).ConfigureAwait(false);
                 }
                 catch (Exception e)
@@ -339,9 +339,9 @@ namespace Technosoftware.UaClient
         {
             if (subscriptions == null) throw new ArgumentNullException(nameof(subscriptions));
 
-            List<Subscription> subscriptionsToDelete = new List<Subscription>();
+            var subscriptionsToDelete = new List<Subscription>();
 
-            bool removed = PrepareSubscriptionsToDelete(subscriptions, subscriptionsToDelete);
+            var removed = PrepareSubscriptionsToDelete(subscriptions, subscriptionsToDelete);
 
             foreach (Subscription subscription in subscriptionsToDelete)
             {
@@ -350,7 +350,7 @@ namespace Technosoftware.UaClient
 
             if (removed)
             {
-                SubscriptionsChangedEventHandler ?.Invoke(this, null);
+                SubscriptionsChangedEventHandler?.Invoke(this, null);
             }
 
             return removed;
@@ -363,18 +363,18 @@ namespace Technosoftware.UaClient
             CancellationToken ct = default)
         {
             UInt32Collection subscriptionIds = CreateSubscriptionIdsForTransfer(subscriptions);
-            int failedSubscriptions = 0;
+            var failedSubscriptions = 0;
 
             if (subscriptionIds.Count > 0)
             {
-                bool reconnecting = false;
+                var reconnecting = false;
                 await reconnectLock_.WaitAsync(ct).ConfigureAwait(false);
                 try
                 {
                     reconnecting = reconnecting_;
                     reconnecting_ = true;
 
-                    for (int ii = 0; ii < subscriptions.Count; ii++)
+                    for (var ii = 0; ii < subscriptions.Count; ii++)
                     {
                         if (!await subscriptions[ii].TransferAsync(this, subscriptionIds[ii], new UInt32Collection(), ct).ConfigureAwait(false))
                         {
@@ -385,14 +385,14 @@ namespace Technosoftware.UaClient
 
                     if (sendInitialValues)
                     {
-                        (bool success, IList<ServiceResult> resendResults) = await ResendDataAsync(subscriptions, ct).ConfigureAwait(false);
+                        (var success, IList<ServiceResult> resendResults) = await ResendDataAsync(subscriptions, ct).ConfigureAwait(false);
                         if (!success)
                         {
                             Utils.LogError("Failed to call resend data for subscriptions.");
                         }
                         else if (resendResults != null)
                         {
-                            for (int ii = 0; ii < resendResults.Count; ii++)
+                            for (var ii = 0; ii < resendResults.Count; ii++)
                             {
                                 // no need to try for subscriptions which do not exist
                                 if (StatusCode.IsNotGood(resendResults[ii].StatusCode))
@@ -408,7 +408,7 @@ namespace Technosoftware.UaClient
                 finally
                 {
                     reconnecting_ = reconnecting;
-                    reconnectLock_.Release();
+                    _ = reconnectLock_.Release();
                 }
 
                 StartPublishing(OperationTimeout, true);
@@ -433,16 +433,16 @@ namespace Technosoftware.UaClient
                 CallMethodResultCollection results = response.Results;
                 DiagnosticInfoCollection diagnosticInfos = response.DiagnosticInfos;
                 ResponseHeader responseHeader = response.ResponseHeader;
-                ClientBase.ValidateResponse(results, requests);
-                ClientBase.ValidateDiagnosticInfos(diagnosticInfos, requests);
+                ValidateResponse(results, requests);
+                ValidateDiagnosticInfos(diagnosticInfos, requests);
 
-                int ii = 0;
-                foreach (var value in results)
+                var ii = 0;
+                foreach (CallMethodResult value in results)
                 {
                     ServiceResult result = ServiceResult.Good;
                     if (StatusCode.IsNotGood(value.StatusCode))
                     {
-                        result = ClientBase.GetResult(value.StatusCode, ii, diagnosticInfos, responseHeader);
+                        result = GetResult(value.StatusCode, ii, diagnosticInfos, responseHeader);
                     }
                     errors.Add(result);
                     ii++;
@@ -465,11 +465,11 @@ namespace Technosoftware.UaClient
             CancellationToken ct)
         {
             UInt32Collection subscriptionIds = CreateSubscriptionIdsForTransfer(subscriptions);
-            int failedSubscriptions = 0;
+            var failedSubscriptions = 0;
 
             if (subscriptionIds.Count > 0)
             {
-                bool reconnecting = false;
+                var reconnecting = false;
                 await reconnectLock_.WaitAsync(ct).ConfigureAwait(false);
                 try
                 {
@@ -487,10 +487,10 @@ namespace Technosoftware.UaClient
                         return false;
                     }
 
-                    ClientBase.ValidateResponse(results, subscriptionIds);
-                    ClientBase.ValidateDiagnosticInfos(diagnosticInfos, subscriptionIds);
+                    ValidateResponse(results, subscriptionIds);
+                    ValidateDiagnosticInfos(diagnosticInfos, subscriptionIds);
 
-                    for (int ii = 0; ii < subscriptions.Count; ii++)
+                    for (var ii = 0; ii < subscriptions.Count; ii++)
                     {
                         if (StatusCode.IsGood(results[ii].StatusCode))
                         {
@@ -523,7 +523,7 @@ namespace Technosoftware.UaClient
                 finally
                 {
                     reconnecting_ = reconnecting;
-                    reconnectLock_.Release();
+                    _ = reconnectLock_.Release();
                 }
 
                 StartPublishing(OperationTimeout, false);
@@ -566,9 +566,7 @@ namespace Technosoftware.UaClient
         /// <inheritdoc/>
         public async Task FetchTypeTreeAsync(ExpandedNodeId typeId, CancellationToken ct = default)
         {
-            Node node = await NodeCache.FindAsync(typeId, ct).ConfigureAwait(false) as Node;
-
-            if (node != null)
+            if (await NodeCache.FindAsync(typeId, ct).ConfigureAwait(false) is Node node)
             {
                 var subTypes = new ExpandedNodeIdCollection();
                 foreach (IReference reference in node.Find(ReferenceTypeIds.HasSubtype, false))
@@ -630,10 +628,10 @@ namespace Technosoftware.UaClient
                 OperationLimits configOperationLimits = configuration_?.ClientConfiguration?.OperationLimits ?? new OperationLimits();
                 var operationLimits = new OperationLimits();
 
-                for (int ii = 0; ii < nodeIds.Count; ii++)
+                for (var ii = 0; ii < nodeIds.Count; ii++)
                 {
                     PropertyInfo property = typeof(OperationLimits).GetProperty(operationLimitsProperties[ii]);
-                    uint value = (uint)property.GetValue(configOperationLimits);
+                    var value = (uint)property.GetValue(configOperationLimits);
                     if (values[ii] != null &&
                         ServiceResult.IsNotBad(errors[ii]))
                     {
@@ -703,8 +701,8 @@ namespace Technosoftware.UaClient
             DataValueCollection values = readResponse.Results;
             DiagnosticInfoCollection diagnosticInfos = readResponse.DiagnosticInfos;
 
-            ClientBase.ValidateResponse(values, attributesToRead);
-            ClientBase.ValidateDiagnosticInfos(diagnosticInfos, attributesToRead);
+            ValidateResponse(values, attributesToRead);
+            ValidateDiagnosticInfos(diagnosticInfos, attributesToRead);
 
             var serviceResults = new ServiceResult[nodeIds.Count].ToList();
             ProcessAttributesReadNodesResponse(
@@ -748,8 +746,8 @@ namespace Technosoftware.UaClient
             DataValueCollection nodeClassValues = readResponse.Results;
             DiagnosticInfoCollection diagnosticInfos = readResponse.DiagnosticInfos;
 
-            ClientBase.ValidateResponse(nodeClassValues, itemsToRead);
-            ClientBase.ValidateDiagnosticInfos(diagnosticInfos, itemsToRead);
+            ValidateResponse(nodeClassValues, itemsToRead);
+            ValidateDiagnosticInfos(diagnosticInfos, itemsToRead);
 
             // second determine attributes to read per nodeclass
             var attributesPerNodeId = new List<IDictionary<uint, DataValue>>(nodeIds.Count);
@@ -773,8 +771,8 @@ namespace Technosoftware.UaClient
                 DataValueCollection values = readResponse.Results;
                 diagnosticInfos = readResponse.DiagnosticInfos;
 
-                ClientBase.ValidateResponse(values, attributesToRead);
-                ClientBase.ValidateDiagnosticInfos(diagnosticInfos, attributesToRead);
+                ValidateResponse(values, attributesToRead);
+                ValidateDiagnosticInfos(diagnosticInfos, attributesToRead);
 
                 ProcessAttributesReadNodesResponse(
                     readResponse.ResponseHeader,
@@ -802,13 +800,13 @@ namespace Technosoftware.UaClient
             CancellationToken ct = default)
         {
             // build list of attributes.
-            var attributes = CreateAttributes(nodeClass, optionalAttributes);
+            SortedDictionary<uint, DataValue> attributes = CreateAttributes(nodeClass, optionalAttributes);
 
             // build list of values to read.
-            ReadValueIdCollection itemsToRead = new ReadValueIdCollection();
-            foreach (uint attributeId in attributes.Keys)
+            var itemsToRead = new ReadValueIdCollection();
+            foreach (var attributeId in attributes.Keys)
             {
-                ReadValueId itemToRead = new ReadValueId {
+                var itemToRead = new ReadValueId {
                     NodeId = nodeId,
                     AttributeId = attributeId
                 };
@@ -825,8 +823,8 @@ namespace Technosoftware.UaClient
             DataValueCollection values = readResponse.Results;
             DiagnosticInfoCollection diagnosticInfos = readResponse.DiagnosticInfos;
 
-            ClientBase.ValidateResponse(values, itemsToRead);
-            ClientBase.ValidateDiagnosticInfos(diagnosticInfos, itemsToRead);
+            ValidateResponse(values, itemsToRead);
+            ValidateDiagnosticInfos(diagnosticInfos, itemsToRead);
 
             return ProcessReadResponse(readResponse.ResponseHeader, attributes, itemsToRead, values, diagnosticInfos);
         }
@@ -836,12 +834,12 @@ namespace Technosoftware.UaClient
             NodeId nodeId,
             CancellationToken ct = default)
         {
-            ReadValueId itemToRead = new ReadValueId {
+            var itemToRead = new ReadValueId {
                 NodeId = nodeId,
                 AttributeId = Attributes.Value
             };
 
-            ReadValueIdCollection itemsToRead = new ReadValueIdCollection {
+            var itemsToRead = new ReadValueIdCollection {
                 itemToRead
             };
 
@@ -856,12 +854,12 @@ namespace Technosoftware.UaClient
             DataValueCollection values = readResponse.Results;
             DiagnosticInfoCollection diagnosticInfos = readResponse.DiagnosticInfos;
 
-            ClientBase.ValidateResponse(values, itemsToRead);
-            ClientBase.ValidateDiagnosticInfos(diagnosticInfos, itemsToRead);
+            ValidateResponse(values, itemsToRead);
+            ValidateDiagnosticInfos(diagnosticInfos, itemsToRead);
 
             if (StatusCode.IsBad(values[0].StatusCode))
             {
-                ServiceResult result = ClientBase.GetResult(values[0].StatusCode, 0, diagnosticInfos, readResponse.ResponseHeader);
+                ServiceResult result = GetResult(values[0].StatusCode, 0, diagnosticInfos, readResponse.ResponseHeader);
                 throw new ServiceResultException(result);
             }
 
@@ -899,15 +897,15 @@ namespace Technosoftware.UaClient
             DataValueCollection values = readResponse.Results;
             DiagnosticInfoCollection diagnosticInfos = readResponse.DiagnosticInfos;
 
-            ClientBase.ValidateResponse(values, itemsToRead);
-            ClientBase.ValidateDiagnosticInfos(diagnosticInfos, itemsToRead);
+            ValidateResponse(values, itemsToRead);
+            ValidateDiagnosticInfos(diagnosticInfos, itemsToRead);
 
-            foreach (var value in values)
+            foreach (DataValue value in values)
             {
                 ServiceResult result = ServiceResult.Good;
                 if (StatusCode.IsBad(value.StatusCode))
                 {
-                    result = ClientBase.GetResult(values[0].StatusCode, 0, diagnosticInfos, readResponse.ResponseHeader);
+                    result = GetResult(values[0].StatusCode, 0, diagnosticInfos, readResponse.ResponseHeader);
                 }
                 errors.Add(result);
             }
@@ -935,10 +933,10 @@ namespace Technosoftware.UaClient
             CancellationToken ct = default)
         {
 
-            BrowseDescriptionCollection browseDescription = new BrowseDescriptionCollection();
+            var browseDescription = new BrowseDescriptionCollection();
             foreach (NodeId nodeToBrowse in nodesToBrowse)
             {
-                BrowseDescription description = new BrowseDescription {
+                var description = new BrowseDescription {
                     NodeId = nodeToBrowse,
                     BrowseDirection = browseDirection,
                     ReferenceTypeId = referenceTypeId,
@@ -957,14 +955,14 @@ namespace Technosoftware.UaClient
                 browseDescription,
                 ct).ConfigureAwait(false);
 
-            ClientBase.ValidateResponse(browseResponse.ResponseHeader);
+            ValidateResponse(browseResponse.ResponseHeader);
             BrowseResultCollection results = browseResponse.Results;
             DiagnosticInfoCollection diagnosticInfos = browseResponse.DiagnosticInfos;
 
-            ClientBase.ValidateResponse(results, browseDescription);
-            ClientBase.ValidateDiagnosticInfos(diagnosticInfos, browseDescription);
+            ValidateResponse(results, browseDescription);
+            ValidateDiagnosticInfos(diagnosticInfos, browseDescription);
 
-            int ii = 0;
+            var ii = 0;
             var errors = new List<ServiceResult>();
             var continuationPoints = new ByteStringCollection();
             var referencesList = new List<ReferenceDescriptionCollection>();
@@ -1007,15 +1005,15 @@ namespace Technosoftware.UaClient
                 continuationPoints,
                 ct).ConfigureAwait(false);
 
-            ClientBase.ValidateResponse(response.ResponseHeader);
+            ValidateResponse(response.ResponseHeader);
 
             BrowseResultCollection results = response.Results;
             DiagnosticInfoCollection diagnosticInfos = response.DiagnosticInfos;
 
-            ClientBase.ValidateResponse(results, continuationPoints);
-            ClientBase.ValidateDiagnosticInfos(diagnosticInfos, continuationPoints);
+            ValidateResponse(results, continuationPoints);
+            ValidateDiagnosticInfos(diagnosticInfos, continuationPoints);
 
-            int ii = 0;
+            var ii = 0;
             var errors = new List<ServiceResult>();
             var revisedContinuationPoints = new ByteStringCollection();
             var referencesList = new List<ReferenceDescriptionCollection>();
@@ -1042,23 +1040,23 @@ namespace Technosoftware.UaClient
         /// <inheritdoc/>
         public async Task<IList<object>> CallAsync(NodeId objectId, NodeId methodId, CancellationToken ct = default, params object[] args)
         {
-            VariantCollection inputArguments = new VariantCollection();
+            var inputArguments = new VariantCollection();
 
             if (args != null)
             {
-                for (int ii = 0; ii < args.Length; ii++)
+                for (var ii = 0; ii < args.Length; ii++)
                 {
                     inputArguments.Add(new Variant(args[ii]));
                 }
             }
 
-            CallMethodRequest request = new CallMethodRequest();
+            var request = new CallMethodRequest();
 
             request.ObjectId = objectId;
             request.MethodId = methodId;
             request.InputArguments = inputArguments;
 
-            CallMethodRequestCollection requests = new CallMethodRequestCollection();
+            var requests = new CallMethodRequestCollection();
             requests.Add(request);
 
             CallMethodResultCollection results;
@@ -1069,15 +1067,15 @@ namespace Technosoftware.UaClient
             results = response.Results;
             diagnosticInfos = response.DiagnosticInfos;
 
-            ClientBase.ValidateResponse(results, requests);
-            ClientBase.ValidateDiagnosticInfos(diagnosticInfos, requests);
+            ValidateResponse(results, requests);
+            ValidateDiagnosticInfos(diagnosticInfos, requests);
 
             if (StatusCode.IsBad(results[0].StatusCode))
             {
                 throw ServiceResultException.Create(results[0].StatusCode, 0, diagnosticInfos, response.ResponseHeader.StringTable);
             }
 
-            List<object> outputArguments = new List<object>();
+            var outputArguments = new List<object>();
 
             foreach (Variant arg in results[0].OutputArguments)
             {
@@ -1096,7 +1094,7 @@ namespace Technosoftware.UaClient
         {
             // browse for all references.
 
-            ReferenceDescriptionCollection results = new ReferenceDescriptionCollection();
+            var results = new ReferenceDescriptionCollection();
             (
                 _,
                 ByteStringCollection continuationPoint,
@@ -1175,9 +1173,9 @@ namespace Technosoftware.UaClient
                 var nextResult = new List<ReferenceDescriptionCollection>();
                 var nextErrors = new List<ServiceResult>();
 
-                for (int ii = 0; ii < continuationPoints.Count; ii++)
+                for (var ii = 0; ii < continuationPoints.Count; ii++)
                 {
-                    byte[] cp = continuationPoints[ii];
+                    var cp = continuationPoints[ii];
                     if (cp != null)
                     {
                         nextContinuationPoints.Add(cp);
@@ -1201,7 +1199,7 @@ namespace Technosoftware.UaClient
                 previousResult = nextResult;
                 previousErrors = nextErrors;
 
-                for (int ii = 0; ii < nextDescriptions.Count; ii++)
+                for (var ii = 0; ii < nextDescriptions.Count; ii++)
                 {
                     nextResult[ii].AddRange(nextDescriptions[ii]);
                     if (StatusCode.IsBad(browseNextErrors[ii].StatusCode))
@@ -1248,7 +1246,7 @@ namespace Technosoftware.UaClient
                     (uint)sessionTemplate.SessionTimeout,
                     sessionTemplate.Identity,
                     sessionTemplate.PreferredLocales,
-                    sessionTemplate.checkDomain_,
+                    sessionTemplate.CheckDomain,
                     ct).ConfigureAwait(false);
 
                 await session.RecreateSubscriptionsAsync(sessionTemplate.Subscriptions, ct).ConfigureAwait(false);
@@ -1295,8 +1293,8 @@ namespace Technosoftware.UaClient
                     sessionTemplate.SessionName,
                     (uint)sessionTemplate.sessionTimeout_,
                     sessionTemplate.Identity,
-                    sessionTemplate.preferredLocales_,
-                    sessionTemplate.checkDomain_,
+                    sessionTemplate.PreferredLocales,
+                    sessionTemplate.CheckDomain,
                     ct).ConfigureAwait(false);
 
                 await session.RecreateSubscriptionsAsync(sessionTemplate.Subscriptions, ct).ConfigureAwait(false);
@@ -1332,8 +1330,8 @@ namespace Technosoftware.UaClient
                     sessionTemplate.SessionName,
                     (uint)sessionTemplate.sessionTimeout_,
                     sessionTemplate.Identity,
-                    sessionTemplate.preferredLocales_,
-                    sessionTemplate.checkDomain_,
+                    sessionTemplate.PreferredLocales,
+                    sessionTemplate.CheckDomain,
                     ct).ConfigureAwait(false);
 
                 // create the subscriptions.
@@ -1384,7 +1382,7 @@ namespace Technosoftware.UaClient
             StopKeepAliveTimer();
 
             // check if currectly connected.
-            bool connected = Connected;
+            var connected = Connected;
 
             // halt all background threads.
             if (connected)
@@ -1409,9 +1407,9 @@ namespace Technosoftware.UaClient
                 {
                     // close the session and delete all subscriptions if specified.
                     var requestHeader = new RequestHeader() {
-                        TimeoutHint = timeout > 0 ? (uint)timeout : (uint)(this.OperationTimeout > 0 ? this.OperationTimeout : 0),
+                        TimeoutHint = timeout > 0 ? (uint)timeout : (uint)(OperationTimeout > 0 ? OperationTimeout : 0),
                     };
-                    var response = await base.CloseSessionAsync(requestHeader, DeleteSubscriptionsOnClose, ct).ConfigureAwait(false);
+                    CloseSessionResponse response = await base.CloseSessionAsync(requestHeader, DeleteSubscriptionsOnClose, ct).ConfigureAwait(false);
 
                     if (closeChannel)
                     {
@@ -1461,14 +1459,14 @@ namespace Technosoftware.UaClient
         /// </summary>
         private async Task ReconnectAsync(ITransportWaitingConnection connection, ITransportChannel transportChannel, CancellationToken ct)
         {
-            bool resetReconnect = false;
+            var resetReconnect = false;
             await reconnectLock_.WaitAsync(ct).ConfigureAwait(false);
             try
             {
-                bool reconnecting = reconnecting_;
+                var reconnecting = reconnecting_;
                 reconnecting_ = true;
                 resetReconnect = true;
-                reconnectLock_.Release();
+                _ = reconnectLock_.Release();
 
                 // check if already connecting.
                 if (reconnecting)
@@ -1502,7 +1500,7 @@ namespace Technosoftware.UaClient
                 StatusCodeCollection certificateResults = null;
                 DiagnosticInfoCollection certificateDiagnosticInfos = null;
 
-                EndActivateSession(
+                _ = EndActivateSession(
                     result,
                     out serverNonce,
                     out certificateResults,
@@ -1519,7 +1517,7 @@ namespace Technosoftware.UaClient
                 await reconnectLock_.WaitAsync(ct).ConfigureAwait(false);
                 reconnecting_ = false;
                 resetReconnect = false;
-                reconnectLock_.Release();
+                _ = reconnectLock_.Release();
 
                 StartPublishing(OperationTimeout, true);
 
@@ -1533,7 +1531,7 @@ namespace Technosoftware.UaClient
                 {
                     await reconnectLock_.WaitAsync(ct).ConfigureAwait(false);
                     reconnecting_ = false;
-                    reconnectLock_.Release();
+                    _ = reconnectLock_.Release();
                 }
             }
         }
@@ -1542,7 +1540,7 @@ namespace Technosoftware.UaClient
         public async Task<(bool, ServiceResult)> RepublishAsync(uint subscriptionId, uint sequenceNumber, CancellationToken ct)
         {
             // send republish request.
-            RequestHeader requestHeader = new RequestHeader {
+            var requestHeader = new RequestHeader {
                 TimeoutHint = (uint)OperationTimeout,
                 ReturnDiagnostics = (uint)(int)ReturnDiagnostics,
                 RequestHandle = Utils.IncrementIdentifier(ref publishCounter_)
@@ -1587,7 +1585,7 @@ namespace Technosoftware.UaClient
         /// <param name="ct"></param>
         private async Task RecreateSubscriptionsAsync(IEnumerable<Subscription> subscriptionsTemplate, CancellationToken ct)
         {
-            bool transferred = false;
+            var transferred = false;
             if (TransferSubscriptionsOnReconnect)
             {
                 try

@@ -58,10 +58,10 @@ namespace Technosoftware.UaClient
         {
             // secure settings
             XmlReaderSettings settings = Utils.DefaultXmlReaderSettings();
-            using (XmlReader reader = XmlReader.Create(stream, settings))
+            using (var reader = XmlReader.Create(stream, settings))
             {
-                DataContractSerializer serializer = new DataContractSerializer(typeof(SessionConfiguration));
-                SessionConfiguration sessionConfiguration = (SessionConfiguration)serializer.ReadObject(reader);
+                var serializer = new DataContractSerializer(typeof(SessionConfiguration));
+                var sessionConfiguration = (SessionConfiguration)serializer.ReadObject(reader);
                 return sessionConfiguration;
             }
         }

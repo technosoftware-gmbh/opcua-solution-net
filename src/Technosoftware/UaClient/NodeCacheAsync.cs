@@ -44,7 +44,7 @@ namespace Technosoftware.UaClient
             {
                 cacheLock_.EnterReadLock();
 
-                // check if node alredy exists.
+                // check if node already exists.
                 node = nodes_.Find(nodeId);
             }
             finally
@@ -83,7 +83,7 @@ namespace Technosoftware.UaClient
                 return new List<INode>();
             }
 
-            int count = nodeIds.Count;
+            var count = nodeIds.Count;
             IList<INode> nodes = new List<INode>(count);
             var fetchNodeIds = new ExpandedNodeIdCollection();
 
@@ -205,7 +205,7 @@ namespace Technosoftware.UaClient
         /// <inheritdoc/>
         public async Task<Node> FetchNodeAsync(ExpandedNodeId nodeId, CancellationToken ct)
         {
-            NodeId localId = ExpandedNodeId.ToNodeId(nodeId, session_.NamespaceUris);
+            var localId = ExpandedNodeId.ToNodeId(nodeId, session_.NamespaceUris);
 
             if (localId == null)
             {
@@ -235,7 +235,7 @@ namespace Technosoftware.UaClient
                                 reference.NodeId = ExpandedNodeId.ToNodeId(reference.NodeId, NamespaceUris);
                             }
 
-                            Node target = new Node(reference);
+                            var target = new Node(reference);
 
                             InternalWriteLockedAttach(target);
                         }
@@ -262,13 +262,13 @@ namespace Technosoftware.UaClient
         /// <inheritdoc/>
         public async Task<IList<Node>> FetchNodesAsync(IList<ExpandedNodeId> nodeIds, CancellationToken ct)
         {
-            int count = nodeIds.Count;
+            var count = nodeIds.Count;
             if (count == 0)
             {
                 return new List<Node>();
             }
 
-            NodeIdCollection localIds = new NodeIdCollection(
+            var localIds = new NodeIdCollection(
                 nodeIds.Select(nodeId => ExpandedNodeId.ToNodeId(nodeId, session_.NamespaceUris)));
 
             // fetch nodes and references from server.
@@ -276,7 +276,7 @@ namespace Technosoftware.UaClient
             (IList<ReferenceDescriptionCollection> referenceCollectionList, IList<ServiceResult> fetchErrors) = await session_.FetchReferencesAsync(localIds, ct).ConfigureAwait(false); ;
 
 
-            int ii = 0;
+            var ii = 0;
             for (ii = 0; ii < count; ii++)
             {
                 if (ServiceResult.IsBad(readErrors[ii]))
@@ -304,7 +304,7 @@ namespace Technosoftware.UaClient
                                     reference.NodeId = ExpandedNodeId.ToNodeId(reference.NodeId, NamespaceUris);
                                 }
 
-                                Node target = new Node(reference);
+                                var target = new Node(reference);
 
                                 InternalWriteLockedAttach(target);
                             }
@@ -335,9 +335,8 @@ namespace Technosoftware.UaClient
         {
             IList<INode> targets = new List<INode>();
 
-            Node source = await FindAsync(nodeId, ct).ConfigureAwait(false) as Node;
 
-            if (source == null)
+            if (!(await FindAsync(nodeId, ct).ConfigureAwait(false) is Node source))
             {
                 return targets;
             }
@@ -382,7 +381,7 @@ namespace Technosoftware.UaClient
             {
                 return targets;
             }
-            ExpandedNodeIdCollection targetIds = new ExpandedNodeIdCollection();
+            var targetIds = new ExpandedNodeIdCollection();
             IList<INode> sources = await FindAsync(nodeIds, ct).ConfigureAwait(false);
             foreach (INode source in sources)
             {
@@ -391,7 +390,7 @@ namespace Technosoftware.UaClient
                     continue;
                 }
 
-                foreach (var referenceTypeId in referenceTypeIds)
+                foreach (NodeId referenceTypeId in referenceTypeIds)
                 {
                     IList<IReference> references;
                     try
@@ -426,9 +425,8 @@ namespace Technosoftware.UaClient
         public async Task FetchSuperTypesAsync(ExpandedNodeId nodeId, CancellationToken ct)
         {
             // find the target node,
-            ILocalNode source = await FindAsync(nodeId, ct).ConfigureAwait(false) as ILocalNode;
 
-            if (source == null)
+            if (!(await FindAsync(nodeId, ct).ConfigureAwait(false) is ILocalNode source))
             {
                 return;
             }

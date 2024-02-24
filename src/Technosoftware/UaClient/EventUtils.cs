@@ -87,7 +87,7 @@ namespace Technosoftware.UaClient
             {
                 for (var ii = 0; ii < filter.SelectClauses.Count; ii++)
                 {
-                    var clause = filter.SelectClauses[ii];
+                    SimpleAttributeOperand clause = filter.SelectClauses[ii];
 
                     if (clause.BrowsePath.Count == 1 && clause.BrowsePath[0] == BrowseNames.EventType)
                     {
@@ -121,13 +121,13 @@ namespace Technosoftware.UaClient
                 };
 
                 // start the browse operation.
-                session.Browse(
+                _ = session.Browse(
                     null,
                     null,
                     0,
                     nodesToBrowse,
-                    out var results,
-                    out var diagnosticInfos);
+                    out BrowseResultCollection results,
+                    out DiagnosticInfoCollection diagnosticInfos);
 
                 ClientBase.ValidateResponse(results, nodesToBrowse);
                 ClientBase.ValidateDiagnosticInfos(diagnosticInfos, nodesToBrowse);
@@ -158,7 +158,7 @@ namespace Technosoftware.UaClient
                         results[0].ContinuationPoint
                     };
 
-                    session.BrowseNext(
+                    _ = session.BrowseNext(
                         null,
                         false,
                         continuationPoints,
@@ -175,12 +175,7 @@ namespace Technosoftware.UaClient
             }
             catch (Exception exception)
             {
-                if (throwOnError)
-                {
-                    throw new ServiceResultException(exception, StatusCodes.BadUnexpectedError);
-                }
-
-                return null;
+                return throwOnError ? throw new ServiceResultException(exception, StatusCodes.BadUnexpectedError) : (ReferenceDescriptionCollection)null;
             }
         }
 
@@ -200,8 +195,7 @@ namespace Technosoftware.UaClient
             try
             {
                 // find all of the children of the field.
-                var nodeToBrowse = new BrowseDescription
-                {
+                var nodeToBrowse = new BrowseDescription {
                     NodeId = typeId,
                     BrowseDirection = BrowseDirection.Inverse,
                     ReferenceTypeId = ReferenceTypeIds.HasSubtype,
@@ -210,7 +204,7 @@ namespace Technosoftware.UaClient
                     ResultMask = (uint)BrowseResultMask.All
                 };
 
-                var references = Browse(session, nodeToBrowse, throwOnError);
+                ReferenceDescriptionCollection references = Browse(session, nodeToBrowse, throwOnError);
 
                 while (references != null && references.Count > 0)
                 {
@@ -233,12 +227,7 @@ namespace Technosoftware.UaClient
             }
             catch (Exception exception)
             {
-                if (throwOnError)
-                {
-                    throw new ServiceResultException(exception, StatusCodes.BadUnexpectedError);
-                }
-
-                return null;
+                return throwOnError ? throw new ServiceResultException(exception, StatusCodes.BadUnexpectedError) : (ReferenceDescriptionCollection)null;
             }
         }
 
@@ -256,10 +245,10 @@ namespace Technosoftware.UaClient
             IUaSession session,
             MonitoredItem monitoredItem,
             EventFieldList notification,
-            Dictionary<NodeId,NodeId> eventTypeMappings)
+            Dictionary<NodeId, NodeId> eventTypeMappings)
         {
             // find the event type.
-            var eventTypeId = FindEventType(monitoredItem, notification);
+            NodeId eventTypeId = FindEventType(monitoredItem, notification);
 
             if (eventTypeId == null)
             {
@@ -268,7 +257,7 @@ namespace Technosoftware.UaClient
 
             // look up the known event type.
 
-            if (!eventTypeMappings.TryGetValue(eventTypeId, out var knownTypeId))
+            if (!eventTypeMappings.TryGetValue(eventTypeId, out NodeId knownTypeId))
             {
                 // check for a known type
                 for (var jj = 0; jj < KnownEventTypes.Length; jj++)
@@ -284,7 +273,7 @@ namespace Technosoftware.UaClient
                 // browse for the supertypes of the event type.
                 if (knownTypeId == null)
                 {
-                    var supertypes = EventUtils.BrowseSuperTypes(session, eventTypeId, false);
+                    ReferenceDescriptionCollection supertypes = BrowseSuperTypes(session, eventTypeId, false);
 
                     // can't do anything with unknown types.
                     if (supertypes == null)
@@ -380,10 +369,9 @@ namespace Technosoftware.UaClient
             }
 
             // get the filter which defines the contents of the notification.
-            var filter = monitoredItem.Status.Filter as EventFilter;
 
             // initialize the event with the values in the notification.
-            if (filter != null)
+            if (monitoredItem.Status.Filter is EventFilter filter)
             {
                 e.Update(session.SystemContext, filter.SelectClauses, notification);
             }

@@ -39,12 +39,12 @@ namespace Technosoftware.UaClient
             VerifySubscriptionState(false);
 
             // create the subscription.
-            uint revisedMaxKeepAliveCount = KeepAliveCount;
-            uint revisedLifetimeCount = LifetimeCount;
+            var revisedMaxKeepAliveCount = KeepAliveCount;
+            var revisedLifetimeCount = LifetimeCount;
 
             AdjustCounts(ref revisedMaxKeepAliveCount, ref revisedLifetimeCount);
 
-            var response = await Session.CreateSubscriptionAsync(
+            CreateSubscriptionResponse response = await Session.CreateSubscriptionAsync(
                 null,
                 PublishingInterval,
                 revisedLifetimeCount,
@@ -60,7 +60,7 @@ namespace Technosoftware.UaClient
                 response.RevisedMaxKeepAliveCount,
                 response.RevisedLifetimeCount);
 
-            await CreateItemsAsync(ct).ConfigureAwait(false);
+            _ = await CreateItemsAsync(ct).ConfigureAwait(false);
 
             ChangesCompleted();
         }
@@ -76,7 +76,7 @@ namespace Technosoftware.UaClient
             }
 
             // nothing to do if not created.
-            if (!this.Created)
+            if (!Created)
             {
                 return;
             }
@@ -91,7 +91,7 @@ namespace Technosoftware.UaClient
                 // delete the subscription.
                 UInt32Collection subscriptionIds = new uint[] { Id };
 
-                var response = await Session.DeleteSubscriptionsAsync(
+                DeleteSubscriptionsResponse response = await Session.DeleteSubscriptionsAsync(
                     null,
                     subscriptionIds,
                     ct).ConfigureAwait(false);
@@ -132,12 +132,12 @@ namespace Technosoftware.UaClient
             VerifySubscriptionState(true);
 
             // modify the subscription.
-            uint revisedKeepAliveCount = KeepAliveCount;
-            uint revisedLifetimeCounter = LifetimeCount;
+            var revisedKeepAliveCount = KeepAliveCount;
+            var revisedLifetimeCounter = LifetimeCount;
 
             AdjustCounts(ref revisedKeepAliveCount, ref revisedLifetimeCounter);
 
-            var response = await Session.ModifySubscriptionAsync(
+            ModifySubscriptionResponse response = await Session.ModifySubscriptionAsync(
                 null,
                 Id,
                 PublishingInterval,
@@ -166,7 +166,7 @@ namespace Technosoftware.UaClient
             // modify the subscription.
             UInt32Collection subscriptionIds = new uint[] { Id };
 
-            var response = await Session.SetPublishingModeAsync(
+            SetPublishingModeResponse response = await Session.SetPublishingModeAsync(
                 null,
                 enabled,
                 new uint[] { Id },
@@ -196,7 +196,7 @@ namespace Technosoftware.UaClient
         {
             VerifySubscriptionState(true);
 
-            var response = await Session.RepublishAsync(
+            RepublishResponse response = await Session.RepublishAsync(
                 null,
                 Id,
                 sequenceNumber,
@@ -210,9 +210,9 @@ namespace Technosoftware.UaClient
         /// </summary>
         public async Task ApplyChangesAsync(CancellationToken ct = default)
         {
-            await DeleteItemsAsync(ct).ConfigureAwait(false);
-            await ModifyItemsAsync(ct).ConfigureAwait(false);
-            await CreateItemsAsync(ct).ConfigureAwait(false);
+            _ = await DeleteItemsAsync(ct).ConfigureAwait(false);
+            _ = await ModifyItemsAsync(ct).ConfigureAwait(false);
+            _ = await CreateItemsAsync(ct).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -223,8 +223,8 @@ namespace Technosoftware.UaClient
             VerifySubscriptionState(true);
 
             // collect list of browse paths.
-            BrowsePathCollection browsePaths = new BrowsePathCollection();
-            List<MonitoredItem> itemsToBrowse = new List<MonitoredItem>();
+            var browsePaths = new BrowsePathCollection();
+            var itemsToBrowse = new List<MonitoredItem>();
 
             PrepareResolveItemNodeIds(browsePaths, itemsToBrowse);
 
@@ -235,7 +235,7 @@ namespace Technosoftware.UaClient
             }
 
             // translate browse paths.
-            var response = await Session.TranslateBrowsePathsToNodeIdsAsync(
+            TranslateBrowsePathsToNodeIdsResponse response = await Session.TranslateBrowsePathsToNodeIdsAsync(
                 null,
                 browsePaths,
                 ct).ConfigureAwait(false);
@@ -245,7 +245,7 @@ namespace Technosoftware.UaClient
             ClientBase.ValidateDiagnosticInfos(response.DiagnosticInfos, browsePaths);
 
             // update results.
-            for (int ii = 0; ii < results.Count; ii++)
+            for (var ii = 0; ii < results.Count; ii++)
             {
                 itemsToBrowse[ii].SetResolvePathResult(results[ii], ii, response.DiagnosticInfos, response.ResponseHeader);
             }
@@ -267,7 +267,7 @@ namespace Technosoftware.UaClient
             }
 
             // create monitored items.
-            var response = await Session.CreateMonitoredItemsAsync(
+            CreateMonitoredItemsResponse response = await Session.CreateMonitoredItemsAsync(
                 null,
                 Id,
                 TimestampsToReturn,
@@ -279,7 +279,7 @@ namespace Technosoftware.UaClient
             ClientBase.ValidateDiagnosticInfos(response.DiagnosticInfos, itemsToCreate);
 
             // update results.
-            for (int ii = 0; ii < results.Count; ii++)
+            for (var ii = 0; ii < results.Count; ii++)
             {
                 itemsToCreate[ii].SetCreateResult(requestItems[ii], results[ii], ii, response.DiagnosticInfos, response.ResponseHeader);
             }
@@ -298,8 +298,8 @@ namespace Technosoftware.UaClient
         {
             VerifySubscriptionState(true);
 
-            MonitoredItemModifyRequestCollection requestItems = new MonitoredItemModifyRequestCollection();
-            List<MonitoredItem> itemsToModify = new List<MonitoredItem>();
+            var requestItems = new MonitoredItemModifyRequestCollection();
+            var itemsToModify = new List<MonitoredItem>();
 
             PrepareItemsToModify(requestItems, itemsToModify);
 
@@ -309,7 +309,7 @@ namespace Technosoftware.UaClient
             }
 
             // modify the subscription.
-            var response = await Session.ModifyMonitoredItemsAsync(
+            ModifyMonitoredItemsResponse response = await Session.ModifyMonitoredItemsAsync(
                 null,
                 Id,
                 TimestampsToReturn,
@@ -321,7 +321,7 @@ namespace Technosoftware.UaClient
             ClientBase.ValidateDiagnosticInfos(response.DiagnosticInfos, itemsToModify);
 
             // update results.
-            for (int ii = 0; ii < results.Count; ii++)
+            for (var ii = 0; ii < results.Count; ii++)
             {
                 itemsToModify[ii].SetModifyResult(requestItems[ii], results[ii], ii, response.DiagnosticInfos, response.ResponseHeader);
             }
@@ -348,14 +348,14 @@ namespace Technosoftware.UaClient
             List<MonitoredItem> itemsToDelete = deletedItems_;
             deletedItems_ = new List<MonitoredItem>();
 
-            UInt32Collection monitoredItemIds = new UInt32Collection();
+            var monitoredItemIds = new UInt32Collection();
 
             foreach (MonitoredItem monitoredItem in itemsToDelete)
             {
                 monitoredItemIds.Add(monitoredItem.Status.Id);
             }
 
-            var response = await Session.DeleteMonitoredItemsAsync(
+            DeleteMonitoredItemsResponse response = await Session.DeleteMonitoredItemsAsync(
                 null,
                 Id,
                 monitoredItemIds,
@@ -366,7 +366,7 @@ namespace Technosoftware.UaClient
             ClientBase.ValidateDiagnosticInfos(response.DiagnosticInfos, monitoredItemIds);
 
             // update results.
-            for (int ii = 0; ii < results.Count; ii++)
+            for (var ii = 0; ii < results.Count; ii++)
             {
                 itemsToDelete[ii].SetDeleteResult(results[ii], ii, response.DiagnosticInfos, response.ResponseHeader);
             }
@@ -396,13 +396,13 @@ namespace Technosoftware.UaClient
             }
 
             // get list of items to update.
-            UInt32Collection monitoredItemIds = new UInt32Collection();
+            var monitoredItemIds = new UInt32Collection();
             foreach (MonitoredItem monitoredItem in monitoredItems)
             {
                 monitoredItemIds.Add(monitoredItem.Status.Id);
             }
 
-            var response = await Session.SetMonitoringModeAsync(
+            SetMonitoringModeResponse response = await Session.SetMonitoringModeAsync(
                 null,
                 Id,
                 monitoringMode,
@@ -414,8 +414,8 @@ namespace Technosoftware.UaClient
             ClientBase.ValidateDiagnosticInfos(response.DiagnosticInfos, monitoredItemIds);
 
             // update results.
-            List<ServiceResult> errors = new List<ServiceResult>();
-            bool noErrors = UpdateMonitoringMode(
+            var errors = new List<ServiceResult>();
+            var noErrors = UpdateMonitoringMode(
                 monitoredItems, errors, results,
                 response.DiagnosticInfos, response.ResponseHeader,
                 monitoringMode);
@@ -425,12 +425,7 @@ namespace Technosoftware.UaClient
             ChangesCompleted();
 
             // return null list if no errors occurred.
-            if (noErrors)
-            {
-                return null;
-            }
-
-            return errors;
+            return noErrors ? null : errors;
         }
 
         /// <summary>
@@ -446,7 +441,7 @@ namespace Technosoftware.UaClient
                 InputArguments = new VariantCollection() { new Variant(Id) }
             });
 
-            var response = await Session.CallAsync(
+            CallResponse response = await Session.CallAsync(
                 null,
                 methodsToCall,
                 ct).ConfigureAwait(false);

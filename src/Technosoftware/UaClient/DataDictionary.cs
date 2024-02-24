@@ -153,17 +153,9 @@ namespace Technosoftware.UaClient
         /// </summary>
         public string GetSchema(NodeId descriptionId)
         {
-            if (descriptionId != null)
-            {
-                if (!DataTypes.TryGetValue(descriptionId, out QualifiedName browseName))
-                {
-                    return null;
-                }
-
-                return validator_.GetSchema(browseName.Name);
-            }
-
-            return validator_.GetSchema(null);
+            return descriptionId != null
+                ? !DataTypes.TryGetValue(descriptionId, out QualifiedName browseName) ? null : validator_.GetSchema(browseName.Name)
+                : validator_.GetSchema(null);
         }
         #endregion
 
@@ -173,7 +165,7 @@ namespace Technosoftware.UaClient
         /// </summary>
         private void GetTypeSystem(NodeId dictionaryId)
         {
-            var references = session_.NodeCache.FindReferences(dictionaryId, ReferenceTypeIds.HasComponent, true, false);
+            IList<INode> references = session_.NodeCache.FindReferences(dictionaryId, ReferenceTypeIds.HasComponent, true, false);
             if (references.Count > 0)
             {
                 TypeSystemId = ExpandedNodeId.ToNodeId(references[0].NodeId, session_.NamespaceUris);
@@ -197,10 +189,10 @@ namespace Technosoftware.UaClient
             // read the value to get the names that are used in the dictionary
             session_.ReadValues(nodeIdCollection, out DataValueCollection values, out IList<ServiceResult> errors);
 
-            int ii = 0;
-            foreach (var reference in references)
+            var ii = 0;
+            foreach (INode reference in references)
             {
-                NodeId datatypeId = ExpandedNodeId.ToNodeId(reference.NodeId, session_.NamespaceUris);
+                var datatypeId = ExpandedNodeId.ToNodeId(reference.NodeId, session_.NamespaceUris);
                 if (datatypeId != null)
                 {
                     if (ServiceResult.IsGood(errors[ii]))
@@ -221,11 +213,11 @@ namespace Technosoftware.UaClient
             IList<NodeId> dictionaryIds,
             CancellationToken ct = default)
         {
-            ReadValueIdCollection itemsToRead = new ReadValueIdCollection();
-            foreach (var nodeId in dictionaryIds)
+            var itemsToRead = new ReadValueIdCollection();
+            foreach (NodeId nodeId in dictionaryIds)
             {
                 // create item to read.
-                ReadValueId itemToRead = new ReadValueId {
+                var itemToRead = new ReadValueId {
                     NodeId = nodeId,
                     AttributeId = Attributes.Value,
                     IndexRange = null,
@@ -251,8 +243,8 @@ namespace Technosoftware.UaClient
 
             var result = new Dictionary<NodeId, byte[]>();
 
-            int ii = 0;
-            foreach (var nodeId in dictionaryIds)
+            var ii = 0;
+            foreach (NodeId nodeId in dictionaryIds)
             {
                 // check for error.
                 if (StatusCode.IsBad(values[ii].StatusCode))
@@ -275,14 +267,14 @@ namespace Technosoftware.UaClient
         public byte[] ReadDictionary(NodeId dictionaryId)
         {
             // create item to read.
-            ReadValueId itemToRead = new ReadValueId {
+            var itemToRead = new ReadValueId {
                 NodeId = dictionaryId,
                 AttributeId = Attributes.Value,
                 IndexRange = null,
                 DataEncoding = null
             };
 
-            ReadValueIdCollection itemsToRead = new ReadValueIdCollection {
+            var itemsToRead = new ReadValueIdCollection {
                 itemToRead
             };
 
