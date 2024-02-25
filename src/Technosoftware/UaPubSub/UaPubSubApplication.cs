@@ -287,10 +287,7 @@ namespace Technosoftware.UaPubSub
 
             try
             {
-                if (RawDataReceivedEvent != null)
-                {
-                    RawDataReceivedEvent(this, e);
-                }
+                RawDataReceivedEvent?.Invoke(this, e);
             }
             catch (Exception ex)
             {
@@ -309,10 +306,7 @@ namespace Technosoftware.UaPubSub
 
             try
             {
-                if (DataReceivedEvent != null)
-                {
-                    DataReceivedEvent(this, e);
-                }
+                DataReceivedEvent?.Invoke(this, e);
             }
             catch (Exception ex)
             {
@@ -328,10 +322,7 @@ namespace Technosoftware.UaPubSub
         {
             try
             {
-                if (MetaDataReceivedEvent != null)
-                {
-                    MetaDataReceivedEvent(this, e);
-                }
+                MetaDataReceivedEvent?.Invoke(this, e);
             }
             catch (Exception ex)
             {
@@ -349,10 +340,7 @@ namespace Technosoftware.UaPubSub
 
             try
             {
-                if (DataSetWriterConfigurationReceivedEvent != null)
-                {
-                    DataSetWriterConfigurationReceivedEvent(this, e);
-                }
+                DataSetWriterConfigurationReceivedEvent?.Invoke(this, e);
             }
             catch (Exception ex)
             {
@@ -371,10 +359,7 @@ namespace Technosoftware.UaPubSub
 
             try
             {
-                if (PublisherEndpointsReceivedEvent != null)
-                {
-                    PublisherEndpointsReceivedEvent(this, e);
-                }
+                PublisherEndpointsReceivedEvent?.Invoke(this, e);
             }
             catch (Exception ex)
             {
@@ -393,10 +378,7 @@ namespace Technosoftware.UaPubSub
 
             try
             {
-                if (ConfigurationUpdatingEvent != null)
-                {
-                    ConfigurationUpdatingEvent(this, e);
-                }
+                ConfigurationUpdatingEvent?.Invoke(this, e);
             }
             catch (Exception ex)
             {

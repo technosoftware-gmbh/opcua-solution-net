@@ -29,11 +29,13 @@ namespace Technosoftware.UaPubSub.Transport
     /// </summary>
     internal class UdpDiscoveryPublisher : UdpDiscovery
     {
-        private const int kMinimumResponseInterval = 500;
+        #region Private fields 
+        // Minimum response interval
+        private const int MinimumResponseInterval = 500;
 
         // The list that will store the WriterIds that shall be set as DataSetMetaData Response message
-        private readonly List<UInt16> m_metadataWriterIdsToSend;
-        private int m_responseInterval = kMinimumResponseInterval;
+        private readonly List<UInt16> metadataWriterIdsToSend_;
+        #endregion
 
         #region Constructor
         /// <summary>
@@ -42,7 +44,7 @@ namespace Technosoftware.UaPubSub.Transport
         /// <param name="udpConnection"></param>
         public UdpDiscoveryPublisher(UdpPubSubConnection udpConnection) : base(udpConnection)
         {
-            m_metadataWriterIdsToSend = new List<ushort>();
+            metadataWriterIdsToSend_ = new List<ushort>();
         }
         #endregion
 
@@ -57,9 +59,9 @@ namespace Technosoftware.UaPubSub.Transport
         {
             await base.StartAsync(messageContext).ConfigureAwait(false);
 
-            if (m_discoveryUdpClients != null)
+            if (discoveryUdpClients_ != null)
             {
-                foreach (UdpClient discoveryUdpClient in m_discoveryUdpClients)
+                foreach (UdpClient discoveryUdpClient in discoveryUdpClients_)
                 {
                     try
                     {
@@ -74,7 +76,6 @@ namespace Technosoftware.UaPubSub.Transport
                 }
             }
         }
-
         #endregion
 
         #region Private Methods
@@ -126,7 +127,7 @@ namespace Technosoftware.UaPubSub.Transport
             {
                 Utils.Trace(Utils.TraceMasks.Information, "OnUadpDiscoveryReceive BeginReceive threw Exception {0}", ex.Message);
 
-                lock (m_lock)
+                lock (lock_)
                 {
                     Renew(socket);
                 }
@@ -153,12 +154,12 @@ namespace Technosoftware.UaPubSub.Transport
 
                 foreach (UInt16 dataSetWriterId in networkMessage.DataSetWriterIds)
                 {
-                    lock (m_lock)
+                    lock (lock_)
                     {
-                        if (!m_metadataWriterIdsToSend.Contains(dataSetWriterId))
+                        if (!metadataWriterIdsToSend_.Contains(dataSetWriterId))
                         {
                             // collect requested ids
-                            m_metadataWriterIdsToSend.Add(dataSetWriterId);
+                            metadataWriterIdsToSend_.Add(dataSetWriterId);
                         }
                     }
                 }
@@ -186,21 +187,20 @@ namespace Technosoftware.UaPubSub.Transport
         /// </summary>
         private async Task SendResponseDataSetMetaData()
         {
-            await Task.Delay(m_responseInterval).ConfigureAwait(false);
-
-            lock (m_lock)
+            await Task.Delay(MinimumResponseInterval).ConfigureAwait(false);
+            lock (lock_)
             {
-                if (m_metadataWriterIdsToSend.Count > 0)
+                if (metadataWriterIdsToSend_.Count > 0)
                 {
-                    IList<UaNetworkMessage> responseMessages = m_udpConnection.CreateDataSetMetaDataNetworkMessages(m_metadataWriterIdsToSend.ToArray());
+                    IList<UaNetworkMessage> responseMessages = udpConnection_.CreateDataSetMetaDataNetworkMessages(metadataWriterIdsToSend_.ToArray());
 
                     foreach (UaNetworkMessage message in responseMessages)
                     {
                         Utils.Trace("UdpDiscoveryPublisher.SendResponseDataSetMetaData before sending message for DataSetWriterId:{0}", message.DataSetWriterId);
 
-                        m_udpConnection.PublishNetworkMessage(message);
+                        udpConnection_.PublishNetworkMessage(message);
                     }
-                    m_metadataWriterIdsToSend.Clear();
+                    metadataWriterIdsToSend_.Clear();
                 }
             }
         }
@@ -210,25 +210,25 @@ namespace Technosoftware.UaPubSub.Transport
         /// </summary>
         private async Task SendResponseDataSetWriterConfiguration()
         {
-            await Task.Delay(kMinimumResponseInterval).ConfigureAwait(false);
-            lock (m_lock)
+            await Task.Delay(MinimumResponseInterval).ConfigureAwait(false);
+            lock (lock_)
             {
                 IList<UInt16> dataSetWriterIdsToSend = new List<UInt16>();
                 if (GetDataSetWriterIds != null)
                 {
-                    dataSetWriterIdsToSend = GetDataSetWriterIds.Invoke(m_udpConnection.Application);
+                    dataSetWriterIdsToSend = GetDataSetWriterIds.Invoke(udpConnection_.Application);
                 }
 
                 if (dataSetWriterIdsToSend.Count > 0)
                 {
-                    IList<UaNetworkMessage> responsesMessages = m_udpConnection.CreateDataSetWriterCofigurationMessage(
+                    IList<UaNetworkMessage> responsesMessages = udpConnection_.CreateDataSetWriterCofigurationMessage(
                         dataSetWriterIdsToSend.ToArray());
 
                     foreach (var responsesMessage in responsesMessages)
                     {
                         Utils.Trace("UdpDiscoveryPublisher.SendResponseDataSetWriterConfiguration Before sending message for DataSetWriterId:{0}", responsesMessage.DataSetWriterId);
 
-                        m_udpConnection.PublishNetworkMessage(responsesMessage);
+                        udpConnection_.PublishNetworkMessage(responsesMessage);
                     }
                 }
             }
@@ -239,9 +239,9 @@ namespace Technosoftware.UaPubSub.Transport
         /// </summary>
         private async Task SendResponsePublisherEndpoints()
         {
-            await Task.Delay(kMinimumResponseInterval).ConfigureAwait(false);
+            await Task.Delay(MinimumResponseInterval).ConfigureAwait(false);
 
-            lock (m_lock)
+            lock (lock_)
             {
                 IList<EndpointDescription> publisherEndpointsToSend = new List<EndpointDescription>();
                 if (GetPublisherEndpoints != null)
@@ -249,14 +249,14 @@ namespace Technosoftware.UaPubSub.Transport
                     publisherEndpointsToSend = GetPublisherEndpoints.Invoke();
                 }
 
-                UaNetworkMessage message = m_udpConnection.CreatePublisherEndpointsNetworkMessage(
+                UaNetworkMessage message = udpConnection_.CreatePublisherEndpointsNetworkMessage(
                     publisherEndpointsToSend.ToArray(),
                     publisherEndpointsToSend.Count > 0 ? StatusCodes.Good : StatusCodes.BadNotFound,
-                    m_udpConnection.PubSubConnectionConfiguration.PublisherId.Value);
+                    udpConnection_.PubSubConnectionConfiguration.PublisherId.Value);
 
                 Utils.Trace("UdpDiscoveryPublisher.SendResponsePublisherEndpoints before sending message for PublisherEndpoints.");
 
-                m_udpConnection.PublishNetworkMessage(message);
+                udpConnection_.PublishNetworkMessage(message);
             }
         }
 
@@ -280,8 +280,8 @@ namespace Technosoftware.UaPubSub.Transport
             {
                 newsocket = new UdpClientUnicast(ucastSocket.Address, ucastSocket.Port);
             }
-            m_discoveryUdpClients.Remove(socket);
-            m_discoveryUdpClients.Add(newsocket);
+            discoveryUdpClients_.Remove(socket);
+            discoveryUdpClients_.Add(newsocket);
             socket.Close();
             socket.Dispose();
 

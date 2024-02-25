@@ -28,6 +28,7 @@ namespace Technosoftware.UaPubSub.Transport
     /// </summary>
     internal class UdpDiscoverySubscriber : UdpDiscovery
     {
+        #region  Private Fields
         private const int InitialRequestInterval = 5000;
 
         // The list that will store the WriterIds that shall be included in a DataSetMetaData Request message
@@ -35,6 +36,7 @@ namespace Technosoftware.UaPubSub.Transport
 
         // the component that triggers the publish request messages
         private readonly IntervalRunner intervalRunner_;
+        #endregion
 
         #region Constructor
         /// <summary>
@@ -84,7 +86,7 @@ namespace Technosoftware.UaPubSub.Transport
         /// <param name="writerId"></param>
         public void AddWriterIdForDataSetMetadata(UInt16 writerId)
         {
-            lock (m_lock)
+            lock (lock_)
             {
                 if (!metadataWriterIdsToSend_.Contains(writerId))
                 {
@@ -99,7 +101,7 @@ namespace Technosoftware.UaPubSub.Transport
         /// <param name="writerId"></param>
         public void RemoveWriterIdForDataSetMetadata(UInt16 writerId)
         {
-            lock (m_lock)
+            lock (lock_)
             {
                 if (metadataWriterIdsToSend_.Contains(writerId))
                 {
@@ -113,20 +115,20 @@ namespace Technosoftware.UaPubSub.Transport
         /// </summary>
         public void SendDiscoveryRequestDataSetWriterConfiguration()
         {
-            ushort[] dataSetWriterIds = m_udpConnection.PubSubConnectionConfiguration.ReaderGroups?
+            ushort[] dataSetWriterIds = udpConnection_.PubSubConnectionConfiguration.ReaderGroups?
                 .SelectMany(group => group.DataSetReaders)?
                 .Select(group => group.DataSetWriterId)?
                 .ToArray();
 
             UadpNetworkMessage discoveryRequestDataSetWriterConfiguration = new UadpNetworkMessage(UADPNetworkMessageDiscoveryType.DataSetWriterConfiguration) {
                 DataSetWriterIds = dataSetWriterIds,
-                PublisherId = m_udpConnection.PubSubConnectionConfiguration.PublisherId.Value,
+                PublisherId = udpConnection_.PubSubConnectionConfiguration.PublisherId.Value,
             };
 
             byte[] bytes = discoveryRequestDataSetWriterConfiguration.Encode(MessageContext);
 
             // send the Discovery request message to all open UADPClient 
-            foreach (UdpClient udpClient in m_discoveryUdpClients)
+            foreach (UdpClient udpClient in discoveryUdpClients_)
             {
                 try
                 {
@@ -149,12 +151,12 @@ namespace Technosoftware.UaPubSub.Transport
         /// <param name="writerConfig">the configuration</param>
         public void UpdateDataSetWriterConfiguration(WriterGroupDataType writerConfig)
         {
-            WriterGroupDataType writerGroup = m_udpConnection.PubSubConnectionConfiguration.WriterGroups?
+            WriterGroupDataType writerGroup = udpConnection_.PubSubConnectionConfiguration.WriterGroups?
                 .Find(x => x.WriterGroupId == writerConfig.WriterGroupId);
             if (writerGroup != null)
             {
-                int index = m_udpConnection.PubSubConnectionConfiguration.WriterGroups.IndexOf(writerGroup);
-                m_udpConnection.PubSubConnectionConfiguration.WriterGroups[index] = writerConfig;
+                int index = udpConnection_.PubSubConnectionConfiguration.WriterGroups.IndexOf(writerGroup);
+                udpConnection_.PubSubConnectionConfiguration.WriterGroups[index] = writerConfig;
             }
         }
 
@@ -164,12 +166,12 @@ namespace Technosoftware.UaPubSub.Transport
         public void SendDiscoveryRequestPublisherEndpoints()
         {
             UadpNetworkMessage discoveryRequestPublisherEndpoints = new UadpNetworkMessage(UADPNetworkMessageDiscoveryType.PublisherEndpoint);
-            discoveryRequestPublisherEndpoints.PublisherId = m_udpConnection.PubSubConnectionConfiguration.PublisherId.Value;
+            discoveryRequestPublisherEndpoints.PublisherId = udpConnection_.PubSubConnectionConfiguration.PublisherId.Value;
 
             byte[] bytes = discoveryRequestPublisherEndpoints.Encode(MessageContext);
 
             // send the PublisherEndpoints DiscoveryRequest message to all open UdpClients
-            foreach (var udpClient in m_discoveryUdpClients)
+            foreach (var udpClient in discoveryUdpClients_)
             {
                 try
                 {
@@ -195,7 +197,7 @@ namespace Technosoftware.UaPubSub.Transport
         public void SendDiscoveryRequestDataSetMetaData()
         {
             UInt16[] dataSetWriterIds = null;
-            lock (m_lock)
+            lock (lock_)
             {
                 dataSetWriterIds = metadataWriterIdsToSend_.ToArray();
                 metadataWriterIdsToSend_.Clear();
@@ -209,13 +211,13 @@ namespace Technosoftware.UaPubSub.Transport
             // create the DataSetMetaData DiscoveryRequest message
             UadpNetworkMessage discoveryRequestMetaDataMessage = new UadpNetworkMessage(UADPNetworkMessageDiscoveryType.DataSetMetaData) {
                 DataSetWriterIds = dataSetWriterIds,
-                PublisherId = m_udpConnection.PubSubConnectionConfiguration.PublisherId.Value,
+                PublisherId = udpConnection_.PubSubConnectionConfiguration.PublisherId.Value,
             };
 
             byte[] bytes = discoveryRequestMetaDataMessage.Encode(MessageContext);
 
             // send the DataSetMetaData DiscoveryRequest message to all open UDPClient 
-            foreach (var udpClient in m_discoveryUdpClients)
+            foreach (var udpClient in discoveryUdpClients_)
             {
                 try
                 {
@@ -242,7 +244,7 @@ namespace Technosoftware.UaPubSub.Transport
         /// <returns></returns>
         private bool CanPublish()
         {
-            lock (m_lock)
+            lock (lock_)
             {
                 if (metadataWriterIdsToSend_.Count == 0)
                 {
