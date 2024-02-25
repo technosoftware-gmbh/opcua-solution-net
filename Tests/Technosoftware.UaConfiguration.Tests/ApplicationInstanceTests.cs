@@ -526,7 +526,7 @@ namespace Technosoftware.UaConfiguration
         }
 
         /// <summary>
-        /// Tests that a supplied certifiacte is stored in the Trusted store of the Server after calling method AddOwnCertificateToTrustedStoreAsync
+        /// Tests that a supplied certificate is stored in the Trusted store of the Server after calling method AddOwnCertificateToTrustedStoreAsync
         /// </summary>
         /// <returns></returns>
         [Test]

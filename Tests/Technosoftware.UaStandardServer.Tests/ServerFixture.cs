@@ -269,10 +269,8 @@ namespace Technosoftware.UaStandardServer.Tests
             Server?.Stop();
             Server?.Dispose();
             Server = null;
-#if NET6_0_OR_GREATER
             ActivityListener?.Dispose();
             ActivityListener = null;
-#endif
             return Task.Delay(100);
         }
     }

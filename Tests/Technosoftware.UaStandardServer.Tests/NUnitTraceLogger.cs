@@ -11,6 +11,7 @@
 
 #region Using Directives
 using System;
+using System.Globalization;
 using System.IO;
 using NUnit.Framework;
 using Opc.Ua;
@@ -73,7 +74,7 @@ namespace Technosoftware.UaStandardServer.Tests
                 {
                     writer_.WriteLine(e.Exception);
                 }
-                writer_.WriteLine(string.Format(e.Format, e.Arguments ?? Array.Empty<object>()));
+                writer_.WriteLine(string.Format(CultureInfo.InvariantCulture, e.Format, e.Arguments ?? Array.Empty<object>()));
             }
         }
     }

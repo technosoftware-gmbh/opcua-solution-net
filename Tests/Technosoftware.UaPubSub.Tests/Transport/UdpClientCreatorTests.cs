@@ -196,7 +196,7 @@ namespace Technosoftware.UaPubSub.Tests.Transport
                     byte[] ipAddressBytes = validIp.GetAddressBytes();
                     for (int pos = 0; pos < ipAddressBytes.Length - 1; pos++)
                     {
-                        newIPAddress += string.Format("{0}.", ipAddressBytes[pos]);
+                        newIPAddress += Utils.Format("{0}.", ipAddressBytes[pos]);
                     }
                     newIPAddress += lastIpByte;
                     return newIPAddress;
