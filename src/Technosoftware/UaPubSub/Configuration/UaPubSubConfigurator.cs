@@ -25,7 +25,7 @@ namespace Technosoftware.UaPubSub.Configuration
     /// It has methods for adding/removing configuration objects to a root <see cref="PubSubConfigurationDataType"/> object.
     /// When the root <see cref="PubSubConfigurationDataType"/> object is modified there are various events raised to allow reaction to configuration changes.
     /// Each child object from parent <see cref="PubSubConfigurationDataType"/> object has a configurationId associated to it and it can be used to alter configuration. 
-    /// The configurationId can be obtained using the <see cref="UaPubSubConfigurator.FindIdForObject(object)"/> method.
+    /// The configurationId can be obtained using the <see cref="FindIdForObject(object)"/> method.
     /// </summary>
     public class UaPubSubConfigurator
     {
@@ -117,9 +117,10 @@ namespace Technosoftware.UaPubSub.Configuration
             idsToPubSubState_ = new Dictionary<uint, PubSubState>();
             idsToParentId_ = new Dictionary<uint, uint>();
 
-            pubSubConfiguration_ = new PubSubConfigurationDataType();
-            pubSubConfiguration_.Connections = new PubSubConnectionDataTypeCollection();
-            pubSubConfiguration_.PublishedDataSets = new PublishedDataSetDataTypeCollection();
+            pubSubConfiguration_ = new PubSubConfigurationDataType {
+                Connections = new PubSubConnectionDataTypeCollection(),
+                PublishedDataSets = new PublishedDataSetDataTypeCollection()
+            };
 
             //remember configuration id 
             var id = nextId_++;
@@ -133,7 +134,7 @@ namespace Technosoftware.UaPubSub.Configuration
         /// <summary>
         /// Get reference to <see cref="PubSubConfigurationDataType"/> instance that maintains the configuration for this <see cref="UaPubSubConfigurator"/>.
         /// </summary>
-        public PubSubConfigurationDataType PubSubConfiguration { get { return pubSubConfiguration_; } }
+        public PubSubConfigurationDataType PubSubConfiguration => pubSubConfiguration_;
         #endregion
 
         #region Public Methods - Find
@@ -146,7 +147,7 @@ namespace Technosoftware.UaPubSub.Configuration
         /// <returns></returns>
         public PublishedDataSetDataType FindPublishedDataSetByName(string name)
         {
-            foreach (var publishedDataSet in pubSubConfiguration_.PublishedDataSets)
+            foreach (PublishedDataSetDataType publishedDataSet in pubSubConfiguration_.PublishedDataSets)
             {
                 if (name == publishedDataSet.Name)
                 {
@@ -165,25 +166,17 @@ namespace Technosoftware.UaPubSub.Configuration
         /// <returns></returns>
         public object FindObjectById(uint id)
         {
-            if (idsToObjects_.TryGetValue(id, out object objectById))
-            {
-                return objectById;
-            }
-            return null;
+            return idsToObjects_.TryGetValue(id, out var objectById) ? objectById : null;
         }
 
         /// <summary>
         /// Search id for specified configuration object.
         /// </summary>
         /// <param name="configurationObject">The object whose id is searched.</param>
-        /// <returns>Returns <see cref="UaPubSubConfigurator.InvalidId"/> if object was not found.</returns>
+        /// <returns>Returns <see cref="InvalidId"/> if object was not found.</returns>
         public uint FindIdForObject(object configurationObject)
         {
-            if (objectsToIds_.TryGetValue(configurationObject, out uint id))
-            {
-                return id;
-            }
-            return InvalidId;
+            return objectsToIds_.TryGetValue(configurationObject, out var id) ? id : InvalidId;
         }
 
         /// <summary>
@@ -193,12 +186,8 @@ namespace Technosoftware.UaPubSub.Configuration
         /// <returns>Returns <see cref="PubSubState"/> if the object.</returns>
         public PubSubState FindStateForObject(object configurationObject)
         {
-            uint id = FindIdForObject(configurationObject);
-            if (idsToPubSubState_.TryGetValue(id, out PubSubState pubSubState))
-            {
-                return pubSubState;
-            }
-            return PubSubState.Error;
+            var id = FindIdForObject(configurationObject);
+            return idsToPubSubState_.TryGetValue(id, out PubSubState pubSubState) ? pubSubState : PubSubState.Error;
         }
 
         /// <summary>
@@ -208,11 +197,7 @@ namespace Technosoftware.UaPubSub.Configuration
         /// <returns>Returns <see cref="PubSubState"/> if the object.</returns>
         public PubSubState FindStateForId(uint id)
         {
-            if (idsToPubSubState_.TryGetValue(id, out PubSubState pubsubState))
-            {
-                return pubsubState;
-            }
-            return PubSubState.Error;
+            return idsToPubSubState_.TryGetValue(id, out PubSubState pubsubState) ? pubsubState : PubSubState.Error;
         }
         /// <summary>
         /// Find the parent configuration object for a configuration object
@@ -221,12 +206,8 @@ namespace Technosoftware.UaPubSub.Configuration
         /// <returns></returns>
         public object FindParentForObject(object configurationObject)
         {
-            uint id = FindIdForObject(configurationObject);
-            if (id != InvalidId && idsToParentId_.TryGetValue(id, out uint parentId))
-            {
-                return FindObjectById(parentId);
-            }
-            return null;
+            var id = FindIdForObject(configurationObject);
+            return id != InvalidId && idsToParentId_.TryGetValue(id, out var parentId) ? FindObjectById(parentId) : null;
         }
 
         /// <summary>
@@ -270,7 +251,7 @@ namespace Technosoftware.UaPubSub.Configuration
             {
                 throw new ArgumentException("The specified file {0} does not exist", configFilePath);
             }
-            var pubSubConfiguration = UaPubSubConfigurationHelper.LoadConfiguration(configFilePath);
+            PubSubConfigurationDataType pubSubConfiguration = UaPubSubConfigurationHelper.LoadConfiguration(configFilePath);
 
             LoadConfiguration(pubSubConfiguration, replaceExisting);
         }
@@ -289,18 +270,18 @@ namespace Technosoftware.UaPubSub.Configuration
                     //remove previous configured published data sets
                     if (pubSubConfiguration_ != null && pubSubConfiguration_.PublishedDataSets.Count > 0)
                     {
-                        foreach (var publishedDataSet in pubSubConfiguration.PublishedDataSets)
+                        foreach (PublishedDataSetDataType publishedDataSet in pubSubConfiguration.PublishedDataSets)
                         {
-                            RemovePublishedDataSet(publishedDataSet);
+                            _ = RemovePublishedDataSet(publishedDataSet);
                         }
                     }
 
                     //remove previous configured connections
                     if (pubSubConfiguration_ != null && pubSubConfiguration_.Connections.Count > 0)
                     {
-                        foreach (var connection in pubSubConfiguration_.Connections.ToArray())
+                        foreach (PubSubConnectionDataType connection in pubSubConfiguration_.Connections.ToArray())
                         {
-                            RemoveConnection(connection);
+                            _ = RemoveConnection(connection);
                         }
                     }
 
@@ -309,12 +290,12 @@ namespace Technosoftware.UaPubSub.Configuration
                 }
 
                 //first load Published DataSet information
-                foreach (var publishedDataSet in pubSubConfiguration.PublishedDataSets)
+                foreach (PublishedDataSetDataType publishedDataSet in pubSubConfiguration.PublishedDataSets)
                 {
-                    AddPublishedDataSet(publishedDataSet);
+                    _ = AddPublishedDataSet(publishedDataSet);
                 }
 
-                foreach (var pubSubConnectionDataType in pubSubConfiguration.Connections)
+                foreach (PubSubConnectionDataType pubSubConnectionDataType in pubSubConfiguration.Connections)
                 {
                     // handle empty names 
                     if (string.IsNullOrEmpty(pubSubConnectionDataType.Name))
@@ -322,7 +303,7 @@ namespace Technosoftware.UaPubSub.Configuration
                         //set default name 
                         pubSubConnectionDataType.Name = "Connection_" + (nextId_ + 1);
                     }
-                    AddConnection(pubSubConnectionDataType);
+                    _ = AddConnection(pubSubConnectionDataType);
                 }
             }
         }
@@ -346,7 +327,7 @@ namespace Technosoftware.UaPubSub.Configuration
                 {
                     //validate duplicate name 
                     var duplicateName = false;
-                    foreach (var publishedDataSet in pubSubConfiguration_.PublishedDataSets)
+                    foreach (PublishedDataSetDataType publishedDataSet in pubSubConfiguration_.PublishedDataSets)
                     {
                         if (publishedDataSetDataType.Name == publishedDataSet.Name)
                         {
@@ -367,11 +348,7 @@ namespace Technosoftware.UaPubSub.Configuration
                     pubSubConfiguration_.PublishedDataSets.Add(publishedDataSetDataType);
 
                     // raise PublishedDataSetAdded event
-                    if (PublishedDataSetAddedEvent != null)
-                    {
-                        PublishedDataSetAddedEvent(this,
-                            new PublishedDataSetEventArgs() { PublishedDataSetId = newPublishedDataSetId, PublishedDataSetDataType = publishedDataSetDataType });
-                    }
+                    PublishedDataSetAddedEvent?.Invoke(this, new PublishedDataSetEventArgs() { PublishedDataSetId = newPublishedDataSetId, PublishedDataSetDataType = publishedDataSetDataType });
 
                     if (publishedDataSetDataType.ExtensionFields == null)
                     {
@@ -379,9 +356,9 @@ namespace Technosoftware.UaPubSub.Configuration
                     }
                     var extensionFields = new KeyValuePairCollection(publishedDataSetDataType.ExtensionFields);
                     publishedDataSetDataType.ExtensionFields.Clear();
-                    foreach (var extensionField in extensionFields)
+                    foreach (Opc.Ua.KeyValuePair extensionField in extensionFields)
                     {
-                        AddExtensionField(newPublishedDataSetId, extensionField);
+                        _ = AddExtensionField(newPublishedDataSetId, extensionField);
                     }
                     return StatusCodes.Good;
                 }
@@ -408,8 +385,7 @@ namespace Technosoftware.UaPubSub.Configuration
         {
             lock (lock_)
             {
-                var publishedDataSetDataType = FindObjectById(publishedDataSetId) as PublishedDataSetDataType;
-                if (publishedDataSetDataType == null)
+                if (!(FindObjectById(publishedDataSetId) is PublishedDataSetDataType publishedDataSetDataType))
                 {
                     // Unexpected exception 
                     Utils.Trace(Utils.TraceMasks.Information, "Current configuration does not contain PublishedDataSetDataType with ConfigId = {0}", publishedDataSetId);
@@ -440,35 +416,32 @@ namespace Technosoftware.UaPubSub.Configuration
                          * Before the Objects are removed, their state is changed to Disabled_0*/
 
                         // Find all associated DataSetWriter objects
-                        foreach (var connection in pubSubConfiguration_.Connections)
+                        foreach (PubSubConnectionDataType connection in pubSubConfiguration_.Connections)
                         {
-                            foreach (var writerGroup in connection.WriterGroups)
+                            foreach (WriterGroupDataType writerGroup in connection.WriterGroups)
                             {
-                                foreach (var dataSetWriter in writerGroup.DataSetWriters.ToArray())
+                                foreach (DataSetWriterDataType dataSetWriter in writerGroup.DataSetWriters.ToArray())
                                 {
                                     if (dataSetWriter.DataSetName == publishedDataSetDataType.Name)
                                     {
-                                        RemoveDataSetWriter(dataSetWriter);
+                                        _ = RemoveDataSetWriter(dataSetWriter);
                                     }
                                 }
                             }
                         }
 
-                        pubSubConfiguration_.PublishedDataSets.Remove(publishedDataSetDataType);
+                        _ = pubSubConfiguration_.PublishedDataSets.Remove(publishedDataSetDataType);
 
                         //remove all references from dictionaries
-                        idsToObjects_.Remove(publishedDataSetId);
-                        objectsToIds_.Remove(publishedDataSetDataType);
-                        idsToParentId_.Remove(publishedDataSetId);
-                        idsToPubSubState_.Remove(publishedDataSetId);
+                        _ = idsToObjects_.Remove(publishedDataSetId);
+                        _ = objectsToIds_.Remove(publishedDataSetDataType);
+                        _ = idsToParentId_.Remove(publishedDataSetId);
+                        _ = idsToPubSubState_.Remove(publishedDataSetId);
 
-                        if (PublishedDataSetRemovedEvent != null)
-                        {
-                            PublishedDataSetRemovedEvent(this, new PublishedDataSetEventArgs() {
-                                PublishedDataSetId = publishedDataSetId,
-                                PublishedDataSetDataType = publishedDataSetDataType
-                            });
-                        }
+                        PublishedDataSetRemovedEvent?.Invoke(this, new PublishedDataSetEventArgs() {
+                            PublishedDataSetId = publishedDataSetId,
+                            PublishedDataSetDataType = publishedDataSetDataType
+                        });
                         return StatusCodes.Good;
                     }
                 }
@@ -504,7 +477,7 @@ namespace Technosoftware.UaPubSub.Configuration
                 {
                     //validate duplicate name 
                     var duplicateName = false;
-                    foreach (var element in publishedDataSetDataType.ExtensionFields)
+                    foreach (Opc.Ua.KeyValuePair element in publishedDataSetDataType.ExtensionFields)
                     {
                         if (element.Key == extensionField.Key)
                         {
@@ -525,11 +498,7 @@ namespace Technosoftware.UaPubSub.Configuration
                 publishedDataSetDataType.ExtensionFields.Add(extensionField);
 
                 // raise ExtensionFieldAdded event
-                if (ExtensionFieldAddedEvent != null)
-                {
-                    ExtensionFieldAddedEvent(this,
-                        new ExtensionFieldEventArgs() { PublishedDataSetId = publishedDataSetConfigId, ExtensionFieldId = newextensionFieldId, ExtensionField = extensionField });
-                }
+                ExtensionFieldAddedEvent?.Invoke(this, new ExtensionFieldEventArgs() { PublishedDataSetId = publishedDataSetConfigId, ExtensionFieldId = newextensionFieldId, ExtensionField = extensionField });
 
                 return StatusCodes.Good;
             }
@@ -555,18 +524,14 @@ namespace Technosoftware.UaPubSub.Configuration
                     return StatusCodes.BadNodeIdInvalid;
                 }
                 // locate the extension field 
-                foreach (var extensionField in publishedDataSetDataType.ExtensionFields.ToArray())
+                foreach (Opc.Ua.KeyValuePair extensionField in publishedDataSetDataType.ExtensionFields.ToArray())
                 {
                     if (extensionField.Equals(extensionFieldToRemove))
                     {
-                        publishedDataSetDataType.ExtensionFields.Remove(extensionFieldToRemove);
+                        _ = publishedDataSetDataType.ExtensionFields.Remove(extensionFieldToRemove);
 
                         // raise ExtensionFieldRemoved event
-                        if (ExtensionFieldRemovedEvent != null)
-                        {
-                            ExtensionFieldRemovedEvent(this,
-                                new ExtensionFieldEventArgs() { PublishedDataSetId = publishedDataSetConfigId, ExtensionFieldId = extensionFieldConfigId, ExtensionField = extensionField });
-                        }
+                        ExtensionFieldRemovedEvent?.Invoke(this, new ExtensionFieldEventArgs() { PublishedDataSetId = publishedDataSetConfigId, ExtensionFieldId = extensionFieldConfigId, ExtensionField = extensionField });
                         return StatusCodes.Good;
                     }
                 }
@@ -597,7 +562,7 @@ namespace Technosoftware.UaPubSub.Configuration
                 {
                     //validate connection name 
                     var duplicateName = false;
-                    foreach (var connection in pubSubConfiguration_.Connections)
+                    foreach (PubSubConnectionDataType connection in pubSubConfiguration_.Connections)
                     {
                         if (connection.Name == pubSubConnectionDataType.Name)
                         {
@@ -629,13 +594,9 @@ namespace Technosoftware.UaPubSub.Configuration
                     pubSubConfiguration_.Connections.Add(pubSubConnectionDataType);
 
                     // raise ConnectionAdded event
-                    if (ConnectionAddedEvent != null)
-                    {
-                        ConnectionAddedEvent(this,
-                            new ConnectionEventArgs() { ConnectionId = newConnectionId, PubSubConnectionDataType = pubSubConnectionDataType });
-                    }
+                    ConnectionAddedEvent?.Invoke(this, new ConnectionEventArgs() { ConnectionId = newConnectionId, PubSubConnectionDataType = pubSubConnectionDataType });
                     //handler reader & writer groups 
-                    foreach (var writerGroup in writerGroups)
+                    foreach (WriterGroupDataType writerGroup in writerGroups)
                     {
                         // handle empty names 
                         if (string.IsNullOrEmpty(writerGroup.Name))
@@ -643,9 +604,9 @@ namespace Technosoftware.UaPubSub.Configuration
                             //set default name 
                             writerGroup.Name = "WriterGroup_" + (nextId_ + 1);
                         }
-                        AddWriterGroup(newConnectionId, writerGroup);
+                        _ = AddWriterGroup(newConnectionId, writerGroup);
                     }
-                    foreach (var readerGroup in readerGroups)
+                    foreach (ReaderGroupDataType readerGroup in readerGroups)
                     {
                         // handle empty names 
                         if (string.IsNullOrEmpty(readerGroup.Name))
@@ -653,7 +614,7 @@ namespace Technosoftware.UaPubSub.Configuration
                             //set default name 
                             readerGroup.Name = "ReaderGroup_" + (nextId_ + 1);
                         }
-                        AddReaderGroup(newConnectionId, readerGroup);
+                        _ = AddReaderGroup(newConnectionId, readerGroup);
                     }
 
                     return StatusCodes.Good;
@@ -680,8 +641,7 @@ namespace Technosoftware.UaPubSub.Configuration
         {
             lock (lock_)
             {
-                var pubSubConnectionDataType = FindObjectById(connectionId) as PubSubConnectionDataType;
-                if (pubSubConnectionDataType == null)
+                if (!(FindObjectById(connectionId) is PubSubConnectionDataType pubSubConnectionDataType))
                 {
                     // Unexpected exception 
                     Utils.Trace(Utils.TraceMasks.Information, "Current configuration does not contain PubSubConnectionDataType with ConfigId = {0}", connectionId);
@@ -711,30 +671,27 @@ namespace Technosoftware.UaPubSub.Configuration
                     {
                         // remove children
                         var writerGroups = new WriterGroupDataTypeCollection(pubSubConnectionDataType.WriterGroups);
-                        foreach (var writerGroup in writerGroups)
+                        foreach (WriterGroupDataType writerGroup in writerGroups)
                         {
-                            RemoveWriterGroup(writerGroup);
+                            _ = RemoveWriterGroup(writerGroup);
                         }
                         var readerGroups = new ReaderGroupDataTypeCollection(pubSubConnectionDataType.ReaderGroups);
-                        foreach (var readerGroup in readerGroups)
+                        foreach (ReaderGroupDataType readerGroup in readerGroups)
                         {
-                            RemoveReaderGroup(readerGroup);
+                            _ = RemoveReaderGroup(readerGroup);
                         }
-                        pubSubConfiguration_.Connections.Remove(pubSubConnectionDataType);
+                        _ = pubSubConfiguration_.Connections.Remove(pubSubConnectionDataType);
 
                         //remove all references from dictionaries
-                        idsToObjects_.Remove(connectionId);
-                        objectsToIds_.Remove(pubSubConnectionDataType);
-                        idsToParentId_.Remove(connectionId);
-                        idsToPubSubState_.Remove(connectionId);
+                        _ = idsToObjects_.Remove(connectionId);
+                        _ = objectsToIds_.Remove(pubSubConnectionDataType);
+                        _ = idsToParentId_.Remove(connectionId);
+                        _ = idsToPubSubState_.Remove(connectionId);
 
-                        if (ConnectionRemovedEvent != null)
-                        {
-                            ConnectionRemovedEvent(this, new ConnectionEventArgs() {
-                                ConnectionId = connectionId,
-                                PubSubConnectionDataType = pubSubConnectionDataType
-                            });
-                        }
+                        ConnectionRemovedEvent?.Invoke(this, new ConnectionEventArgs() {
+                            ConnectionId = connectionId,
+                            PubSubConnectionDataType = pubSubConnectionDataType
+                        });
                         return StatusCodes.Good;
                     }
                     return StatusCodes.BadNodeIdUnknown;
@@ -767,9 +724,9 @@ namespace Technosoftware.UaPubSub.Configuration
             {
                 throw new ArgumentException("This WriterGroupDataType instance is already added to the configuration.");
             }
-            if (!idsToObjects_.ContainsKey(parentConnectionId))
+            if (!idsToObjects_.TryGetValue(parentConnectionId, out var value))
             {
-                throw new ArgumentException(String.Format("There is no connection with configurationId = {0} in current configuration.", parentConnectionId));
+                throw new ArgumentException(Utils.Format("There is no connection with configurationId = {0} in current configuration.", parentConnectionId));
             }
             try
             {
@@ -778,12 +735,11 @@ namespace Technosoftware.UaPubSub.Configuration
                     // remember collections 
                     var dataSetWriters = new DataSetWriterDataTypeCollection(writerGroupDataType.DataSetWriters);
                     writerGroupDataType.DataSetWriters.Clear();
-                    var parentConnection = idsToObjects_[parentConnectionId] as PubSubConnectionDataType;
-                    if (parentConnection != null)
+                    if (idsToObjects_[parentConnectionId] is PubSubConnectionDataType parentConnection)
                     {
                         //validate duplicate name 
                         var duplicateName = false;
-                        foreach (var writerGroup in parentConnection.WriterGroups)
+                        foreach (WriterGroupDataType writerGroup in parentConnection.WriterGroups)
                         {
                             if (writerGroup.Name == writerGroupDataType.Name)
                             {
@@ -809,14 +765,11 @@ namespace Technosoftware.UaPubSub.Configuration
                         idsToPubSubState_.Add(newWriterGroupId, GetInitialPubSubState(writerGroupDataType));
 
                         // raise WriterGroupAdded event
-                        if (WriterGroupAddedEvent != null)
-                        {
-                            WriterGroupAddedEvent(this,
-                                new WriterGroupEventArgs() { ConnectionId = parentConnectionId, WriterGroupId = newWriterGroupId, WriterGroupDataType = writerGroupDataType });
-                        }
+                        WriterGroupAddedEvent?.Invoke(this,
+    new WriterGroupEventArgs() { ConnectionId = parentConnectionId, WriterGroupId = newWriterGroupId, WriterGroupDataType = writerGroupDataType });
 
                         //handler datasetWriters
-                        foreach (var datasetWriter in dataSetWriters)
+                        foreach (DataSetWriterDataType datasetWriter in dataSetWriters)
                         {
                             // handle empty names 
                             if (string.IsNullOrEmpty(datasetWriter.Name))
@@ -824,7 +777,7 @@ namespace Technosoftware.UaPubSub.Configuration
                                 //set default name 
                                 datasetWriter.Name = "DataSetWriter_" + (nextId_ + 1);
                             }
-                            AddDataSetWriter(newWriterGroupId, datasetWriter);
+                            _ = AddDataSetWriter(newWriterGroupId, datasetWriter);
                         }
 
                         return StatusCodes.Good;
@@ -840,7 +793,7 @@ namespace Technosoftware.UaPubSub.Configuration
         }
 
         /// <summary>
-        /// Removes a WriterGroupDataType instance from current configuration specified by confgiId
+        /// Removes a WriterGroupDataType instance from current configuration specified by configId
         /// </summary>
         /// <param name="writerGroupId"></param>
         /// <returns>
@@ -852,8 +805,7 @@ namespace Technosoftware.UaPubSub.Configuration
         {
             lock (lock_)
             {
-                var writerGroupDataType = FindObjectById(writerGroupId) as WriterGroupDataType;
-                if (writerGroupDataType == null)
+                if (!(FindObjectById(writerGroupId) is WriterGroupDataType writerGroupDataType))
                 {
                     // Unexpected exception 
                     Utils.Trace(Utils.TraceMasks.Information, "Current configuration does not contain WriterGroupDataType with ConfigId = {0}", writerGroupId);
@@ -883,31 +835,28 @@ namespace Technosoftware.UaPubSub.Configuration
                     {
                         // remove children
                         var dataSetWriters = new DataSetWriterDataTypeCollection(writerGroupDataType.DataSetWriters);
-                        foreach (var dataSetWriter in dataSetWriters)
+                        foreach (DataSetWriterDataType dataSetWriter in dataSetWriters)
                         {
-                            RemoveDataSetWriter(dataSetWriter);
+                            _ = RemoveDataSetWriter(dataSetWriter);
                         }
                         // find parent connection
                         var parentConnection = FindParentForObject(writerGroupDataType) as PubSubConnectionDataType;
                         var parentConnectionId = FindIdForObject(parentConnection);
                         if (parentConnection != null && parentConnectionId != InvalidId)
                         {
-                            parentConnection.WriterGroups.Remove(writerGroupDataType);
+                            _ = parentConnection.WriterGroups.Remove(writerGroupDataType);
 
                             //remove all references from dictionaries
-                            idsToObjects_.Remove(writerGroupId);
-                            objectsToIds_.Remove(writerGroupDataType);
-                            idsToParentId_.Remove(writerGroupId);
-                            idsToPubSubState_.Remove(writerGroupId);
+                            _ = idsToObjects_.Remove(writerGroupId);
+                            _ = objectsToIds_.Remove(writerGroupDataType);
+                            _ = idsToParentId_.Remove(writerGroupId);
+                            _ = idsToPubSubState_.Remove(writerGroupId);
 
-                            if (WriterGroupRemovedEvent != null)
-                            {
-                                WriterGroupRemovedEvent(this, new WriterGroupEventArgs() {
-                                    WriterGroupId = writerGroupId,
-                                    WriterGroupDataType = writerGroupDataType,
-                                    ConnectionId = parentConnectionId
-                                });
-                            }
+                            WriterGroupRemovedEvent?.Invoke(this, new WriterGroupEventArgs() {
+                                WriterGroupId = writerGroupId,
+                                WriterGroupDataType = writerGroupDataType,
+                                ConnectionId = parentConnectionId
+                            });
                             return StatusCodes.Good;
                         }
                     }
@@ -942,20 +891,19 @@ namespace Technosoftware.UaPubSub.Configuration
             {
                 throw new ArgumentException("This DataSetWriterDataType instance is already added to the configuration.");
             }
-            if (!idsToObjects_.ContainsKey(parentWriterGroupId))
+            if (!idsToObjects_.TryGetValue(parentWriterGroupId, out object value))
             {
-                throw new ArgumentException(String.Format("There is no WriterGroup with configurationId = {0} in current configuration.", parentWriterGroupId));
+                throw new ArgumentException(Utils.Format("There is no WriterGroup with configurationId = {0} in current configuration.", parentWriterGroupId));
             }
             try
             {
                 lock (lock_)
                 {
-                    var parentWriterGroup = idsToObjects_[parentWriterGroupId] as WriterGroupDataType;
-                    if (parentWriterGroup != null)
+                    if (idsToObjects_[parentWriterGroupId] is WriterGroupDataType parentWriterGroup)
                     {
                         //validate duplicate name 
                         var duplicateName = false;
-                        foreach (var writer in parentWriterGroup.DataSetWriters)
+                        foreach (DataSetWriterDataType writer in parentWriterGroup.DataSetWriters)
                         {
                             if (writer.Name == dataSetWriterDataType.Name)
                             {
@@ -982,11 +930,8 @@ namespace Technosoftware.UaPubSub.Configuration
                         idsToPubSubState_.Add(newDataSetWriterId, GetInitialPubSubState(dataSetWriterDataType));
 
                         // raise DataSetWriterAdded event
-                        if (DataSetWriterAddedEvent != null)
-                        {
-                            DataSetWriterAddedEvent(this,
-                                new DataSetWriterEventArgs() { WriterGroupId = parentWriterGroupId, DataSetWriterId = newDataSetWriterId, DataSetWriterDataType = dataSetWriterDataType });
-                        }
+                        DataSetWriterAddedEvent?.Invoke(this,
+    new DataSetWriterEventArgs() { WriterGroupId = parentWriterGroupId, DataSetWriterId = newDataSetWriterId, DataSetWriterDataType = dataSetWriterDataType });
 
                         return StatusCodes.Good;
                     }
@@ -1001,7 +946,7 @@ namespace Technosoftware.UaPubSub.Configuration
         }
 
         /// <summary>
-        /// Removes a DataSetWriterDataType instance from current configuration specified by confgiId
+        /// Removes a DataSetWriterDataType instance from current configuration specified by configId
         /// </summary>
         /// <param name="dataSetWriterId"></param>
         /// <returns>
@@ -1013,8 +958,7 @@ namespace Technosoftware.UaPubSub.Configuration
         {
             lock (lock_)
             {
-                var dataSetWriterDataType = FindObjectById(dataSetWriterId) as DataSetWriterDataType;
-                if (dataSetWriterDataType == null)
+                if (!(FindObjectById(dataSetWriterId) is DataSetWriterDataType dataSetWriterDataType))
                 {
                     // Unexpected exception 
                     Utils.Trace(Utils.TraceMasks.Information, "Current configuration does not contain DataSetWriterDataType with ConfigId = {0}", dataSetWriterId);
@@ -1047,22 +991,19 @@ namespace Technosoftware.UaPubSub.Configuration
                         var parentWriterGroupId = FindIdForObject(parentWriterGroup);
                         if (parentWriterGroup != null && parentWriterGroupId != InvalidId)
                         {
-                            parentWriterGroup.DataSetWriters.Remove(dataSetWriterDataType);
+                            _ = parentWriterGroup.DataSetWriters.Remove(dataSetWriterDataType);
 
                             //remove all references from dictionaries
-                            idsToObjects_.Remove(dataSetWriterId);
-                            objectsToIds_.Remove(dataSetWriterDataType);
-                            idsToParentId_.Remove(dataSetWriterId);
-                            idsToPubSubState_.Remove(dataSetWriterId);
+                            _ = idsToObjects_.Remove(dataSetWriterId);
+                            _ = objectsToIds_.Remove(dataSetWriterDataType);
+                            _ = idsToParentId_.Remove(dataSetWriterId);
+                            _ = idsToPubSubState_.Remove(dataSetWriterId);
 
-                            if (DataSetWriterRemovedEvent != null)
-                            {
-                                DataSetWriterRemovedEvent(this, new DataSetWriterEventArgs() {
-                                    WriterGroupId = parentWriterGroupId,
-                                    DataSetWriterDataType = dataSetWriterDataType,
-                                    DataSetWriterId = dataSetWriterId
-                                });
-                            }
+                            DataSetWriterRemovedEvent?.Invoke(this, new DataSetWriterEventArgs() {
+                                WriterGroupId = parentWriterGroupId,
+                                DataSetWriterDataType = dataSetWriterDataType,
+                                DataSetWriterId = dataSetWriterId
+                            });
                             return StatusCodes.Good;
                         }
                     }
@@ -1096,9 +1037,9 @@ namespace Technosoftware.UaPubSub.Configuration
             {
                 throw new ArgumentException("This ReaderGroupDataType instance is already added to the configuration.");
             }
-            if (!idsToObjects_.ContainsKey(parentConnectionId))
+            if (!idsToObjects_.TryGetValue(parentConnectionId, out object value))
             {
-                throw new ArgumentException(String.Format("There is no connection with configurationId = {0} in current configuration.", parentConnectionId));
+                throw new ArgumentException(Utils.Format("There is no connection with configurationId = {0} in current configuration.", parentConnectionId));
             }
             try
             {
@@ -1107,12 +1048,11 @@ namespace Technosoftware.UaPubSub.Configuration
                     // remember collections 
                     var dataSetReaders = new DataSetReaderDataTypeCollection(readerGroupDataType.DataSetReaders);
                     readerGroupDataType.DataSetReaders.Clear();
-                    var parentConnection = idsToObjects_[parentConnectionId] as PubSubConnectionDataType;
-                    if (parentConnection != null)
+                    if (idsToObjects_[parentConnectionId] is PubSubConnectionDataType parentConnection)
                     {
                         //validate duplicate name 
                         var duplicateName = false;
-                        foreach (var readerGroup in parentConnection.ReaderGroups)
+                        foreach (ReaderGroupDataType readerGroup in parentConnection.ReaderGroups)
                         {
                             if (readerGroup.Name == readerGroupDataType.Name)
                             {
@@ -1139,14 +1079,11 @@ namespace Technosoftware.UaPubSub.Configuration
                         idsToPubSubState_.Add(newReaderGroupId, GetInitialPubSubState(readerGroupDataType));
 
                         // raise ReaderGroupAdded event
-                        if (ReaderGroupAddedEvent != null)
-                        {
-                            ReaderGroupAddedEvent(this,
-                                new ReaderGroupEventArgs() { ConnectionId = parentConnectionId, ReaderGroupId = newReaderGroupId, ReaderGroupDataType = readerGroupDataType });
-                        }
+                        ReaderGroupAddedEvent?.Invoke(this,
+    new ReaderGroupEventArgs() { ConnectionId = parentConnectionId, ReaderGroupId = newReaderGroupId, ReaderGroupDataType = readerGroupDataType });
 
                         //handler datasetWriters
-                        foreach (var datasetReader in dataSetReaders)
+                        foreach (DataSetReaderDataType datasetReader in dataSetReaders)
                         {
                             // handle empty names 
                             if (string.IsNullOrEmpty(datasetReader.Name))
@@ -1154,7 +1091,7 @@ namespace Technosoftware.UaPubSub.Configuration
                                 //set default name 
                                 datasetReader.Name = "DataSetReader_" + (nextId_ + 1);
                             }
-                            AddDataSetReader(newReaderGroupId, datasetReader);
+                            _ = AddDataSetReader(newReaderGroupId, datasetReader);
                         }
 
                         return StatusCodes.Good;
@@ -1171,7 +1108,7 @@ namespace Technosoftware.UaPubSub.Configuration
         }
 
         /// <summary>
-        /// Removes a ReaderGroupDataType instance from current configuration specified by confgiId
+        /// Removes a ReaderGroupDataType instance from current configuration specified by configId
         /// </summary>
         /// <param name="readerGroupId"></param>
         /// <returns>
@@ -1183,8 +1120,7 @@ namespace Technosoftware.UaPubSub.Configuration
         {
             lock (lock_)
             {
-                var readerGroupDataType = FindObjectById(readerGroupId) as ReaderGroupDataType;
-                if (readerGroupDataType == null)
+                if (!(FindObjectById(readerGroupId) is ReaderGroupDataType readerGroupDataType))
                 {
                     Utils.Trace(Utils.TraceMasks.Information, "Current configuration does not contain ReaderGroupDataType with ConfigId = {0}", readerGroupId);
                     return StatusCodes.BadInvalidArgument;
@@ -1213,31 +1149,28 @@ namespace Technosoftware.UaPubSub.Configuration
                     {
                         // remove children
                         var dataSetReaders = new DataSetReaderDataTypeCollection(readerGroupDataType.DataSetReaders);
-                        foreach (var dataSetReader in dataSetReaders)
+                        foreach (DataSetReaderDataType dataSetReader in dataSetReaders)
                         {
-                            RemoveDataSetReader(dataSetReader);
+                            _ = RemoveDataSetReader(dataSetReader);
                         }
                         // find parent connection
                         var parentConnection = FindParentForObject(readerGroupDataType) as PubSubConnectionDataType;
                         var parentConnectionId = FindIdForObject(parentConnection);
                         if (parentConnection != null && parentConnectionId != InvalidId)
                         {
-                            parentConnection.ReaderGroups.Remove(readerGroupDataType);
+                            _ = parentConnection.ReaderGroups.Remove(readerGroupDataType);
 
                             //remove all references from dictionaries
-                            idsToObjects_.Remove(readerGroupId);
-                            objectsToIds_.Remove(readerGroupDataType);
-                            idsToParentId_.Remove(readerGroupId);
-                            idsToPubSubState_.Remove(readerGroupId);
+                            _ = idsToObjects_.Remove(readerGroupId);
+                            _ = objectsToIds_.Remove(readerGroupDataType);
+                            _ = idsToParentId_.Remove(readerGroupId);
+                            _ = idsToPubSubState_.Remove(readerGroupId);
 
-                            if (ReaderGroupRemovedEvent != null)
-                            {
-                                ReaderGroupRemovedEvent(this, new ReaderGroupEventArgs() {
-                                    ReaderGroupId = readerGroupId,
-                                    ReaderGroupDataType = readerGroupDataType,
-                                    ConnectionId = parentConnectionId
-                                });
-                            }
+                            ReaderGroupRemovedEvent?.Invoke(this, new ReaderGroupEventArgs() {
+                                ReaderGroupId = readerGroupId,
+                                ReaderGroupDataType = readerGroupDataType,
+                                ConnectionId = parentConnectionId
+                            });
                             return StatusCodes.Good;
                         }
                     }
@@ -1272,20 +1205,19 @@ namespace Technosoftware.UaPubSub.Configuration
             {
                 throw new ArgumentException("This DataSetReaderDataType instance is already added to the configuration.");
             }
-            if (!idsToObjects_.ContainsKey(parentReaderGroupId))
+            if (!idsToObjects_.TryGetValue(parentReaderGroupId, out object value))
             {
-                throw new ArgumentException(String.Format("There is no ReaderGroup with configurationId = {0} in current configuration.", parentReaderGroupId));
+                throw new ArgumentException(Utils.Format("There is no ReaderGroup with configurationId = {0} in current configuration.", parentReaderGroupId));
             }
             try
             {
                 lock (lock_)
                 {
-                    var parentReaderGroup = idsToObjects_[parentReaderGroupId] as ReaderGroupDataType;
-                    if (parentReaderGroup != null)
+                    if (idsToObjects_[parentReaderGroupId] is ReaderGroupDataType parentReaderGroup)
                     {
                         //validate duplicate name 
                         var duplicateName = false;
-                        foreach (var reader in parentReaderGroup.DataSetReaders)
+                        foreach (DataSetReaderDataType reader in parentReaderGroup.DataSetReaders)
                         {
                             if (reader.Name == dataSetReaderDataType.Name)
                             {
@@ -1312,11 +1244,8 @@ namespace Technosoftware.UaPubSub.Configuration
                         idsToPubSubState_.Add(newDataSetReaderId, GetInitialPubSubState(dataSetReaderDataType));
 
                         // raise WriterGroupAdded event
-                        if (DataSetReaderAddedEvent != null)
-                        {
-                            DataSetReaderAddedEvent(this,
-                                new DataSetReaderEventArgs() { ReaderGroupId = parentReaderGroupId, DataSetReaderId = newDataSetReaderId, DataSetReaderDataType = dataSetReaderDataType });
-                        }
+                        DataSetReaderAddedEvent?.Invoke(this,
+    new DataSetReaderEventArgs() { ReaderGroupId = parentReaderGroupId, DataSetReaderId = newDataSetReaderId, DataSetReaderDataType = dataSetReaderDataType });
 
                         return StatusCodes.Good;
                     }
@@ -1331,7 +1260,7 @@ namespace Technosoftware.UaPubSub.Configuration
         }
 
         /// <summary>
-        /// Removes a DataSetReaderDataType instance from current configuration specified by confgiId
+        /// Removes a DataSetReaderDataType instance from current configuration specified by configId
         /// </summary>
         /// <param name="dataSetReaderId"></param>
         /// <returns>
@@ -1343,8 +1272,7 @@ namespace Technosoftware.UaPubSub.Configuration
         {
             lock (lock_)
             {
-                var dataSetReaderDataType = FindObjectById(dataSetReaderId) as DataSetReaderDataType;
-                if (dataSetReaderDataType == null)
+                if (!(FindObjectById(dataSetReaderId) is DataSetReaderDataType dataSetReaderDataType))
                 {
                     // Unexpected exception 
                     Utils.Trace(Utils.TraceMasks.Information, "Current configuration does not contain DataSetReaderDataType with ConfigId = {0}", dataSetReaderId);
@@ -1377,22 +1305,19 @@ namespace Technosoftware.UaPubSub.Configuration
                         var parenReaderGroupId = FindIdForObject(parentWriterGroup);
                         if (parentWriterGroup != null && parenReaderGroupId != InvalidId)
                         {
-                            parentWriterGroup.DataSetReaders.Remove(dataSetReaderDataType);
+                            _ = parentWriterGroup.DataSetReaders.Remove(dataSetReaderDataType);
 
                             //remove all references from dictionaries
-                            idsToObjects_.Remove(dataSetReaderId);
-                            objectsToIds_.Remove(dataSetReaderDataType);
-                            idsToParentId_.Remove(dataSetReaderId);
-                            idsToPubSubState_.Remove(dataSetReaderId);
+                            _ = idsToObjects_.Remove(dataSetReaderId);
+                            _ = objectsToIds_.Remove(dataSetReaderDataType);
+                            _ = idsToParentId_.Remove(dataSetReaderId);
+                            _ = idsToPubSubState_.Remove(dataSetReaderId);
 
-                            if (DataSetReaderRemovedEvent != null)
-                            {
-                                DataSetReaderRemovedEvent(this, new DataSetReaderEventArgs() {
-                                    ReaderGroupId = parenReaderGroupId,
-                                    DataSetReaderDataType = dataSetReaderDataType,
-                                    DataSetReaderId = dataSetReaderId
-                                });
-                            }
+                            DataSetReaderRemovedEvent?.Invoke(this, new DataSetReaderEventArgs() {
+                                ReaderGroupId = parenReaderGroupId,
+                                DataSetReaderDataType = dataSetReaderDataType,
+                                DataSetReaderId = dataSetReaderId
+                            });
                             return StatusCodes.Good;
                         }
                     }
@@ -1435,13 +1360,13 @@ namespace Technosoftware.UaPubSub.Configuration
             {
                 throw new ArgumentException("This {0} instance is not part of current configuration.", configurationObject.GetType().Name);
             }
-            var currentState = FindStateForObject(configurationObject);
+            PubSubState currentState = FindStateForObject(configurationObject);
             if (currentState != PubSubState.Disabled)
             {
                 Utils.Trace(Utils.TraceMasks.Information, "Attempted to call Enable() on an object that is not in Disabled state");
                 return StatusCodes.BadInvalidState;
             }
-            var parentState = PubSubState.Operational;
+            PubSubState parentState = PubSubState.Operational;
             if (configurationObject != pubSubConfiguration_)
             {
                 parentState = FindStateForObject(FindParentForObject(configurationObject));
@@ -1487,7 +1412,7 @@ namespace Technosoftware.UaPubSub.Configuration
             {
                 throw new ArgumentException("This {0} instance is not part of current configuration.", configurationObject.GetType().Name);
             }
-            var currentState = FindStateForObject(configurationObject);
+            PubSubState currentState = FindStateForObject(configurationObject);
             if (currentState == PubSubState.Disabled)
             {
                 Utils.Trace(Utils.TraceMasks.Information, "Attempted to call Disable() on an object that is already in Disabled state");
@@ -1511,20 +1436,16 @@ namespace Technosoftware.UaPubSub.Configuration
         private void SetStateForObject(object configurationObject, PubSubState newState)
         {
             var id = FindIdForObject(configurationObject);
-            if (id != InvalidId && idsToPubSubState_.ContainsKey(id))
+            if (id != InvalidId && idsToPubSubState_.TryGetValue(id, out PubSubState oldState))
             {
-                var oldState = idsToPubSubState_[id];
                 idsToPubSubState_[id] = newState;
-                if (PubSubStateChangedEvent != null)
-                {
-                    PubSubStateChangedEvent(this, new PubSubStateChangedEventArgs() {
-                        ConfigurationObject = configurationObject,
-                        ConfigurationObjectId = id,
-                        NewState = newState,
-                        OldState = oldState
-                    });
-                }
-                var configurationObjectEnabled = (newState == PubSubState.Operational || newState == PubSubState.Paused);
+                PubSubStateChangedEvent?.Invoke(this, new PubSubStateChangedEventArgs() {
+                    ConfigurationObject = configurationObject,
+                    ConfigurationObjectId = id,
+                    NewState = newState,
+                    OldState = oldState
+                });
+                var configurationObjectEnabled = newState == PubSubState.Operational || newState == PubSubState.Paused;
                 //update the Enabled flag in config object
                 if (configurationObject is PubSubConfigurationDataType)
                 {
@@ -1559,15 +1480,15 @@ namespace Technosoftware.UaPubSub.Configuration
         /// <param name="configurationObject"></param>
         private void UpdateChildrenState(object configurationObject)
         {
-            var parentState = FindStateForObject(configurationObject);
+            PubSubState parentState = FindStateForObject(configurationObject);
             //find child ids
-            var childrenIds = FindChildrenIdsForObject(configurationObject);
+            List<uint> childrenIds = FindChildrenIdsForObject(configurationObject);
             if (parentState == PubSubState.Operational)
             {
                 // Enabled and parent Operational
                 foreach (var childId in childrenIds)
                 {
-                    var childState = FindStateForId(childId);
+                    PubSubState childState = FindStateForId(childId);
                     if (childState == PubSubState.Paused)
                     {
                         // become Operational if Parent changed to Operational
@@ -1583,7 +1504,7 @@ namespace Technosoftware.UaPubSub.Configuration
                 // Parent changed to Disabled or Paused
                 foreach (var childId in childrenIds)
                 {
-                    var childState = FindStateForId(childId);
+                    PubSubState childState = FindStateForId(childId);
                     if (childState == PubSubState.Operational || childState == PubSubState.Error)
                     {
                         // become Operational if Parent changed to Operational
@@ -1632,12 +1553,12 @@ namespace Technosoftware.UaPubSub.Configuration
         /// <returns></returns>
         private PubSubState GetInitialPubSubState(object configurationObject)
         {
-            var configurationObjectEnabled = false;
-            var parentPubSubState = PubSubState.Operational;
+            PubSubState parentPubSubState = PubSubState.Operational;
 
-            if (configurationObject is PubSubConfigurationDataType)
+            bool configurationObjectEnabled;
+            if (configurationObject is PubSubConfigurationDataType type)
             {
-                configurationObjectEnabled = ((PubSubConfigurationDataType)configurationObject).Enabled;
+                configurationObjectEnabled = type.Enabled;
             }
             else if (configurationObject is PubSubConnectionDataType)
             {
@@ -1691,12 +1612,12 @@ namespace Technosoftware.UaPubSub.Configuration
         /// </summary>
         internal static uint InvalidId;
 
-        private object lock_ = new object();
-        private PubSubConfigurationDataType pubSubConfiguration_;
-        private Dictionary<uint, object> idsToObjects_;
-        private Dictionary<object, uint> objectsToIds_;
-        private Dictionary<uint, PubSubState> idsToPubSubState_;
-        private Dictionary<uint, uint> idsToParentId_;
+        private readonly object lock_ = new object();
+        private readonly PubSubConfigurationDataType pubSubConfiguration_;
+        private readonly Dictionary<uint, object> idsToObjects_;
+        private readonly Dictionary<object, uint> objectsToIds_;
+        private readonly Dictionary<uint, PubSubState> idsToPubSubState_;
+        private readonly Dictionary<uint, uint> idsToParentId_;
         private uint nextId_ = 1;
         #endregion
 

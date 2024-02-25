@@ -26,11 +26,11 @@ namespace Technosoftware.UaPubSub.Transport
     internal abstract class UdpDiscovery
     {
         #region Fields
-        private const string kDefaultDiscoveryUrl = "opc.udp://224.0.2.14:4840";
+        private const string DefaultDiscoveryUrl = "opc.udp://224.0.2.14:4840";
 
-        protected object m_lock = new object();
-        protected UdpPubSubConnection m_udpConnection;
-        protected List<UdpClient> m_discoveryUdpClients;
+        protected readonly object lock_ = new object();
+        protected UdpPubSubConnection udpConnection_;
+        protected List<UdpClient> discoveryUdpClients_;
         #endregion
 
         #region Constructors
@@ -40,7 +40,7 @@ namespace Technosoftware.UaPubSub.Transport
         /// <param name="udpConnection"></param>
         protected UdpDiscovery(UdpPubSubConnection udpConnection)
         {
-            m_udpConnection = udpConnection;
+            udpConnection_ = udpConnection;
 
             Initialize();
         }
@@ -71,14 +71,14 @@ namespace Technosoftware.UaPubSub.Transport
         /// <param name="messageContext">The <see cref="IServiceMessageContext"/> object that should be used in encode/decode messages</param>
         /// <returns></returns>
         public virtual async Task StartAsync(IServiceMessageContext messageContext)
-        {           
+        {
             await Task.Run(() => {
-                lock (m_lock)
+                lock (lock_)
                 {
                     MessageContext = messageContext;
 
                     // initialize Discovery channels
-                    m_discoveryUdpClients = UdpClientCreator.GetUdpClients(UsedInContext.Discovery, DiscoveryNetworkInterfaceName, DiscoveryNetworkAddressEndPoint);                    
+                    discoveryUdpClients_ = UdpClientCreator.GetUdpClients(UsedInContext.Discovery, DiscoveryNetworkInterfaceName, DiscoveryNetworkAddressEndPoint);
                 }
             }).ConfigureAwait(false);
         }
@@ -89,23 +89,22 @@ namespace Technosoftware.UaPubSub.Transport
         /// <returns></returns>
         public virtual async Task StopAsync()
         {
-            lock (m_lock)
+            lock (lock_)
             {
-                if (m_discoveryUdpClients != null && m_discoveryUdpClients.Count > 0)
+                if (discoveryUdpClients_ != null && discoveryUdpClients_.Count > 0)
                 {
-                    foreach (var udpClient in m_discoveryUdpClients)
+                    foreach (var udpClient in discoveryUdpClients_)
                     {
                         udpClient.Close();
                         udpClient.Dispose();
                     }
-                    m_discoveryUdpClients.Clear();
+                    discoveryUdpClients_.Clear();
                 }
             }
 
             await Task.CompletedTask.ConfigureAwait(false);
         }
         #endregion
-               
 
         #region Private Methods
         /// <summary>
@@ -113,35 +112,28 @@ namespace Technosoftware.UaPubSub.Transport
         /// </summary>
         private void Initialize()
         {
-            PubSubConnectionDataType pubSubConnectionConfiguration = m_udpConnection.PubSubConnectionConfiguration;
-            DatagramConnectionTransportDataType transportSettings = ExtensionObject.ToEncodeable(pubSubConnectionConfiguration.TransportSettings)
-                       as DatagramConnectionTransportDataType;
+            PubSubConnectionDataType pubSubConnectionConfiguration = udpConnection_.PubSubConnectionConfiguration;
 
-            if (transportSettings != null && transportSettings.DiscoveryAddress != null)
+            if (ExtensionObject.ToEncodeable(pubSubConnectionConfiguration.TransportSettings) is DatagramConnectionTransportDataType transportSettings && transportSettings.DiscoveryAddress != null)
             {
-                NetworkAddressUrlDataType discoveryNetworkAddressUrlState = ExtensionObject.ToEncodeable(transportSettings.DiscoveryAddress)
-                       as NetworkAddressUrlDataType;
-                if (discoveryNetworkAddressUrlState != null)
+                if (ExtensionObject.ToEncodeable(transportSettings.DiscoveryAddress) is NetworkAddressUrlDataType discoveryNetworkAddressUrlState)
                 {
                     Utils.Trace(Utils.TraceMasks.Information, "The configuration for connection {0} has custom DiscoveryAddress configuration.",
                               pubSubConnectionConfiguration.Name);
 
                     DiscoveryNetworkInterfaceName = discoveryNetworkAddressUrlState.NetworkInterface;
                     DiscoveryNetworkAddressEndPoint = UdpClientCreator.GetEndPoint(discoveryNetworkAddressUrlState.Url);
-                }                
+                }
             }
 
             if (DiscoveryNetworkAddressEndPoint == null)
             {
                 Utils.Trace(Utils.TraceMasks.Information, "The configuration for connection {0} will use the default DiscoveryAddress: {1}.",
-                              pubSubConnectionConfiguration.Name, kDefaultDiscoveryUrl);
+                              pubSubConnectionConfiguration.Name, DefaultDiscoveryUrl);
 
-                DiscoveryNetworkAddressEndPoint = UdpClientCreator.GetEndPoint(kDefaultDiscoveryUrl);
+                DiscoveryNetworkAddressEndPoint = UdpClientCreator.GetEndPoint(DefaultDiscoveryUrl);
             }
         }
-
-        
-        
         #endregion
 
     }

@@ -34,18 +34,18 @@ namespace Technosoftware.UaPubSub.Transport
     internal class MqttPubSubConnection : UaPubSubConnection, IMqttPubSubConnection
     {
         #region Private Fields
-        private string m_brokerHostName = "localhost";
-        private string m_urlScheme;
-        private int m_brokerPort = Utils.MqttDefaultPort;
-        private int m_reconnectIntervalSeconds = 5;
+        private string brokerHostName_ = "localhost";
+        private string urlScheme_;
+        private int brokerPort_ = Utils.MqttDefaultPort;
+        private readonly int reconnectIntervalSeconds_ = 5;
 
-        private IMqttClient m_publisherMqttClient;
-        private IMqttClient m_subscriberMqttClient;
-        private readonly MessageMapping m_messageMapping;
-        private readonly MessageCreator m_messageCreator;
+        private IMqttClient publisherMqttClient_;
+        private IMqttClient subscriberMqttClient_;
+        private readonly MessageMapping messageMapping_;
+        private readonly MessageCreator messageCreator_;
 
-        private CertificateValidator m_certificateValidator;
-        private MqttClientTlsOptions m_mqttClientTlsOptions;
+        private CertificateValidator certificateValidator_;
+        private MqttClientTlsOptions mqttClientTlsOptions_;
 
         private readonly List<MqttMetadataPublisher> m_metaDataPublishers = new List<MqttMetadataPublisher>();
         #endregion
@@ -54,17 +54,17 @@ namespace Technosoftware.UaPubSub.Transport
         /// <summary>
         /// Gets the host name or IP address of the broker.
         /// </summary>
-        public string BrokerHostName { get => m_brokerHostName; }
+        public string BrokerHostName { get => brokerHostName_; }
 
         /// <summary>
         /// Gets the port of the mqttConnection.
         /// </summary>
-        public int BrokerPort { get { return m_brokerPort; } }
+        public int BrokerPort { get { return brokerPort_; } }
 
         /// <summary>
         /// Gets the scheme of the Url.
         /// </summary>
-        public string UrlScheme { get => m_urlScheme; }
+        public string UrlScheme { get => urlScheme_; }
         #endregion Public Properties
 
         #region Constants
@@ -85,20 +85,20 @@ namespace Technosoftware.UaPubSub.Transport
             : base(uaPubSubApplication, pubSubConnectionDataType)
         {
             transportProtocol_ = TransportProtocol.MQTT;
-            m_messageMapping = messageMapping;
+            messageMapping_ = messageMapping;
 
             // initialize the message creators for current message 
-            if (m_messageMapping == MessageMapping.Json)
+            if (messageMapping_ == MessageMapping.Json)
             {
-                m_messageCreator = new JsonMessageCreator(this);
+                messageCreator_ = new JsonMessageCreator(this);
             }
-            else if (m_messageMapping == MessageMapping.Uadp)
+            else if (messageMapping_ == MessageMapping.Uadp)
             {
-                m_messageCreator = new UadpMessageCreator(this);
+                messageCreator_ = new UadpMessageCreator(this);
             }
             else
             {
-                Utils.Trace(Utils.TraceMasks.Error, "The current MessageMapping {0} does not have a valid message creator", m_messageMapping);
+                Utils.Trace(Utils.TraceMasks.Error, "The current MessageMapping {0} does not have a valid message creator", messageMapping_);
             }
             Utils.Trace("MqttPubSubConnection with name '{0}' was created.", pubSubConnectionDataType.Name);
         }
@@ -112,14 +112,9 @@ namespace Technosoftware.UaPubSub.Transport
         public bool CanPublishMetaData(WriterGroupDataType writerGroupConfiguration,
             DataSetWriterDataType dataSetWriter)
         {
-            if (!CanPublish(writerGroupConfiguration)) return false;
-
-            if (Application.UaPubSubConfigurator.FindStateForObject(dataSetWriter) != PubSubState.Operational)
-            {
-                return false;
-            }
-
-            return true;
+            return !CanPublish(writerGroupConfiguration)
+                ? false
+                : Application.UaPubSubConfigurator.FindStateForObject(dataSetWriter) == PubSubState.Operational;
         }
 
         /// <summary>
@@ -127,25 +122,21 @@ namespace Technosoftware.UaPubSub.Transport
         /// </summary>
         public override IList<UaNetworkMessage> CreateNetworkMessages(WriterGroupDataType writerGroupConfiguration, WriterGroupPublishState state)
         {
-            BrokerWriterGroupTransportDataType transportSettings =
-                ExtensionObject.ToEncodeable(writerGroupConfiguration.TransportSettings)
-                    as BrokerWriterGroupTransportDataType;
-
-            if (transportSettings == null)
+            if (!(ExtensionObject.ToEncodeable(writerGroupConfiguration.TransportSettings) is BrokerWriterGroupTransportDataType))
             {
                 //Wrong configuration of writer group MessageSettings
                 return null;
             }
 
-            if (m_messageCreator != null)
+            if (messageCreator_ != null)
             {
-                return m_messageCreator.CreateNetworkMessages(writerGroupConfiguration, state);
+                return messageCreator_.CreateNetworkMessages(writerGroupConfiguration, state);
             }
 
             // no other encoding is implemented
             return null;
         }
-        
+
         /// <summary> 
         /// Create and return the DataSetMetaData message for a DataSetWriter
         /// </summary>
@@ -155,9 +146,9 @@ namespace Technosoftware.UaPubSub.Transport
             PublishedDataSetDataType publishedDataSet = Application.DataCollector.GetPublishedDataSet(dataSetWriter.DataSetName);
             if (publishedDataSet != null && publishedDataSet.DataSetMetaData != null)
             {
-                if (m_messageCreator != null)
+                if (messageCreator_ != null)
                 {
-                    return m_messageCreator.CreateDataSetMetaDataNetworkMessage(writerGroup,
+                    return messageCreator_.CreateDataSetMetaDataNetworkMessage(writerGroup,
                         dataSetWriter.DataSetWriterId, publishedDataSet.DataSetMetaData);
                 }
             }
@@ -169,7 +160,7 @@ namespace Technosoftware.UaPubSub.Transport
         /// </summary>
         public override bool PublishNetworkMessage(UaNetworkMessage networkMessage)
         {
-            if (networkMessage == null || m_publisherMqttClient == null)
+            if (networkMessage == null || publisherMqttClient_ == null)
             {
                 return false;
             }
@@ -178,10 +169,10 @@ namespace Technosoftware.UaPubSub.Transport
             {
                 lock (lock_)
                 {
-                    if (m_publisherMqttClient != null && m_publisherMqttClient.IsConnected)
+                    if (publisherMqttClient_ != null && publisherMqttClient_.IsConnected)
                     {
                         // get the encoded bytes
-                        byte[] bytes = networkMessage.Encode(MessageContext);
+                        var bytes = networkMessage.Encode(MessageContext);
 
                         try
                         {
@@ -191,16 +182,13 @@ namespace Technosoftware.UaPubSub.Transport
                             // the network messages that have DataSetWriterId are either metaData messages or SingleDataSet messages and 
                             if (networkMessage.DataSetWriterId != null)
                             {
-                                var dataSetWriter = networkMessage.WriterGroupConfiguration.DataSetWriters
+                                DataSetWriterDataType dataSetWriter = networkMessage.WriterGroupConfiguration.DataSetWriters
                                     .Find(x => x.DataSetWriterId == networkMessage.DataSetWriterId);
 
                                 if (dataSetWriter != null)
-                                { 
-                                    var transportSettings = ExtensionObject
-                                        .ToEncodeable(dataSetWriter.TransportSettings)
-                                            as BrokerDataSetWriterTransportDataType;
-
-                                    if (transportSettings != null)
+                                {
+                                    if (ExtensionObject
+                                        .ToEncodeable(dataSetWriter.TransportSettings) is BrokerDataSetWriterTransportDataType transportSettings)
                                     {
                                         qos = transportSettings.RequestedDeliveryGuarantee;
 
@@ -211,11 +199,8 @@ namespace Technosoftware.UaPubSub.Transport
 
                             if (queueName == null || qos == BrokerTransportQualityOfService.NotSpecified)
                             {
-                                var transportSettings = ExtensionObject.ToEncodeable(
-                                    networkMessage.WriterGroupConfiguration.TransportSettings)
-                                        as BrokerWriterGroupTransportDataType;
-
-                                if (transportSettings != null)
+                                if (ExtensionObject.ToEncodeable(
+                                    networkMessage.WriterGroupConfiguration.TransportSettings) is BrokerWriterGroupTransportDataType transportSettings)
                                 {
                                     if (queueName == null)
                                     {
@@ -238,7 +223,7 @@ namespace Technosoftware.UaPubSub.Transport
                                     Retain = networkMessage.IsMetaDataMessage
                                 };
 
-                                m_publisherMqttClient.PublishAsync(message).GetAwaiter().GetResult();
+                                _ = publisherMqttClient_.PublishAsync(message).GetAwaiter().GetResult();
                             }
                         }
                         catch (Exception ex)
@@ -266,8 +251,8 @@ namespace Technosoftware.UaPubSub.Transport
         public override bool AreClientsConnected()
         {
             // Check if existing clients are connected
-            return (m_publisherMqttClient == null || m_publisherMqttClient.IsConnected)
-                && (m_subscriberMqttClient == null || m_subscriberMqttClient.IsConnected);
+            return (publisherMqttClient_ == null || publisherMqttClient_.IsConnected)
+                && (subscriberMqttClient_ == null || subscriberMqttClient_.IsConnected);
         }
         #endregion Public Methods
 
@@ -278,14 +263,12 @@ namespace Technosoftware.UaPubSub.Transport
         protected override async Task InternalStart()
         {
             //cleanup all existing MQTT connections previously open
-            await InternalStop().ConfigureAwait(false); 
+            await InternalStop().ConfigureAwait(false);
 
             lock (lock_)
             {
-                NetworkAddressUrlDataType networkAddressUrlState = ExtensionObject.ToEncodeable(
-                    PubSubConnectionConfiguration.Address) as NetworkAddressUrlDataType;
-
-                if (networkAddressUrlState == null)
+                if (!(ExtensionObject.ToEncodeable(
+                    PubSubConnectionConfiguration.Address) is NetworkAddressUrlDataType networkAddressUrlState))
                 {
                     Utils.Trace(
                         Utils.TraceMasks.Error,
@@ -296,7 +279,7 @@ namespace Technosoftware.UaPubSub.Transport
                 }
 
                 Uri connectionUri;
-                m_urlScheme = null;
+                urlScheme_ = null;
 
                 if (networkAddressUrlState.Url != null && Uri.TryCreate(networkAddressUrlState.Url, UriKind.Absolute, out connectionUri))
                 {
@@ -304,14 +287,14 @@ namespace Technosoftware.UaPubSub.Transport
                     {
                         if (!String.IsNullOrEmpty(connectionUri.Host))
                         {
-                            m_brokerHostName = connectionUri.Host;
-                            m_brokerPort = (connectionUri.Port > 0) ? connectionUri.Port : ((connectionUri.Scheme == Utils.UriSchemeMqtt) ? 1883 : 8883);
-                            m_urlScheme = connectionUri.Scheme;
+                            brokerHostName_ = connectionUri.Host;
+                            brokerPort_ = (connectionUri.Port > 0) ? connectionUri.Port : ((connectionUri.Scheme == Utils.UriSchemeMqtt) ? 1883 : 8883);
+                            urlScheme_ = connectionUri.Scheme;
                         }
                     }
                 }
 
-                if (m_urlScheme == null)
+                if (urlScheme_ == null)
                 {
                     Utils.Trace(
                         Utils.TraceMasks.Error,
@@ -327,12 +310,15 @@ namespace Technosoftware.UaPubSub.Transport
                 {
                     foreach (DataSetWriterDataType dataSetWriter in writerGroup.DataSetWriters)
                     {
-                        if (dataSetWriter.DataSetWriterId == 0) continue;
+                        if (dataSetWriter.DataSetWriterId == 0)
+                        {
+                            continue;
+                        }
 
-                        BrokerDataSetWriterTransportDataType transport = ExtensionObject.ToEncodeable(dataSetWriter.TransportSettings)
-                            as BrokerDataSetWriterTransportDataType;
-
-                        if (transport == null || transport.MetaDataUpdateTime == 0) continue;
+                        if (!(ExtensionObject.ToEncodeable(dataSetWriter.TransportSettings) is BrokerDataSetWriterTransportDataType transport) || transport.MetaDataUpdateTime == 0)
+                        {
+                            continue;
+                        }
 
                         m_metaDataPublishers.Add(new MqttMetadataPublisher(this, writerGroup, dataSetWriter, transport.MetaDataUpdateTime));
                     }
@@ -349,14 +335,14 @@ namespace Technosoftware.UaPubSub.Transport
             MqttClient subscriberClient = null;
             MqttClientOptions mqttOptions = GetMqttClientOptions();
 
-            int nrOfPublishers = Publishers.Count;
-            int nrOfSubscribers = GetAllDataSetReaders().Count;
+            var nrOfPublishers = Publishers.Count;
+            var nrOfSubscribers = GetAllDataSetReaders().Count;
 
             //publisher initialization
             if (nrOfPublishers > 0)
             {
                 publisherClient = (MqttClient)await MqttClientCreator.GetMqttClientAsync(
-                    m_reconnectIntervalSeconds,
+                    reconnectIntervalSeconds_,
                     mqttOptions,
                     null).ConfigureAwait(false);
             }
@@ -365,26 +351,23 @@ namespace Technosoftware.UaPubSub.Transport
             if (nrOfSubscribers > 0)
             {
                 // collect all topics from all ReaderGroups
-                StringCollection topics = new StringCollection();
-                foreach (var readerGroup in PubSubConnectionConfiguration.ReaderGroups)
+                var topics = new StringCollection();
+                foreach (ReaderGroupDataType readerGroup in PubSubConnectionConfiguration.ReaderGroups)
                 {
                     if (!readerGroup.Enabled)
                     {
                         continue;
                     }
 
-                    foreach (var dataSetReader in readerGroup.DataSetReaders)
+                    foreach (DataSetReaderDataType dataSetReader in readerGroup.DataSetReaders)
                     {
                         if (!dataSetReader.Enabled)
                         {
                             continue;
                         }
 
-                        BrokerDataSetReaderTransportDataType brokerTransportSettings =
-                            ExtensionObject.ToEncodeable(dataSetReader.TransportSettings)
-                                as BrokerDataSetReaderTransportDataType;
 
-                        if (brokerTransportSettings != null && !topics.Contains(brokerTransportSettings.QueueName))
+                        if (ExtensionObject.ToEncodeable(dataSetReader.TransportSettings) is BrokerDataSetReaderTransportDataType brokerTransportSettings && !topics.Contains(brokerTransportSettings.QueueName))
                         {
                             topics.Add(brokerTransportSettings.QueueName);
 
@@ -397,7 +380,7 @@ namespace Technosoftware.UaPubSub.Transport
                 }
 
                 subscriberClient = (MqttClient)await MqttClientCreator.GetMqttClientAsync(
-                    m_reconnectIntervalSeconds,
+                    reconnectIntervalSeconds_,
                     mqttOptions,
                     ProcessMqttMessage,
                     topics).ConfigureAwait(false);
@@ -405,8 +388,8 @@ namespace Technosoftware.UaPubSub.Transport
 
             lock (lock_)
             {
-                m_publisherMqttClient = publisherClient;
-                m_subscriberMqttClient = subscriberClient;
+                publisherMqttClient_ = publisherClient;
+                subscriberMqttClient_ = subscriberClient;
             }
 
             Utils.Trace("Connection '{0}' started {1} publishers and {2} subscribers.",
@@ -418,15 +401,15 @@ namespace Technosoftware.UaPubSub.Transport
         /// </summary>
         protected override async Task InternalStop()
         {
-            var publisherMqttClient = m_publisherMqttClient;
-            var subscriberMqttClient = m_subscriberMqttClient;
+            IMqttClient publisherMqttClient = publisherMqttClient_;
+            IMqttClient subscriberMqttClient = subscriberMqttClient_;
 
             void DisposeCerts(X509CertificateCollection certificates)
             {
                 if (certificates != null)
                 {
                     // dispose certificates
-                    foreach (var cert in certificates)
+                    foreach (X509Certificate cert in certificates)
                     {
                         Utils.SilentDispose(cert);
                     }
@@ -465,16 +448,16 @@ namespace Technosoftware.UaPubSub.Transport
 
             lock (lock_)
             {
-                m_publisherMqttClient = null;
-                m_subscriberMqttClient = null;
-                m_mqttClientTlsOptions = null;
+                publisherMqttClient_ = null;
+                subscriberMqttClient_ = null;
+                mqttClientTlsOptions_ = null;
             }
         }
         #endregion Protected Methods
 
         #region Private Methods
 
-        private bool MatchTopic(string pattern, string topic)
+        private static bool MatchTopic(string pattern, string topic)
         {
             if (String.IsNullOrEmpty(pattern) || pattern == "#")
             {
@@ -484,7 +467,7 @@ namespace Technosoftware.UaPubSub.Transport
             var fields1 = pattern.Split('/');
             var fields2 = topic.Split('/');
 
-            for (int ii = 0; ii < fields1.Length && ii < fields2.Length; ii++)
+            for (var ii = 0; ii < fields1.Length && ii < fields2.Length; ii++)
             {
                 if (fields1[ii] == "#")
                 {
@@ -506,22 +489,25 @@ namespace Technosoftware.UaPubSub.Transport
         /// <param name="eventArgs"></param>
         private Task ProcessMqttMessage(MqttApplicationMessageReceivedEventArgs eventArgs)
         {
-            string topic = eventArgs.ApplicationMessage.Topic;
+            var topic = eventArgs.ApplicationMessage.Topic;
 
             Utils.Trace("MQTTConnection - ProcessMqttMessage() received from topic={0}", topic);
 
             // get the datasetreaders for received message topic
-            List<DataSetReaderDataType> dataSetReaders = new List<DataSetReaderDataType>();
+            var dataSetReaders = new List<DataSetReaderDataType>();
             foreach (DataSetReaderDataType dsReader in GetOperationalDataSetReaders())
             {
-                if (dsReader == null) continue;
+                if (dsReader == null)
+                {
+                    continue;
+                }
 
-                BrokerDataSetReaderTransportDataType brokerDataSetReaderTransportDataType =
+                var brokerDataSetReaderTransportDataType =
                     ExtensionObject.ToEncodeable(dsReader.TransportSettings)
                        as BrokerDataSetReaderTransportDataType;
 
-                string queueName = brokerDataSetReaderTransportDataType.QueueName;
-                string metadataQueueName = brokerDataSetReaderTransportDataType.MetaDataQueueName;
+                var queueName = brokerDataSetReaderTransportDataType.QueueName;
+                var metadataQueueName = brokerDataSetReaderTransportDataType.MetaDataQueueName;
 
                 if (!MatchTopic(queueName, topic))
                 {
@@ -544,11 +530,11 @@ namespace Technosoftware.UaPubSub.Transport
             if (dataSetReaders.Count > 0)
             {
                 // raise RawData received event
-                RawDataReceivedEventArgs rawDataReceivedEventArgs = new RawDataReceivedEventArgs() {
+                var rawDataReceivedEventArgs = new RawDataReceivedEventArgs() {
                     Message = eventArgs.ApplicationMessage.PayloadSegment.Array,
                     Source = topic,
-                    TransportProtocol = this.TransportProtocol,
-                    MessageMapping = m_messageMapping,
+                    TransportProtocol = TransportProtocol,
+                    MessageMapping = messageMapping_,
                     PubSubConnectionConfiguration = PubSubConnectionConfiguration
                 };
 
@@ -563,8 +549,8 @@ namespace Technosoftware.UaPubSub.Transport
                 }
 
                 // initialize the expected NetworkMessage
-                UaNetworkMessage networkMessage = m_messageCreator.CreateNewNetworkMessage();
-                
+                UaNetworkMessage networkMessage = messageCreator_.CreateNewNetworkMessage();
+
                 // trigger message decoding
                 if (networkMessage != null)
                 {
@@ -587,7 +573,7 @@ namespace Technosoftware.UaPubSub.Transport
         /// </summary>
         /// <param name="brokerTransportQualityOfService"></param>
         /// <returns></returns>
-        private MqttQualityOfServiceLevel GetMqttQualityOfServiceLevel(BrokerTransportQualityOfService brokerTransportQualityOfService)
+        private static MqttQualityOfServiceLevel GetMqttQualityOfServiceLevel(BrokerTransportQualityOfService brokerTransportQualityOfService)
         {
             switch (brokerTransportQualityOfService)
             {
@@ -609,12 +595,9 @@ namespace Technosoftware.UaPubSub.Transport
         private MqttClientOptions GetMqttClientOptions()
         {
             MqttClientOptions mqttOptions = null;
-            TimeSpan mqttKeepAlive = TimeSpan.FromSeconds(GetWriterGroupsMaxKeepAlive() + MaxKeepAliveIncrement);
+            var mqttKeepAlive = TimeSpan.FromSeconds(GetWriterGroupsMaxKeepAlive() + MaxKeepAliveIncrement);
 
-            NetworkAddressUrlDataType networkAddressUrlState =
-                ExtensionObject.ToEncodeable(PubSubConnectionConfiguration.Address)
-                    as NetworkAddressUrlDataType;
-            if (networkAddressUrlState == null)
+            if (!(ExtensionObject.ToEncodeable(PubSubConnectionConfiguration.Address) is NetworkAddressUrlDataType networkAddressUrlState))
             {
                 Utils.Trace(Utils.TraceMasks.Error,
                     "The configuration for mqttConnection {0} has invalid Address configuration.",
@@ -652,50 +635,48 @@ namespace Technosoftware.UaPubSub.Transport
                 new MqttClientProtocolConfiguration(PubSubConnectionConfiguration.ConnectionProperties);
 
 
-            MqttClientProtocolConfiguration mqttProtocolConfiguration =
-                transportProtocolConfiguration as MqttClientProtocolConfiguration;
-            if (mqttProtocolConfiguration != null)
+            if (transportProtocolConfiguration is MqttClientProtocolConfiguration mqttProtocolConfiguration)
             {
-                MqttProtocolVersion mqttProtocolVersion =
+                var mqttProtocolVersion =
                     (MqttProtocolVersion)((MqttClientProtocolConfiguration)transportProtocolConfiguration)
                     .ProtocolVersion;
                 // create uniques client id
-                string clientId = "ClientId_" + new Random().Next().ToString("D10");
+                var clientId = $"ClientId_{new Random().Next():D10}";
                 // MQTTS mqttConnection.
                 if (connectionUri.Scheme == Utils.UriSchemeMqtts)
                 {
                     MqttTlsOptions mqttTlsOptions =
                         ((MqttClientProtocolConfiguration)transportProtocolConfiguration).MqttTlsOptions;
 
-                    List<X509Certificate2> x509Certificate2s = new List<X509Certificate2>();
+                    var x509Certificate2s = new List<X509Certificate2>();
                     if (mqttTlsOptions?.Certificates != null)
                     {
-                        foreach (var x509cert in mqttTlsOptions?.Certificates.X509Certificates)
+                        foreach (X509Certificate x509cert in mqttTlsOptions?.Certificates.X509Certificates)
                         {
                             x509Certificate2s.Add(new X509Certificate2(x509cert.Handle));
                         }
                     }
 
                     MqttClientOptionsBuilder mqttClientOptionsBuilder = new MqttClientOptionsBuilder()
-                        .WithTcpServer(m_brokerHostName, m_brokerPort)
+                        .WithTcpServer(brokerHostName_, brokerPort_)
                         .WithKeepAlivePeriod(mqttKeepAlive)
                         .WithProtocolVersion(mqttProtocolVersion)
                         .WithClientId(clientId)
                         .WithTlsOptions(o => {
-                            o.UseTls(true);
-                            o.WithClientCertificates(x509Certificate2s);
-                            o.WithSslProtocols(mqttTlsOptions?.SslProtocolVersion ??
+                            _ = o.UseTls(true);
+                            _ = o.WithClientCertificates(x509Certificate2s);
+                            _ = o.WithSslProtocols(mqttTlsOptions?.SslProtocolVersion ??
                                 System.Security.Authentication.SslProtocols.None);// Allow OS to choose best option
-                            o.WithAllowUntrustedCertificates(mqttTlsOptions?.AllowUntrustedCertificates ?? false);
-                            o.WithIgnoreCertificateChainErrors(mqttTlsOptions?.IgnoreCertificateChainErrors ?? false);
-                            o.WithIgnoreCertificateRevocationErrors(mqttTlsOptions?.IgnoreRevocationListErrors ?? false);
-                            o.WithCertificateValidationHandler(ValidateBrokerCertificate);
+                            _ = o.WithAllowUntrustedCertificates(mqttTlsOptions?.AllowUntrustedCertificates ?? false);
+                            _ = o.WithIgnoreCertificateChainErrors(mqttTlsOptions?.IgnoreCertificateChainErrors ?? false);
+                            _ = o.WithIgnoreCertificateRevocationErrors(mqttTlsOptions?.IgnoreRevocationListErrors ?? false);
+                            _ = o.WithCertificateValidationHandler(ValidateBrokerCertificate);
                         });
 
                     // Set user credentials.
                     if (mqttProtocolConfiguration.UseCredentials)
                     {
-                        mqttClientOptionsBuilder.WithCredentials(
+                        _ = mqttClientOptionsBuilder.WithCredentials(
                             new System.Net.NetworkCredential(string.Empty, mqttProtocolConfiguration.UserName)
                                 .Password,
                             new System.Net.NetworkCredential(string.Empty, mqttProtocolConfiguration.Password)
@@ -704,22 +685,22 @@ namespace Technosoftware.UaPubSub.Transport
                         // Set ClientId for Azure.
                         if (mqttProtocolConfiguration.UseAzureClientId)
                         {
-                            mqttClientOptionsBuilder.WithClientId(mqttProtocolConfiguration.AzureClientId);
+                            _ = mqttClientOptionsBuilder.WithClientId(mqttProtocolConfiguration.AzureClientId);
                         }
                     }
 
                     mqttOptions = mqttClientOptionsBuilder.Build();
 
                     // Create the certificate validator for broker certificates.
-                    m_certificateValidator = CreateCertificateValidator(mqttTlsOptions);
-                    m_certificateValidator.CertificateValidation += CertificateValidator_CertificateValidation;
-                    m_mqttClientTlsOptions = mqttOptions?.ChannelOptions?.TlsOptions;
+                    certificateValidator_ = CreateCertificateValidator(mqttTlsOptions);
+                    certificateValidator_.CertificateValidation += CertificateValidator_CertificateValidation;
+                    mqttClientTlsOptions_ = mqttOptions?.ChannelOptions?.TlsOptions;
                 }
                 // MQTT mqttConnection
                 else if (connectionUri.Scheme == Utils.UriSchemeMqtt)
                 {
                     MqttClientOptionsBuilder mqttClientOptionsBuilder = new MqttClientOptionsBuilder()
-                        .WithTcpServer(m_brokerHostName, m_brokerPort)
+                        .WithTcpServer(brokerHostName_, brokerPort_)
                         .WithKeepAlivePeriod(mqttKeepAlive)
                         .WithClientId(clientId)
                         .WithProtocolVersion(mqttProtocolVersion);
@@ -727,7 +708,7 @@ namespace Technosoftware.UaPubSub.Transport
                     // Set user credentials.
                     if (mqttProtocolConfiguration.UseCredentials)
                     {
-                        mqttClientOptionsBuilder.WithCredentials(
+                        _ = mqttClientOptionsBuilder.WithCredentials(
                             new System.Net.NetworkCredential(string.Empty, mqttProtocolConfiguration.UserName)
                                 .Password,
                             new System.Net.NetworkCredential(string.Empty, mqttProtocolConfiguration.Password)
@@ -748,9 +729,9 @@ namespace Technosoftware.UaPubSub.Transport
         /// <returns>A new instance of stack validator <see cref="CertificateValidator"/></returns>
         private CertificateValidator CreateCertificateValidator(MqttTlsOptions mqttTlsOptions)
         {
-            CertificateValidator certificateValidator = new CertificateValidator();
+            var certificateValidator = new CertificateValidator();
 
-            SecurityConfiguration securityConfiguration = new SecurityConfiguration();
+            var securityConfiguration = new SecurityConfiguration();
             securityConfiguration.TrustedIssuerCertificates = (CertificateTrustList)mqttTlsOptions.TrustedIssuerCertificates;
             securityConfiguration.TrustedPeerCertificates = (CertificateTrustList)mqttTlsOptions.TrustedPeerCertificates;
             securityConfiguration.RejectedCertificateStore = mqttTlsOptions.RejectedCertificateStore;
@@ -770,7 +751,7 @@ namespace Technosoftware.UaPubSub.Transport
         /// <param name="context">The context of the validation</param>
         private bool ValidateBrokerCertificate(MqttClientCertificateValidationEventArgs context)
         {
-            X509Certificate2 brokerCertificate = new X509Certificate2(context.Certificate.GetRawCertData());
+            var brokerCertificate = new X509Certificate2(context.Certificate.GetRawCertData());
 
             try
             {
@@ -781,12 +762,12 @@ namespace Technosoftware.UaPubSub.Transport
                 }
                 else
                 {
-                    m_certificateValidator?.Validate(brokerCertificate);
+                    certificateValidator_?.Validate(brokerCertificate);
                 }
             }
             catch (Exception ex)
             {
-                Utils.Trace(ex,"Connection '{0}' - Broker certificate '{1}' rejected.",
+                Utils.Trace(ex, "Connection '{0}' - Broker certificate '{1}' rejected.",
                     PubSubConnectionConfiguration.Name, brokerCertificate.Subject);
                 return false;
             }
@@ -809,19 +790,19 @@ namespace Technosoftware.UaPubSub.Transport
                      (e.Error.StatusCode == StatusCodes.BadCertificateIssuerRevocationUnknown) ||
                      (e.Error.StatusCode == StatusCodes.BadCertificateRevoked) ||
                      (e.Error.StatusCode == StatusCodes.BadCertificateIssuerRevoked)) &&
-                    (m_mqttClientTlsOptions?.IgnoreCertificateRevocationErrors ?? false))
+                    (mqttClientTlsOptions_?.IgnoreCertificateRevocationErrors ?? false))
                 {
                     // Accept broker certificate with revocation errors.
                     e.Accept = true;
                 }
                 else if ((e.Error.StatusCode == StatusCodes.BadCertificateChainIncomplete) &&
-                         (m_mqttClientTlsOptions?.IgnoreCertificateChainErrors ?? false))
+                         (mqttClientTlsOptions_?.IgnoreCertificateChainErrors ?? false))
                 {
                     // Accept broker certificate with chain errors.
                     e.Accept = true;
                 }
                 else if ((e.Error.StatusCode == StatusCodes.BadCertificateUntrusted) &&
-                         (m_mqttClientTlsOptions?.AllowUntrustedCertificates ?? false))
+                         (mqttClientTlsOptions_?.AllowUntrustedCertificates ?? false))
                 {
                     // Accept untrusted broker certificate.
                     e.Accept = true;
@@ -832,7 +813,7 @@ namespace Technosoftware.UaPubSub.Transport
                 Utils.Trace(ex, "MqttPubSubConnection.CertificateValidation error.");
             }
         }
-        
+
         #endregion Private methods
 
         #region MessageCreator innner classes
@@ -896,18 +877,16 @@ namespace Technosoftware.UaPubSub.Transport
             public override IList<UaNetworkMessage> CreateNetworkMessages(WriterGroupDataType writerGroupConfiguration,
                 WriterGroupPublishState state)
             {
-                JsonWriterGroupMessageDataType jsonMessageSettings = ExtensionObject.ToEncodeable(
-                        writerGroupConfiguration.MessageSettings)
-                    as JsonWriterGroupMessageDataType;
-                if (jsonMessageSettings == null)
+                if (!(ExtensionObject.ToEncodeable(
+                        writerGroupConfiguration.MessageSettings) is JsonWriterGroupMessageDataType jsonMessageSettings))
                 {
                     //Wrong configuration of writer group MessageSettings
                     return null;
                 }
 
                 //Create list of dataSet messages to be sent
-                List<JsonDataSetMessage> jsonDataSetMessages = new List<JsonDataSetMessage>();
-                List<UaNetworkMessage> networkMessages = new List<UaNetworkMessage>();
+                var jsonDataSetMessages = new List<JsonDataSetMessage>();
+                var networkMessages = new List<UaNetworkMessage>();
 
                 foreach (DataSetWriterDataType dataSetWriter in writerGroupConfiguration.DataSetWriters)
                 {
@@ -919,19 +898,18 @@ namespace Technosoftware.UaPubSub.Transport
                         if (dataSet != null)
                         {
                             // check if the MetaData version is changed and issue a MetaData message
-                            bool hasMetaDataChanged = state.HasMetaDataChanged(dataSetWriter, dataSet.DataSetMetaData);
+                            var hasMetaDataChanged = state.HasMetaDataChanged(dataSetWriter, dataSet.DataSetMetaData);
 
                             if (hasMetaDataChanged)
                             {
                                 networkMessages.Add(CreateDataSetMetaDataNetworkMessage(writerGroupConfiguration, dataSetWriter.DataSetWriterId, dataSet.DataSetMetaData));
                             }
-                           
-                            JsonDataSetWriterMessageDataType jsonDataSetMessageSettings =
-                                ExtensionObject.ToEncodeable(dataSetWriter.MessageSettings) as JsonDataSetWriterMessageDataType;
-                            if (jsonDataSetMessageSettings != null)
+
+                            if (ExtensionObject.ToEncodeable(dataSetWriter.MessageSettings) is JsonDataSetWriterMessageDataType jsonDataSetMessageSettings)
                             {
-                                JsonDataSetMessage jsonDataSetMessage = new JsonDataSetMessage(dataSet);
-                                jsonDataSetMessage.DataSetMessageContentMask = (JsonDataSetMessageContentMask)jsonDataSetMessageSettings.DataSetMessageContentMask;
+                                var jsonDataSetMessage = new JsonDataSetMessage(dataSet) {
+                                    DataSetMessageContentMask = (JsonDataSetMessageContentMask)jsonDataSetMessageSettings.DataSetMessageContentMask
+                                };
 
                                 // set common properties of dataset message
                                 jsonDataSetMessage.SetFieldContentMask((DataSetFieldContentMask)dataSetWriter.DataSetFieldContentMask);
@@ -957,7 +935,7 @@ namespace Technosoftware.UaPubSub.Transport
                 }
 
                 // each entry of this list will generate a network message
-                List<List<JsonDataSetMessage>> dataSetMessagesList = new List<List<JsonDataSetMessage>>();
+                var dataSetMessagesList = new List<List<JsonDataSetMessage>>();
                 if ((((JsonNetworkMessageContentMask)jsonMessageSettings.NetworkMessageContentMask) & JsonNetworkMessageContentMask.SingleDataSetMessage) != 0)
                 {
                     // create a new network message for each dataset
@@ -973,7 +951,7 @@ namespace Technosoftware.UaPubSub.Transport
 
                 foreach (List<JsonDataSetMessage> dataSetMessagesToUse in dataSetMessagesList)
                 {
-                    JsonNetworkMessage jsonNetworkMessage = new JsonNetworkMessage(writerGroupConfiguration, dataSetMessagesToUse);
+                    var jsonNetworkMessage = new JsonNetworkMessage(writerGroupConfiguration, dataSetMessagesToUse);
                     jsonNetworkMessage.SetNetworkMessageContentMask((JsonNetworkMessageContentMask)jsonMessageSettings?.NetworkMessageContentMask);
 
                     // Network message header
@@ -1031,19 +1009,16 @@ namespace Technosoftware.UaPubSub.Transport
             public override IList<UaNetworkMessage> CreateNetworkMessages(WriterGroupDataType writerGroupConfiguration,
                 WriterGroupPublishState state)
             {
-                UadpWriterGroupMessageDataType uadpMessageSettings = ExtensionObject.ToEncodeable(
-                        writerGroupConfiguration.MessageSettings)
-                    as UadpWriterGroupMessageDataType;
-
-                if (uadpMessageSettings == null)
+                if (!(ExtensionObject.ToEncodeable(
+                        writerGroupConfiguration.MessageSettings) is UadpWriterGroupMessageDataType uadpMessageSettings))
                 {
                     //Wrong configuration of writer group MessageSettings
                     return null;
                 }
 
                 //Create list of dataSet messages to be sent
-                List<UadpDataSetMessage> uadpDataSetMessages = new List<UadpDataSetMessage>();
-                List<UaNetworkMessage> networkMessages = new List<UaNetworkMessage>();
+                var uadpDataSetMessages = new List<UadpDataSetMessage>();
+                var networkMessages = new List<UaNetworkMessage>();
 
                 foreach (DataSetWriterDataType dataSetWriter in writerGroupConfiguration.DataSetWriters)
                 {
@@ -1055,7 +1030,7 @@ namespace Technosoftware.UaPubSub.Transport
                         if (dataSet != null)
                         {
                             // check if the MetaData version is changed and issue a MetaData message
-                            bool hasMetaDataChanged = state.HasMetaDataChanged(dataSetWriter, dataSet.DataSetMetaData);
+                            var hasMetaDataChanged = state.HasMetaDataChanged(dataSetWriter, dataSet.DataSetMetaData);
 
                             if (hasMetaDataChanged)
                             {
@@ -1063,13 +1038,10 @@ namespace Technosoftware.UaPubSub.Transport
                             }
 
                             // try to create Uadp message
-                            UadpDataSetWriterMessageDataType uadpDataSetMessageSettings =
-                                ExtensionObject.ToEncodeable(dataSetWriter.MessageSettings) as
-                                    UadpDataSetWriterMessageDataType;
                             // check MessageSettings to see how to encode DataSet
-                            if (uadpDataSetMessageSettings != null)
+                            if (ExtensionObject.ToEncodeable(dataSetWriter.MessageSettings) is UadpDataSetWriterMessageDataType uadpDataSetMessageSettings)
                             {
-                                UadpDataSetMessage uadpDataSetMessage = new UadpDataSetMessage(dataSet);
+                                var uadpDataSetMessage = new UadpDataSetMessage(dataSet);
                                 uadpDataSetMessage.SetMessageContentMask((UadpDataSetMessageContentMask)uadpDataSetMessageSettings.DataSetMessageContentMask);
                                 uadpDataSetMessage.ConfiguredSize = uadpDataSetMessageSettings.ConfiguredSize;
                                 uadpDataSetMessage.DataSetOffset = uadpDataSetMessageSettings.DataSetOffset;
@@ -1098,7 +1070,7 @@ namespace Technosoftware.UaPubSub.Transport
                     return networkMessages;
                 }
 
-                UadpNetworkMessage uadpNetworkMessage =
+                var uadpNetworkMessage =
                     new UadpNetworkMessage(writerGroupConfiguration, uadpDataSetMessages);
                 uadpNetworkMessage.SetNetworkMessageContentMask(
                     (UadpNetworkMessageContentMask)uadpMessageSettings?.NetworkMessageContentMask);
