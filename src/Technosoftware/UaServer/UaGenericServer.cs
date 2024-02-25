@@ -56,9 +56,6 @@ namespace Technosoftware.UaServer
         /// An overrideable version of the Dispose.
         /// </summary>
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "genericServerData_"),
-         System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "registrationTimer_"),
-         System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "configurationWatcher_")]
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -115,9 +112,9 @@ namespace Technosoftware.UaServer
             lock (lock_)
             {
                 // parse the url provided by the client.
-                var baseAddresses = BaseAddresses;
+                IList<BaseAddress> baseAddresses = BaseAddresses;
 
-                var parsedEndpointUrl = Utils.ParseUri(endpointUrl);
+                Uri parsedEndpointUrl = Utils.ParseUri(endpointUrl);
 
                 if (parsedEndpointUrl != null)
                 {
@@ -134,9 +131,9 @@ namespace Technosoftware.UaServer
                 // build list of unique servers.
                 var uniqueServers = new Dictionary<string, ApplicationDescription>();
 
-                foreach (var description in GetEndpoints())
+                foreach (EndpointDescription description in GetEndpoints())
                 {
-                    var server = description.Server;
+                    ApplicationDescription server = description.Server;
 
                     // skip servers that have been processed.
                     if (uniqueServers.ContainsKey(server.ApplicationUri))
@@ -154,7 +151,7 @@ namespace Technosoftware.UaServer
                     }
 
                     // localize the application name if requested.
-                    var applicationName = server.ApplicationName;
+                    LocalizedText applicationName = server.ApplicationName;
 
                     if (localeIds != null && localeIds.Count > 0)
                     {
@@ -162,7 +159,7 @@ namespace Technosoftware.UaServer
                     }
 
                     // get the application description.
-                    var application = TranslateApplicationDescription(
+                    ApplicationDescription application = TranslateApplicationDescription(
                         parsedEndpointUrl,
                         server,
                         baseAddresses,
@@ -203,7 +200,7 @@ namespace Technosoftware.UaServer
             lock (lock_)
             {
                 // filter by profile.
-                var baseAddresses = FilterByProfile(profileUris, BaseAddresses);
+                IList<BaseAddress> baseAddresses = FilterByProfile(profileUris, BaseAddresses);
 
                 // get the descriptions.
                 endpoints = GetEndpointDescriptions(
@@ -226,7 +223,7 @@ namespace Technosoftware.UaServer
             EndpointDescriptionCollection endpoints = null;
 
             // parse the url provided by the client.
-            var parsedEndpointUrl = Utils.ParseUri(endpointUrl);
+            Uri parsedEndpointUrl = Utils.ParseUri(endpointUrl);
 
             if (parsedEndpointUrl != null)
             {
@@ -237,7 +234,7 @@ namespace Technosoftware.UaServer
             if (baseAddresses.Count != 0)
             {
                 // localize the application name if requested.
-                var applicationName = this.ServerDescription.ApplicationName;
+                LocalizedText applicationName = ServerDescription.ApplicationName;
 
                 if (localeIds != null && localeIds.Count > 0)
                 {
@@ -245,9 +242,9 @@ namespace Technosoftware.UaServer
                 }
 
                 // translate the application description.
-                var application = TranslateApplicationDescription(
+                ApplicationDescription application = TranslateApplicationDescription(
                     parsedEndpointUrl,
-                    base.ServerDescription,
+                    ServerDescription,
                     baseAddresses,
                     applicationName);
 
@@ -255,7 +252,7 @@ namespace Technosoftware.UaServer
                 endpoints = TranslateEndpointDescriptions(
                     parsedEndpointUrl,
                     baseAddresses,
-                    this.Endpoints,
+                    Endpoints,
                     application);
             }
 
@@ -343,20 +340,20 @@ namespace Technosoftware.UaServer
             serverSignature = null;
             maxRequestMessageSize = (uint)MessageContext.MaxMessageSize;
 
-            var context = ValidateRequest(requestHeader, Sessions.RequestType.CreateSession);
-            Sessions.Session session = null;
+            UaServerOperationContext context = ValidateRequest(requestHeader, RequestType.CreateSession);
+            Session session = null;
             try
             {
                 // check the server uri.
                 if (!String.IsNullOrEmpty(serverUri))
                 {
-                    if (serverUri != this.Configuration.ApplicationUri)
+                    if (serverUri != Configuration.ApplicationUri)
                     {
                         throw new ServiceResultException(StatusCodes.BadServerUriInvalid);
                     }
                 }
 
-                var requireEncryption = ServerBase.RequireEncryption(context?.ChannelContext?.EndpointDescription);
+                var requireEncryption = RequireEncryption(context?.ChannelContext?.EndpointDescription);
 
                 if (!requireEncryption && clientCertificate != null)
                 {
@@ -370,7 +367,7 @@ namespace Technosoftware.UaServer
                 {
                     try
                     {
-                        var clientCertificateChain = Utils.ParseCertificateChainBlob(clientCertificate);
+                        X509Certificate2Collection clientCertificateChain = Utils.ParseCertificateChainBlob(clientCertificate);
                         parsedClientCertificate = clientCertificateChain[0];
 
                         if (context.SecurityPolicyUri != SecurityPolicies.None)
@@ -439,7 +436,7 @@ namespace Technosoftware.UaServer
                     try
                     {
                         // check the endpointurl
-                        ConfiguredEndpoint configuredEndpoint = new ConfiguredEndpoint() {
+                        var configuredEndpoint = new ConfiguredEndpoint() {
                             EndpointUrl = new Uri(endpointUrl)
                         };
 
@@ -568,7 +565,7 @@ namespace Technosoftware.UaServer
             results = null;
             diagnosticInfos = null;
 
-            var context = ValidateRequest(requestHeader, Sessions.RequestType.ActivateSession);
+            UaServerOperationContext context = ValidateRequest(requestHeader, RequestType.ActivateSession);
             // validate client's software certificates.
             var softwareCertificates = new List<SoftwareCertificate>();
 
@@ -586,14 +583,13 @@ namespace Technosoftware.UaServer
                     results = new StatusCodeCollection();
                     diagnosticInfos = new DiagnosticInfoCollection();
 
-                    foreach (var signedCertificate in clientSoftwareCertificates)
+                    foreach (SignedSoftwareCertificate signedCertificate in clientSoftwareCertificates)
                     {
-                        SoftwareCertificate softwareCertificate = null;
 
-                        var result = SoftwareCertificate.Validate(
+                        ServiceResult result = SoftwareCertificate.Validate(
                             CertificateValidator,
                             signedCertificate.CertificateData,
-                            out softwareCertificate);
+                            out SoftwareCertificate softwareCertificate);
 
                         if (ServiceResult.IsBad(result))
                         {
@@ -602,7 +598,7 @@ namespace Technosoftware.UaServer
                             // add diagnostics if requested.
                             if ((context.DiagnosticsMask & DiagnosticsMasks.OperationAll) != 0)
                             {
-                                var diagnosticInfo = UaServerUtils.CreateDiagnosticInfo(ServerData, context, result);
+                                DiagnosticInfo diagnosticInfo = UaServerUtils.CreateDiagnosticInfo(ServerData, context, result);
                                 diagnosticInfos.Add(diagnosticInfo);
                                 diagnosticsExist = true;
                             }
@@ -648,7 +644,7 @@ namespace Technosoftware.UaServer
                 Utils.LogInfo("Server - SESSION ACTIVATED.");
 
                 // report the audit event for session activate
-                Sessions.Session session = ServerData.SessionManager.GetSession(requestHeader.AuthenticationToken);
+                Session session = ServerData.SessionManager.GetSession(requestHeader.AuthenticationToken);
                 ServerData.ReportAuditActivateSessionEvent(context?.AuditEntryId, session, softwareCertificates);
 
                 return CreateResponse(requestHeader, StatusCodes.Good);
@@ -658,7 +654,7 @@ namespace Technosoftware.UaServer
                 Utils.LogInfo("Server - SESSION ACTIVATE failed. {0}", e.Message);
 
                 // report the audit event for failed session activate
-                Sessions.Session session = ServerData.SessionManager.GetSession(requestHeader.AuthenticationToken);
+                Session session = ServerData.SessionManager.GetSession(requestHeader.AuthenticationToken);
                 ServerData.ReportAuditActivateSessionEvent(context?.AuditEntryId, session, softwareCertificates, e);
 
                 lock (ServerData.DiagnosticsWriteLock)
@@ -717,9 +713,9 @@ namespace Technosoftware.UaServer
                 case StatusCodes.BadCertificateHostNameInvalid:
                 case StatusCodes.BadCertificatePolicyCheckFailed:
                 case StatusCodes.BadApplicationSignatureInvalid:
-                    {
-                        return true;
-                    }
+                {
+                    return true;
+                }
             }
 
             return false;
@@ -733,12 +729,12 @@ namespace Technosoftware.UaServer
         /// <returns>Returns a description for the ResponseHeader DataType. </returns>
         protected ResponseHeader CreateResponse(RequestHeader requestHeader, ServiceResultException exception)
         {
-            var responseHeader = new ResponseHeader();
+            var responseHeader = new ResponseHeader {
+                ServiceResult = exception.StatusCode,
 
-            responseHeader.ServiceResult = exception.StatusCode;
-
-            responseHeader.Timestamp = DateTime.UtcNow;
-            responseHeader.RequestHandle = requestHeader.RequestHandle;
+                Timestamp = DateTime.UtcNow,
+                RequestHandle = requestHeader.RequestHandle
+            };
 
             var stringTable = new StringTable();
             responseHeader.ServiceDiagnostics = new DiagnosticInfo(exception, (DiagnosticsMasks)requestHeader.ReturnDiagnostics, true, stringTable);
@@ -757,11 +753,11 @@ namespace Technosoftware.UaServer
         /// </returns>
         public override ResponseHeader CloseSession(RequestHeader requestHeader, bool deleteSubscriptions)
         {
-            var context = ValidateRequest(requestHeader, RequestType.CloseSession);
+            UaServerOperationContext context = ValidateRequest(requestHeader, RequestType.CloseSession);
 
             try
             {
-                Sessions.Session session = ServerData.SessionManager.GetSession(requestHeader.AuthenticationToken);
+                Session session = ServerData.SessionManager.GetSession(requestHeader.AuthenticationToken);
 
                 ServerData.CloseSession(context, context.Session.Id, deleteSubscriptions);
 
@@ -806,7 +802,7 @@ namespace Technosoftware.UaServer
         {
             cancelCount = 0;
 
-            var context = ValidateRequest(requestHeader, RequestType.Cancel);
+            UaServerOperationContext context = ValidateRequest(requestHeader, RequestType.Cancel);
 
             try
             {
@@ -856,7 +852,7 @@ namespace Technosoftware.UaServer
             results = null;
             diagnosticInfos = null;
 
-            var context = ValidateRequest(requestHeader, RequestType.Browse);
+            UaServerOperationContext context = ValidateRequest(requestHeader, RequestType.Browse);
 
             try
             {
@@ -913,7 +909,7 @@ namespace Technosoftware.UaServer
             results = null;
             diagnosticInfos = null;
 
-            var context = ValidateRequest(requestHeader, RequestType.BrowseNext);
+            UaServerOperationContext context = ValidateRequest(requestHeader, RequestType.BrowseNext);
 
             try
             {
@@ -964,7 +960,7 @@ namespace Technosoftware.UaServer
         {
             registeredNodeIds = null;
 
-            var context = ValidateRequest(requestHeader, RequestType.RegisterNodes);
+            UaServerOperationContext context = ValidateRequest(requestHeader, RequestType.RegisterNodes);
 
             try
             {
@@ -1007,7 +1003,7 @@ namespace Technosoftware.UaServer
         /// </returns>
         public override ResponseHeader UnregisterNodes(RequestHeader requestHeader, NodeIdCollection nodesToUnregister)
         {
-            var context = ValidateRequest(requestHeader, RequestType.UnregisterNodes);
+            UaServerOperationContext context = ValidateRequest(requestHeader, RequestType.UnregisterNodes);
 
             try
             {
@@ -1058,7 +1054,7 @@ namespace Technosoftware.UaServer
             results = null;
             diagnosticInfos = null;
 
-            var context = ValidateRequest(requestHeader, RequestType.TranslateBrowsePathsToNodeIds);
+            UaServerOperationContext context = ValidateRequest(requestHeader, RequestType.TranslateBrowsePathsToNodeIds);
 
             try
             {
@@ -1117,7 +1113,7 @@ namespace Technosoftware.UaServer
             out DataValueCollection results,
             out DiagnosticInfoCollection diagnosticInfos)
         {
-            var context = ValidateRequest(requestHeader, RequestType.Read);
+            UaServerOperationContext context = ValidateRequest(requestHeader, RequestType.Read);
 
             try
             {
@@ -1177,7 +1173,7 @@ namespace Technosoftware.UaServer
             out HistoryReadResultCollection results,
             out DiagnosticInfoCollection diagnosticInfos)
         {
-            var context = ValidateRequest(requestHeader, RequestType.HistoryRead);
+            UaServerOperationContext context = ValidateRequest(requestHeader, RequestType.HistoryRead);
 
             try
             {
@@ -1239,7 +1235,7 @@ namespace Technosoftware.UaServer
             out StatusCodeCollection results,
             out DiagnosticInfoCollection diagnosticInfos)
         {
-            var context = ValidateRequest(requestHeader, RequestType.Write);
+            UaServerOperationContext context = ValidateRequest(requestHeader, RequestType.Write);
 
             try
             {
@@ -1289,7 +1285,7 @@ namespace Technosoftware.UaServer
             out HistoryUpdateResultCollection results,
             out DiagnosticInfoCollection diagnosticInfos)
         {
-            var context = ValidateRequest(requestHeader, RequestType.HistoryUpdate);
+            UaServerOperationContext context = ValidateRequest(requestHeader, RequestType.HistoryUpdate);
 
             try
             {
@@ -1356,7 +1352,7 @@ namespace Technosoftware.UaServer
             out uint revisedLifetimeCount,
             out uint revisedMaxKeepAliveCount)
         {
-            var context = ValidateRequest(requestHeader, RequestType.CreateSubscription);
+            UaServerOperationContext context = ValidateRequest(requestHeader, RequestType.CreateSubscription);
 
             try
             {
@@ -1404,9 +1400,9 @@ namespace Technosoftware.UaServer
         /// <param name="results">The list of result StatusCodes for the Subscriptions to transfer.</param>
         /// <param name="diagnosticInfos">The diagnostic information for the results.</param>
         public override ResponseHeader TransferSubscriptions(
-            RequestHeader                requestHeader,
-            UInt32Collection             subscriptionIds,
-            bool                         sendInitialValues,
+            RequestHeader requestHeader,
+            UInt32Collection subscriptionIds,
+            bool sendInitialValues,
             out TransferResultCollection results,
             out DiagnosticInfoCollection diagnosticInfos)
         {
@@ -1464,7 +1460,7 @@ namespace Technosoftware.UaServer
             out StatusCodeCollection results,
             out DiagnosticInfoCollection diagnosticInfos)
         {
-            var context = ValidateRequest(requestHeader, RequestType.DeleteSubscriptions);
+            UaServerOperationContext context = ValidateRequest(requestHeader, RequestType.DeleteSubscriptions);
 
             try
             {
@@ -1522,7 +1518,7 @@ namespace Technosoftware.UaServer
             out StatusCodeCollection results,
             out DiagnosticInfoCollection diagnosticInfos)
         {
-            var context = ValidateRequest(requestHeader, RequestType.Publish);
+            UaServerOperationContext context = ValidateRequest(requestHeader, RequestType.Publish);
 
             try
             {
@@ -1590,28 +1586,23 @@ namespace Technosoftware.UaServer
         public virtual void BeginPublish(IEndpointIncomingRequest request)
         {
             var input = (PublishRequest)request.Request;
-            var context = ValidateRequest(input.RequestHeader, RequestType.Publish);
+            UaServerOperationContext context = ValidateRequest(input.RequestHeader, RequestType.Publish);
 
             try
             {
                 var operation = new AsyncPublishOperation(context, request, this);
 
-                uint subscriptionId = 0;
-                UInt32Collection availableSequenceNumbers = null;
-                var moreNotifications = false;
                 NotificationMessage notificationMessage = null;
-                StatusCodeCollection results = null;
-                DiagnosticInfoCollection diagnosticInfos = null;
 
                 notificationMessage = ServerData.SubscriptionManager.Publish(
                     context,
                     input.SubscriptionAcknowledgements,
                     operation,
-                    out subscriptionId,
-                    out availableSequenceNumbers,
-                    out moreNotifications,
-                    out results,
-                    out diagnosticInfos);
+                    out var subscriptionId,
+                    out UInt32Collection availableSequenceNumbers,
+                    out var moreNotifications,
+                    out StatusCodeCollection results,
+                    out DiagnosticInfoCollection diagnosticInfos);
 
                 // request completed asynchronously.
                 if (notificationMessage != null)
@@ -1655,7 +1646,7 @@ namespace Technosoftware.UaServer
         public virtual void CompletePublish(IEndpointIncomingRequest request)
         {
             var operation = (AsyncPublishOperation)request.Calldata;
-            var context = operation.Context;
+            UaServerOperationContext context = operation.Context;
 
             try
             {
@@ -1700,7 +1691,7 @@ namespace Technosoftware.UaServer
             uint retransmitSequenceNumber,
             out NotificationMessage notificationMessage)
         {
-            var context = ValidateRequest(requestHeader, RequestType.Republish);
+            UaServerOperationContext context = ValidateRequest(requestHeader, RequestType.Republish);
 
             try
             {
@@ -1759,7 +1750,7 @@ namespace Technosoftware.UaServer
             out uint revisedLifetimeCount,
             out uint revisedMaxKeepAliveCount)
         {
-            var context = ValidateRequest(requestHeader, RequestType.ModifySubscription);
+            UaServerOperationContext context = ValidateRequest(requestHeader, RequestType.ModifySubscription);
 
             try
             {
@@ -1815,7 +1806,7 @@ namespace Technosoftware.UaServer
             out StatusCodeCollection results,
             out DiagnosticInfoCollection diagnosticInfos)
         {
-            var context = ValidateRequest(requestHeader, RequestType.SetPublishingMode);
+            UaServerOperationContext context = ValidateRequest(requestHeader, RequestType.SetPublishingMode);
 
             try
             {
@@ -1881,7 +1872,7 @@ namespace Technosoftware.UaServer
             removeResults = null;
             removeDiagnosticInfos = null;
 
-            var context = ValidateRequest(requestHeader, RequestType.SetTriggering);
+            UaServerOperationContext context = ValidateRequest(requestHeader, RequestType.SetTriggering);
 
             try
             {
@@ -1890,7 +1881,7 @@ namespace Technosoftware.UaServer
                     throw new ServiceResultException(StatusCodes.BadNothingToDo);
                 }
 
-                int monitoredItemsCount = 0;
+                var monitoredItemsCount = 0;
                 monitoredItemsCount += (linksToAdd?.Count) ?? 0;
                 monitoredItemsCount += (linksToRemove?.Count) ?? 0;
                 ValidateOperationLimits(monitoredItemsCount, OperationLimits.MaxMonitoredItemsPerCall);
@@ -1948,7 +1939,7 @@ namespace Technosoftware.UaServer
             out MonitoredItemCreateResultCollection results,
             out DiagnosticInfoCollection diagnosticInfos)
         {
-            var context = ValidateRequest(requestHeader, RequestType.CreateMonitoredItems);
+            UaServerOperationContext context = ValidateRequest(requestHeader, RequestType.CreateMonitoredItems);
 
             try
             {
@@ -2004,7 +1995,7 @@ namespace Technosoftware.UaServer
             out MonitoredItemModifyResultCollection results,
             out DiagnosticInfoCollection diagnosticInfos)
         {
-            var context = ValidateRequest(requestHeader, RequestType.ModifyMonitoredItems);
+            UaServerOperationContext context = ValidateRequest(requestHeader, RequestType.ModifyMonitoredItems);
 
             try
             {
@@ -2058,7 +2049,7 @@ namespace Technosoftware.UaServer
             out StatusCodeCollection results,
             out DiagnosticInfoCollection diagnosticInfos)
         {
-            var context = ValidateRequest(requestHeader, RequestType.DeleteMonitoredItems);
+            UaServerOperationContext context = ValidateRequest(requestHeader, RequestType.DeleteMonitoredItems);
 
             try
             {
@@ -2113,7 +2104,7 @@ namespace Technosoftware.UaServer
             out StatusCodeCollection results,
             out DiagnosticInfoCollection diagnosticInfos)
         {
-            var context = ValidateRequest(requestHeader, RequestType.SetMonitoringMode);
+            UaServerOperationContext context = ValidateRequest(requestHeader, RequestType.SetMonitoringMode);
 
             try
             {
@@ -2165,7 +2156,7 @@ namespace Technosoftware.UaServer
             out CallMethodResultCollection results,
             out DiagnosticInfoCollection diagnosticInfos)
         {
-            var context = ValidateRequest(requestHeader, RequestType.Call);
+            UaServerOperationContext context = ValidateRequest(requestHeader, RequestType.Call);
 
             try
             {
@@ -2212,12 +2203,7 @@ namespace Technosoftware.UaServer
             {
                 lock (lock_)
                 {
-                    if (genericServerData_ == null)
-                    {
-                        throw new ServiceResultException(StatusCodes.BadServerHalted);
-                    }
-
-                    return genericServerData_;
+                    return genericServerData_ == null ? throw new ServiceResultException(StatusCodes.BadServerHalted) : (IUaServerData)genericServerData_;
                 }
             }
         }
@@ -2230,12 +2216,7 @@ namespace Technosoftware.UaServer
         {
             lock (lock_)
             {
-                if (genericServerData_ == null)
-                {
-                    throw new ServiceResultException(StatusCodes.BadServerHalted);
-                }
-
-                return genericServerData_.Status.Value;
+                return genericServerData_ == null ? throw new ServiceResultException(StatusCodes.BadServerHalted) : genericServerData_.Status.Value;
             }
         }
 
@@ -2245,7 +2226,7 @@ namespace Technosoftware.UaServer
         /// <returns>Boolean value.</returns>
         public bool RegisterWithDiscoveryServer()
         {
-            ApplicationConfiguration configuration = new ApplicationConfiguration(base.Configuration);
+            var configuration = new ApplicationConfiguration(Configuration);
 
             // use a dedicated certificate validator with the registration, but derive behavior from server config
             var registrationCertificateValidator = new CertificateValidationEventHandler(OnCertificateValidation);
@@ -2258,7 +2239,7 @@ namespace Technosoftware.UaServer
                 // try each endpoint.
                 if (registrationEndpoints_ != null)
                 {
-                    foreach (var endpoint in registrationEndpoints_.Endpoints)
+                    foreach (ConfiguredEndpoint endpoint in registrationEndpoints_.Endpoints)
                     {
                         RegistrationClient client = null;
                         var i = 0;
@@ -2285,15 +2266,16 @@ namespace Technosoftware.UaServer
                                     endpoint.UpdateBeforeConnect = false;
                                 }
 
-                                var requestHeader = new RequestHeader();
-                                requestHeader.Timestamp = DateTime.UtcNow;
+                                var requestHeader = new RequestHeader {
+                                    Timestamp = DateTime.UtcNow
+                                };
 
                                 // create the client.
                                 client = RegistrationClient.Create(
                                     configuration,
                                     endpoint.Description,
                                     endpoint.Configuration,
-                                    base.InstanceCertificate);
+                                    InstanceCertificate);
 
                                 client.OperationTimeout = 10000;
 
@@ -2301,23 +2283,22 @@ namespace Technosoftware.UaServer
                                 if (useRegisterServer2_)
                                 {
                                     var discoveryConfiguration = new ExtensionObjectCollection();
-                                    StatusCodeCollection configurationResults = null;
-                                    DiagnosticInfoCollection diagnosticInfos = null;
-                                    var mdnsDiscoveryConfig = new MdnsDiscoveryConfiguration();
-                                    mdnsDiscoveryConfig.ServerCapabilities = configuration.ServerConfiguration.ServerCapabilities;
-                                    mdnsDiscoveryConfig.MdnsServerName = Utils.GetHostName();
+                                    var mdnsDiscoveryConfig = new MdnsDiscoveryConfiguration {
+                                        ServerCapabilities = configuration.ServerConfiguration.ServerCapabilities,
+                                        MdnsServerName = Utils.GetHostName()
+                                    };
                                     var extensionObject = new ExtensionObject(mdnsDiscoveryConfig);
                                     discoveryConfiguration.Add(extensionObject);
-                                    client.RegisterServer2(
+                                    _ = client.RegisterServer2(
                                         requestHeader,
                                         registrationInfo_,
                                         discoveryConfiguration,
-                                        out configurationResults,
-                                        out diagnosticInfos);
+                                        out StatusCodeCollection configurationResults,
+                                        out DiagnosticInfoCollection diagnosticInfos);
                                 }
                                 else
                                 {
-                                    client.RegisterServer(requestHeader, registrationInfo_);
+                                    _ = client.RegisterServer(requestHeader, registrationInfo_);
                                 }
 
                                 return true;
@@ -2334,7 +2315,7 @@ namespace Technosoftware.UaServer
                                 {
                                     try
                                     {
-                                        client.Close();
+                                        _ = client.Close();
                                         client = null;
                                     }
                                     catch (Exception e)
@@ -2365,16 +2346,15 @@ namespace Technosoftware.UaServer
         /// </summary>
         private void OnCertificateValidation(object sender, CertificateValidationEventArgs e)
         {
-            var validator = sender as CertificateValidator;
-            var targetAddresses = Utils.GetHostAddresses(Utils.GetHostName());
+            System.Net.IPAddress[] targetAddresses = Utils.GetHostAddresses(Utils.GetHostName());
 
             foreach (var domain in X509Utils.GetDomainsFromCertficate(e.Certificate))
             {
-                var actualAddresses = Utils.GetHostAddresses(domain);
+                System.Net.IPAddress[] actualAddresses = Utils.GetHostAddresses(domain);
 
-                foreach (var actualAddress in actualAddresses)
+                foreach (System.Net.IPAddress actualAddress in actualAddresses)
                 {
-                    foreach (var targetAddress in targetAddresses)
+                    foreach (System.Net.IPAddress targetAddress in targetAddresses)
                     {
                         if (targetAddress.Equals(actualAddress))
                         {
@@ -2465,14 +2445,9 @@ namespace Technosoftware.UaServer
         {
             get
             {
-                var serverInternal = genericServerData_;
+                GenericServerData serverInternal = genericServerData_;
 
-                if (serverInternal == null)
-                {
-                    throw new ServiceResultException(StatusCodes.BadServerHalted);
-                }
-
-                return serverInternal;
+                return serverInternal ?? throw new ServiceResultException(StatusCodes.BadServerHalted);
             }
         }
 
@@ -2483,7 +2458,7 @@ namespace Technosoftware.UaServer
         protected override void ValidateRequest(RequestHeader requestHeader)
         {
             // check for server error.
-            var error = ServerError;
+            ServiceResult error = ServerError;
 
             if (ServiceResult.IsBad(error))
             {
@@ -2491,7 +2466,7 @@ namespace Technosoftware.UaServer
             }
 
             // check server state.
-            var serverInternal = genericServerData_;
+            GenericServerData serverInternal = genericServerData_;
 
             if (serverInternal == null || !serverInternal.IsRunning)
             {
@@ -2562,7 +2537,7 @@ namespace Technosoftware.UaServer
         /// <param name="requestHeader">The request header.</param>
         /// <param name="requestType">Type of the request.</param>
         /// <returns></returns>
-        protected virtual UaServerOperationContext ValidateRequest(RequestHeader requestHeader, Sessions.RequestType requestType)
+        protected virtual UaServerOperationContext ValidateRequest(RequestHeader requestHeader, RequestType requestType)
         {
             base.ValidateRequest(requestHeader);
 
@@ -2571,7 +2546,7 @@ namespace Technosoftware.UaServer
                 throw new ServiceResultException(StatusCodes.BadServerHalted);
             }
 
-            var context = ServerData.SessionManager.ValidateRequest(requestHeader, requestType);
+            UaServerOperationContext context = ServerData.SessionManager.ValidateRequest(requestHeader, requestType);
 
             UaServerUtils.EventLog.ServerCall(context.RequestType.ToString(), context.RequestId);
 
@@ -2605,7 +2580,7 @@ namespace Technosoftware.UaServer
         /// <exception cref="ServiceResultException">BadTooManyOperations if count is larger than operation limit property.</exception>
         protected void ValidateOperationLimits(int count, PropertyState<uint> operationLimit)
         {
-            uint operationLimitValue = (operationLimit != null) ? operationLimit.Value : 0;
+            var operationLimitValue = (operationLimit != null) ? operationLimit.Value : 0;
             if (operationLimitValue > 0 && count > operationLimitValue)
             {
                 throw new ServiceResultException(StatusCodes.BadTooManyOperations);
@@ -2683,12 +2658,7 @@ namespace Technosoftware.UaServer
         /// <returns>Returns a class that combines the status code and diagnostic info structures.</returns>
         protected virtual ServiceResult TranslateResult(DiagnosticsMasks diagnosticsMasks, IList<string> preferredLocales, ServiceResult result)
         {
-            if (result == null)
-            {
-                return null;
-            }
-
-            return genericServerData_.ResourceManager.Translate(preferredLocales, result);
+            return result == null ? null : genericServerData_.ResourceManager.Translate(preferredLocales, result);
         }
 
         /// <summary>
@@ -2714,13 +2684,12 @@ namespace Technosoftware.UaServer
         /// Raised when the configuration changes.
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="args">The <see cref="Opc.Ua.ConfigurationWatcherEventArgs"/> instance containing the event data.</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2109:ReviewVisibleEventHandlers")]
+        /// <param name="args">The <see cref="ConfigurationWatcherEventArgs"/> instance containing the event data.</param>
         protected virtual async void OnConfigurationChanged(object sender, ConfigurationWatcherEventArgs args)
         {
             try
             {
-                var configuration = await ApplicationConfiguration.Load(
+                ApplicationConfiguration configuration = await ApplicationConfiguration.Load(
                     new FileInfo(args.FilePath),
                     Configuration.ApplicationType,
                     Configuration.GetType());
@@ -2813,9 +2782,9 @@ namespace Technosoftware.UaServer
             // ensure at least one user token policy exists.
             if (configuration.ServerConfiguration.UserTokenPolicies.Count == 0)
             {
-                var userTokenPolicy = new UserTokenPolicy();
-
-                userTokenPolicy.TokenType = UserTokenType.Anonymous;
+                var userTokenPolicy = new UserTokenPolicy {
+                    TokenType = UserTokenType.Anonymous
+                };
                 userTokenPolicy.PolicyId = userTokenPolicy.TokenType.ToString();
 
                 configuration.ServerConfiguration.UserTokenPolicies.Add(userTokenPolicy);
@@ -2833,12 +2802,12 @@ namespace Technosoftware.UaServer
             endpoints = new EndpointDescriptionCollection();
             IList<EndpointDescription> endpointsForHost = null;
 
-            var baseAddresses = configuration.ServerConfiguration.BaseAddresses;
-            var requiredSchemes = Utils.DefaultUriSchemes.Where(scheme => baseAddresses.Any(a => a.StartsWith(scheme, StringComparison.Ordinal)));
+            StringCollection baseAddresses = configuration.ServerConfiguration.BaseAddresses;
+            IEnumerable<string> requiredSchemes = Utils.DefaultUriSchemes.Where(scheme => baseAddresses.Any(a => a.StartsWith(scheme, StringComparison.Ordinal)));
 
             foreach (var scheme in requiredSchemes)
             {
-                var binding = bindingFactory.GetBinding(scheme);
+                ITransportListenerFactory binding = bindingFactory.GetBinding(scheme);
                 if (binding != null)
                 {
                     endpointsForHost = binding.CreateServiceHost(
@@ -2906,15 +2875,15 @@ namespace Technosoftware.UaServer
 
                     // create the manager responsible for providing localized string resources.                    
                     Utils.LogInfo(Utils.TraceMasks.StartStop, "Server - CreateResourceManager.");
-                    var resourceManager = CreateResourceManager(genericServerData_, configuration);
+                    ResourceManager resourceManager = CreateResourceManager(genericServerData_, configuration);
 
                     // create the manager responsible for incoming requests.
                     Utils.LogInfo(Utils.TraceMasks.StartStop, "Server - CreateRequestManager.");
-                    var requestManager = CreateRequestManager(genericServerData_, configuration);
+                    RequestManager requestManager = CreateRequestManager(genericServerData_, configuration);
 
                     // create the master node manager.
                     Utils.LogInfo(Utils.TraceMasks.StartStop, "Server - CreateMasterNodeManager.");
-                    var masterNodeManager = CreateMasterNodeManager(genericServerData_, configuration);
+                    MasterNodeManager masterNodeManager = CreateMasterNodeManager(genericServerData_, configuration);
 
                     // add the node manager to the datastore. 
                     genericServerData_.SetNodeManager(masterNodeManager);
@@ -2924,7 +2893,7 @@ namespace Technosoftware.UaServer
 
                     // create the manager responsible for handling events.
                     Utils.LogInfo(Utils.TraceMasks.StartStop, "Server - CreateEventManager.");
-                    var eventManager = CreateEventManager(genericServerData_, configuration);
+                    EventManager eventManager = CreateEventManager(genericServerData_, configuration);
 
                     // creates the server object. 
                     genericServerData_.CreateServerObject(
@@ -2941,12 +2910,12 @@ namespace Technosoftware.UaServer
 
                     // start the session manager.
                     Utils.LogInfo(Utils.TraceMasks.StartStop, "Server - CreateSessionManager.");
-                    var sessionManager = CreateSessionManager(genericServerData_, configuration);
+                    SessionManager sessionManager = CreateSessionManager(genericServerData_, configuration);
                     sessionManager.Startup();
 
                     // start the subscription manager.
                     Utils.LogInfo(Utils.TraceMasks.StartStop, "Server - CreateSubscriptionManager.");
-                    var subscriptionManager = CreateSubscriptionManager(genericServerData_, configuration);
+                    SubscriptionManager subscriptionManager = CreateSubscriptionManager(genericServerData_, configuration);
                     subscriptionManager.Startup();
 
                     // add the session manager to the datastore. 
@@ -2959,11 +2928,11 @@ namespace Technosoftware.UaServer
                     {
                         maxRegistrationInterval_ = configuration.ServerConfiguration.MaxRegistrationInterval;
 
-                        var serverDescription = ServerDescription;
+                        ApplicationDescription serverDescription = ServerDescription;
 
-                        registrationInfo_ = new RegisteredServer();
-
-                        registrationInfo_.ServerUri = serverDescription.ApplicationUri;
+                        registrationInfo_ = new RegisteredServer {
+                            ServerUri = serverDescription.ApplicationUri
+                        };
                         registrationInfo_.ServerNames.Add(serverDescription.ApplicationName);
                         registrationInfo_.ProductUri = serverDescription.ProductUri;
                         registrationInfo_.ServerType = serverDescription.ApplicationType;
@@ -2989,19 +2958,20 @@ namespace Technosoftware.UaServer
                         // build list of registration endpoints.
                         registrationEndpoints_ = new ConfiguredEndpointCollection(configuration);
 
-                        var endpoint = configuration.ServerConfiguration.RegistrationEndpoint;
+                        EndpointDescription endpoint = configuration.ServerConfiguration.RegistrationEndpoint;
 
                         if (endpoint == null)
                         {
-                            endpoint = new EndpointDescription();
-                            endpoint.EndpointUrl = Utils.Format(Utils.DiscoveryUrls[0], "localhost");
-                            endpoint.SecurityLevel = ServerSecurityPolicy.CalculateSecurityLevel(MessageSecurityMode.SignAndEncrypt, SecurityPolicies.Basic256Sha256);
-                            endpoint.SecurityMode = MessageSecurityMode.SignAndEncrypt;
-                            endpoint.SecurityPolicyUri = SecurityPolicies.Basic256Sha256;
+                            endpoint = new EndpointDescription {
+                                EndpointUrl = Utils.Format(Utils.DiscoveryUrls[0], "localhost"),
+                                SecurityLevel = ServerSecurityPolicy.CalculateSecurityLevel(MessageSecurityMode.SignAndEncrypt, SecurityPolicies.Basic256Sha256),
+                                SecurityMode = MessageSecurityMode.SignAndEncrypt,
+                                SecurityPolicyUri = SecurityPolicies.Basic256Sha256
+                            };
                             endpoint.Server.ApplicationType = ApplicationType.DiscoveryServer;
                         }
 
-                        registrationEndpoints_.Add(endpoint);
+                        _ = registrationEndpoints_.Add(endpoint);
 
                         minRegistrationInterval_ = 1000;
                         lastRegistrationInterval_ = minRegistrationInterval_;
@@ -3032,7 +3002,7 @@ namespace Technosoftware.UaServer
                     {
                         Utils.LogInfo(Utils.TraceMasks.StartStop, "Server - Configuration watcher started.");
                         configurationWatcher_ = new ConfigurationWatcher(configuration);
-                        configurationWatcher_.Changed += new EventHandler<ConfigurationWatcherEventArgs>(this.OnConfigurationChanged);
+                        configurationWatcher_.Changed += new EventHandler<ConfigurationWatcherEventArgs>(OnConfigurationChanged);
                     }
 
                     CertificateValidator.CertificateUpdate += OnCertificateUpdate;
@@ -3075,7 +3045,7 @@ namespace Technosoftware.UaServer
                 {
                     // unregister from Discovery ServerData
                     registrationInfo_.IsOnline = false;
-                    RegisterWithDiscoveryServer();
+                    _ = RegisterWithDiscoveryServer();
                 }
 
                 lock (lock_)
@@ -3111,7 +3081,7 @@ namespace Technosoftware.UaServer
             try
             {
                 // check for connected clients.
-                var currentessions = this.ServerData.SessionManager.GetSessions();
+                IList<Session> currentessions = ServerData.SessionManager.GetSessions();
 
                 if (currentessions.Count > 0)
                 {
@@ -3122,7 +3092,7 @@ namespace Technosoftware.UaServer
                     ServerData.Status.Variable.State.Value = ServerState.Shutdown;
                     ServerData.Status.Variable.ClearChangeMasks(ServerData.DefaultSystemContext, true);
 
-                    foreach (Sessions.Session session in currentessions)
+                    foreach (Session session in currentessions)
                     {
                         // raise close session audit event
                         ServerData.ReportAuditCloseSessionEvent(null, session, "Session/Terminated");
@@ -3246,9 +3216,9 @@ namespace Technosoftware.UaServer
         /// <returns>Returns the master node manager for the server, the return type is <seealso cref="MasterNodeManager"/>.</returns>
         protected virtual MasterNodeManager CreateMasterNodeManager(IUaServerData server, ApplicationConfiguration configuration)
         {
-            IList<IUaBaseNodeManager> nodeManagers = new List<IUaBaseNodeManager>();
+            var nodeManagers = new List<IUaBaseNodeManager>();
 
-            foreach (var nodeManagerFactory in nodeManagerFactories_)
+            foreach (IUaNodeManagerFactory nodeManagerFactory in nodeManagerFactories_)
             {
                 nodeManagers.Add(nodeManagerFactory.Create(server, configuration));
             }
@@ -3273,9 +3243,9 @@ namespace Technosoftware.UaServer
         /// <param name="server">The server.</param>
         /// <param name="configuration">The configuration.</param>
         /// <returns>Returns a generic session manager object for a server, the return type is <seealso cref="SessionManager"/>.</returns>
-        protected virtual Sessions.SessionManager CreateSessionManager(IUaServerData server, ApplicationConfiguration configuration)
+        protected virtual SessionManager CreateSessionManager(IUaServerData server, ApplicationConfiguration configuration)
         {
-            return new Sessions.SessionManager(server, configuration);
+            return new SessionManager(server, configuration);
         }
 
         /// <summary>
@@ -3330,7 +3300,7 @@ namespace Technosoftware.UaServer
         /// <param name="nodeManagerFactory">The node manager factory to remove.</param>
         public virtual void RemoveNodeManager(IUaNodeManagerFactory nodeManagerFactory)
         {
-            nodeManagerFactories_.Remove(nodeManagerFactory);
+            _ = nodeManagerFactories_.Remove(nodeManagerFactory);
         }
         #endregion
 
@@ -3339,7 +3309,7 @@ namespace Technosoftware.UaServer
         #endregion
 
         #region Private Fields
-        private object lock_ = new object();
+        private readonly object lock_ = new object();
         private GenericServerData genericServerData_;
         private ConfigurationWatcher configurationWatcher_;
 
@@ -3352,7 +3322,7 @@ namespace Technosoftware.UaServer
         private int lastRegistrationInterval_;
         private int minNonceLength_;
         private bool useRegisterServer2_;
-        private IList<IUaNodeManagerFactory> nodeManagerFactories_;
+        private readonly List<IUaNodeManagerFactory> nodeManagerFactories_;
         #endregion
     }
 }

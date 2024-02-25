@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.Threading;
 
@@ -859,21 +860,15 @@ namespace Technosoftware.UaServer.Subscriptions
             lock (lock_)
             {
                 buffer.Append("PublishQueue ");
-                buffer.AppendFormat(context, args);
-
-                buffer.Append(", SessionId=");
+                buffer.AppendFormat(CultureInfo.InvariantCulture, context, args);
 
                 if (session_ != null)
                 {
-                    buffer.AppendFormat("{0}", session_.Id);
-                }
-                else
-                {
-                    buffer.AppendFormat(", SessionId={0}", session_.Id);
+                    buffer.AppendFormat(CultureInfo.InvariantCulture, ", SessionId={0}", session_.Id);
                 }
 
-                buffer.AppendFormat(", SubscriptionCount={0}", queuedSubscriptions_.Count);
-                buffer.AppendFormat(", RequestCount={0}", queuedRequests_.Count);
+                buffer.AppendFormat(CultureInfo.InvariantCulture, ", SubscriptionCount={0}, RequestCount={1}",
+                    queuedSubscriptions_.Count, queuedRequests_.Count);
 
                 var readyToPublish = 0;
 
@@ -885,7 +880,7 @@ namespace Technosoftware.UaServer.Subscriptions
                     }
                 }
 
-                buffer.AppendFormat(", ReadyToPublishCount={0}", readyToPublish);
+                buffer.AppendFormat(CultureInfo.InvariantCulture, ", ReadyToPublishCount={0}", readyToPublish);
 
                 var expiredRequests = 0;
 
@@ -897,10 +892,10 @@ namespace Technosoftware.UaServer.Subscriptions
                     }
                 }
 
-                buffer.AppendFormat(", ExpiredCount={0}", expiredRequests);
+                buffer.AppendFormat(CultureInfo.InvariantCulture, ", ExpiredCount={0}", expiredRequests);
             }
 
-            Utils.LogTrace("{0}", buffer.ToString());
+            Utils.LogTrace(buffer.ToString());
         }
         #endregion
 

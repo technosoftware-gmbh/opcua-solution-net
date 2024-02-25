@@ -833,7 +833,7 @@ namespace Technosoftware.UaServer
                 {
                     if (!calculator_.QueueRawValue(value))
                     {
-                        Utils.LogTrace("Value received out of order: {1}, ServerHandle={0}", id_, value.SourceTimestamp.ToLocalTime().ToString("HH:mm:ss.fff"));
+                        Utils.LogTrace("Value received out of order: {1}, ServerHandle={0}", id_, value.SourceTimestamp.ToLocalTime().ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture));
                     }
 
                     var processedValue = calculator_.GetProcessedValue(false);

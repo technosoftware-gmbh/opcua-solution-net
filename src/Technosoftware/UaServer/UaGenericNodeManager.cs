@@ -1887,7 +1887,7 @@ namespace Technosoftware.UaServer
                                 bool isOutOfRange = false;
                                 foreach (var arrayValue in array)
                                 {
-                                    double newValue = Convert.ToDouble(arrayValue);
+                                    double newValue = Convert.ToDouble(arrayValue, CultureInfo.InvariantCulture);
                                     if (newValue > analogItemState.InstrumentRange.Value.High ||
                                         newValue < analogItemState.InstrumentRange.Value.Low)
                                     {
@@ -1903,7 +1903,7 @@ namespace Technosoftware.UaServer
                             }
                             else
                             {
-                                double newValue = Convert.ToDouble(nodeToWrite.Value.Value);
+                                double newValue = Convert.ToDouble(nodeToWrite.Value.Value, CultureInfo.InvariantCulture);
 
                                 if (newValue > analogItemState.InstrumentRange.Value.High ||
                                     newValue < analogItemState.InstrumentRange.Value.Low)
@@ -3278,7 +3278,7 @@ namespace Technosoftware.UaServer
 
             if (monitoredNode.EventMonitoredItems != null)
             {
-                // remove existing monitored items with the same Id prior to insertion inorder to avoid duplicates
+                // remove existing monitored items with the same Id prior to insertion in order to avoid duplicates
                 // this is necessary since the SubscribeToEvents method is called also from ModifyMonitoredItemsForEvents
                 monitoredNode.EventMonitoredItems.RemoveAll(e => e.Id == monitoredItem.Id);
             }

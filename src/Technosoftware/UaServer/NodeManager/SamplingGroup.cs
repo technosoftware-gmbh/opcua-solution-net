@@ -303,7 +303,7 @@ namespace Technosoftware.UaServer.NodeManager
                     return samplingRate.Start;
                 }
 
-                // check if within range specfied by the group.
+                // check if within range specified by the group.
                 var maxSamplingRate = samplingRate.Start;
 
                 if (samplingRate.Increment > 0)

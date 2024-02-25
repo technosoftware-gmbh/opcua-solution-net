@@ -16,6 +16,7 @@
 #region Using Directives
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -964,7 +965,7 @@ namespace Technosoftware.UaServer.Diagnostics
                     systemContext,
                     null,
                     ReferenceTypeIds.HasComponent,
-                    new QualifiedName(diagnostics.SubscriptionId.ToString()),
+                    new QualifiedName(diagnostics.SubscriptionId.ToString(CultureInfo.InvariantCulture)),
                     diagnosticsNode);
 
                 // add reference to subscription array.
@@ -1091,6 +1092,7 @@ namespace Technosoftware.UaServer.Diagnostics
                     historyServerCapabilitiesNode.InsertDataCapability.Value = false;
                     historyServerCapabilitiesNode.DeleteRawCapability.Value = false;
                     historyServerCapabilitiesNode.DeleteAtTimeCapability.Value = false;
+                    historyServerCapabilitiesNode.ServerTimestampSupported.Value = false;
 
                     NodeState parent = FindPredefinedNode(ObjectIds.Server_ServerCapabilities, typeof(ServerCapabilitiesState));
 

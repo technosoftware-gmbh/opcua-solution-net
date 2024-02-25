@@ -2126,10 +2126,10 @@ namespace Technosoftware.UaServer.Subscriptions
         {
             UaServerContext systemContext = server_.DefaultSystemContext.Copy(session_);
 
-            string messageTemplate = String.Format("Condition refresh {{0}} for subscription {0}.", Id);
+            string messageTemplate = Utils.Format("Condition refresh {{0}} for subscription {0}.", Id);
             if (monitoredItemId > 0)
             {
-                messageTemplate = String.Format("Condition refresh {{0}} for subscription {0}, monitored item {1}.", Id, monitoredItemId);
+                messageTemplate = Utils.Format("Condition refresh {{0}} for subscription {0}, monitored item {1}.", Id, monitoredItemId);
             }
 
             lock (lock_)
@@ -2142,7 +2142,7 @@ namespace Technosoftware.UaServer.Subscriptions
                 message = new TranslationInfo(
                     "RefreshStartEvent",
                     "en-US",
-                    String.Format(messageTemplate, "started"));
+                    Utils.Format(messageTemplate, "started"));
 
                 e.Initialize(
                     systemContext,
@@ -2196,7 +2196,7 @@ namespace Technosoftware.UaServer.Subscriptions
                 message = new TranslationInfo(
                     "RefreshEndEvent",
                     "en-US",
-                    String.Format(messageTemplate, "completed"));
+                    Utils.Format(messageTemplate, "completed"));
 
                 e.Initialize(
                     systemContext,
