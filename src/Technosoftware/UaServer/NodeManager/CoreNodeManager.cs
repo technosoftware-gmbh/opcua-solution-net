@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 
 using Opc.Ua;
@@ -638,7 +639,7 @@ namespace Technosoftware.UaServer.NodeManager
 
                 // Set AccessRestrictions and RolePermissions
                 var node = (Node)target;
-                metadata.AccessRestrictions = (AccessRestrictionType)Enum.Parse(typeof(AccessRestrictionType), node.AccessRestrictions.ToString()); 
+                metadata.AccessRestrictions = (AccessRestrictionType)Enum.Parse(typeof(AccessRestrictionType), node.AccessRestrictions.ToString(CultureInfo.InvariantCulture)); 
                 metadata.RolePermissions = node.RolePermissions;
                 metadata.UserRolePermissions = node.UserRolePermissions;
 

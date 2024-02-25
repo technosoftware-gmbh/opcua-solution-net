@@ -14,9 +14,11 @@
 #endregion Copyright (c) 2011-2023 Technosoftware GmbH. All rights reserved
 
 #region Using Directives
+using System;
 using System.Runtime.CompilerServices;
 #endregion
 
+[assembly: CLSCompliant(false)]
 #if SIGNASSEMBLY
 [assembly: InternalsVisibleTo("Technosoftware.UaServer.Tests, PublicKey = " +
     // Technosoftware GmbH Strong Name Public Key

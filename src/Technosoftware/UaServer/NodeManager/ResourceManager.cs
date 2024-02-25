@@ -17,15 +17,18 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
+using System.Resources;
 using System.Globalization;
 using System.Xml;
+using System.Reflection;
 
 using Opc.Ua;
 
 #endregion
 
 namespace Technosoftware.UaServer.NodeManager
-{    
+{
     /// <summary>
     /// An object that manages access to localized resources.
     /// </summary>
@@ -39,12 +42,12 @@ namespace Technosoftware.UaServer.NodeManager
         {
             if (server == null) throw new ArgumentNullException(nameof(server));    
             if (configuration == null) throw new ArgumentNullException(nameof(configuration));
-           
+
             server_ = server;
             translationTables_ = new List<TranslationTable>();
         }
         #endregion
-        
+
         #region IDisposable Members
         /// <summary>
         /// May be called by the application to clean up resources.
@@ -72,7 +75,7 @@ namespace Technosoftware.UaServer.NodeManager
         {
             return Translate(preferredLocales, null, new TranslationInfo(key, String.Empty, text, args));
         }
-        
+
         /// <virtual cref="ITranslationManager.Translate(IList{string}, LocalizedText)" />
         public LocalizedText Translate(IList<string> preferredLocales, LocalizedText text)
         {
@@ -122,7 +125,7 @@ namespace Technosoftware.UaServer.NodeManager
                 {
                     return result;
                 }
-            
+
                 translatedText = Translate(preferredLocales, result.LocalizedText);
             }
 
@@ -157,7 +160,25 @@ namespace Technosoftware.UaServer.NodeManager
                 return availableLocales;
             }
         }
-        
+
+        /// <summary>
+        /// Returns the locales supported by the resource manager.
+        /// </summary>
+        [Obsolete("preferredLocales argument is ignored.")]
+        public string[] GetAvailableLocales(IEnumerable<string> preferredLocales)
+        {
+            return GetAvailableLocales();
+        }
+
+        /// <summary>
+        /// Returns the localized form of the text that best matches the preferred locales.
+        /// </summary>
+        [Obsolete("Replaced by the overrideable ITranslationManager methods.")]
+        public LocalizedText GetText(IList<string> preferredLocales, string textId, string defaultText, params object[] args)
+        {
+            return Translate(preferredLocales, textId, defaultText, args);
+        }
+
         /// <summary>
         /// Adds a translation to the resource manager.
         /// </summary>
@@ -168,7 +189,7 @@ namespace Technosoftware.UaServer.NodeManager
             if (text == null) throw new ArgumentNullException(nameof(text));
 
             var culture = new CultureInfo(locale);
-            
+
             if (culture.IsNeutralCulture)
             {
                 throw new ArgumentException("Cannot specify neutral locales for translation tables.", nameof(locale));
@@ -190,7 +211,7 @@ namespace Technosoftware.UaServer.NodeManager
             if (translations == null) throw new ArgumentNullException(nameof(translations));
 
             var culture = new CultureInfo(locale);
-            
+
             if (culture.IsNeutralCulture)
             {
                 throw new ArgumentException("Cannot specify neutral locales for translation tables.", nameof(locale));
@@ -222,7 +243,7 @@ namespace Technosoftware.UaServer.NodeManager
                 {
                     statusCodeMapping_ = new Dictionary<uint,TranslationInfo>();
                 }
-                
+
                 if (String.IsNullOrEmpty(locale) || locale == "en-US")
                 {
                     statusCodeMapping_[statusCode] = new TranslationInfo(key, locale, text);
@@ -274,7 +295,7 @@ namespace Technosoftware.UaServer.NodeManager
             }
         }
         #endregion
-        
+
         #region Protected Methods
         /// <summary>
         /// Translates the text provided.
@@ -344,7 +365,7 @@ namespace Technosoftware.UaServer.NodeManager
             var formattedText = translatedText;
 
             if (info.Args != null && info.Args.Length > 0)
-            {            
+            {
                 try
                 {
                     formattedText = String.Format(culture, translatedText, info.Args);
@@ -361,7 +382,7 @@ namespace Technosoftware.UaServer.NodeManager
             return finalText;
         }
         #endregion
-        
+
         #region Private Methods
         /// <summary>
         /// Stores the translations for a locale.
@@ -369,7 +390,7 @@ namespace Technosoftware.UaServer.NodeManager
         private class TranslationTable
         {
             public CultureInfo Locale;
-            public SortedDictionary<string,string> Translations = new SortedDictionary<string,string>();
+            public SortedDictionary<string, string> Translations = new SortedDictionary<string, string>();
         }
 
         /// <summary>
@@ -383,7 +404,7 @@ namespace Technosoftware.UaServer.NodeManager
                 for (var ii = 0; ii < translationTables_.Count; ii++)
                 {
                     var translationTable = translationTables_[ii];
-                    
+
                     if (translationTable.Locale.Name == locale)
                     {
                         return translationTable;
@@ -406,11 +427,18 @@ namespace Technosoftware.UaServer.NodeManager
         {
             culture = null;
             TranslationTable match = null;
-            
+
+            if (preferredLocales == null || preferredLocales.Count == 0) { return null; }
+
             for (var jj = 0; jj < preferredLocales.Count; jj++)
             {
                 // parse the locale.
                 var language = preferredLocales[jj];
+
+                if (language == null)
+                {
+                    continue;
+                }
 
                 var index = language.IndexOf('-');
 
@@ -425,7 +453,7 @@ namespace Technosoftware.UaServer.NodeManager
                 for (var ii = 0; ii < translationTables_.Count; ii++)
                 {
                     var translationTable = translationTables_[ii];
-                
+
                     // all done if exact match found.
                     if (translationTable.Locale.Name == preferredLocales[jj])
                     {
@@ -435,7 +463,7 @@ namespace Technosoftware.UaServer.NodeManager
                             return translatedText;
                         }
                     }
-                
+
                     // check for matching language but different region.
                     if (match == null && translationTable.Locale.TwoLetterISOLanguageName == language)
                     {
@@ -528,8 +556,8 @@ namespace Technosoftware.UaServer.NodeManager
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         private IUaServerData server_;
         private List<TranslationTable> translationTables_;
-        private Dictionary<uint,TranslationInfo> statusCodeMapping_;
-        private Dictionary<XmlQualifiedName,TranslationInfo> symbolicIdMapping_;
+        private Dictionary<uint, TranslationInfo> statusCodeMapping_;
+        private Dictionary<XmlQualifiedName, TranslationInfo> symbolicIdMapping_;
         #endregion
     }
 }
