@@ -11,6 +11,7 @@
 
 #region Using Directives
 using System;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -74,7 +75,7 @@ namespace Technosoftware.UaStandardServer.Tests
             try
             {
                 var sb = new StringBuilder();
-                sb.AppendFormat("{0:yy-MM-dd HH:mm:ss.fff}: ", DateTime.UtcNow);
+                sb.AppendFormat(CultureInfo.InvariantCulture, "{0:yy-MM-dd HH:mm:ss.fff}: ", DateTime.UtcNow);
                 sb.Append(formatter(state, exception));
 
                 var logEntry = sb.ToString();

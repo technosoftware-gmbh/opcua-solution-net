@@ -213,7 +213,7 @@ namespace Technosoftware.UaPubSub
             // validate input argument 
             if (configFilePath == null)
             {
-                throw new ArgumentException(nameof(configFilePath));
+                throw new ArgumentNullException(nameof(configFilePath));
             }
             if (!File.Exists(configFilePath))
             {
