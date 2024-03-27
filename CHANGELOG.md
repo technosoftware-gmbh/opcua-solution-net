@@ -7,6 +7,7 @@
 - Improve client for sessions and subscriptions (#167)
 - Moved reference applications to the **reference** directoy
 - New tutorial examples can be found now in the **tutorials** directory
+- Added GetApplicationInstanceCertificateExpiryDateAsync()
 
 ### Fixed issues
 
