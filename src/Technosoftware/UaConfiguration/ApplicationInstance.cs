@@ -358,6 +358,37 @@ namespace Technosoftware.UaConfiguration
         }
 
         /// <summary>
+        /// Returns the expiry date of the application instance certificate
+        /// </summary>
+        public async Task<DateTime> GetApplicationInstanceCertificateExpiryDateAsync()
+        {
+            if (ApplicationConfiguration == null)
+            {
+                _ = await LoadApplicationConfigurationAsync(true).ConfigureAwait(false);
+            }
+
+            ApplicationConfiguration configuration = ApplicationConfiguration;
+
+            // find the existing certificate.
+            CertificateIdentifier id = configuration.SecurityConfiguration.ApplicationCertificate ?? throw ServiceResultException.Create(StatusCodes.BadConfigurationError,
+                    "Configuration file does not specify a certificate.");
+
+            // reload the certificate from disk in the cache.
+            ICertificatePasswordProvider passwordProvider = configuration.SecurityConfiguration.CertificatePasswordProvider;
+            _ = await configuration.SecurityConfiguration.ApplicationCertificate.LoadPrivateKeyEx(passwordProvider).ConfigureAwait(false);
+
+            // load the certificate
+            X509Certificate2 certificate = await id.Find(true).ConfigureAwait(false);
+
+            // check that it is ok.
+            if (certificate != null)
+            {
+                return Opc.Ua.X509Utils.GetCertificateExpiryDate(certificate);
+            }
+            return DateTime.MinValue;
+        }
+
+        /// <summary>
         /// Checks for a valid application instance certificate.
         /// </summary>
         /// <param name="silent">if set to <c>true</c> no dialogs will be displayed.</param>
